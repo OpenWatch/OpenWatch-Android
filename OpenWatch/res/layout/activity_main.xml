@@ -19,6 +19,7 @@
             android:background="@drawable/record_button_background"
             android:textColor="#FFFFFF"
             android:textSize="40sp"
+            android:onClick="recordButtonClick"
             android:text="@string/record_button_text" />
 
         <View

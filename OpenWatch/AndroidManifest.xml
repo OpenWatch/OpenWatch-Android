@@ -7,6 +7,13 @@
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="16" />
+    
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
         android:icon="@drawable/ic_launcher"
@@ -25,6 +32,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="net.openwatch.reporter.RecorderActivity"
+            android:label="@string/title_activity_recorder"
+            android:screenOrientation="landscape" >
         </activity>
     </application>
 
