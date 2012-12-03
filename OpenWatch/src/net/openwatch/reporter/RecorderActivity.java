@@ -1,6 +1,8 @@
 package net.openwatch.reporter;
 
 import java.io.File;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.Date;
 
 import net.openwatch.reporter.constants.Constants;
@@ -73,12 +75,8 @@ public class RecorderActivity extends Activity implements
 
 		}); // end onClickListener
 
-		output_filename = FileUtils.getStorageDirectory(
-				FileUtils.getRootStorageDirectory(RecorderActivity.this,
-						Constants.ROOT_OUTPUT_DIR),
-				Constants.RECORDING_OUTPUT_DIR).getAbsolutePath();
-		output_filename += "/" + String.valueOf(new Date().getTime());
-
+		prepareOutputLocation();
+		
 		try {
 			// Create an instance of Camera
 			mCamera = getCameraInstance();
@@ -139,6 +137,25 @@ public class RecorderActivity extends Activity implements
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		// TODO Auto-generated method stub
 
+	}
+	
+	public void prepareOutputLocation(){
+		File recording_dir = FileUtils.getStorageDirectory(
+				FileUtils.getRootStorageDirectory(RecorderActivity.this,
+						Constants.ROOT_OUTPUT_DIR),
+				Constants.RECORDING_OUTPUT_DIR);
+		
+		String recording_id = generateRecordingIdentifier();
+		
+		output_filename = FileUtils.getStorageDirectory(recording_dir, recording_id).getAbsolutePath();
+		output_filename += "/" + String.valueOf(new Date().getTime());
+	}
+	
+	
+	public String generateRecordingIdentifier()
+	{
+		SecureRandom random = new SecureRandom();
+	    return new BigInteger(130, random).toString(32);
 	}
 
 }
