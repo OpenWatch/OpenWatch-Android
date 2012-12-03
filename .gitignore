@@ -1,0 +1,6 @@
+bin/
+gen/
+SECRETS.java
+lint.xml
+.DS_STORE
+

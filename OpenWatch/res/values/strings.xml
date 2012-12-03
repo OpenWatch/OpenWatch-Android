@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">OpenWatch</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">OpenWatch</string>
+    
+    <!--  MainActivity -->
+    
+    <string name="record_button_text">Record</string>
+    <string name="watch_button_text">Watch</string>
+
+</resources>

@@ -1,0 +1,41 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_margin="20dp"
+        android:orientation="vertical"
+        android:weightSum="1.0" >
+
+        <Button
+            android:id="@+id/button_record"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight=".45"
+            android:background="@drawable/record_button_background"
+            android:textColor="#FFFFFF"
+            android:textSize="40sp"
+            android:text="@string/record_button_text" />
+
+        <View
+            android:id="@+id/spacer"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight=".1" />
+
+        <Button
+            android:id="@+id/button_watch"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight=".45"
+            android:background="@drawable/watch_button_background"
+            android:textColor="#FFFFFF"
+            android:textSize="40sp"
+            android:text="@string/watch_button_text" />
+    </LinearLayout>
+
+</RelativeLayout>
