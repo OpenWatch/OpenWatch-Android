@@ -1,13 +1,25 @@
 package net.openwatch.reporter;
+import java.util.HashMap;
+import java.util.Map;
 
+import com.google.gson.Gson;
+import com.loopj.android.http.*;
+
+import net.openwatch.reporter.constants.Constants;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
@@ -20,6 +32,11 @@ import android.widget.TextView;
  * well.
  */
 public class LoginActivity extends Activity {
+	
+	private static final String TAG = "LoginActivity";
+	
+	AsyncHttpClient http_client;
+	
 	/**
 	 * A dummy authentication store containing known user names and passwords.
 	 * TODO: remove after connecting to a real authentication system.
@@ -35,7 +52,7 @@ public class LoginActivity extends Activity {
 	/**
 	 * Keep track of the login task to ensure we can cancel it if requested.
 	 */
-	private UserLoginTask mAuthTask = null;
+	//private UserLoginTask mAuthTask = null;
 
 	// Values for email and password at the time of the login attempt.
 	private String mEmail;
@@ -55,7 +72,7 @@ public class LoginActivity extends Activity {
 		setContentView(R.layout.activity_login);
 
 		// Set up the login form.
-		mEmail = getIntent().getStringExtra(EXTRA_EMAIL);
+		mEmail = getIntent().getStringExtra(Constants.EMAIL);
 		mEmailView = (EditText) findViewById(R.id.email);
 		mEmailView.setText(mEmail);
 
@@ -99,7 +116,8 @@ public class LoginActivity extends Activity {
 	 * errors are presented and no actual login attempt is made.
 	 */
 	public void attemptLogin() {
-		if (mAuthTask != null) {
+		if (http_client != null) {
+			Log.d(TAG, "http_client is not null");
 			return;
 		}
 
@@ -130,7 +148,7 @@ public class LoginActivity extends Activity {
 			mEmailView.setError(getString(R.string.error_field_required));
 			focusView = mEmailView;
 			cancel = true;
-		} else if (!mEmail.contains("@")) {
+		} else if (!checkEmail(mEmail)) {
 			mEmailView.setError(getString(R.string.error_invalid_email));
 			focusView = mEmailView;
 			cancel = true;
@@ -145,8 +163,7 @@ public class LoginActivity extends Activity {
 			// perform the user login attempt.
 			mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
 			showProgress(true);
-			mAuthTask = new UserLoginTask();
-			mAuthTask.execute((Void) null);
+			UserLogin();
 		}
 	}
 
@@ -190,11 +207,93 @@ public class LoginActivity extends Activity {
 			mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
 		}
 	}
+	
+    private boolean checkEmail(String email) {
+        return Constants.EMAIL_ADDRESS_PATTERN.matcher(email).matches();
+    }
+    
+    public void UserLogin(){
+    	// POST email_address, password
+    	http_client = new AsyncHttpClient();
+    	RequestParams params = new RequestParams();
+    	params.put(Constants.OW_EMAIL, mEmail);
+    	params.put(Constants.OW_PW, mPassword);
+    	PersistentCookieStore cookie_store = new PersistentCookieStore(this);
+    	http_client.setCookieStore(cookie_store);
+    	Log.i(TAG,"Commencing login to: " + Constants.OW_URL + Constants.OW_LOGIN);
+    	
+    	http_client.post(Constants.OW_URL + Constants.OW_LOGIN, params, new AsyncHttpResponseHandler(){
+    		
+    		@Override
+    		public void onSuccess(String response){
+    			Log.i(TAG,"OW login success: " +  response);
+    			Gson gson = new Gson();
+    			Map<Object,Object> map = new HashMap<Object,Object>();
+    			try{
+	    			map = gson.fromJson(response, map.getClass());
+    			} catch(Throwable t){
+    				Log.e(TAG, "Error parsing response. 500 error?");
+    				return;
+    			}
+    			
+    			if( (Boolean)map.get(Constants.OW_SUCCESS) == true){
+    				Log.i(TAG,"OW login success: " +  map.toString());
+    				// Set authed preference 
+    				SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
+    		        SharedPreferences.Editor editor = profile.edit();
+    		        editor.putBoolean(Constants.AUTHENTICATED, true);
+    		        editor.commit();
+    		        
+    		        Intent i = new Intent(LoginActivity.this, MainActivity.class);
+    		        startActivity(i);
+    		        return;
+    			}
+	    			
+				AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this);
+				dialog.setTitle(R.string.login_dialog_denied_title);
+				dialog.setMessage(R.string.login_dialog_denied_msg);
+				dialog.setNeutralButton(R.string.login_dialog_denied_ok, new OnClickListener(){
+
+					@Override
+					public void onClick(DialogInterface dialog,
+							int which) {
+						dialog.dismiss();	
+					}
+					
+				});
+				dialog.show();	
+    		}
+    		
+    		@Override
+    	     public void onFailure(Throwable e, String response) {
+    			Log.i(TAG,"OW login failure: " +  response);
+    	     }
+    		
+    		@Override
+    	     public void onFinish() {
+    			Log.i(TAG,"OW login finish");
+    			http_client = null;
+    			showProgress(false);
+    	     }
+    	});
+    	
+    	/*
+    	AsyncHttpClient client = new AsyncHttpClient();
+    	Log.i(TAG,"Commencing google.com ping");
+    	client.get("http://www.google.com", new AsyncHttpResponseHandler() {
+    	    @Override
+    	    public void onSuccess(String response) {
+    	       Log.i(TAG,response);
+    	    }
+    	});*/
+    	
+    }
 
 	/**
 	 * Represents an asynchronous login/registration task used to authenticate
 	 * the user.
 	 */
+    /*
 	public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 		@Override
 		protected Boolean doInBackground(Void... params) {
@@ -221,7 +320,7 @@ public class LoginActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(final Boolean success) {
-			mAuthTask = null;
+			//mAuthTask = null;
 			showProgress(false);
 
 			if (success) {
@@ -235,8 +334,8 @@ public class LoginActivity extends Activity {
 
 		@Override
 		protected void onCancelled() {
-			mAuthTask = null;
+			//mAuthTask = null;
 			showProgress(false);
 		}
-	}
+	}*/
 }

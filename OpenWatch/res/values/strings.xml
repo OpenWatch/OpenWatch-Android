@@ -11,5 +11,9 @@
     <string name="watch_button_text">Watch</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_recorder">RecorderActivity</string>
-
+    
+    <!--  LoginActivity -->
+    <string name="login_dialog_denied_title">Login Failed</string>
+    <string name="login_dialog_denied_msg">Please check your username and password. If you do not have an account, please sign up.</string>
+	<string name="login_dialog_denied_ok">Ok</string>
 </resources>
