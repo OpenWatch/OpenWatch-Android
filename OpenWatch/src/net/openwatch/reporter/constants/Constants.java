@@ -32,6 +32,9 @@ public class Constants {
             ")+"
         );
 	
+	// API Request timeout (ms)
+	public static final int TIMEOUT = 5000;
+	
 	// OpenWatch web service root url and endpoints
 	//public static final String OW_URL = "http://www.openwatch.net/api/"; // TODO: HTTPS
 	public static final String OW_URL = "http://192.168.1.27:8000/api/";
@@ -45,5 +48,6 @@ public class Constants {
 	
 	// OpenWatch web service response keys
 	public static final String OW_SUCCESS = "success";
+	public static final String OW_ERROR = "code";
 
 }

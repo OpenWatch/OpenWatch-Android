@@ -18,6 +18,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -213,17 +214,15 @@ public class LoginActivity extends Activity {
     }
     
     public void UserLogin(){
-    	// POST email_address, password
-    	http_client = new AsyncHttpClient();
-    	RequestParams params = new RequestParams();
-    	params.put(Constants.OW_EMAIL, mEmail);
-    	params.put(Constants.OW_PW, mPassword);
-    	PersistentCookieStore cookie_store = new PersistentCookieStore(this);
-    	http_client.setCookieStore(cookie_store);
+    	http_client = setupHttpClient(http_client);
     	Log.i(TAG,"Commencing login to: " + Constants.OW_URL + Constants.OW_LOGIN);
-    	
-    	http_client.post(Constants.OW_URL + Constants.OW_LOGIN, params, new AsyncHttpResponseHandler(){
+    	http_client.post(Constants.OW_URL + Constants.OW_LOGIN, getRequestParams(), new AsyncHttpResponseHandler(){
     		
+    		@Override
+    		public void onStart(){
+    			Log.i(TAG, "onStart");
+    		}
+
     		@Override
     		public void onSuccess(String response){
     			Log.i(TAG,"OW login success: " +  response);
@@ -233,40 +232,50 @@ public class LoginActivity extends Activity {
 	    			map = gson.fromJson(response, map.getClass());
     			} catch(Throwable t){
     				Log.e(TAG, "Error parsing response. 500 error?");
+    				onFailure(new Throwable(), "Error parsing server response");
     				return;
     			}
     			
     			if( (Boolean)map.get(Constants.OW_SUCCESS) == true){
     				Log.i(TAG,"OW login success: " +  map.toString());
     				// Set authed preference 
-    				SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
-    		        SharedPreferences.Editor editor = profile.edit();
-    		        editor.putBoolean(Constants.AUTHENTICATED, true);
-    		        editor.commit();
+    				setUserAuthenticated();
     		        
     		        Intent i = new Intent(LoginActivity.this, MainActivity.class);
     		        startActivity(i);
     		        return;
+    			} else{
+    				AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this);
+    				int error_code =  ((Double)map.get(Constants.OW_ERROR)).intValue();
+    				switch(error_code){
+    					
+    					case 403: 	// No account with provided email
+    						dialog.setTitle(R.string.login_dialog_unknown_email_title)
+    						.setMessage(getString(R.string.login_dialog_unknown_email_msg) + " " + mEmail + "?")
+    						.setNegativeButton(R.string.login_dialog_signup, signupDialogOnClickListener)
+    						.setPositiveButton(R.string.login_dialog_no, defaultDialogOnClickListener)
+    	    				.show();
+    						break;
+    					default:   // Incorrect email address / password (Error 412)
+    						dialog.setTitle(R.string.login_dialog_denied_title)
+    						.setMessage(R.string.login_dialog_denied_msg)
+    						.setNeutralButton(R.string.login_dialog_ok, defaultDialogOnClickListener)
+    	    				.show();
+    						break;
+       				}
+    					
     			}
-	    			
-				AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this);
-				dialog.setTitle(R.string.login_dialog_denied_title);
-				dialog.setMessage(R.string.login_dialog_denied_msg);
-				dialog.setNeutralButton(R.string.login_dialog_denied_ok, new OnClickListener(){
 
-					@Override
-					public void onClick(DialogInterface dialog,
-							int which) {
-						dialog.dismiss();	
-					}
-					
-				});
-				dialog.show();	
     		}
     		
     		@Override
     	     public void onFailure(Throwable e, String response) {
     			Log.i(TAG,"OW login failure: " +  response);
+    			AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this);
+    			dialog.setTitle(R.string.login_dialog_failed_title)
+    			.setMessage(R.string.login_dialog_failed_msg)
+    			.setNeutralButton(R.string.login_dialog_ok, defaultDialogOnClickListener)
+    			.show();
     	     }
     		
     		@Override
@@ -277,65 +286,114 @@ public class LoginActivity extends Activity {
     	     }
     	});
     	
-    	/*
-    	AsyncHttpClient client = new AsyncHttpClient();
-    	Log.i(TAG,"Commencing google.com ping");
-    	client.get("http://www.google.com", new AsyncHttpResponseHandler() {
-    	    @Override
-    	    public void onSuccess(String response) {
-    	       Log.i(TAG,response);
-    	    }
-    	});*/
+    }
+    
+    public void UserSignup(){
+    	http_client = setupHttpClient(http_client);
+    	Log.i(TAG,"Commencing signup to: " + Constants.OW_URL + Constants.OW_SIGNUP);
+    	http_client.post(Constants.OW_URL + Constants.OW_SIGNUP, getRequestParams(), new AsyncHttpResponseHandler(){
+    		
+    		@Override
+    		public void onSuccess(String response){
+    			Log.i(TAG,"OW signup success: " +  response);
+    			Gson gson = new Gson();
+    			Map<Object,Object> map = new HashMap<Object,Object>();
+    			try{
+	    			map = gson.fromJson(response, map.getClass());
+    			} catch(Throwable t){
+    				Log.e(TAG, "Error parsing response. 500 error?");
+    				onFailure(new Throwable(), "Error parsing server response");
+    			}
+    			
+    			if( (Boolean)map.get(Constants.OW_SUCCESS) == true){
+    				Log.i(TAG,"OW login success: " +  map.toString());
+    				// Set authed preference 
+    				setUserAuthenticated();
+    		        
+    		        Intent i = new Intent(LoginActivity.this, MainActivity.class);
+    		        startActivity(i);
+    		        return;
+    			} else{
+    				AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this);
+    				int error_code =  ((Double)map.get(Constants.OW_ERROR)).intValue();
+    				switch(error_code){
+    					
+    					case 405: 	// email address in use
+    						dialog.setTitle(R.string.signup_dialog_email_taken_title)
+    						.setMessage(mEmail + " " +  getString(R.string.signup_dialog_email_taken_msg));
+    						break;
+    					default:
+    						dialog.setTitle(R.string.signup_dialog_failed_title)
+    						.setMessage(R.string.signup_dialog_failed_msg);
+    						break;
+       				}
+    				dialog.setNeutralButton(R.string.login_dialog_ok, defaultDialogOnClickListener);
+    				dialog.show();	
+    			}
+
+    		}
+    		
+    		@Override
+    	     public void onFailure(Throwable e, String response) {
+    			Log.i(TAG,"OW login failure: " +  response);
+    			AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this);
+    			dialog.setTitle(R.string.login_dialog_failed_title)
+    			.setMessage(R.string.login_dialog_failed_msg)
+    			.setNeutralButton(R.string.login_dialog_ok, defaultDialogOnClickListener)
+    			.show();
+    	     }
+    		
+    		@Override
+    	     public void onFinish() {
+    			Log.i(TAG,"OW login finish");
+    			http_client = null;
+    			showProgress(false);
+    	     }
+    	});
     	
     }
-
-	/**
-	 * Represents an asynchronous login/registration task used to authenticate
-	 * the user.
-	 */
-    /*
-	public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-		@Override
-		protected Boolean doInBackground(Void... params) {
-			// TODO: attempt authentication against a network service.
-
-			try {
-				// Simulate network access.
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				return false;
-			}
-
-			for (String credential : DUMMY_CREDENTIALS) {
-				String[] pieces = credential.split(":");
-				if (pieces[0].equals(mEmail)) {
-					// Account exists, return true if the password matches.
-					return pieces[1].equals(mPassword);
-				}
-			}
-
-			// TODO: register the new account here.
-			return true;
-		}
+    
+    public void setUserAuthenticated(){
+    	SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
+        SharedPreferences.Editor editor = profile.edit();
+        editor.putBoolean(Constants.AUTHENTICATED, true);
+        editor.commit();
+    }
+    
+    public AsyncHttpClient setupHttpClient(AsyncHttpClient http_client){
+    	http_client = new AsyncHttpClient();
+    	PersistentCookieStore cookie_store = new PersistentCookieStore(this);
+    	http_client.setCookieStore(cookie_store);
+    	
+    	return http_client;
+    }
+    
+    public RequestParams getRequestParams(){
+    	RequestParams params = new RequestParams();
+    	params.put(Constants.OW_EMAIL, mEmail);
+    	params.put(Constants.OW_PW, mPassword);
+    	
+    	return params;
+    }
+    
+    public OnClickListener defaultDialogOnClickListener = new OnClickListener(){
 
 		@Override
-		protected void onPostExecute(final Boolean success) {
-			//mAuthTask = null;
-			showProgress(false);
-
-			if (success) {
-				finish();
-			} else {
-				mPasswordView
-						.setError(getString(R.string.error_incorrect_password));
-				mPasswordView.requestFocus();
-			}
+		public void onClick(DialogInterface dialog, int which) {
+			dialog.dismiss();
 		}
+    	
+    };
+    
+    public OnClickListener signupDialogOnClickListener = new OnClickListener(){
 
 		@Override
-		protected void onCancelled() {
-			//mAuthTask = null;
-			showProgress(false);
+		public void onClick(DialogInterface dialog, int which) {
+			// TODO Auto-generated method stub
+			UserSignup();
+			
 		}
-	}*/
+    	
+    };
+
 }
