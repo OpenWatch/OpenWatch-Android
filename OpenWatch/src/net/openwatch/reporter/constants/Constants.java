@@ -20,6 +20,8 @@ public class Constants {
 	// User profile keys. Used for SharedPreferences and Intent Extras
 	public static final String EMAIL = "email";
 	public static final String AUTHENTICATED = "authenticated";
+	public static final String PUB_TOKEN = "public_upload_token"; 		// used for profile and to parse server login response
+	public static final String PRIV_TOKEN = "private_upload_token";		// used for profile and to parse server login response
 	
 	// Email REGEX
 	public static final Pattern EMAIL_ADDRESS_PATTERN = Pattern.compile(

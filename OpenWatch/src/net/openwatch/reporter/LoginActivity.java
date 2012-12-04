@@ -127,7 +127,7 @@ public class LoginActivity extends Activity {
 		mPasswordView.setError(null);
 
 		// Store values at the time of the login attempt.
-		mEmail = mEmailView.getText().toString();
+		mEmail = mEmailView.getText().toString().trim();
 		mPassword = mPasswordView.getText().toString();
 
 		boolean cancel = false;
@@ -239,7 +239,7 @@ public class LoginActivity extends Activity {
     			if( (Boolean)map.get(Constants.OW_SUCCESS) == true){
     				Log.i(TAG,"OW login success: " +  map.toString());
     				// Set authed preference 
-    				setUserAuthenticated();
+    				setUserAuthenticated(map);
     		        
     		        Intent i = new Intent(LoginActivity.this, MainActivity.class);
     		        startActivity(i);
@@ -308,7 +308,7 @@ public class LoginActivity extends Activity {
     			if( (Boolean)map.get(Constants.OW_SUCCESS) == true){
     				Log.i(TAG,"OW login success: " +  map.toString());
     				// Set authed preference 
-    				setUserAuthenticated();
+    				setUserAuthenticated(map);
     		        
     		        Intent i = new Intent(LoginActivity.this, MainActivity.class);
     		        startActivity(i);
@@ -347,17 +347,36 @@ public class LoginActivity extends Activity {
     	     public void onFinish() {
     			Log.i(TAG,"OW login finish");
     			http_client = null;
-    			showProgress(false);
     	     }
     	});
     	
     }
     
-    public void setUserAuthenticated(){
-    	SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
-        SharedPreferences.Editor editor = profile.edit();
-        editor.putBoolean(Constants.AUTHENTICATED, true);
-        editor.commit();
+    public void setUserAuthenticated(Map server_response){	
+    	SavePreferencesTask task = (SavePreferencesTask) new SavePreferencesTask().execute(server_response);
+    }
+    
+    private class SavePreferencesTask extends AsyncTask<Map, Void, Void> {
+        protected Void doInBackground(Map... server_response_array) {
+        	Map server_response = server_response_array[0];
+        	// Confirm returned email matches  
+        	if( ((String)server_response.get(Constants.OW_EMAIL)).compareTo(mEmail) != 0)
+        		Log.e(TAG, "Email mismatch. Client submitted " + mEmail + " Server responded: " + ((String)server_response.get(Constants.OW_EMAIL)));
+        	SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
+            SharedPreferences.Editor editor = profile.edit();
+            editor.putBoolean(Constants.AUTHENTICATED, true);
+            editor.putString(Constants.PUB_TOKEN, (String)server_response.get(Constants.PUB_TOKEN));
+            editor.putString(Constants.PRIV_TOKEN, (String)server_response.get(Constants.PRIV_TOKEN));
+            Log.i(TAG, "Got upload tokens. Pub: " +(String)server_response.get(Constants.PUB_TOKEN) + " Priv: " + (String)server_response.get(Constants.PRIV_TOKEN));
+            editor.commit();
+            
+        	return null;
+        }
+
+        protected Void onPostExecute() {
+        	showProgress(false);
+        	return null;
+        }
     }
     
     public AsyncHttpClient setupHttpClient(AsyncHttpClient http_client){
@@ -389,9 +408,8 @@ public class LoginActivity extends Activity {
 
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
-			// TODO Auto-generated method stub
+			showProgress(true);
 			UserSignup();
-			
 		}
     	
     };
