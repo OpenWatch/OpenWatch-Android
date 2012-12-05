@@ -48,7 +48,8 @@ public class MainActivity extends Activity {
 			// TODO: Attempt to login with stored credentials
 		}
 		else{
-			Intent i = new Intent(this, LoginActivity.class);
+			Intent i = new Intent(this, LoginActivity.class	);
+			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 			String email = profile.getString(Constants.EMAIL, null);
 			if(email != null)
 				i.putExtra(Constants.EMAIL, email);

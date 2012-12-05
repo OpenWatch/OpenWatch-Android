@@ -49,6 +49,11 @@ public class Constants {
 	public static final String OW_EMAIL = "email_address";
 	public static final String OW_PW = "password";
 	public static final String OW_SIGNUP_TYPE = "signup_type";
+	public static final String OW_REC_START = "recording_start";
+	public static final String OW_REC_END = "recording_end";
+	public static final String OW_REC_ID = "uuid";
+	public static final String OW_ALL_FILES = "all_files";
+	
 	
 	// OpenWatch web service response keys
 	public static final String OW_SUCCESS = "success";

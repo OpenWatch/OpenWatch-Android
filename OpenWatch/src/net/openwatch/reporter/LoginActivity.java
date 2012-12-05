@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.loopj.android.http.*;
 
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.http.HttpClient;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -202,7 +203,7 @@ public class LoginActivity extends Activity {
      * assuming mEmail and mPassword are pre-populated from the EditText fields
      */
     public void UserLogin(){
-    	http_client = setupHttpClient(http_client);
+    	http_client = HttpClient.setupHttpClient(this);
     	Log.i(TAG,"Commencing login to: " + Constants.OW_URL + Constants.OW_LOGIN);
     	http_client.post(Constants.OW_URL + Constants.OW_LOGIN, getRequestParams(), new AsyncHttpResponseHandler(){
     		
@@ -281,7 +282,7 @@ public class LoginActivity extends Activity {
      * assuming mEmail and mPassword are pre-populated from the EditText fields
      */
     public void UserSignup(){
-    	http_client = setupHttpClient(http_client);
+    	http_client = HttpClient.setupHttpClient(this);
     	Log.i(TAG,"Commencing signup to: " + Constants.OW_URL + Constants.OW_SIGNUP);
     	http_client.post(Constants.OW_URL + Constants.OW_SIGNUP, getRequestParams(), new AsyncHttpResponseHandler(){
     		
@@ -364,7 +365,7 @@ public class LoginActivity extends Activity {
 		params.put(Constants.OW_SIGNUP_TYPE, app_version);
 		
 		// Post public_upload_token, signup_type
-		http_client = setupHttpClient(http_client);
+		http_client = HttpClient.setupHttpClient(this);
     	Log.i(TAG,"Commencing ap registration to: " + Constants.OW_URL + Constants.OW_REGISTER + " pub_token: " + public_upload_token + " version: " + app_version);
     	http_client.post(Constants.OW_URL + Constants.OW_REGISTER, params, new AsyncHttpResponseHandler(){
     		@Override
@@ -470,14 +471,6 @@ public class LoginActivity extends Activity {
         protected Void onPostExecute() {
         	return null;
         }
-    }
-    
-    public AsyncHttpClient setupHttpClient(AsyncHttpClient http_client){
-    	http_client = new AsyncHttpClient();
-    	PersistentCookieStore cookie_store = new PersistentCookieStore(this);
-    	http_client.setCookieStore(cookie_store);
-    	
-    	return http_client;
     }
     
     public RequestParams getRequestParams(){
