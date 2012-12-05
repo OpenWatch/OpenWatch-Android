@@ -22,6 +22,7 @@ public class Constants {
 	public static final String AUTHENTICATED = "authenticated";
 	public static final String PUB_TOKEN = "public_upload_token"; 		// used for profile and to parse server login response
 	public static final String PRIV_TOKEN = "private_upload_token";		// used for profile and to parse server login response
+	public static final String REGISTERED = "registered"; 
 	
 	// Email REGEX
 	public static final Pattern EMAIL_ADDRESS_PATTERN = Pattern.compile(
@@ -47,9 +48,11 @@ public class Constants {
 	// OpenWatch web service POST keys
 	public static final String OW_EMAIL = "email_address";
 	public static final String OW_PW = "password";
+	public static final String OW_SIGNUP_TYPE = "signup_type";
 	
 	// OpenWatch web service response keys
 	public static final String OW_SUCCESS = "success";
 	public static final String OW_ERROR = "code";
+	public static final String OW_REASON = "reason";
 
 }

@@ -15,10 +15,11 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -37,23 +38,6 @@ public class LoginActivity extends Activity {
 	private static final String TAG = "LoginActivity";
 	
 	AsyncHttpClient http_client;
-	
-	/**
-	 * A dummy authentication store containing known user names and passwords.
-	 * TODO: remove after connecting to a real authentication system.
-	 */
-	private static final String[] DUMMY_CREDENTIALS = new String[] {
-			"foo@example.com:hello", "bar@example.com:world" };
-
-	/**
-	 * The default email to populate the email field with.
-	 */
-	public static final String EXTRA_EMAIL = "com.example.android.authenticatordemo.extra.EMAIL";
-
-	/**
-	 * Keep track of the login task to ensure we can cancel it if requested.
-	 */
-	//private UserLoginTask mAuthTask = null;
 
 	// Values for email and password at the time of the login attempt.
 	private String mEmail;
@@ -213,6 +197,10 @@ public class LoginActivity extends Activity {
         return Constants.EMAIL_ADDRESS_PATTERN.matcher(email).matches();
     }
     
+    /**
+     * Login an existing account with the OpenWatch service
+     * assuming mEmail and mPassword are pre-populated from the EditText fields
+     */
     public void UserLogin(){
     	http_client = setupHttpClient(http_client);
     	Log.i(TAG,"Commencing login to: " + Constants.OW_URL + Constants.OW_LOGIN);
@@ -288,6 +276,10 @@ public class LoginActivity extends Activity {
     	
     }
     
+    /**
+     * Create a new account with the OpenWatch servicee
+     * assuming mEmail and mPassword are pre-populated from the EditText fields
+     */
     public void UserSignup(){
     	http_client = setupHttpClient(http_client);
     	Log.i(TAG,"Commencing signup to: " + Constants.OW_URL + Constants.OW_SIGNUP);
@@ -306,7 +298,7 @@ public class LoginActivity extends Activity {
     			}
     			
     			if( (Boolean)map.get(Constants.OW_SUCCESS) == true){
-    				Log.i(TAG,"OW login success: " +  map.toString());
+    				Log.i(TAG,"OW signup success: " +  map.toString());
     				// Set authed preference 
     				setUserAuthenticated(map);
     		        
@@ -335,7 +327,7 @@ public class LoginActivity extends Activity {
     		
     		@Override
     	     public void onFailure(Throwable e, String response) {
-    			Log.i(TAG,"OW login failure: " +  response);
+    			Log.i(TAG,"OW signup failure: " +  response);
     			AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this);
     			dialog.setTitle(R.string.login_dialog_failed_title)
     			.setMessage(R.string.login_dialog_failed_msg)
@@ -351,11 +343,93 @@ public class LoginActivity extends Activity {
     	});
     	
     }
-    
-    public void setUserAuthenticated(Map server_response){	
-    	SavePreferencesTask task = (SavePreferencesTask) new SavePreferencesTask().execute(server_response);
+    /**
+     * Registers this mobile app with the OpenWatch service
+     * sends the application version number
+     */
+    public void RegisterApp(String public_upload_token){
+    	PackageInfo pInfo;
+    	String app_version = "Android-";
+		try {
+			pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+			app_version += pInfo.versionName;
+		} catch (NameNotFoundException e) {
+			Log.e(TAG, "Unable to read PackageName in RegisterApp");
+			e.printStackTrace();
+			app_version += "unknown";
+		}
+		
+		RequestParams params = new RequestParams();
+		params.put(Constants.PUB_TOKEN, public_upload_token);
+		params.put(Constants.OW_SIGNUP_TYPE, app_version);
+		
+		// Post public_upload_token, signup_type
+		http_client = setupHttpClient(http_client);
+    	Log.i(TAG,"Commencing ap registration to: " + Constants.OW_URL + Constants.OW_REGISTER + " pub_token: " + public_upload_token + " version: " + app_version);
+    	http_client.post(Constants.OW_URL + Constants.OW_REGISTER, params, new AsyncHttpResponseHandler(){
+    		@Override
+    		public void onSuccess(String response){
+    			Log.i(TAG,"OW app register success: " +  response);
+    			Gson gson = new Gson();
+    			Map<Object,Object> map = new HashMap<Object,Object>();
+    			try{
+	    			map = gson.fromJson(response, map.getClass());
+    			} catch(Throwable t){
+    				Log.e(TAG, "Error parsing response. 500 error?");
+    				onFailure(new Throwable(), "Error parsing server response");
+    			}
+    			
+    			if( (Boolean)map.get(Constants.OW_SUCCESS) == true){
+    				Log.i(TAG,"OW app registration success: " +  map.toString());
+    				
+    				setRegisteredTask task = (setRegisteredTask) new setRegisteredTask().execute();
+    		        
+    		        Intent i = new Intent(LoginActivity.this, MainActivity.class);
+    		        startActivity(i);
+    		        return;
+    			} else{
+    				int error_code =  ((Double)map.get(Constants.OW_ERROR)).intValue();
+    				switch(error_code){
+    					
+    					case 415: 	// invalid public upload token
+    						Log.e(TAG, "invalid public upload token on app registration");
+    						break;
+    					default:
+    						Log.e(TAG, "Other error on app registration: " + map.get(Constants.OW_REASON));
+    						break;
+       				}
+    			}
+    		}
+    		
+    		@Override
+    	     public void onFailure(Throwable e, String response) {
+    			Log.i(TAG,"OW app registration failure: " +  response);	
+    	     }
+    		
+    		@Override
+    	     public void onFinish() {
+    			Log.i(TAG,"OW app registration finish");
+    			http_client = null;
+    	     }
+    	});
+		
+    	
     }
     
+    public void setUserAuthenticated(Map server_response){
+    	SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
+    	if(!profile.getBoolean(Constants.REGISTERED, false))
+    		RegisterApp((String)server_response.get(Constants.PUB_TOKEN)); // attempt registration on every login until it succeeds. 
+    	SavePreferencesTask task = (SavePreferencesTask) new SavePreferencesTask().execute(server_response);
+    	
+    }
+    
+    /**
+     * Save the OpenWatch service login response data to SharedPreferences
+     * this includes the public and private upload token.
+     * @author davidbrodsky
+     *
+     */
     private class SavePreferencesTask extends AsyncTask<Map, Void, Void> {
         protected Void doInBackground(Map... server_response_array) {
         	Map server_response = server_response_array[0];
@@ -375,6 +449,25 @@ public class LoginActivity extends Activity {
 
         protected Void onPostExecute() {
         	showProgress(false);
+        	return null;
+        }
+    }
+    
+    /**
+     * Set the SharedPreferences to reflect app registration complete
+     * @author davidbrodsky
+     *
+     */
+    private class setRegisteredTask extends AsyncTask<Void, Void, Void> {
+        protected Void doInBackground(Void... server_response_array) {
+        	SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
+            SharedPreferences.Editor editor = profile.edit();
+            editor.putBoolean(Constants.REGISTERED, true);
+            editor.commit();
+        	return null;
+        }
+
+        protected Void onPostExecute() {
         	return null;
         }
     }
