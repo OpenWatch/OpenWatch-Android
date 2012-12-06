@@ -16,7 +16,7 @@ public class FFChunkedAudioVideoEncoder {
 	static {
     	System.loadLibrary("FFNewChunkedAudioVideoEncoder");
     }
-	
+
 	public String output_filename;
 	
 	public int initializeEncoder(String filename_hq, String filename_lq1, String filename_lq2, int width, int height, int fps){

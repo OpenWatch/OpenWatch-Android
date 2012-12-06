@@ -37,7 +37,8 @@
         <activity
             android:name="net.openwatch.reporter.RecorderActivity"
             android:label="@string/title_activity_recorder"
-            android:screenOrientation="landscape" >
+            android:screenOrientation="landscape"
+            android:keepScreenOn="true" >
         </activity>
     </application>
 

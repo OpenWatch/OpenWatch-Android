@@ -421,7 +421,7 @@ public class LoginActivity extends Activity {
     	SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
     	if(!profile.getBoolean(Constants.REGISTERED, false))
     		RegisterApp((String)server_response.get(Constants.PUB_TOKEN)); // attempt registration on every login until it succeeds. 
-    	SavePreferencesTask task = (SavePreferencesTask) new SavePreferencesTask().execute(server_response);
+    	new SavePreferencesTask().execute(server_response);
     	
     }
     

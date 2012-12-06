@@ -2,6 +2,7 @@ package net.openwatch.reporter.recording;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -25,8 +26,11 @@ public class ChunkedAudioVideoSoftwareRecorder {
 	public static boolean got_first_video_frame = false;
 
 	private static FFChunkedAudioVideoEncoder ffencoder;
+	private ChunkedRecorderListener chunk_listener;
 
 	private String output_filename_base = "";
+	private String output_filename_hq;
+	public ArrayList<String> all_files;
 
 	private final String file_ext = ".mp4";
 	private final int output_width = 320;
@@ -56,6 +60,10 @@ public class ChunkedAudioVideoSoftwareRecorder {
 		got_first_video_frame = false;
 
 	}
+	
+	public void setChunkListener(ChunkedRecorderListener listener){
+		chunk_listener = listener;
+	}
 
 	@SuppressLint("NewApi")
 	public void startRecording(Camera camera, SurfaceView camera_surface_view,
@@ -67,14 +75,18 @@ public class ChunkedAudioVideoSoftwareRecorder {
 		ffencoder = new FFChunkedAudioVideoEncoder();
 		// Ready this class's recording parameters
 		initializeRecorder();
-
+		
+		all_files = new ArrayList<String>();
+		String first_filename = output_filename_base + "_" + String.valueOf(chunk) + file_ext;
+		all_files.add(first_filename);
+		
+		output_filename_hq = output_filename_base
+				+ "_HQ" + file_ext;
 		// num_samples is the # of audio samples / frame
-		int num_samples = ffencoder.initializeEncoder(output_filename_base
-				+ "_HQ" + file_ext,
-				output_filename_base + "_" + String.valueOf(chunk) + file_ext,
+		int num_samples = ffencoder.initializeEncoder(output_filename_hq,
+				first_filename,
 				output_filename_base + "_" + String.valueOf(chunk + 1)
 						+ file_ext, output_width, output_height, fps);
-
 		chunk += 2;
 
 		// Attach AudioSoftwarePoller to FFEncoder. Calls
@@ -158,11 +170,14 @@ public class ChunkedAudioVideoSoftwareRecorder {
 	}
 
 	private void swapEncoders() {
-		int current_encoder_int = chunk % 2 + 1; // returns 1 or 2
-
 		ffencoder.shiftEncoders(getFilePath(output_filename_base + "_"
 				+ String.valueOf(chunk) + file_ext));
-
+		
+		String finalized_file = output_filename_base + "_" + String.valueOf(chunk-1) + file_ext;
+		if(chunk_listener != null)
+			chunk_listener.encoderShifted(finalized_file);
+		all_files.add(finalized_file);
+		
 		chunk++;
 	}
 
@@ -173,7 +188,13 @@ public class ChunkedAudioVideoSoftwareRecorder {
 		ffencoder.finalizeEncoder(1);
 		camera.release();
 		camera = null;
+		
+		if(chunk_listener != null)
+			chunk_listener.encoderStopped(output_filename_hq, all_files);
+		
 		is_recording = false;
+		all_files = null;
+		output_filename_hq = null;
 		Log.i("AUDIO_STATS",
 				"Written: "
 						+ String.valueOf(audio_poller.recorderTask.total_frames_written)
@@ -252,6 +273,12 @@ public class ChunkedAudioVideoSoftwareRecorder {
 			parameters.setPreviewSize(desired_width, desired_height);
 		}
 		return parameters;
+	}
+	
+	// Interface describing callback listener
+	public interface ChunkedRecorderListener{
+		public void encoderShifted(String finalized_file);
+		public void encoderStopped(String hq_filename, ArrayList<String> all_files);
 	}
 
 }

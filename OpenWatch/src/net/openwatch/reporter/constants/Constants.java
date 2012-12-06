@@ -49,15 +49,28 @@ public class Constants {
 	public static final String OW_EMAIL = "email_address";
 	public static final String OW_PW = "password";
 	public static final String OW_SIGNUP_TYPE = "signup_type";
-	public static final String OW_REC_START = "recording_start";
-	public static final String OW_REC_END = "recording_end";
-	public static final String OW_REC_ID = "uuid";
-	public static final String OW_ALL_FILES = "all_files";
-	
 	
 	// OpenWatch web service response keys
 	public static final String OW_SUCCESS = "success";
 	public static final String OW_ERROR = "code";
 	public static final String OW_REASON = "reason";
+	
+	// OpenWatch media capture web service url and endpoints
+	public static final String OW_MEDIA_URL = "http://192.168.1.27:5000/";
+	public static final String OW_MEDIA_START = "start";
+	public static final String OW_MEDIA_END = "end";
+	public static final String OW_MEDIA_UPLOAD = "upload";
+	public static final String OW_MEDIA_HQ_UPLOAD = "upload_hq";
+	
+	// OpenWatch media capture web service POST keys
+	public static final String OW_REC_START = "recording_start";
+	public static final String OW_REC_END = "recording_end";
+	public static final String OW_REC_ID = "uuid";
+	public static final String OW_ALL_FILES = "all_files";
+	public static final String OW_UP_TOKEN = "upload_token";
+	public static final String OW_FILE = "upload";
+		
+	
+	
 
 }
