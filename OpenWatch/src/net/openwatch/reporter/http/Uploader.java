@@ -77,8 +77,6 @@ public class Uploader {
 	 * @param filename the video file chunk to upload
 	 */
 	public static void sendVideoChunk(String upload_token, String recording_id, String filename){
-		if(1==1)
-			return;
 		AsyncHttpClient client = HttpClient.setupHttpClient();
 		File file = new File(filename);
 		RequestParams params = new RequestParams();
@@ -89,7 +87,7 @@ public class Uploader {
 			return;
 		}
 		String url = setupMediaURL(Constants.OW_MEDIA_UPLOAD, upload_token, recording_id);
-		Log.i(TAG, "sending video chunk to " + url);
+		Log.i(TAG, "sending video chunk " + filename + " to " + url);
 		client.post(url, params, new AsyncHttpResponseHandler(){
 
     		@Override
@@ -129,14 +127,12 @@ public class Uploader {
 	 * @param recording_end
 	 * @param all_files
 	 */
-	public static void sendEndSignal(String upload_token, String recording_id, String recording_start, String recording_end, ArrayList<String> all_files){
-		if(1==1)
-			return;
+	public static void sendEndSignal(String upload_token, String recording_id, String recording_start, String recording_end, String all_files){
 		AsyncHttpClient client = HttpClient.setupHttpClient();
 		RequestParams params = new RequestParams();
 		params.put(Constants.OW_REC_START, recording_start);
 		params.put(Constants.OW_REC_END, recording_end);
-		params.put(Constants.OW_ALL_FILES, new JSONArray(all_files).toString());
+		params.put(Constants.OW_ALL_FILES, all_files);
 		String url = setupMediaURL(Constants.OW_MEDIA_END, upload_token, recording_id);
 		Log.i(TAG, "sending end signal to " + url);
 		client.post(url, params, new AsyncHttpResponseHandler(){
@@ -177,8 +173,6 @@ public class Uploader {
 	 * @param filename
 	 */
 	public static void sendHQVideo(String upload_token, String recording_id, String filename){
-		if(1==1)
-			return;
 		AsyncHttpClient client = HttpClient.setupHttpClient();
 		File file = new File(filename);
 		RequestParams params = new RequestParams();
@@ -222,8 +216,6 @@ public class Uploader {
 	}
 	
 	private static String setupMediaURL(String endpoint, String public_upload_token, String recording_id){
-		// Testing effect of recording id format
-		//return Constants.OW_MEDIA_URL + endpoint + "/" + public_upload_token + "/" + "8euqna65hv4enes6vt0ta35vjv";
 		return Constants.OW_MEDIA_URL + endpoint + "/" + public_upload_token + "/" + recording_id;
 	}
 

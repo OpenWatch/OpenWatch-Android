@@ -34,8 +34,7 @@ public class AudioSoftwarePoller {
 	
 	public static boolean is_recording = false;
 	
-	//public RecorderTask recorderTask = new RecorderTask();
-	public RecorderTask2 recorderTask = new RecorderTask2();
+	public RecorderTask recorderTask = new RecorderTask();
 		
 	// reused readAudioFrames() variables
 	int read_index;
@@ -81,7 +80,6 @@ public class AudioSoftwarePoller {
 	 */
 	public short[] emptyBuffer(){
 		short[] audio_samples = null;
-		
 		read_index = recorderTask.buffer_read_index;
 		write_index = recorderTask.buffer_write_index;
 		
@@ -109,7 +107,7 @@ public class AudioSoftwarePoller {
 		}else
 			System.arraycopy(recorderTask.data_buffer, read_index, audio_samples, 0, read_distance);
 		
-		Log.i("AUDIO_READ_BUFFER",String.valueOf(read_index) + " - " + String.valueOf(write_index-1) + " dist: "+ String.valueOf(read_distance));
+		//Log.i("AUDIO_READ_BUFFER",String.valueOf(read_index) + " - " + String.valueOf(write_index-1) + " dist: "+ String.valueOf(read_distance));
 		
 		recorderTask.buffer_read_index = write_index;
 		recorderTask.total_frames_read += (distance / recorderTask.samples_per_frame);
@@ -117,72 +115,7 @@ public class AudioSoftwarePoller {
 	}
 	
 	
-	/*
-	 * RecorderTask handles filling the buffer in a separate thread
-	 */
-	public class RecorderTask extends AsyncTask {
-							
-		public int buffer_size;
-		
-		public int samples_per_frame = 1024; 	// codec-specific
-		public int buffer_write_index = 0; 		// last buffer index written to
-		public int buffer_read_index = 0; 		// first buffer index to read from
-		
-		public short[] data_buffer;
-		
-		public int total_frames_written = 0;
-		public int total_frames_read = 0;
-				
-		public boolean first_pass_complete = false;
-		
-		public RecorderTask(){
-		}
-
-		@Override
-		protected Object doInBackground(Object... params) {
-			
-			int min_buffer_size = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT);
-
-			buffer_size = samples_per_frame * FRAMES_PER_BUFFER;
-			
-			// Ensure buffer is adequately sized for the AudioRecord 
-			// object to initialize
-			if(buffer_size < min_buffer_size)
-				buffer_size = ((min_buffer_size / samples_per_frame) + 1) * samples_per_frame * 2;
-			
-			data_buffer = new short[buffer_size]; // filled directly by hardware
-			
-			AudioRecord audio_recorder;			
-			audio_recorder = new AudioRecord(
-					MediaRecorder.AudioSource.MIC, 		 // source
-					SAMPLE_RATE, 						 // sample rate, hz
-					CHANNEL_CONFIG,		 				 // channels 
-					AUDIO_FORMAT, 	 					 // audio format
-					buffer_size);	 					 // buffer size (bytes)
-			
-			is_recording = true;
-			audio_recorder.startRecording();
-			Log.i("AUDIO_REC","SW recording begin");
-			while (is_recording)
-	        {
-	            audio_recorder.read(data_buffer, buffer_write_index, samples_per_frame);
-	            //Log.i("AUDIO_FILL_BUFFER",String.valueOf(buffer_write_index) + " - " + String.valueOf(buffer_write_index + samples_per_frame-1));
-	            buffer_write_index = (buffer_write_index + samples_per_frame) % buffer_size;
-	            total_frames_written ++;
-
-	        }
-			if(audio_recorder != null){
-				audio_recorder.setRecordPositionUpdateListener(null);
-				audio_recorder.release();
-				audio_recorder = null;
-				Log.i("AUDIO_REC", "stopped");
-			}
-			return null;
-		}
-		
-	} // recorderThread
-	
-	public class RecorderTask2 implements Runnable {
+	public class RecorderTask implements Runnable {
 		public int buffer_size;
 		
 		public int samples_per_frame = 1024; 	// codec-specific

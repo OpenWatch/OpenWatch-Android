@@ -6,6 +6,8 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.json.JSONArray;
+
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.file.FileUtils;
 import net.openwatch.reporter.http.Uploader;
@@ -36,7 +38,6 @@ public class RecorderActivity extends Activity implements
 
 	private ChunkedAudioVideoSoftwareRecorder av_recorder = new ChunkedAudioVideoSoftwareRecorder();
 	
-	public static ArrayList<String> all_files;
 	String output_filename;
 	String recording_id;
 	String recording_start;
@@ -140,7 +141,6 @@ public class RecorderActivity extends Activity implements
 			av_recorder.startRecording(mCamera, camera_preview, output_filename);
 			av_recorder.setChunkListener(chunk_listener);
 			recording_start = String.valueOf(new Date().getTime() / 1000);
-			new sendMediaCaptureSignal().execute("start");
 			Log.d(TAG, "startRecording()");
 		} catch (Exception e) {
 			Log.e(TAG, "failed to start recording");
@@ -178,25 +178,25 @@ public class RecorderActivity extends Activity implements
 	 */
 	public class sendMediaCaptureSignal extends AsyncTask<String, Void, Void> {
         protected Void doInBackground(String... command) {
-        	Log.i(TAG, "sendMediaCapture command: " + command[0]);
+        	Log.i(TAG, "sendMediaCapture command: " + command[0] + " command length: " + command.length);
         	SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
             String public_upload_token = profile.getString(Constants.PUB_TOKEN, "");
             if(public_upload_token.compareTo("") == 0 || recording_id == null)
             	return null;
 
         	if(command[0].compareTo("start") == 0){
-        		if(recording_start != null){
-                	Uploader.sendStartSignal(public_upload_token, recording_id, recording_start);
+        		if(command.length == 2){
+                	Uploader.sendStartSignal(public_upload_token, recording_id, command[1]);
                 }
         	} else if(command[0].compareTo("end") == 0){
-        		if(recording_start != null && recording_end != null &&  all_files != null){
-        			Uploader.sendEndSignal(public_upload_token, recording_id, recording_start, recording_end, all_files);
+        		if(command.length == 4){
+        			Uploader.sendEndSignal(public_upload_token, recording_id, command[1], command[2], command[3]);
         		}
         	} else if(command[0].compareTo("chunk") == 0){
-        		if(command.length > 1 && command[1] != null)
+        		if(command.length == 2)
         			Uploader.sendVideoChunk(public_upload_token, recording_id, command[1]);
         	} else if(command[0].compareTo("hq") == 0){
-        		if(command.length > 1 && command[1] != null)
+        		if(command.length == 2)
         			Uploader.sendHQVideo(public_upload_token, recording_id, command[1]);
         	}
         	return null;
@@ -216,15 +216,21 @@ public class RecorderActivity extends Activity implements
 
 		@Override
 		public void encoderShifted(String finalized_file) {
-			new sendMediaCaptureSignal().execute(new String[]{"chunk", finalized_file});
+			new sendMediaCaptureSignal().execute("chunk", finalized_file);
 		}
-		
+
 		@Override
-		public void encoderStopped(String hq_filename, ArrayList<String> all_files){
-			RecorderActivity.all_files = all_files;
-			new sendMediaCaptureSignal().execute("end");
-			new sendMediaCaptureSignal().execute(new String[]{"hq", hq_filename});
-			Log.i("chunk_listener", "send end signal");
+		public void encoderStarted(Date start_date) {
+			new sendMediaCaptureSignal().execute("start", String.valueOf(start_date.getTime() / 1000));
+			
+		}
+
+		@Override
+		public void encoderStopped(Date start_date, Date stop_date,
+				String hq_filename, ArrayList<String> all_files) {
+			new sendMediaCaptureSignal().execute("end", String.valueOf(start_date.getTime() / 1000), String.valueOf(stop_date.getTime() / 1000), new JSONArray(all_files).toString());
+			new sendMediaCaptureSignal().execute("hq", hq_filename);
+			
 		}
 		
 	};

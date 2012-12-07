@@ -26,7 +26,7 @@ public class ChunkedAudioVideoSoftwareRecorder {
 	public static boolean got_first_video_frame = false;
 
 	private static FFChunkedAudioVideoEncoder ffencoder;
-	private ChunkedRecorderListener chunk_listener;
+	private ChunkedRecorderListener event_listener;
 
 	private String output_filename_base = "";
 	private String output_filename_hq;
@@ -43,8 +43,8 @@ public class ChunkedAudioVideoSoftwareRecorder {
 	private int chunk_frame_max = fps * 5; // chunk every this many frames
 
 	private Date video_frame_date;
-	private long start_time;
-	private long end_time;
+	private Date start_time; // time when first video frame received
+	private Date end_time; // time when stopRecording called
 	int frame_count = 0;
 	int audio_data_length = 0;
 
@@ -62,7 +62,7 @@ public class ChunkedAudioVideoSoftwareRecorder {
 	}
 	
 	public void setChunkListener(ChunkedRecorderListener listener){
-		chunk_listener = listener;
+		event_listener = listener;
 	}
 
 	@SuppressLint("NewApi")
@@ -128,7 +128,7 @@ public class ChunkedAudioVideoSoftwareRecorder {
 
 			@Override
 			public void onPreviewFrame(byte[] video_frame_data, Camera camera) {
-				Log.d("FRAME", "video frame polled");
+				//Log.d("FRAME", "video frame polled");
 
 				if (!got_first_video_frame) {
 					// Ensure a video frame worth of audio is prepared
@@ -143,7 +143,9 @@ public class ChunkedAudioVideoSoftwareRecorder {
 					}
 
 					got_first_video_frame = true;
-					start_time = new Date().getTime();
+					start_time = new Date();
+					if(event_listener != null)
+						event_listener.encoderStarted(start_time);
 				} else {
 					audio_samples = audio_poller.emptyBuffer();
 					audio_data_length = audio_poller.read_distance;
@@ -173,9 +175,9 @@ public class ChunkedAudioVideoSoftwareRecorder {
 		ffencoder.shiftEncoders(getFilePath(output_filename_base + "_"
 				+ String.valueOf(chunk) + file_ext));
 		
-		String finalized_file = output_filename_base + "_" + String.valueOf(chunk-1) + file_ext;
-		if(chunk_listener != null)
-			chunk_listener.encoderShifted(finalized_file);
+		String finalized_file = output_filename_base + "_" + String.valueOf(chunk-2) + file_ext;
+		if(event_listener != null)
+			event_listener.encoderShifted(finalized_file);
 		all_files.add(finalized_file);
 		
 		chunk++;
@@ -188,9 +190,12 @@ public class ChunkedAudioVideoSoftwareRecorder {
 		ffencoder.finalizeEncoder(1);
 		camera.release();
 		camera = null;
+		end_time = new Date();
 		
-		if(chunk_listener != null)
-			chunk_listener.encoderStopped(output_filename_hq, all_files);
+		if(event_listener != null){
+			event_listener.encoderShifted(output_filename_base + "_" + String.valueOf(chunk-2) + file_ext);
+			event_listener.encoderStopped(start_time, end_time, output_filename_hq, all_files);
+		}
 		
 		is_recording = false;
 		all_files = null;
@@ -200,8 +205,8 @@ public class ChunkedAudioVideoSoftwareRecorder {
 						+ String.valueOf(audio_poller.recorderTask.total_frames_written)
 						+ " Read: "
 						+ String.valueOf(audio_poller.recorderTask.total_frames_read));
-		end_time = new Date().getTime();
-		double elapsed_time = (double) (end_time - start_time) / 1000;
+		
+		double elapsed_time = (double) (end_time.getTime() - start_time.getTime()) / 1000;
 		int expected_num_frames = (int) (elapsed_time * fps);
 		double frame_success = 100 * ((double) frame_count)
 				/ expected_num_frames;
@@ -277,8 +282,9 @@ public class ChunkedAudioVideoSoftwareRecorder {
 	
 	// Interface describing callback listener
 	public interface ChunkedRecorderListener{
+		public void encoderStarted(Date start_date);
 		public void encoderShifted(String finalized_file);
-		public void encoderStopped(String hq_filename, ArrayList<String> all_files);
+		public void encoderStopped(Date start_date, Date stop_date, String hq_filename, ArrayList<String> all_files);
 	}
 
 }
