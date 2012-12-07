@@ -42,13 +42,22 @@ public class RecorderActivity extends Activity implements
 	String recording_id;
 	String recording_start;
 	String recording_end;
+	
+	@Override
+	protected void onDestroy(){
+		super.onDestroy();
+		Log.i(TAG, "on Destroy. isFinishing: " + String.valueOf(this.isFinishing()));
+		if(!this.isFinishing() && av_recorder.is_recording){
+			stopRecording(); // if the activity is being closed to save memory, finalize the recording
+		}
+		
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_recorder);
-		
-		prepareOutputLocation();
+		Log.i(TAG,"onCreate");
 
 		camera_preview = (SurfaceView) findViewById(R.id.camera_surface_view);
 		camera_preview.getHolder().addCallback(this); // register the Activity
@@ -69,12 +78,15 @@ public class RecorderActivity extends Activity implements
 
 		}); // end onClickListener
 		
-		try {
-			// Create an instance of Camera
-			mCamera = getCameraInstance();
-		} catch (Exception e) {
-			Log.e("Recorder init error", "Could not init av_recorder");
-			e.printStackTrace();
+		if(!av_recorder.is_recording){
+			try {
+				// Create an instance of Camera
+				mCamera = getCameraInstance();
+				prepareOutputLocation();
+			} catch (Exception e) {
+				Log.e("Recorder init error", "Could not init Camera");
+				e.printStackTrace();
+			}
 		}
 
 	}
@@ -107,7 +119,8 @@ public class RecorderActivity extends Activity implements
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		startRecording();
+		if(!av_recorder.is_recording)
+			startRecording();
 	}
 
 	@Override
@@ -215,7 +228,7 @@ public class RecorderActivity extends Activity implements
 	ChunkedRecorderListener chunk_listener = new ChunkedRecorderListener(){
 
 		@Override
-		public void encoderShifted(String finalized_file) {
+		public void encoderShifted(final String finalized_file) {
 			new sendMediaCaptureSignal().execute("chunk", finalized_file);
 		}
 
