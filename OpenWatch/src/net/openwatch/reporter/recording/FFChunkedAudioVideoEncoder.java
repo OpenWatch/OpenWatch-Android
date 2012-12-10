@@ -50,7 +50,7 @@ public class FFChunkedAudioVideoEncoder {
 	}
 	
 	private synchronized String getChunkFilename(int count){
-		return output_filename_base + "_" + String.valueOf(chunk) + FILE_EXT;
+		return output_filename_base + "_" + String.valueOf(count) + FILE_EXT;
 	}
 	
 	public synchronized void setRecorderListener(ChunkedRecorderListener listener){
@@ -59,6 +59,7 @@ public class FFChunkedAudioVideoEncoder {
 	
 	public synchronized int initializeEncoder(String filename_base, int width, int height, int fps){
 		chunk = 1;
+		all_files = new ArrayList<String>();
 		got_first_frame = false;
 		output_filename_base = filename_base;
 		output_filename_hq = output_filename_base + HQ_SUFFIX + FILE_EXT;

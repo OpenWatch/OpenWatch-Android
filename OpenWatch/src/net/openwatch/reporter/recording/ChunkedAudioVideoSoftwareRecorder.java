@@ -342,21 +342,16 @@ public class ChunkedAudioVideoSoftwareRecorder {
 		@Override
 		public void run() {
 			if(is_initialized){
-				Log.i(TAG, "run encoderTask type: " + String.valueOf(type));
+				//Log.i(TAG, "run encoderTask type: " + String.valueOf(type));
 				switch(type){
 				case ENCODE_FRAME:
 					encodeFrame();
-					Log.i(TAG, "encodeFrame-1");
 					break;
 				case SHIFT_ENCODER:
-					Log.i(TAG, "shiftEncoder()-0");
 					shiftEncoder();
-					Log.i(TAG, "shiftEncoder()-1");
 					break;
 				case FINALIZE_ENCODER:
-					Log.i(TAG, "finalizeEncoder()-0");
 					finalizeEncoder();
-					Log.i(TAG, "finalizeEncoder()-1");
 					break;
 				}
 				// prevent multiple execution of same task

@@ -3,8 +3,11 @@ package net.openwatch.reporter;
 import java.io.File;
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import org.json.JSONArray;
 
@@ -49,24 +52,34 @@ public class RecorderActivity extends Activity implements
 	 * ChunkedRecorderListener is set on FFChunkedAudioVideoEncoder 
 	 */
 	ChunkedRecorderListener chunk_listener = new ChunkedRecorderListener(){
-
+		// OW Server date formatter
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+		
 		@Override
 		public void encoderShifted(final String finalized_file) {
+			setupSDF();
 			new sendMediaCaptureSignal().execute("chunk", finalized_file);
 		}
 
 		@Override
 		public void encoderStarted(Date start_date) {
-			new sendMediaCaptureSignal().execute("start", String.valueOf(start_date.getTime() / 1000));
+			setupSDF();
+			new sendMediaCaptureSignal().execute("start", sdf.format(start_date));
 			
 		}
 
 		@Override
 		public void encoderStopped(Date start_date, Date stop_date,
 				String hq_filename, ArrayList<String> all_files) {
-			new sendMediaCaptureSignal().execute("end", String.valueOf(start_date.getTime() / 1000), String.valueOf(stop_date.getTime() / 1000), new JSONArray(all_files).toString());
+			setupSDF();
+			Log.i(TAG,"start-date: " + sdf.format(start_date) + " stop-date: " + sdf.format(stop_date));
+			new sendMediaCaptureSignal().execute("end", sdf.format(start_date), sdf.format(stop_date), new JSONArray(all_files).toString());
 			new sendMediaCaptureSignal().execute("hq", hq_filename);
-			
+		}
+		
+		private void setupSDF(){
+			if(!sdf.getTimeZone().equals(TimeZone.getTimeZone("UTC")))
+					sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 		}
 		
 		/**
