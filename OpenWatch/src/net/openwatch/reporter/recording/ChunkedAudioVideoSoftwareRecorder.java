@@ -5,7 +5,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+import org.json.JSONArray;
+
+import net.openwatch.reporter.recording.FFChunkedAudioVideoEncoder.ChunkedRecorderListener;
 import net.openwatch.reporter.recording.audio.AudioSoftwarePoller;
 import net.openwatch.reporter.recording.FFChunkedAudioVideoEncoder;
 
@@ -25,19 +30,14 @@ public class ChunkedAudioVideoSoftwareRecorder {
 	public static boolean is_recording = false;
 	public static boolean got_first_video_frame = false;
 
-	private static FFChunkedAudioVideoEncoder ffencoder;
-	private ChunkedRecorderListener event_listener;
-
-	private String output_filename_base = "";
-	private String output_filename_hq;
-	public ArrayList<String> all_files;
+	private static FFChunkedAudioVideoEncoder ffencoder = new FFChunkedAudioVideoEncoder();
+	private ExecutorService encoding_service = Executors.newSingleThreadExecutor(); // re-use encoding_service
+	private EncoderTask encoding_task;
 
 	private final String file_ext = ".mp4";
 	private final int output_width = 320;
 	private final int output_height = 240;
 	private final int fps = 24;
-
-	private int chunk = 1; // video chunks in this recording
 
 	private int chunk_frame_count = 0; // frames recorded in current chunk
 	private int chunk_frame_max = fps * 5; // chunk every this many frames
@@ -52,18 +52,19 @@ public class ChunkedAudioVideoSoftwareRecorder {
 	private static short[] audio_samples;
 
 	private void initializeRecorder() {
-		chunk = 1;
 		frame_count = 0;
 		audio_data_length = 0;
 		audio_samples = null;
 		chunk_frame_count = 0;
 		got_first_video_frame = false;
-
 	}
 	
-	public void setChunkListener(ChunkedRecorderListener listener){
-		event_listener = listener;
+	public void setChunkedRecorderListener(ChunkedRecorderListener listener){
+		if(ffencoder == null)
+			ffencoder = new FFChunkedAudioVideoEncoder();
+		ffencoder.setRecorderListener(listener);
 	}
+
 
 	@SuppressLint("NewApi")
 	public void startRecording(Camera camera, SurfaceView camera_surface_view,
@@ -72,23 +73,13 @@ public class ChunkedAudioVideoSoftwareRecorder {
 		// Debug.startMethodTracing("AV_Profiling");
 
 		// Ready FFEncoder
-		ffencoder = new FFChunkedAudioVideoEncoder();
+		if(ffencoder == null)
+			ffencoder = new FFChunkedAudioVideoEncoder();
 		// Ready this class's recording parameters
 		initializeRecorder();
-		
-		all_files = new ArrayList<String>();
-		String first_filename = output_filename_base + "_" + String.valueOf(chunk) + file_ext;
-		all_files.add(first_filename);
-		
-		output_filename_hq = output_filename_base
-				+ "_HQ" + file_ext;
-		// num_samples is the # of audio samples / frame
-		int num_samples = ffencoder.initializeEncoder(output_filename_hq,
-				first_filename,
-				output_filename_base + "_" + String.valueOf(chunk + 1)
-						+ file_ext, output_width, output_height, fps);
-		chunk += 2;
 
+		int num_samples = ffencoder.initializeEncoder(output_filename_base, output_width, output_height, fps);
+		
 		// Attach AudioSoftwarePoller to FFEncoder. Calls
 		// ffencoder.encodeAudioFrame(...)
 		audio_poller = new AudioSoftwarePoller();
@@ -98,7 +89,6 @@ public class ChunkedAudioVideoSoftwareRecorder {
 		audio_poller.startPolling();
 
 		this.camera = camera;
-		this.output_filename_base = output_filename_base;
 
 		Camera.Parameters camera_parameters = camera.getParameters();
 		camera_parameters.setPreviewFormat(ImageFormat.NV21);
@@ -144,8 +134,7 @@ public class ChunkedAudioVideoSoftwareRecorder {
 
 					got_first_video_frame = true;
 					start_time = new Date();
-					if(event_listener != null)
-						event_listener.encoderStarted(start_time);
+					
 				} else {
 					audio_samples = audio_poller.emptyBuffer();
 					audio_data_length = audio_poller.read_distance;
@@ -153,10 +142,13 @@ public class ChunkedAudioVideoSoftwareRecorder {
 
 				frame_count++;
 				video_frame_date = new Date();
-
+				
+				encoding_task = new EncoderTask(ffencoder, video_frame_data, audio_samples);
+				encoding_service.submit(encoding_task);
+				/*
 				ffencoder.processAVData(video_frame_data,
 						video_frame_date.getTime(), audio_samples,
-						audio_data_length);
+						audio_data_length);*/
 				// Log.d("PROCESSAVDATA-1","DONE");
 				chunk_frame_count++;
 				if (chunk_frame_count >= chunk_frame_max) {
@@ -172,34 +164,22 @@ public class ChunkedAudioVideoSoftwareRecorder {
 	}
 
 	private void swapEncoders() {
-		ffencoder.shiftEncoders(getFilePath(output_filename_base + "_"
-				+ String.valueOf(chunk) + file_ext));
-		
-		String finalized_file = output_filename_base + "_" + String.valueOf(chunk-2) + file_ext;
-		if(event_listener != null)
-			event_listener.encoderShifted(finalized_file);
-		all_files.add(finalized_file);
-		
-		chunk++;
+		encoding_task = new EncoderTask(ffencoder, EncoderTaskType.SHIFT_ENCODER);
+		encoding_service.submit(encoding_task);		
 	}
 
 	public void stopRecording() {
 		camera.stopPreview();
 		camera.setPreviewCallback(null);
 		audio_poller.stopPolling();
-		ffencoder.finalizeEncoder(1);
+		encoding_task = new EncoderTask(ffencoder);
+		encoding_service.submit(encoding_task);
 		camera.release();
 		camera = null;
 		end_time = new Date();
-		
-		if(event_listener != null){
-			event_listener.encoderShifted(output_filename_base + "_" + String.valueOf(chunk-2) + file_ext);
-			event_listener.encoderStopped(start_time, end_time, output_filename_hq, all_files);
-		}
+		encoding_service.shutdown();
 		
 		is_recording = false;
-		all_files = null;
-		output_filename_hq = null;
 		Log.i("AUDIO_STATS",
 				"Written: "
 						+ String.valueOf(audio_poller.recorderTask.total_frames_written)
@@ -281,10 +261,114 @@ public class ChunkedAudioVideoSoftwareRecorder {
 	}
 	
 	// Interface describing callback listener
-	public interface ChunkedRecorderListener{
-		public void encoderStarted(Date start_date);
-		public void encoderShifted(String finalized_file);
-		public void encoderStopped(Date start_date, Date stop_date, String hq_filename, ArrayList<String> all_files);
+	
+	
+	enum EncoderTaskType{
+		ENCODE_FRAME, SHIFT_ENCODER, FINALIZE_ENCODER;
 	}
+	
+	private class EncoderTask implements Runnable{
+		private static final String TAG = "encoderTask";
+		
+		private FFChunkedAudioVideoEncoder encoder;
+		
+		private EncoderTaskType type;
+		boolean is_initialized = false;
+		
+		// vars for type ENCODE_FRAME
+		private byte[] video_data;
+		private short[] audio_data;
+				
+		public EncoderTask(FFChunkedAudioVideoEncoder encoder, EncoderTaskType type){
+			setEncoder(encoder);
+			
+			switch(type){
+			case SHIFT_ENCODER:
+				setShiftEncoderParams();
+				break;
+			case FINALIZE_ENCODER:
+				setFinalizeEncoderParams();
+				break;
+			}
+			
+		}
+		
+		public EncoderTask(FFChunkedAudioVideoEncoder encoder, byte[] video_data, short[] audio_data){
+			setEncoder(encoder);
+			setEncodeFrameParams(video_data, audio_data);
+		}
+		
+		public EncoderTask(FFChunkedAudioVideoEncoder encoder){
+			setEncoder(encoder);
+			setFinalizeEncoderParams();
+		}
+		
+		private void setEncoder(FFChunkedAudioVideoEncoder encoder){
+			this.encoder = encoder;
+		}
+		
+		private void setFinalizeEncoderParams(){
+			this.type = EncoderTaskType.FINALIZE_ENCODER;
+			is_initialized = true;
+		}
+		
+		private void setEncodeFrameParams(byte[] video_data, short[] audio_data){
+			this.video_data = video_data;
+			this.audio_data = audio_data;
+			
+			this.type = EncoderTaskType.ENCODE_FRAME;
+			is_initialized = true;
+		}
+		
+		private void setShiftEncoderParams(){			
+			this.type = EncoderTaskType.SHIFT_ENCODER;
+			is_initialized = true;
+		}
+		
+		private void encodeFrame(){
+			encoder.encodeFrame(video_data, audio_data);
+		}
+		
+		private void shiftEncoder(){
+			encoder.chunkFile();
+			Log.i(TAG, "chunkFile()");
+		}
+		
+		private void finalizeEncoder(){
+			encoder.finalizeEncoder();
+			
+		}
+
+		@Override
+		public void run() {
+			if(is_initialized){
+				Log.i(TAG, "run encoderTask type: " + String.valueOf(type));
+				switch(type){
+				case ENCODE_FRAME:
+					encodeFrame();
+					Log.i(TAG, "encodeFrame-1");
+					break;
+				case SHIFT_ENCODER:
+					Log.i(TAG, "shiftEncoder()-0");
+					shiftEncoder();
+					Log.i(TAG, "shiftEncoder()-1");
+					break;
+				case FINALIZE_ENCODER:
+					Log.i(TAG, "finalizeEncoder()-0");
+					finalizeEncoder();
+					Log.i(TAG, "finalizeEncoder()-1");
+					break;
+				}
+				// prevent multiple execution of same task
+				is_initialized = false;
+			}
+			else{
+				Log.e(TAG, "run() called but EncoderTask not initialized");
+			}
+				
+		}
+		
+	}
+
 
 }

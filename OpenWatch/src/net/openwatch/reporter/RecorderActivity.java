@@ -12,7 +12,7 @@ import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.file.FileUtils;
 import net.openwatch.reporter.http.Uploader;
 import net.openwatch.reporter.recording.ChunkedAudioVideoSoftwareRecorder;
-import net.openwatch.reporter.recording.ChunkedAudioVideoSoftwareRecorder.ChunkedRecorderListener;
+import net.openwatch.reporter.recording.FFChunkedAudioVideoEncoder.ChunkedRecorderListener;
 
 import android.hardware.Camera;
 import android.os.AsyncTask;
@@ -38,10 +38,85 @@ public class RecorderActivity extends Activity implements
 
 	private ChunkedAudioVideoSoftwareRecorder av_recorder = new ChunkedAudioVideoSoftwareRecorder();
 	
+	private boolean ready_to_record = false;
+	
 	String output_filename;
 	String recording_id;
 	String recording_start;
 	String recording_end;
+	
+	/*
+	 * ChunkedRecorderListener is set on FFChunkedAudioVideoEncoder 
+	 */
+	ChunkedRecorderListener chunk_listener = new ChunkedRecorderListener(){
+
+		@Override
+		public void encoderShifted(final String finalized_file) {
+			new sendMediaCaptureSignal().execute("chunk", finalized_file);
+		}
+
+		@Override
+		public void encoderStarted(Date start_date) {
+			new sendMediaCaptureSignal().execute("start", String.valueOf(start_date.getTime() / 1000));
+			
+		}
+
+		@Override
+		public void encoderStopped(Date start_date, Date stop_date,
+				String hq_filename, ArrayList<String> all_files) {
+			new sendMediaCaptureSignal().execute("end", String.valueOf(start_date.getTime() / 1000), String.valueOf(stop_date.getTime() / 1000), new JSONArray(all_files).toString());
+			new sendMediaCaptureSignal().execute("hq", hq_filename);
+			
+		}
+		
+		/**
+		 * Sends a signal to the OW MediaCapture service
+		 * 
+		 * When calling execute pass a String argument to indicate preference
+		 * Options:
+		 * "start" Sends start signal
+		 * "end" Sends end signal
+		 * 
+		 * The following two options require a String[] argument:
+		 * Pass a String[] with the [0] index equal to one of the following commands
+		 * and the [1] index containing an absolute filepath:
+		 * "chunk" Sends video chunk signal
+		 * "hq" Sends HQ video signal
+		 * @author davidbrodsky
+		 *
+		 */
+		class sendMediaCaptureSignal extends AsyncTask<String, Void, Void> {
+	        protected Void doInBackground(String... command) {
+	        	Log.i(TAG, "sendMediaCapture command: " + command[0] + " command length: " + command.length);
+	        	SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
+	            String public_upload_token = profile.getString(Constants.PUB_TOKEN, "");
+	            if(public_upload_token.compareTo("") == 0 || recording_id == null)
+	            	return null;
+
+	        	if(command[0].compareTo("start") == 0){
+	        		if(command.length == 2){
+	                	Uploader.sendStartSignal(public_upload_token, recording_id, command[1]);
+	                }
+	        	} else if(command[0].compareTo("end") == 0){
+	        		if(command.length == 4){
+	        			Uploader.sendEndSignal(public_upload_token, recording_id, command[1], command[2], command[3]);
+	        		}
+	        	} else if(command[0].compareTo("chunk") == 0){
+	        		if(command.length == 2)
+	        			Uploader.sendVideoChunk(public_upload_token, recording_id, command[1]);
+	        	} else if(command[0].compareTo("hq") == 0){
+	        		if(command.length == 2)
+	        			Uploader.sendHQVideo(public_upload_token, recording_id, command[1]);
+	        	}
+	        	return null;
+	        }
+
+	        protected Void onPostExecute() {
+	        	return null;
+	        }
+	    }
+		
+	};
 	
 	@Override
 	protected void onDestroy(){
@@ -57,6 +132,7 @@ public class RecorderActivity extends Activity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_recorder);
+		ready_to_record = false;
 		Log.i(TAG,"onCreate");
 
 		camera_preview = (SurfaceView) findViewById(R.id.camera_surface_view);
@@ -78,6 +154,8 @@ public class RecorderActivity extends Activity implements
 
 		}); // end onClickListener
 		
+		av_recorder.setChunkedRecorderListener(chunk_listener);
+		
 		if(!av_recorder.is_recording){
 			try {
 				// Create an instance of Camera
@@ -88,7 +166,7 @@ public class RecorderActivity extends Activity implements
 				e.printStackTrace();
 			}
 		}
-
+		ready_to_record = true;
 	}
 
 	@Override
@@ -113,13 +191,12 @@ public class RecorderActivity extends Activity implements
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		if(!av_recorder.is_recording)
+		if(!av_recorder.is_recording && ready_to_record)
 			startRecording();
 	}
 
@@ -152,7 +229,6 @@ public class RecorderActivity extends Activity implements
 	private void startRecording(){
 		try {
 			av_recorder.startRecording(mCamera, camera_preview, output_filename);
-			av_recorder.setChunkListener(chunk_listener);
 			recording_start = String.valueOf(new Date().getTime() / 1000);
 			Log.d(TAG, "startRecording()");
 		} catch (Exception e) {
@@ -173,79 +249,7 @@ public class RecorderActivity extends Activity implements
 		startActivity(i);	
 	}
 	
-	/**
-	 * Sends a signal to the OW MediaCapture service
-	 * 
-	 * When calling execute pass a String argument to indicate preference
-	 * Options:
-	 * "start" Sends start signal
-	 * "end" Sends end signal
-	 * 
-	 * The following two options require a String[] argument:
-	 * Pass a String[] with the [0] index equal to one of the following commands
-	 * and the [1] index containing an absolute filepath:
-	 * "chunk" Sends video chunk signal
-	 * "hq" Sends HQ video signal
-	 * @author davidbrodsky
-	 *
-	 */
-	public class sendMediaCaptureSignal extends AsyncTask<String, Void, Void> {
-        protected Void doInBackground(String... command) {
-        	Log.i(TAG, "sendMediaCapture command: " + command[0] + " command length: " + command.length);
-        	SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
-            String public_upload_token = profile.getString(Constants.PUB_TOKEN, "");
-            if(public_upload_token.compareTo("") == 0 || recording_id == null)
-            	return null;
-
-        	if(command[0].compareTo("start") == 0){
-        		if(command.length == 2){
-                	Uploader.sendStartSignal(public_upload_token, recording_id, command[1]);
-                }
-        	} else if(command[0].compareTo("end") == 0){
-        		if(command.length == 4){
-        			Uploader.sendEndSignal(public_upload_token, recording_id, command[1], command[2], command[3]);
-        		}
-        	} else if(command[0].compareTo("chunk") == 0){
-        		if(command.length == 2)
-        			Uploader.sendVideoChunk(public_upload_token, recording_id, command[1]);
-        	} else if(command[0].compareTo("hq") == 0){
-        		if(command.length == 2)
-        			Uploader.sendHQVideo(public_upload_token, recording_id, command[1]);
-        	}
-        	return null;
-        }
-
-        protected Void onPostExecute() {
-        	return null;
-        }
-    }
 	
-	/*
-	 * ChunkedRecorderListener is set on ChunkedAudioVideoEncoder 
-	 * to be called back when the recorder finalizes an lq chunk
-	 * signaling it is ready for transmission
-	 */
-	ChunkedRecorderListener chunk_listener = new ChunkedRecorderListener(){
-
-		@Override
-		public void encoderShifted(final String finalized_file) {
-			new sendMediaCaptureSignal().execute("chunk", finalized_file);
-		}
-
-		@Override
-		public void encoderStarted(Date start_date) {
-			new sendMediaCaptureSignal().execute("start", String.valueOf(start_date.getTime() / 1000));
-			
-		}
-
-		@Override
-		public void encoderStopped(Date start_date, Date stop_date,
-				String hq_filename, ArrayList<String> all_files) {
-			new sendMediaCaptureSignal().execute("end", String.valueOf(start_date.getTime() / 1000), String.valueOf(stop_date.getTime() / 1000), new JSONArray(all_files).toString());
-			new sendMediaCaptureSignal().execute("hq", hq_filename);
-			
-		}
-		
-	};
+	
 
 }
