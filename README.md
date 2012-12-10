@@ -17,3 +17,10 @@ Running
 ----------------------
 
 To run the software you'll need a device running Android 2.2+ with a camera and an ARMv7 processor with NEON support.
+
+
+TODO
+----
++ Send available meta data during MediaCapture calls
++ Adjust bitrate of LQ stream per sendVideoChunk() network performance
++ 

@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.Menu;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 
 public class MainActivity extends Activity {
 
@@ -26,6 +24,11 @@ public class MainActivity extends Activity {
 
 	public void recordButtonClick(View v) {
 		Intent i = new Intent(this, RecorderActivity.class);
+		startActivity(i);
+	}
+	
+	public void watchButtonClick(View v){
+		Intent i = new Intent(this, FeedActivity.class);
 		startActivity(i);
 	}
 

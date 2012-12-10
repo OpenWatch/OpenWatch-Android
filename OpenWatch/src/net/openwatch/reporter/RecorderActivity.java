@@ -8,12 +8,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import org.json.JSONArray;
 
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.file.FileUtils;
-import net.openwatch.reporter.http.Uploader;
+import net.openwatch.reporter.http.MediaServerRequests;
 import net.openwatch.reporter.recording.ChunkedAudioVideoSoftwareRecorder;
 import net.openwatch.reporter.recording.FFChunkedAudioVideoEncoder.ChunkedRecorderListener;
 
@@ -108,18 +109,18 @@ public class RecorderActivity extends Activity implements
 
 	        	if(command[0].compareTo("start") == 0){
 	        		if(command.length == 2){
-	                	Uploader.sendStartSignal(public_upload_token, recording_id, command[1]);
+	                	MediaServerRequests.start(public_upload_token, recording_id, command[1]);
 	                }
 	        	} else if(command[0].compareTo("end") == 0){
 	        		if(command.length == 4){
-	        			Uploader.sendEndSignal(public_upload_token, recording_id, command[1], command[2], command[3]);
+	        			MediaServerRequests.end(public_upload_token, recording_id, command[1], command[2], command[3]);
 	        		}
 	        	} else if(command[0].compareTo("chunk") == 0){
 	        		if(command.length == 2)
-	        			Uploader.sendVideoChunk(public_upload_token, recording_id, command[1]);
+	        			MediaServerRequests.sendLQChunk(public_upload_token, recording_id, command[1]);
 	        	} else if(command[0].compareTo("hq") == 0){
 	        		if(command.length == 2)
-	        			Uploader.sendHQVideo(public_upload_token, recording_id, command[1]);
+	        			MediaServerRequests.sendHQFile(public_upload_token, recording_id, command[1]);
 	        	}
 	        	return null;
 	        }
@@ -232,8 +233,7 @@ public class RecorderActivity extends Activity implements
 	
 	public String generateRecordingIdentifier()
 	{
-		SecureRandom random = new SecureRandom();
-	    return new BigInteger(130, random).toString(32);
+		return UUID.randomUUID().toString();
 	}
 	
 	/**

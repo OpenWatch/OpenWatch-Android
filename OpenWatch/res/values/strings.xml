@@ -11,32 +11,39 @@
     <string name="watch_button_text">Watch</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_recorder">RecorderActivity</string>
-    
-    <!--  LoginActivity -->
-    
+
+    <!-- LoginActivity -->
+
     <string name="login_dialog_ok">Ok</string>
     <string name="login_dialog_no">No Thanks</string>
     <string name="login_dialog_signup">Sign up!</string>
-    
-    	<!-- login failed -->
+
+    <!-- login failed -->
     <string name="login_dialog_denied_title">Login Denied</string>
     <string name="login_dialog_denied_msg">Please check your username and password. If you do not have an account, please sign up.</string>
-	
-		<!-- login with new email -->
-	<string name="login_dialog_unknown_email_title">Create New Account?</string>
-			<!--  email address will follow the below string -->
-	<string name="login_dialog_unknown_email_msg">The email address you provided is not connected to an OpenWatch account. Would you like to register a new account with </string>
-	
-		<!--  problem reaching host -->
-	<string name="login_dialog_failed_title">Login Failed</string>
-	<string name="login_dialog_failed_msg">The OpenWatch service could not be reached. Please check your network connection and try again.</string>
 
-		<!--  signup with taken email address -->
-	<string name="signup_dialog_email_taken_title">Email Already Registered</string>
-			<!--  email address will preceed the below string -->
-	<string name="signup_dialog_email_taken_msg">is already registered with OpenWatch.</string>
+    <!-- login with new email -->
+    <string name="login_dialog_unknown_email_title">Create New Account?</string>
+    <!-- email address will follow the below string -->
+    <string name="login_dialog_unknown_email_msg">The email address you provided is not connected to an OpenWatch account. Would you like to register a new account with </string>
 
-		<!--  generic signup problem -->
-	<string name="signup_dialog_failed_title">Signup Failed</string>
-	<string name="signup_dialog_failed_msg">There was a probleem signing up. Please try again later.</string>
+    <!-- problem reaching host -->
+    <string name="login_dialog_failed_title">Login Failed</string>
+    <string name="login_dialog_failed_msg">The OpenWatch service could not be reached. Please check your network connection and try again.</string>
+
+    <!-- signup with taken email address -->
+    <string name="signup_dialog_email_taken_title">Email Already Registered</string>
+    <!-- email address will preceed the below string -->
+    <string name="signup_dialog_email_taken_msg">is already registered with OpenWatch.</string>
+
+    <!-- generic signup problem -->
+    <string name="signup_dialog_failed_title">Signup Failed</string>
+    <string name="signup_dialog_failed_msg">There was a probleem signing up. Please try again later.</string>
+    <string name="title_activity_feed">FeedActivity</string>
+    
+    <!--  Feed Activity -->
+    <string name="tab_local_user_recordings">Your Recordings</string>
+    <string name="tab_local">Local</string>
+    <string name="tab_hot">Hot</string>
+
 </resources>

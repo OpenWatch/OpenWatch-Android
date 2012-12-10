@@ -18,10 +18,10 @@
             android:layout_height="0dp"
             android:layout_weight=".45"
             android:background="@drawable/record_button_background"
-            android:textColor="#FFFFFF"
-            android:textSize="40sp"
             android:onClick="recordButtonClick"
-            android:text="@string/record_button_text" />
+            android:text="@string/record_button_text"
+            android:textColor="#FFFFFF"
+            android:textSize="40sp" />
 
         <View
             android:id="@+id/spacer"
@@ -35,9 +35,10 @@
             android:layout_height="0dp"
             android:layout_weight=".45"
             android:background="@drawable/watch_button_background"
+            android:onClick="watchButtonClick"
+            android:text="@string/watch_button_text"
             android:textColor="#FFFFFF"
-            android:textSize="40sp"
-            android:text="@string/watch_button_text" />
+            android:textSize="40sp" />
     </LinearLayout>
 
 </RelativeLayout>

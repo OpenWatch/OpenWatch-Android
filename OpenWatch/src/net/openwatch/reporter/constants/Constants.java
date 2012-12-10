@@ -44,6 +44,7 @@ public class Constants {
 	public static final String OW_LOGIN = "login_account";
 	public static final String OW_SIGNUP = "create_account";
 	public static final String OW_REGISTER = "register_app";
+	public static final String OW_RECORDING = "recording";
 	
 	// OpenWatch web service POST keys
 	public static final String OW_EMAIL = "email_address";

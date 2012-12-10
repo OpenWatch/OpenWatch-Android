@@ -1,6 +1,12 @@
 package net.openwatch.reporter;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.http.entity.StringEntity;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.google.gson.Gson;
 import com.loopj.android.http.*;
@@ -205,7 +211,7 @@ public class LoginActivity extends Activity {
     public void UserLogin(){
     	http_client = HttpClient.setupHttpClient(this);
     	Log.i(TAG,"Commencing login to: " + Constants.OW_URL + Constants.OW_LOGIN);
-    	http_client.post(Constants.OW_URL + Constants.OW_LOGIN, getRequestParams(), new AsyncHttpResponseHandler(){
+    	http_client.post(null, Constants.OW_URL + Constants.OW_LOGIN, getAuthJSON(), "application/json", new JsonHttpResponseHandler(){
     		
     		@Override
     		public void onStart(){
@@ -213,46 +219,40 @@ public class LoginActivity extends Activity {
     		}
 
     		@Override
-    		public void onSuccess(String response){
-    			Log.i(TAG,"OW login success: " +  response);
-    			Gson gson = new Gson();
-    			Map<Object,Object> map = new HashMap<Object,Object>();
+    		public void onSuccess(JSONObject response){
+    			Log.i(TAG,"OW login success: " +  response.toString());
     			try{
-	    			map = gson.fromJson(response, map.getClass());
-    			} catch(Throwable t){
-    				Log.e(TAG, "Error parsing response. 500 error?");
-    				onFailure(new Throwable(), "Error parsing server response");
-    				return;
-    			}
-    			
-    			if( (Boolean)map.get(Constants.OW_SUCCESS) == true){
-    				Log.i(TAG,"OW login success: " +  map.toString());
-    				// Set authed preference 
-    				setUserAuthenticated(map);
-    		        
-    		        Intent i = new Intent(LoginActivity.this, MainActivity.class);
-    		        startActivity(i);
-    		        return;
-    			} else{
-    				AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this);
-    				int error_code =  ((Double)map.get(Constants.OW_ERROR)).intValue();
-    				switch(error_code){
-    					
-    					case 403: 	// No account with provided email
-    						dialog.setTitle(R.string.login_dialog_unknown_email_title)
-    						.setMessage(getString(R.string.login_dialog_unknown_email_msg) + " " + mEmail + "?")
-    						.setNegativeButton(R.string.login_dialog_signup, signupDialogOnClickListener)
-    						.setPositiveButton(R.string.login_dialog_no, defaultDialogOnClickListener)
-    	    				.show();
-    						break;
-    					default:   // Incorrect email address / password (Error 412)
-    						dialog.setTitle(R.string.login_dialog_denied_title)
-    						.setMessage(R.string.login_dialog_denied_msg)
-    						.setNeutralButton(R.string.login_dialog_ok, defaultDialogOnClickListener)
-    	    				.show();
-    						break;
-       				}
-    					
+	    			if( (Boolean)response.getBoolean(Constants.OW_SUCCESS) == true){
+	    				Log.i(TAG,"OW login success: " +  response.toString());
+	    				// Set authed preference 
+	    				setUserAuthenticated(response);
+	    		        
+	    		        Intent i = new Intent(LoginActivity.this, MainActivity.class);
+	    		        startActivity(i);
+	    		        return;
+	    			} else{
+	    				AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this);
+	    				int error_code = response.getInt(Constants.OW_ERROR);
+	    				switch(error_code){
+	    					
+	    					case 403: 	// No account with provided email
+	    						dialog.setTitle(R.string.login_dialog_unknown_email_title)
+	    						.setMessage(getString(R.string.login_dialog_unknown_email_msg) + " " + mEmail + "?")
+	    						.setNegativeButton(R.string.login_dialog_signup, signupDialogOnClickListener)
+	    						.setPositiveButton(R.string.login_dialog_no, defaultDialogOnClickListener)
+	    	    				.show();
+	    						break;
+	    					default:   // Incorrect email address / password (Error 412)
+	    						dialog.setTitle(R.string.login_dialog_denied_title)
+	    						.setMessage(R.string.login_dialog_denied_msg)
+	    						.setNeutralButton(R.string.login_dialog_ok, defaultDialogOnClickListener)
+	    	    				.show();
+	    						break;
+	       				}
+	    					
+	    			}
+    			}catch (JSONException e){
+    				Log.e(TAG, "error parsing json response");
     			}
 
     		}
@@ -284,31 +284,23 @@ public class LoginActivity extends Activity {
     public void UserSignup(){
     	http_client = HttpClient.setupHttpClient(this);
     	Log.i(TAG,"Commencing signup to: " + Constants.OW_URL + Constants.OW_SIGNUP);
-    	http_client.post(Constants.OW_URL + Constants.OW_SIGNUP, getRequestParams(), new AsyncHttpResponseHandler(){
+    	http_client.post(null, Constants.OW_URL + Constants.OW_SIGNUP, getAuthJSON(), "application/json", new JsonHttpResponseHandler(){
     		
     		@Override
-    		public void onSuccess(String response){
+    		public void onSuccess(JSONObject response){
     			Log.i(TAG,"OW signup success: " +  response);
-    			Gson gson = new Gson();
-    			Map<Object,Object> map = new HashMap<Object,Object>();
     			try{
-	    			map = gson.fromJson(response, map.getClass());
-    			} catch(Throwable t){
-    				Log.e(TAG, "Error parsing response. 500 error?");
-    				onFailure(new Throwable(), "Error parsing server response");
-    			}
-    			
-    			if( (Boolean)map.get(Constants.OW_SUCCESS) == true){
-    				Log.i(TAG,"OW signup success: " +  map.toString());
+    			if(response.getBoolean(Constants.OW_SUCCESS) == true){
+    				Log.i(TAG,"OW signup success: " +  response.toString());
     				// Set authed preference 
-    				setUserAuthenticated(map);
+    				setUserAuthenticated(response);
     		        
     		        Intent i = new Intent(LoginActivity.this, MainActivity.class);
     		        startActivity(i);
     		        return;
     			} else{
     				AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this);
-    				int error_code =  ((Double)map.get(Constants.OW_ERROR)).intValue();
+    				int error_code =  response.getInt(Constants.OW_ERROR);
     				switch(error_code){
     					
     					case 405: 	// email address in use
@@ -322,6 +314,9 @@ public class LoginActivity extends Activity {
        				}
     				dialog.setNeutralButton(R.string.login_dialog_ok, defaultDialogOnClickListener);
     				dialog.show();	
+    			}
+    			} catch(JSONException e){
+    				Log.e(TAG, "Error parsing signup JSON");
     			}
 
     		}
@@ -360,45 +355,50 @@ public class LoginActivity extends Activity {
 			app_version += "unknown";
 		}
 		
-		RequestParams params = new RequestParams();
-		params.put(Constants.PUB_TOKEN, public_upload_token);
-		params.put(Constants.OW_SIGNUP_TYPE, app_version);
+		HashMap<String,String> params = new HashMap<String, String>();
+    	params.put(Constants.PUB_TOKEN, public_upload_token);
+    	params.put(Constants.OW_SIGNUP_TYPE, app_version);
+    	Gson gson = new Gson();
+    	StringEntity se = null;
+    	try {
+			se = new StringEntity(gson.toJson(params));
+		} catch (UnsupportedEncodingException e1) {
+			Log.e(TAG,"Failed to put JSON string in StringEntity");
+			e1.printStackTrace();
+			return;
+		}
 		
 		// Post public_upload_token, signup_type
 		http_client = HttpClient.setupHttpClient(this);
     	Log.i(TAG,"Commencing ap registration to: " + Constants.OW_URL + Constants.OW_REGISTER + " pub_token: " + public_upload_token + " version: " + app_version);
-    	http_client.post(Constants.OW_URL + Constants.OW_REGISTER, params, new AsyncHttpResponseHandler(){
+    	http_client.post(null, Constants.OW_URL + Constants.OW_REGISTER, se, "application/json", new JsonHttpResponseHandler(){
     		@Override
-    		public void onSuccess(String response){
+    		public void onSuccess(JSONObject response){
     			Log.i(TAG,"OW app register success: " +  response);
-    			Gson gson = new Gson();
-    			Map<Object,Object> map = new HashMap<Object,Object>();
-    			try{
-	    			map = gson.fromJson(response, map.getClass());
-    			} catch(Throwable t){
-    				Log.e(TAG, "Error parsing response. 500 error?");
-    				onFailure(new Throwable(), "Error parsing server response");
-    			}
     			
-    			if( (Boolean)map.get(Constants.OW_SUCCESS) == true){
-    				Log.i(TAG,"OW app registration success: " +  map.toString());
-    				
-    				setRegisteredTask task = (setRegisteredTask) new setRegisteredTask().execute();
-    		        
-    		        Intent i = new Intent(LoginActivity.this, MainActivity.class);
-    		        startActivity(i);
-    		        return;
-    			} else{
-    				int error_code =  ((Double)map.get(Constants.OW_ERROR)).intValue();
-    				switch(error_code){
-    					
-    					case 415: 	// invalid public upload token
-    						Log.e(TAG, "invalid public upload token on app registration");
-    						break;
-    					default:
-    						Log.e(TAG, "Other error on app registration: " + map.get(Constants.OW_REASON));
-    						break;
-       				}
+    			try{
+	    			if( response.getBoolean(Constants.OW_SUCCESS) == true){
+	    				Log.i(TAG,"OW app registration success: " +  response.toString());
+	    				
+	    				setRegisteredTask task = (setRegisteredTask) new setRegisteredTask().execute();
+	    		        
+	    		        Intent i = new Intent(LoginActivity.this, MainActivity.class);
+	    		        startActivity(i);
+	    		        return;
+	    			} else{
+	    				int error_code =  response.getInt(Constants.OW_ERROR);
+	    				switch(error_code){
+	    					
+	    					case 415: 	// invalid public upload token
+	    						Log.e(TAG, "invalid public upload token on app registration");
+	    						break;
+	    					default:
+	    						Log.e(TAG, "Other error on app registration: " + response.getString(Constants.OW_REASON));
+	    						break;
+	       				}
+	    			}
+    			} catch (JSONException e){
+    				Log.e(TAG, "Error parsing json registration response");
     			}
     		}
     		
@@ -417,10 +417,16 @@ public class LoginActivity extends Activity {
     	
     }
     
-    public void setUserAuthenticated(Map server_response){
+    public void setUserAuthenticated(JSONObject server_response){
     	SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
     	if(!profile.getBoolean(Constants.REGISTERED, false))
-    		RegisterApp((String)server_response.get(Constants.PUB_TOKEN)); // attempt registration on every login until it succeeds. 
+			try {
+				RegisterApp(server_response.getString(Constants.PUB_TOKEN));
+			} catch (JSONException e) {
+				Log.e(TAG, "Error reading pub token from JSON");
+				e.printStackTrace();
+			} 
+    	// attempt registration on every login until it succeeds. 
     	new SavePreferencesTask().execute(server_response);
     	
     }
@@ -431,20 +437,25 @@ public class LoginActivity extends Activity {
      * @author davidbrodsky
      *
      */
-    private class SavePreferencesTask extends AsyncTask<Map, Void, Void> {
-        protected Void doInBackground(Map... server_response_array) {
-        	Map server_response = server_response_array[0];
+    private class SavePreferencesTask extends AsyncTask<JSONObject, Void, Void> {
+        protected Void doInBackground(JSONObject... server_response_array) {
+        	JSONObject server_response = server_response_array[0];
         	// Confirm returned email matches  
-        	if( ((String)server_response.get(Constants.OW_EMAIL)).compareTo(mEmail) != 0)
-        		Log.e(TAG, "Email mismatch. Client submitted " + mEmail + " Server responded: " + ((String)server_response.get(Constants.OW_EMAIL)));
-        	SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
-            SharedPreferences.Editor editor = profile.edit();
-            editor.putBoolean(Constants.AUTHENTICATED, true);
-            editor.putString(Constants.PUB_TOKEN, (String)server_response.get(Constants.PUB_TOKEN));
-            editor.putString(Constants.PRIV_TOKEN, (String)server_response.get(Constants.PRIV_TOKEN));
-            Log.i(TAG, "Got upload tokens. Pub: " +(String)server_response.get(Constants.PUB_TOKEN) + " Priv: " + (String)server_response.get(Constants.PRIV_TOKEN));
-            editor.commit();
-            
+        	try {
+				if( (server_response.getString(Constants.OW_EMAIL)).compareTo(mEmail) != 0)
+					Log.e(TAG, "Email mismatch. Client submitted " + mEmail + " Server responded: " + ((String)server_response.get(Constants.OW_EMAIL)));
+			
+	        	SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
+	            SharedPreferences.Editor editor = profile.edit();
+	            editor.putBoolean(Constants.AUTHENTICATED, true);
+	            editor.putString(Constants.PUB_TOKEN, server_response.getString(Constants.PUB_TOKEN));
+	            editor.putString(Constants.PRIV_TOKEN, server_response.getString(Constants.PRIV_TOKEN));
+	            Log.i(TAG, "Got upload tokens. Pub: " +  server_response.getString(Constants.PUB_TOKEN) + " Priv: " + server_response.getString(Constants.PRIV_TOKEN));
+	            editor.commit();
+        	} catch (JSONException e) {
+        		Log.e(TAG, "SavePreferenceTask: Error reading JSONObject response");
+				e.printStackTrace();
+			}
         	return null;
         }
 
@@ -473,12 +484,19 @@ public class LoginActivity extends Activity {
         }
     }
     
-    public RequestParams getRequestParams(){
-    	RequestParams params = new RequestParams();
+    public StringEntity getAuthJSON(){
+    	HashMap<String,String> params = new HashMap<String, String>();
     	params.put(Constants.OW_EMAIL, mEmail);
     	params.put(Constants.OW_PW, mPassword);
-    	
-    	return params;
+    	Gson gson = new Gson();
+    	StringEntity se = null;
+    	try {
+			se = new StringEntity(gson.toJson(params));
+		} catch (UnsupportedEncodingException e1) {
+			Log.e(TAG,"Failed to put JSON string in StringEntity");
+			e1.printStackTrace();
+		}
+    	return se;
     }
     
     public OnClickListener defaultDialogOnClickListener = new OnClickListener(){
