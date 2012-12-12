@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container"
+    android:layout_width="fill_parent"
+    android:layout_height="100dp"
+    android:layout_margin="3dp" >
+
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="80dp" >
+
+        <ImageView
+            android:id="@+id/thumbnail"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="@drawable/protest" >
+        </ImageView>
+
+        <!-- Multiline textview ellipsize is broken in Android -->
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="3dp"
+            android:ellipsize="marquee"
+            android:maxLines="3"
+            android:padding="2dp"
+            android:text="Market Street Protest against some bad stuff"
+            android:textSize="20dp" >
+        </TextView>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/header"
+        android:layout_marginTop="3dp"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:text="2012-06-21 4:20:00"
+        android:textSize="18dp" />
+
+    <ImageView
+        android:id="@+id/action_icon"
+        android:layout_width="15dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header"
+        android:layout_marginRight="3dp"
+        android:layout_marginTop="3dp"
+        android:layout_toLeftOf="@id/date"
+        android:layout_marginLeft="3dp"
+        android:src="@drawable/calendar" />
+
+</RelativeLayout>
