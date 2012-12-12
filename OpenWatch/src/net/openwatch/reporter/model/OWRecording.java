@@ -12,27 +12,33 @@ import net.openwatch.reporter.constants.Constants;
 
 public class OWRecording extends Model{
 	
-	public CharField title;
-	public CharField description;
-	public IntegerField user_id;
-	public CharField creation_time;
-	public CharField first_posted;
-	public CharField uuid;
-	public CharField last_edited;
-	public IntegerField server_id;
-	public CharField video_url;
-	public DoubleField begin_lat;
-	public DoubleField begin_lon;
-	public DoubleField end_lat;
-	public DoubleField end_lon;
+	public CharField title = new CharField();
+	public CharField description = new CharField();
+	public CharField thumb_url = new CharField();
+	public IntegerField user_id = new IntegerField();
+	public CharField username = new CharField(); 
+	// username is queried often by ListViews, so it makes sense to duplicate info for performance 
+	public CharField creation_time = new CharField();
+	public CharField first_posted = new CharField();
+	public CharField uuid = new CharField();
+	public CharField last_edited = new CharField();
+	public IntegerField server_id = new IntegerField();
+	public CharField video_url = new CharField();
+	public DoubleField begin_lat = new DoubleField();
+	public DoubleField begin_lon = new DoubleField();
+	public DoubleField end_lat = new DoubleField();
+	public DoubleField end_lon = new DoubleField();
 
-	public ManyToManyField<OWRecording, OWRecordingTag> tags;
+	public ManyToManyField<OWRecording, OWRecordingTag> tags  = new ManyToManyField<OWRecording, OWRecordingTag> (OWRecording.class, OWRecordingTag.class);
 	
 	public OWRecording(){
 		super();
+		/*
 		title = new CharField();
 		description = new CharField();
 		user_id = new IntegerField();
+		username = new CharField(); 
+		thumb_url = new CharField();
 		creation_time = new CharField();
 		creation_time.set(Constants.sdf.format(new Date()));
 		first_posted = new CharField();
@@ -45,6 +51,7 @@ public class OWRecording extends Model{
 		end_lat = new DoubleField();
 		end_lon = new DoubleField();
 		tags = new ManyToManyField<OWRecording, OWRecordingTag> (OWRecording.class, OWRecordingTag.class);
+		*/
 	}
 	
 	/*

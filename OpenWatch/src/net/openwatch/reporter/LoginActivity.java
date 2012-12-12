@@ -249,6 +249,7 @@ public class LoginActivity extends Activity {
 	    	    				.show();
 	    						break;
 	       				}
+	    				showProgress(false);
 	    					
 	    			}
     			}catch (JSONException e){
@@ -265,13 +266,13 @@ public class LoginActivity extends Activity {
     			.setMessage(R.string.login_dialog_failed_msg)
     			.setNeutralButton(R.string.login_dialog_ok, defaultDialogOnClickListener)
     			.show();
+    			showProgress(false);
     	     }
     		
     		@Override
     	     public void onFinish() {
     			Log.i(TAG,"OW login finish");
     			http_client = null;
-    			showProgress(false);
     	     }
     	});
     	
@@ -296,6 +297,7 @@ public class LoginActivity extends Activity {
     				setUserAuthenticated(response);
     		        
     		        Intent i = new Intent(LoginActivity.this, MainActivity.class);
+    		        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
     		        startActivity(i);
     		        return;
     			} else{

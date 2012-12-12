@@ -71,7 +71,7 @@ public class DatabaseManager {
 	
 	public static void insert(Context c, ContentValues cv, String recording_id){
 		DatabaseAdapter adapter = new DatabaseAdapter(c);
-		adapter.doInsertOrUpdate(DBConstants.LOCAL_RECORDING_TABLENAME, cv, new Where().and(DBConstants.RECORDINGS_TABLE_UUID, recording_id));
+		adapter.doInsertOrUpdate(DBConstants.LOCAL_RECORDINGS_TABLENAME, cv, new Where().and(DBConstants.RECORDINGS_TABLE_UUID, recording_id));
 		adapter.close();
 	}
 

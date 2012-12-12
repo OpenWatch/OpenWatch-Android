@@ -25,8 +25,11 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
@@ -61,6 +64,8 @@ import java.util.List;
 import net.openwatch.reporter.R;
 import net.openwatch.reporter.R.id;
 import net.openwatch.reporter.R.layout;
+import net.openwatch.reporter.constants.DBConstants;
+import net.openwatch.reporter.contentprovider.OWContentProvider;
 
 /**
  * Demonstration of the implementation of a custom Loader.
@@ -364,50 +369,12 @@ public class MyFeedFragmentActivity extends FragmentActivity {
         }
     }
 
-
-
-    public static class AppListAdapter extends ArrayAdapter<AppEntry> {
-        private final LayoutInflater mInflater;
-
-        public AppListAdapter(Context context) {
-            super(context, android.R.layout.simple_list_item_2);
-            mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        }
-
-        public void setData(List<AppEntry> data) {
-            clear();
-            if (data != null) {
-                for (AppEntry appEntry : data) {
-                    add(appEntry);
-                }
-            }
-        }
-
-        /**
-         * Populate new items in the list.
-         */
-        @Override public View getView(int position, View convertView, ViewGroup parent) {
-            View view;
-
-            if (convertView == null) {
-                view = mInflater.inflate(R.layout.list_item_icon_text, parent, false);
-            } else {
-                view = convertView;
-            }
-
-            AppEntry item = getItem(position);
-            ((ImageView)view.findViewById(R.id.icon)).setImageDrawable(item.getIcon());
-            ((TextView)view.findViewById(R.id.text)).setText(item.getLabel());
-
-            return view;
-        }
-    }
-
     public static class AppListFragment extends ListFragment
-            implements LoaderManager.LoaderCallbacks<List<AppEntry>> {
+            implements LoaderManager.LoaderCallbacks<Cursor> {
 
         // This is the Adapter being used to display the list's data.
-        AppListAdapter mAdapter;
+        //AppListAdapter mAdapter;
+    	OWRecordingAdapter mAdapter;
 
         // If non-null, this is the current filter the user has provided.
         String mCurFilter;
@@ -419,13 +386,13 @@ public class MyFeedFragmentActivity extends FragmentActivity {
 
             // Give some text to display if there is no data.  In a real
             // application this would come from a resource.
-            setEmptyText("No applications");
+            setEmptyText(getString(R.string.loading_local_recordings));
 
             // We have a menu item to show in action bar.
             setHasOptionsMenu(true);
 
-            // Create an empty adapter we will use to display the loaded data.
-            mAdapter = new AppListAdapter(getActivity());
+            // Initialize adapter without cursor. Let loader provide it when ready
+            mAdapter = new OWRecordingAdapter(getActivity(), null); 
             setListAdapter(mAdapter);
 
             // Start out with a progress indicator.
@@ -464,28 +431,47 @@ public class MyFeedFragmentActivity extends FragmentActivity {
             Log.i("LoaderCustom", "Item clicked: " + id);
         }
 
-        @Override public Loader<List<AppEntry>> onCreateLoader(int id, Bundle args) {
-            // This is called when a new Loader needs to be created.  This
-            // sample only has one Loader with no arguments, so it is simple.
-            return new AppListLoader(getActivity());
-        }
-
-        @Override public void onLoadFinished(Loader<List<AppEntry>> loader, List<AppEntry> data) {
-            // Set the new data in the adapter.
-            mAdapter.setData(data);
-
-            // The list should now be shown.
+        
+		@Override
+		public void onLoadFinished(Loader<Cursor> arg0, Cursor cursor) {
+			mAdapter.swapCursor(cursor);
+			// The list should now be shown.
             if (isResumed()) {
                 setListShown(true);
             } else {
                 setListShownNoAnimation(true);
             }
-        }
+            
+           if(cursor.getCount() == 0){
+        		setEmptyText(getString(R.string.no_local_recordings));
+           }
+			
+		}
 
-        @Override public void onLoaderReset(Loader<List<AppEntry>> loader) {
-            // Clear the data in the adapter.
-            mAdapter.setData(null);
-        }
+		@Override
+		public void onLoaderReset(Loader<Cursor> arg0) {
+			// TODO Auto-generated method stub
+			mAdapter.swapCursor(null);
+		}
+		
+		static final String[] PROJECTION = new String[] {
+			DBConstants.ID,
+			DBConstants.RECORDINGS_TABLE_TITLE,
+			DBConstants.RECORDINGS_TABLE_CREATION_TIME,
+			DBConstants.RECORDINGS_TABLE_THUMB_URL
+
+	    };
+
+		@Override
+		public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
+			// TODO Auto-generated method stub
+			Uri baseUri = OWContentProvider.LOCAL_RECORDING_URI;
+			String selection = null;
+            String[] selectionArgs = null;
+            String order = null;
+			
+			return new CursorLoader(getActivity(), baseUri, PROJECTION, selection, selectionArgs, order);
+		}
     }
 
 }

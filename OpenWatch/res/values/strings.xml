@@ -47,4 +47,6 @@
     <string name="tab_hot">Hot</string>
     <string name="title_activity_ormtest">ORMTestActivity</string>
 
+    <string name="loading_local_recordings">Loading Recordings</string>
+    <string name="no_local_recordings">You have no recordings</string>
 </resources>

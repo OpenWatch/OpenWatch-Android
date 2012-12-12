@@ -9,12 +9,17 @@ import android.net.Uri;
 
 public class OWContentProvider extends ContentProvider {
 	
-	public static final String AUTHORITY = "net.openwatch.reporter.contentprovider.OWContentProvider";
+	private static final String AUTHORITY = "net.openwatch.reporter.contentprovider.OWContentProvider";
+	
+	public static final Uri AUTHORITY_URI = Uri.parse("content://" + AUTHORITY + "/");
 	
 	private final UriMatcher mUriMatcher;
 	
 	 private static final int RECORDING = 1;
      private static final int RECORDING_ID = 2;
+     
+     public static final Uri LOCAL_RECORDING_URI = AUTHORITY_URI.buildUpon().appendPath(DBConstants.LOCAL_RECORDINGS_TABLENAME).build();
+     public static final Uri RECORDING_URI = AUTHORITY_URI.buildUpon().appendPath(DBConstants.RECORDINGS_TABLENAME).build();
 	
      public OWContentProvider(){
 	// Create and initialize URI matcher.
