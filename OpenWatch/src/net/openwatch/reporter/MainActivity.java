@@ -1,6 +1,7 @@
 package net.openwatch.reporter;
 
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.database.DatabaseManager;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -29,6 +30,7 @@ public class MainActivity extends Activity {
 	
 	public void watchButtonClick(View v){
 		Intent i = new Intent(this, FeedActivity.class);
+		//Intent i =  new Intent(this, ORMTestActivity.class);
 		startActivity(i);
 	}
 
@@ -47,6 +49,12 @@ public class MainActivity extends Activity {
 	public void checkUserStatus(){
 		SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, 0);
 		boolean authenticated = profile.getBoolean(Constants.AUTHENTICATED, false);
+		boolean db_initialized = profile.getBoolean(Constants.DB_READY, false);
+		
+		if(!db_initialized){
+			DatabaseManager.setupDB(this);
+		}
+		
 		if(authenticated){
 			// TODO: Attempt to login with stored credentials
 		}

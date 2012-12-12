@@ -1,26 +1,27 @@
 package net.openwatch.reporter.model;
 
-import java.util.List;
-
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
+import com.orm.androrm.Model;
+import com.orm.androrm.field.CharField;
+import com.orm.androrm.field.IntegerField;
+import com.orm.androrm.field.ManyToManyField;
+import com.orm.androrm.field.OneToManyField;
 
 public class OWUser extends Model{
 	
-	@Column(name = "username")
-	public String username;
+	public CharField username;
+	public IntegerField server_id;
 	
-	@Column(name = "server_id")
-	public int server_id;
+	public OneToManyField<OWUser, OWRecording> recordings;
+	public ManyToManyField<OWUser, OWRecordingTag> tags;
 	
-	public List<OWRecording> recordings(){
-		return getMany(OWRecording.class, "User");
+	public OWUser(){
+		super();
+		username = new CharField();
+		server_id = new IntegerField();
+		
+		recordings = new OneToManyField<OWUser, OWRecording>(OWUser.class, OWRecording.class);
+		tags = new ManyToManyField<OWUser, OWRecordingTag>(OWUser.class, OWRecordingTag.class);
+		
 	}
-	
-	public List<OWTag> tags(){
-		return getMany(OWTag.class, "User");
-	}
-	
-	
-	
+
 }

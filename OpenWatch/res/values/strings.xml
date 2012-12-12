@@ -40,10 +40,11 @@
     <string name="signup_dialog_failed_title">Signup Failed</string>
     <string name="signup_dialog_failed_msg">There was a probleem signing up. Please try again later.</string>
     <string name="title_activity_feed">FeedActivity</string>
-    
-    <!--  Feed Activity -->
+
+    <!-- Feed Activity -->
     <string name="tab_local_user_recordings">Your Recordings</string>
     <string name="tab_local">Local</string>
     <string name="tab_hot">Hot</string>
+    <string name="title_activity_ormtest">ORMTestActivity</string>
 
 </resources>

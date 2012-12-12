@@ -2,58 +2,51 @@ package net.openwatch.reporter.model;
 
 import java.util.List;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
+import com.orm.androrm.Model;
+import com.orm.androrm.field.CharField;
+import com.orm.androrm.field.DoubleField;
+import com.orm.androrm.field.IntegerField;
+import com.orm.androrm.field.ManyToManyField;
 
-@Table(name = "Recordings")
+import net.openwatch.reporter.constants.DBConstants;
+
+
 public class OWRecording extends Model{
 	
-	// Server fields
-	@Column(name = "title")
-	public String title;
+	public CharField title;
+	public CharField description;
+	public IntegerField user_id;
+	public CharField creation_time;
+	public CharField first_posted;
+	public CharField uuid;
+	public CharField last_edited;
+	public IntegerField server_id;
+	public CharField video_url;
+	public DoubleField begin_lat;
+	public DoubleField begin_lon;
+	public DoubleField end_lat;
+	public DoubleField end_lon;
+
+	public ManyToManyField<OWRecording, OWRecordingTag> tags;
 	
-	@Column(name = "description")
-	public String description;
-	
-	@Column(name = "creation_time")
-	public String creation_time;
-	
-	@Column(name = "uuid")
-	public String uuid;
-	
-	@Column(name = "first_posted")
-	public String first_posted;
-	
-	@Column(name = "user_id")
-	public int user_id;
-	
-	@Column(name = "last_edited")
-	public String last_edited;
-	
-	@Column(name = "server_id")
-	public int server_id;
-	
-	@Column(name = "video_url")
-	public String video_url;
-	
-	@Column(name = "begin_lat")
-	public double begin_lat;
-	
-	@Column(name = "begin_lon")
-	public double begin_lon;
-	
-	@Column(name = "end_lat")
-	public double end_lat;
-	
-	@Column(name = "end_lon")
-	public double end_lon;
-	
-	public List<OWTag> tags(){
-		return getMany(OWTag.class, "Recording");
+	public OWRecording(){
+		super();
+		title = new CharField();
+		description = new CharField();
+		user_id = new IntegerField();
+		creation_time = new CharField();
+		first_posted = new CharField();
+		uuid = new CharField();
+		last_edited = new CharField();
+		server_id = new IntegerField();
+		video_url = new CharField();
+		begin_lat = new DoubleField();
+		begin_lon = new DoubleField();
+		end_lat = new DoubleField();
+		end_lon = new DoubleField();
+		tags = new ManyToManyField<OWRecording, OWRecordingTag> (OWRecording.class, OWRecordingTag.class);
 	}
-	
-	
+
 	
 	/*
 	recording: {

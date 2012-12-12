@@ -1,23 +1,24 @@
 package net.openwatch.reporter.model;
 
-import java.util.List;
+import com.orm.androrm.field.BooleanField;
+import com.orm.androrm.field.CharField;
+import com.orm.androrm.field.OneToManyField;
 
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
-
-@Table(name = "LocalRecordings")
 public class OWLocalRecording extends OWRecording {
 	
-	@Column(name = "filepath")
-	public String filepath;
+	public CharField filepath;
+	public BooleanField hq_synced;
+	public BooleanField lq_synced;
 	
-	@Column(name = "hq_synced")
-	public boolean hq_file_synced = false;
+	public OneToManyField<OWLocalRecording, OWLocalRecordingSegment> segments;
 	
-	@Column(name = "lq_synced")
-	public boolean lq_file_synced = false;
-
-	public List<OWLocalRecordingSegment> segments(){
-		return getMany(OWLocalRecordingSegment.class, "Recording");
+	public OWLocalRecording(){
+		super();
+		filepath = new CharField();
+		hq_synced = new BooleanField();
+		lq_synced = new BooleanField();
+		
+		segments = new OneToManyField<OWLocalRecording, OWLocalRecordingSegment> (OWLocalRecording.class, OWLocalRecordingSegment.class);
 	}
+
 }

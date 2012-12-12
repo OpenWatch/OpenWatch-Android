@@ -12,6 +12,8 @@ import java.util.UUID;
 
 import org.json.JSONArray;
 
+import com.orm.androrm.DatabaseAdapter;
+
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.file.FileUtils;
 import net.openwatch.reporter.http.MediaServerRequests;
@@ -22,6 +24,7 @@ import android.hardware.Camera;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -53,19 +56,25 @@ public class RecorderActivity extends Activity implements
 	 * ChunkedRecorderListener is set on FFChunkedAudioVideoEncoder 
 	 */
 	ChunkedRecorderListener chunk_listener = new ChunkedRecorderListener(){
+		Context c; // for db transactions
+		
 		// OW Server date formatter
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+		
+		public void setContext(Context c){
+			this.c = c;
+		}
 		
 		@Override
 		public void encoderShifted(final String finalized_file) {
 			setupSDF();
-			new sendMediaCaptureSignal().execute("chunk", finalized_file);
+			new MediaSignalTask().execute("chunk", finalized_file);
 		}
 
 		@Override
 		public void encoderStarted(Date start_date) {
 			setupSDF();
-			new sendMediaCaptureSignal().execute("start", sdf.format(start_date));
+			new MediaSignalTask().execute("start", sdf.format(start_date));
 			
 		}
 
@@ -74,8 +83,8 @@ public class RecorderActivity extends Activity implements
 				String hq_filename, ArrayList<String> all_files) {
 			setupSDF();
 			Log.i(TAG,"start-date: " + sdf.format(start_date) + " stop-date: " + sdf.format(stop_date));
-			new sendMediaCaptureSignal().execute("end", sdf.format(start_date), sdf.format(stop_date), new JSONArray(all_files).toString());
-			new sendMediaCaptureSignal().execute("hq", hq_filename);
+			new MediaSignalTask().execute("end", sdf.format(start_date), sdf.format(stop_date), new JSONArray(all_files).toString());
+			new MediaSignalTask().execute("hq", hq_filename);
 		}
 		
 		private void setupSDF(){
@@ -83,24 +92,9 @@ public class RecorderActivity extends Activity implements
 					sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 		}
 		
-		/**
-		 * Sends a signal to the OW MediaCapture service
-		 * 
-		 * When calling execute pass a String argument to indicate preference
-		 * Options:
-		 * "start" Sends start signal
-		 * "end" Sends end signal
-		 * 
-		 * The following two options require a String[] argument:
-		 * Pass a String[] with the [0] index equal to one of the following commands
-		 * and the [1] index containing an absolute filepath:
-		 * "chunk" Sends video chunk signal
-		 * "hq" Sends HQ video signal
-		 * @author davidbrodsky
-		 *
-		 */
-		class sendMediaCaptureSignal extends AsyncTask<String, Void, Void> {
+		class MediaSignalTask extends AsyncTask<String, Void, Void> {
 	        protected Void doInBackground(String... command) {
+	        	
 	        	Log.i(TAG, "sendMediaCapture command: " + command[0] + " command length: " + command.length);
 	        	SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
 	            String public_upload_token = profile.getString(Constants.PUB_TOKEN, "");
@@ -129,6 +123,7 @@ public class RecorderActivity extends Activity implements
 	        	return null;
 	        }
 	    }
+
 		
 	};
 	
@@ -168,6 +163,7 @@ public class RecorderActivity extends Activity implements
 
 		}); // end onClickListener
 		
+		chunk_listener.setContext(this);
 		av_recorder.setChunkedRecorderListener(chunk_listener);
 		
 		if(!av_recorder.is_recording){

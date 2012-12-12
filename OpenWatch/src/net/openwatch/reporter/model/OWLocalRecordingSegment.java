@@ -1,29 +1,24 @@
 package net.openwatch.reporter.model;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
+import com.orm.androrm.Model;
+import com.orm.androrm.field.BooleanField;
+import com.orm.androrm.field.CharField;
+import com.orm.androrm.field.ForeignKeyField;
 
-enum OWFileUploadState {
-	LOCAL, UPLOADING, SYNCED
-}
-
-@Table(name = "OWLocalRecordingSegment")
 public class OWLocalRecordingSegment extends Model{
+
+	public CharField filepath;
+	public CharField filename;
+	public BooleanField uploaded;
+	public ForeignKeyField<OWLocalRecording> local_recording;
 	
-	@Column(name = "filepath")
-	public String filepath;
-	
-	@Column(name = "filename")
-	public String filename;
-	
-	@Column(name = "state")
-	public OWFileUploadState state;
-	
-	@Column(name = "recording")
-	public OWLocalRecording recording;
-	
-	
-	
+	public OWLocalRecordingSegment(){
+		super();
+		
+		filepath = new CharField();
+		filename = new CharField();
+		uploaded = new BooleanField();
+		local_recording = new ForeignKeyField<OWLocalRecording>(OWLocalRecording.class);
+	}
 
 }

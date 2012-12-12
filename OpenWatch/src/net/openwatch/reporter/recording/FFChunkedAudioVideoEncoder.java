@@ -3,6 +3,7 @@ package net.openwatch.reporter.recording;
 import java.util.ArrayList;
 import java.util.Date;
 
+import android.content.Context;
 import android.util.Log;
 
 /**
@@ -44,6 +45,7 @@ public class FFChunkedAudioVideoEncoder {
 	Date video_frame_date;
 	
 	public interface ChunkedRecorderListener{
+		public void setContext(Context c);
 		public void encoderStarted(Date start_date);
 		public void encoderShifted(String finalized_file);
 		public void encoderStopped(Date start_date, Date stop_date, String hq_filename, ArrayList<String> all_files);
