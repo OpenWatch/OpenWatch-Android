@@ -16,17 +16,7 @@
 
 package net.openwatch.reporter.feeds;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.ActivityInfo;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.CursorLoader;
@@ -34,36 +24,18 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.IntentCompat;
 import android.support.v4.content.Loader;
-import android.support.v4.content.pm.ActivityInfoCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SearchViewCompat;
 import android.support.v4.widget.SearchViewCompat.OnQueryTextListenerCompat;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
-
-import java.io.File;
-import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import net.openwatch.reporter.R;
-import net.openwatch.reporter.R.id;
-import net.openwatch.reporter.R.layout;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
 
@@ -80,13 +52,13 @@ public class MyFeedFragmentActivity extends FragmentActivity {
 
         // Create the list fragment and add it as our sole content.
         if (fm.findFragmentById(android.R.id.content) == null) {
-            AppListFragment list = new AppListFragment();
+            LocalRecordingsListFragment list = new LocalRecordingsListFragment();
             fm.beginTransaction().add(android.R.id.content, list).commit();
         }
     }
 
 
-    public static class AppListFragment extends ListFragment
+    public static class LocalRecordingsListFragment extends ListFragment
             implements LoaderManager.LoaderCallbacks<Cursor> {
 
         // This is the Adapter being used to display the list's data.
@@ -159,7 +131,7 @@ public class MyFeedFragmentActivity extends FragmentActivity {
                 setListShownNoAnimation(true);
             }
             
-           if(cursor.getCount() == 0){
+           if(cursor != null && cursor.getCount() == 0){
         		setEmptyText(getString(R.string.no_local_recordings));
            }
 			

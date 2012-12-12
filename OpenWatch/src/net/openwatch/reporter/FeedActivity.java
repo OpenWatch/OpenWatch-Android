@@ -54,7 +54,7 @@ public class FeedActivity extends FragmentActivity {
         mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
 
         mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_local_user_recordings)).setIndicator(getString(R.string.tab_local_user_recordings)),
-                MyFeedFragmentActivity.AppListFragment.class, null);
+                MyFeedFragmentActivity.LocalRecordingsListFragment.class, null);
 
         if (savedInstanceState != null) {
             mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));

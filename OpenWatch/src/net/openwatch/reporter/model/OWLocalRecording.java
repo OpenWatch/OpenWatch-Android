@@ -2,11 +2,33 @@ package net.openwatch.reporter.model;
 
 import android.content.Context;
 
+import com.orm.androrm.Model;
+import com.orm.androrm.QuerySet;
 import com.orm.androrm.field.BooleanField;
 import com.orm.androrm.field.CharField;
+import com.orm.androrm.field.DoubleField;
+import com.orm.androrm.field.IntegerField;
 import com.orm.androrm.field.OneToManyField;
 
-public class OWLocalRecording extends OWRecording {
+public class OWLocalRecording extends Model {
+	
+	public CharField title = new CharField();
+	public CharField description = new CharField();
+	public CharField thumb_url = new CharField();
+	public IntegerField user_id = new IntegerField();
+	public CharField username = new CharField(); 
+	// username is queried often by ListViews, so it makes sense to duplicate info for performance 
+	public CharField creation_time = new CharField();
+	public CharField first_posted = new CharField();
+	public CharField uuid = new CharField();
+	public CharField last_edited = new CharField();
+	public IntegerField server_id = new IntegerField();
+	public CharField video_url = new CharField();
+	public DoubleField begin_lat = new DoubleField();
+	public DoubleField begin_lon = new DoubleField();
+	public DoubleField end_lat = new DoubleField();
+	public DoubleField end_lon = new DoubleField();
+	
 	
 	public CharField filepath;
 	public BooleanField hq_synced;

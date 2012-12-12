@@ -17,6 +17,7 @@ import com.orm.androrm.DatabaseAdapter;
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.file.FileUtils;
 import net.openwatch.reporter.http.MediaServerRequests;
+import net.openwatch.reporter.model.OWLocalRecording;
 import net.openwatch.reporter.recording.ChunkedAudioVideoSoftwareRecorder;
 import net.openwatch.reporter.recording.FFChunkedAudioVideoEncoder.ChunkedRecorderListener;
 
@@ -57,6 +58,15 @@ public class RecorderActivity extends Activity implements
 	 */
 	ChunkedRecorderListener chunk_listener = new ChunkedRecorderListener(){
 		Context c; // for db transactions
+		String recording_id; // recording uuid for OW service
+		int owlocalrecording_id = -1; // database id for OWLocalRecording
+		ArrayList<String> all_files = null;
+		
+		@Override
+		public void setRecordingID(String recording_id) {
+			this.recording_id = recording_id;
+			
+		}
 				
 		public void setContext(Context c){
 			this.c = c;
@@ -79,6 +89,7 @@ public class RecorderActivity extends Activity implements
 		public void encoderStopped(Date start_date, Date stop_date,
 				String hq_filename, ArrayList<String> all_files) {
 			setupSDF();
+			this.all_files = all_files;
 			Log.i(TAG,"start-date: " + Constants.sdf.format(start_date) + " stop-date: " + Constants.sdf.format(stop_date));
 			new MediaSignalTask().execute("end", Constants.sdf.format(start_date), Constants.sdf.format(stop_date), new JSONArray(all_files).toString());
 			new MediaSignalTask().execute("hq", hq_filename);
@@ -91,7 +102,6 @@ public class RecorderActivity extends Activity implements
 		
 		class MediaSignalTask extends AsyncTask<String, Void, Void> {
 	        protected Void doInBackground(String... command) {
-	        	
 	        	Log.i(TAG, "sendMediaCapture command: " + command[0] + " command length: " + command.length);
 	        	SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
 	            String public_upload_token = profile.getString(Constants.PUB_TOKEN, "");
@@ -100,15 +110,34 @@ public class RecorderActivity extends Activity implements
 
 	        	if(command[0].compareTo("start") == 0){
 	        		if(command.length == 2){
+	        			// make db entry
+	        			OWLocalRecording recording = new OWLocalRecording();
+	    	        	recording.initializeRecording(c, recording_id, 0, 0);
+	    	        	// make network request
+	    	        	owlocalrecording_id = recording.getId();
 	                	MediaServerRequests.start(public_upload_token, recording_id, command[1]);
 	                }
 	        	} else if(command[0].compareTo("end") == 0){
 	        		if(command.length == 4){
+	        			if(all_files != null){
+	        				OWLocalRecording recording = (OWLocalRecording) OWLocalRecording.objects(c, OWLocalRecording.class).get(owlocalrecording_id);
+		        			String last_segment = all_files.get(all_files.size()-1);
+		        			String filename = last_segment.substring(last_segment.lastIndexOf(File.separator),last_segment.length());
+		        			String filepath = last_segment.substring(0,last_segment.lastIndexOf(File.separator));
+		        			recording.addSegment(c, filepath, filename);
+	        			}
 	        			MediaServerRequests.end(public_upload_token, recording_id, command[1], command[2], command[3]);
 	        		}
 	        	} else if(command[0].compareTo("chunk") == 0){
-	        		if(command.length == 2)
+	        		if(command.length == 2){
+	        			if(owlocalrecording_id != -1){
+		        			OWLocalRecording recording = (OWLocalRecording) OWLocalRecording.objects(c, OWLocalRecording.class).get(owlocalrecording_id);
+		        			String filename = command[1].substring(command[1].lastIndexOf(File.separator),command[1].length());
+		        			String filepath = command[1].substring(0,command[1].lastIndexOf(File.separator));
+		        			recording.addSegment(c, filepath, filename);
+	        			}
 	        			MediaServerRequests.sendLQChunk(public_upload_token, recording_id, command[1]);
+	        		}
 	        	} else if(command[0].compareTo("hq") == 0){
 	        		if(command.length == 2)
 	        			MediaServerRequests.sendHQFile(public_upload_token, recording_id, command[1]);
@@ -120,8 +149,6 @@ public class RecorderActivity extends Activity implements
 	        	return null;
 	        }
 	    }
-
-		
 	};
 	
 	@Override

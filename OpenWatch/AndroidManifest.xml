@@ -20,6 +20,12 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        
+        <provider
+       		android:authorities="net.openwatch.reporter.contentprovider.OWContentProvider"
+       		android:name=".contentprovider.OWContentProvider"
+       		android:exported="false" >
+		</provider> 
        
         <activity
             android:name="net.openwatch.reporter.LoginActivity"

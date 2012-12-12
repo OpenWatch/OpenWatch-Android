@@ -1,7 +1,11 @@
 package net.openwatch.reporter.model;
 
 import java.util.Date;
+
+import android.content.Context;
+
 import com.orm.androrm.Model;
+import com.orm.androrm.QuerySet;
 import com.orm.androrm.field.CharField;
 import com.orm.androrm.field.DoubleField;
 import com.orm.androrm.field.IntegerField;
@@ -29,7 +33,7 @@ public class OWRecording extends Model{
 	public DoubleField end_lat = new DoubleField();
 	public DoubleField end_lon = new DoubleField();
 
-	public ManyToManyField<OWRecording, OWRecordingTag> tags  = new ManyToManyField<OWRecording, OWRecordingTag> (OWRecording.class, OWRecordingTag.class);
+	public ManyToManyField<OWRecording, OWRecordingTag> tags;
 	
 	public OWRecording(){
 		super();
@@ -50,8 +54,9 @@ public class OWRecording extends Model{
 		begin_lon = new DoubleField();
 		end_lat = new DoubleField();
 		end_lon = new DoubleField();
-		tags = new ManyToManyField<OWRecording, OWRecordingTag> (OWRecording.class, OWRecordingTag.class);
 		*/
+		tags = new ManyToManyField<OWRecording, OWRecordingTag> (OWRecording.class, OWRecordingTag.class);
+		
 	}
 	
 	/*
