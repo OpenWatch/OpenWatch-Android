@@ -1,5 +1,7 @@
 package net.openwatch.reporter.constants;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 /**
@@ -10,6 +12,9 @@ import java.util.regex.Pattern;
  *
  */
 public class Constants {
+	// Date Formatter for OW server time
+	public static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+
 	// SharedPreferences titles
 	public static final String PROFILE_PREFS = "Profile";
 	

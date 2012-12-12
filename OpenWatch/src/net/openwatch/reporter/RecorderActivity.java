@@ -57,10 +57,7 @@ public class RecorderActivity extends Activity implements
 	 */
 	ChunkedRecorderListener chunk_listener = new ChunkedRecorderListener(){
 		Context c; // for db transactions
-		
-		// OW Server date formatter
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
-		
+				
 		public void setContext(Context c){
 			this.c = c;
 		}
@@ -74,7 +71,7 @@ public class RecorderActivity extends Activity implements
 		@Override
 		public void encoderStarted(Date start_date) {
 			setupSDF();
-			new MediaSignalTask().execute("start", sdf.format(start_date));
+			new MediaSignalTask().execute("start", Constants.sdf.format(start_date));
 			
 		}
 
@@ -82,14 +79,14 @@ public class RecorderActivity extends Activity implements
 		public void encoderStopped(Date start_date, Date stop_date,
 				String hq_filename, ArrayList<String> all_files) {
 			setupSDF();
-			Log.i(TAG,"start-date: " + sdf.format(start_date) + " stop-date: " + sdf.format(stop_date));
-			new MediaSignalTask().execute("end", sdf.format(start_date), sdf.format(stop_date), new JSONArray(all_files).toString());
+			Log.i(TAG,"start-date: " + Constants.sdf.format(start_date) + " stop-date: " + Constants.sdf.format(stop_date));
+			new MediaSignalTask().execute("end", Constants.sdf.format(start_date), Constants.sdf.format(stop_date), new JSONArray(all_files).toString());
 			new MediaSignalTask().execute("hq", hq_filename);
 		}
 		
 		private void setupSDF(){
-			if(!sdf.getTimeZone().equals(TimeZone.getTimeZone("UTC")))
-					sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+			if(!Constants.sdf.getTimeZone().equals(TimeZone.getTimeZone("UTC")))
+					Constants.sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 		}
 		
 		class MediaSignalTask extends AsyncTask<String, Void, Void> {

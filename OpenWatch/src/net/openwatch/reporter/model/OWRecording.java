@@ -1,14 +1,13 @@
 package net.openwatch.reporter.model;
 
-import java.util.List;
-
+import java.util.Date;
 import com.orm.androrm.Model;
 import com.orm.androrm.field.CharField;
 import com.orm.androrm.field.DoubleField;
 import com.orm.androrm.field.IntegerField;
 import com.orm.androrm.field.ManyToManyField;
 
-import net.openwatch.reporter.constants.DBConstants;
+import net.openwatch.reporter.constants.Constants;
 
 
 public class OWRecording extends Model{
@@ -35,6 +34,7 @@ public class OWRecording extends Model{
 		description = new CharField();
 		user_id = new IntegerField();
 		creation_time = new CharField();
+		creation_time.set(Constants.sdf.format(new Date()));
 		first_posted = new CharField();
 		uuid = new CharField();
 		last_edited = new CharField();
@@ -46,7 +46,6 @@ public class OWRecording extends Model{
 		end_lon = new DoubleField();
 		tags = new ManyToManyField<OWRecording, OWRecordingTag> (OWRecording.class, OWRecordingTag.class);
 	}
-
 	
 	/*
 	recording: {
