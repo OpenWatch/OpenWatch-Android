@@ -42,7 +42,7 @@ import net.openwatch.reporter.contentprovider.OWContentProvider;
 /**
  * Demonstration of the implementation of a custom Loader.
  */
-public class MyFeedFragmentActivity extends FragmentActivity {
+public class RemoteFeedFragmentActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,18 +52,18 @@ public class MyFeedFragmentActivity extends FragmentActivity {
 
         // Create the list fragment and add it as our sole content.
         if (fm.findFragmentById(android.R.id.content) == null) {
-            LocalRecordingsListFragment list = new LocalRecordingsListFragment();
+            RemoteRecordingsListFragment list = new RemoteRecordingsListFragment();
             fm.beginTransaction().add(android.R.id.content, list).commit();
         }
     }
 
 
-    public static class LocalRecordingsListFragment extends ListFragment
+    public static class RemoteRecordingsListFragment extends ListFragment
             implements LoaderManager.LoaderCallbacks<Cursor> {
 
         // This is the Adapter being used to display the list's data.
         //AppListAdapter mAdapter;
-    	OWLocalRecordingAdapter mAdapter;
+    	OWRecordingAdapter mAdapter;
 
         // If non-null, this is the current filter the user has provided.
         String mCurFilter;
@@ -81,7 +81,7 @@ public class MyFeedFragmentActivity extends FragmentActivity {
             setHasOptionsMenu(true);
 
             // Initialize adapter without cursor. Let loader provide it when ready
-            mAdapter = new OWLocalRecordingAdapter(getActivity(), null); 
+            mAdapter = new OWRecordingAdapter(getActivity(), null); 
             setListAdapter(mAdapter);
 
             // Start out with a progress indicator.
@@ -148,7 +148,8 @@ public class MyFeedFragmentActivity extends FragmentActivity {
 		static final String[] PROJECTION = new String[] {
 			DBConstants.ID,
 			DBConstants.RECORDINGS_TABLE_TITLE,
-			DBConstants.RECORDINGS_TABLE_CREATION_TIME,
+			DBConstants.RECORDINGS_TABLE_VIEWS,
+			DBConstants.RECORDINGS_TABLE_ACTIONS,
 			DBConstants.RECORDINGS_TABLE_THUMB_URL
 
 	    };
@@ -156,7 +157,7 @@ public class MyFeedFragmentActivity extends FragmentActivity {
 		@Override
 		public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
 			// TODO Auto-generated method stub
-			Uri baseUri = OWContentProvider.LOCAL_RECORDING_URI;
+			Uri baseUri = OWContentProvider.REMOTE_RECORDING_URI;
 			String selection = null;
             String[] selectionArgs = null;
             String order = null;

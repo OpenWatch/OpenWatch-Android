@@ -37,7 +37,7 @@ public class OWLocalRecordingAdapter extends SimpleCursorAdapter {
         view_cache.date.setText(cursor.getString(view_cache.date_col));
         //TODO: droidfu's WebImageView
         
-        view.setTag(R.id.list_item_cache, cursor.getInt(view_cache._id_col));
+        view.setTag(R.id.list_item_model, cursor.getInt(view_cache._id_col));
 	}
 	
 	// Cache the views within a ListView row item 

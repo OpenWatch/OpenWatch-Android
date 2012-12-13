@@ -51,8 +51,10 @@ public class MainActivity extends Activity {
 		boolean authenticated = profile.getBoolean(Constants.AUTHENTICATED, false);
 		boolean db_initialized = profile.getBoolean(Constants.DB_READY, false);
 		
-		if(!db_initialized){
-			DatabaseManager.setupDB(this);
+		DatabaseManager.setupDB(this); // do this every time to auto handle migrations
+		if(db_initialized){
+			DatabaseManager.pointToDB(); // ensure androrm is set to our custom Database name.
+			//DatabaseManager.testDB(this);
 		}
 		
 		if(authenticated){

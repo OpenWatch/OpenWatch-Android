@@ -2,13 +2,15 @@ package net.openwatch.reporter.constants;
 
 public class DBConstants {
 	
-	public static final String ID = "mId";
+	public static final String ID = "_id";
 	
 	// Recordings Database table and column names
 	// These correlate to field names in OWRecording
 	public static final String DB_NAME = "OpenWatchDB";
 	public static final String LOCAL_RECORDINGS_TABLENAME = "owlocalrecording";
-	public static final String RECORDINGS_TABLENAME = "Recordings";
+	public static final String TAG_TABLENAME = "owrecordingtag";
+	public static final String USER_TABLENAME = "owuser";
+	public static final String REMOTE_RECORDINGS_TABLENAME = "owrecording";
 	public static final String RECORDINGS_TABLE_TITLE = "title";
 	public static final String RECORDINGS_TABLE_DESC = "description";
 	public static final String RECORDINGS_TABLE_THUMB_URL = "thumb_url";
@@ -24,6 +26,8 @@ public class DBConstants {
 	public static final String RECORDINGS_TABLE_BEGIN_LON = "begin_lon";
 	public static final String RECORDINGS_TABLE_END_LAT = "end_lat";
 	public static final String RECORDINGS_TABLE_END_LON = "end_lon";
+	public static final String RECORDINGS_TABLE_VIEWS = "views";
+	public static final String RECORDINGS_TABLE_ACTIONS = "actions";
 	
 
 }

@@ -40,7 +40,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_below="@id/header"
-        android:layout_marginTop="3dp"
         android:ellipsize="marquee"
         android:singleLine="true"
         android:text="2012-06-21 4:20:00"
@@ -51,10 +50,8 @@
         android:layout_width="15dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/header"
-        android:layout_marginRight="3dp"
-        android:layout_marginTop="3dp"
+        android:layout_margin="3dp"
         android:layout_toLeftOf="@id/date"
-        android:layout_marginLeft="3dp"
         android:src="@drawable/calendar" />
 
 </RelativeLayout>

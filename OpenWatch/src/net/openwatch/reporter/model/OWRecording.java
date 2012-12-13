@@ -15,7 +15,7 @@ import net.openwatch.reporter.constants.Constants;
 
 
 public class OWRecording extends Model{
-	
+	/*
 	public CharField title = new CharField();
 	public CharField description = new CharField();
 	public CharField thumb_url = new CharField();
@@ -32,12 +32,32 @@ public class OWRecording extends Model{
 	public DoubleField begin_lon = new DoubleField();
 	public DoubleField end_lat = new DoubleField();
 	public DoubleField end_lon = new DoubleField();
+	*/
+	
+	public CharField title;
+	public CharField description;
+	public CharField thumb_url;
+	public IntegerField user_id;
+	public CharField username; 
+	// username is queried often by ListViews, so it makes sense to duplicate info for performance 
+	public CharField creation_time;
+	public CharField first_posted;
+	public CharField uuid;
+	public CharField last_edited;
+	public IntegerField server_id;
+	public CharField video_url;
+	public DoubleField begin_lat;
+	public DoubleField begin_lon;
+	public DoubleField end_lat;
+	public DoubleField end_lon;
+	public IntegerField views;
+	public IntegerField actions;
 
 	public ManyToManyField<OWRecording, OWRecordingTag> tags;
 	
 	public OWRecording(){
 		super();
-		/*
+		
 		title = new CharField();
 		description = new CharField();
 		user_id = new IntegerField();
@@ -54,7 +74,9 @@ public class OWRecording extends Model{
 		begin_lon = new DoubleField();
 		end_lat = new DoubleField();
 		end_lon = new DoubleField();
-		*/
+		views = new IntegerField();
+		actions = new IntegerField();
+		
 		tags = new ManyToManyField<OWRecording, OWRecordingTag> (OWRecording.class, OWRecordingTag.class);
 		
 	}

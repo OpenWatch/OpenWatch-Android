@@ -1,18 +1,12 @@
 package net.openwatch.reporter;
 
 import java.io.File;
-import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
 
 import org.json.JSONArray;
-
-import com.orm.androrm.DatabaseAdapter;
 
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.file.FileUtils;
@@ -57,6 +51,7 @@ public class RecorderActivity extends Activity implements
 	 * ChunkedRecorderListener is set on FFChunkedAudioVideoEncoder 
 	 */
 	ChunkedRecorderListener chunk_listener = new ChunkedRecorderListener(){
+		private static final String TAG = "ChunkedRecorderListener";
 		Context c; // for db transactions
 		String recording_id; // recording uuid for OW service
 		int owlocalrecording_id = -1; // database id for OWLocalRecording
@@ -102,7 +97,7 @@ public class RecorderActivity extends Activity implements
 		
 		class MediaSignalTask extends AsyncTask<String, Void, Void> {
 	        protected Void doInBackground(String... command) {
-	        	Log.i(TAG, "sendMediaCapture command: " + command[0] + " command length: " + command.length);
+	        	Log.i(TAG, "sendMediaCapture command: " + command[0] + " command length: " + command.length + " recording_id: " + recording_id);
 	        	SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
 	            String public_upload_token = profile.getString(Constants.PUB_TOKEN, "");
 	            if(public_upload_token.compareTo("") == 0 || recording_id == null)
@@ -111,30 +106,35 @@ public class RecorderActivity extends Activity implements
 	        	if(command[0].compareTo("start") == 0){
 	        		if(command.length == 2){
 	        			// make db entry
-	        			OWLocalRecording recording = new OWLocalRecording();
-	    	        	recording.initializeRecording(c, recording_id, 0, 0);
-	    	        	// make network request
-	    	        	owlocalrecording_id = recording.getId();
+	        			if(recording_id != null){
+		        			OWLocalRecording recording = new OWLocalRecording();
+		    	        	recording.initializeRecording(c.getApplicationContext(), command[1], recording_id, 0.0, 0.0);
+		    	        	Log.i(TAG, "initialize OWLocalRecording. id: " + String.valueOf(recording.getId()));
+		    	        	// make network request
+		    	        	owlocalrecording_id = recording.getId();
+	        			}
 	                	MediaServerRequests.start(public_upload_token, recording_id, command[1]);
 	                }
 	        	} else if(command[0].compareTo("end") == 0){
 	        		if(command.length == 4){
 	        			if(all_files != null){
-	        				OWLocalRecording recording = (OWLocalRecording) OWLocalRecording.objects(c, OWLocalRecording.class).get(owlocalrecording_id);
+	        				OWLocalRecording recording = (OWLocalRecording) OWLocalRecording.objects(c.getApplicationContext(), OWLocalRecording.class).get(owlocalrecording_id);
 		        			String last_segment = all_files.get(all_files.size()-1);
 		        			String filename = last_segment.substring(last_segment.lastIndexOf(File.separator),last_segment.length());
 		        			String filepath = last_segment.substring(0,last_segment.lastIndexOf(File.separator));
-		        			recording.addSegment(c, filepath, filename);
+		        			recording.addSegment(c.getApplicationContext(), filepath, filename);
+		        			Log.i(TAG, "owlocalrecording addsegment");
 	        			}
 	        			MediaServerRequests.end(public_upload_token, recording_id, command[1], command[2], command[3]);
 	        		}
 	        	} else if(command[0].compareTo("chunk") == 0){
 	        		if(command.length == 2){
 	        			if(owlocalrecording_id != -1){
-		        			OWLocalRecording recording = (OWLocalRecording) OWLocalRecording.objects(c, OWLocalRecording.class).get(owlocalrecording_id);
+		        			OWLocalRecording recording = (OWLocalRecording) OWLocalRecording.objects(c.getApplicationContext(), OWLocalRecording.class).get(owlocalrecording_id);
 		        			String filename = command[1].substring(command[1].lastIndexOf(File.separator),command[1].length());
 		        			String filepath = command[1].substring(0,command[1].lastIndexOf(File.separator));
-		        			recording.addSegment(c, filepath, filename);
+		        			recording.addSegment(c.getApplicationContext(), filepath, filename);
+		        			Log.i(TAG, "owlocalrecording addsegment");
 	        			}
 	        			MediaServerRequests.sendLQChunk(public_upload_token, recording_id, command[1]);
 	        		}
@@ -187,14 +187,14 @@ public class RecorderActivity extends Activity implements
 
 		}); // end onClickListener
 		
-		chunk_listener.setContext(this);
-		av_recorder.setChunkedRecorderListener(chunk_listener);
-		
 		if(!av_recorder.is_recording){
 			try {
 				// Create an instance of Camera
 				mCamera = getCameraInstance();
 				prepareOutputLocation();
+				chunk_listener.setContext(this);
+				chunk_listener.setRecordingID(recording_id);
+				av_recorder.setChunkedRecorderListener(chunk_listener);
 			} catch (Exception e) {
 				Log.e("Recorder init error", "Could not init Camera");
 				e.printStackTrace();

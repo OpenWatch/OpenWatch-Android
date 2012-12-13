@@ -30,6 +30,7 @@ import android.widget.TabWidget;
 import java.util.ArrayList;
 
 import net.openwatch.reporter.feeds.MyFeedFragmentActivity;
+import net.openwatch.reporter.feeds.RemoteFeedFragmentActivity;
 
 /**
  * Demonstrates combining a TabHost with a ViewPager to implement a tab UI
@@ -55,6 +56,8 @@ public class FeedActivity extends FragmentActivity {
 
         mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_local_user_recordings)).setIndicator(getString(R.string.tab_local_user_recordings)),
                 MyFeedFragmentActivity.LocalRecordingsListFragment.class, null);
+        mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_hot)).setIndicator(getString(R.string.tab_hot)),
+                RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, null);
 
         if (savedInstanceState != null) {
             mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
