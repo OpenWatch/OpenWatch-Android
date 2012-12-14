@@ -16,6 +16,7 @@
 
 package net.openwatch.reporter.feeds;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import net.openwatch.reporter.LocalRecordingViewActivity;
 import net.openwatch.reporter.R;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
@@ -119,7 +121,10 @@ public class MyFeedFragmentActivity extends FragmentActivity {
 
         @Override public void onListItemClick(ListView l, View v, int position, long id) {
             // Insert desired behavior here.
-            Log.i("LoaderCustom", "Item clicked: " + id);
+            //Log.i("LoaderCustom", "Item clicked: " + id);
+        	Intent i = new Intent(this.getActivity(), LocalRecordingViewActivity.class);
+        	startActivity(i);
+        	
         }
 
         
