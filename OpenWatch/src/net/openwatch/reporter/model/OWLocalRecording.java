@@ -3,6 +3,7 @@ package net.openwatch.reporter.model;
 import java.util.Date;
 
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.contentprovider.OWContentProvider;
 import android.content.Context;
 
 import com.orm.androrm.Model;
@@ -88,6 +89,13 @@ public class OWLocalRecording extends Model {
 		segment.filename.set(filename);
 		segment.local_recording.set(this);
 		segment.save(c);
+	}
+	
+	@Override
+	public boolean save(Context context) {
+		// notify the ContentProvider that the dataset has changed
+		context.getContentResolver().notifyChange(OWContentProvider.getLocalRecordingUri(this.getId()), null);
+		return super.save(context);
 	}
 
 }

@@ -28,9 +28,14 @@ public class OWContentProvider extends ContentProvider {
      private static final int REMOTE_RECORDINGS = 3;
      private static final int REMOTE_RECORDING_ID = 4;
      
+     // Externally accessed uris
      public static final Uri LOCAL_RECORDING_URI = AUTHORITY_URI.buildUpon().appendPath(DBConstants.LOCAL_RECORDINGS_TABLENAME).build();
      public static final Uri REMOTE_RECORDING_URI = AUTHORITY_URI.buildUpon().appendPath(DBConstants.REMOTE_RECORDINGS_TABLENAME).build();
 	
+     public static Uri getLocalRecordingUri(int model_id){
+    	 return LOCAL_RECORDING_URI.buildUpon().appendEncodedPath("/" + String.valueOf(model_id)).build();
+     }
+     
      public OWContentProvider(){
 	// Create and initialize URI matcher.
     mUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);

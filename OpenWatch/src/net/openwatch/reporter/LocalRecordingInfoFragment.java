@@ -104,9 +104,12 @@ public class LocalRecordingInfoFragment extends Fragment {
     @Override
     public void onPause(){
     	super.onPause();
+    	Log.i(TAG, "Saving recording. " + title.getText().toString() + " : " + description.getText().toString());
+    	//this.getActivity().getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder)
     	OWLocalRecording recording = OWLocalRecording.objects(getActivity().getApplicationContext(), OWLocalRecording.class).get(LocalRecordingViewActivity.model_id);
     	recording.title.set(title.getText().toString());
     	recording.description.set(description.getText().toString());
+    	recording.save(getActivity().getApplicationContext());
     }
 
 }
