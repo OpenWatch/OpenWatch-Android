@@ -5,6 +5,7 @@ import net.openwatch.reporter.constants.DBConstants;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,7 +37,7 @@ public class OWLocalRecordingAdapter extends SimpleCursorAdapter {
         view_cache.title.setText(cursor.getString(view_cache.title_col));
         view_cache.date.setText(cursor.getString(view_cache.date_col));
         //TODO: droidfu's WebImageView
-        
+        //Log.i("OWLocalRecordingAdapter", "got id: " + String.valueOf(cursor.getInt(view_cache._id_col)));
         view.setTag(R.id.list_item_model, cursor.getInt(view_cache._id_col));
 	}
 	

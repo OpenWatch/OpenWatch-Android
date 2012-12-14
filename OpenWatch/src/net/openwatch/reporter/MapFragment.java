@@ -15,7 +15,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapFragment extends SupportMapFragment {
     private GoogleMap mMap;
-    private LatLng mPosFija;
+    private LatLng mLocation;
 
     public MapFragment() {
         super();
@@ -23,8 +23,13 @@ public class MapFragment extends SupportMapFragment {
 
     public static MapFragment newInstance(LatLng posicion) {
         MapFragment frag = new MapFragment();
-        frag.mPosFija = posicion;
+        frag.mLocation = posicion;
         return frag;
+    }
+    
+    public void centerOnLocation(LatLng location){
+    	mLocation = location;
+    	initMap();
     }
 
     @Override
@@ -43,18 +48,21 @@ public class MapFragment extends SupportMapFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        //initMap();
+        if(LocalRecordingViewActivity.recording != null){
+        	mLocation = new LatLng(LocalRecordingViewActivity.recording.begin_lat.get(), LocalRecordingViewActivity.recording.end_lat.get());
+        	initMap();
+        }
         return view;
     }
 
     private void initMap() {
         UiSettings settings = getMap().getUiSettings();
-        settings.setAllGesturesEnabled(false);
+        //settings.setAllGesturesEnabled(false);
         settings.setMyLocationButtonEnabled(false);
 
-        getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(mPosFija, 16));
+        getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(mLocation, 16));
         getMap().addMarker(
-                new MarkerOptions().position(mPosFija)
+                new MarkerOptions().position(mLocation)
                         .icon(BitmapDescriptorFactory
                                 .fromResource(R.drawable.marker)));
     }

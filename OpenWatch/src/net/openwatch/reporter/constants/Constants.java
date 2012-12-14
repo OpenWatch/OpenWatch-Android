@@ -29,6 +29,7 @@ public class Constants {
 	public static final String PUB_TOKEN = "public_upload_token"; 		// used for profile and to parse server login response
 	public static final String PRIV_TOKEN = "private_upload_token";		// used for profile and to parse server login response
 	public static final String REGISTERED = "registered"; 
+	public static final String VIEW_TAG_MODEL = "model";		// key set on listview item holding corresponding model pk
 	
 	// Email REGEX
 	public static final Pattern EMAIL_ADDRESS_PATTERN = Pattern.compile(

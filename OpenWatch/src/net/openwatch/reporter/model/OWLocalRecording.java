@@ -36,6 +36,7 @@ public class OWLocalRecording extends Model {
 	
 	
 	public CharField filepath;
+	public CharField hq_filepath;
 	public BooleanField hq_synced;
 	public BooleanField lq_synced;
 	
@@ -64,6 +65,7 @@ public class OWLocalRecording extends Model {
 		end_lon = new DoubleField();
 		
 		filepath = new CharField();
+		hq_filepath = new CharField();
 		hq_synced = new BooleanField();
 		lq_synced = new BooleanField();
 		

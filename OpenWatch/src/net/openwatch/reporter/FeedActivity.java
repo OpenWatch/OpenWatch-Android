@@ -22,6 +22,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
@@ -41,12 +42,17 @@ public class FeedActivity extends FragmentActivity {
     TabHost mTabHost;
     ViewPager  mViewPager;
     TabsAdapter mTabsAdapter;
+    
+    public static int display_width = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.fragment_tabs_pager);
+        
+        getDisplayWidth();
+        
         mTabHost = (TabHost)findViewById(android.R.id.tabhost);
         mTabHost.setup();
 
@@ -174,5 +180,14 @@ public class FeedActivity extends FragmentActivity {
         @Override
         public void onPageScrollStateChanged(int state) {
         }
+    }
+    
+    /**
+     * Measure display width so the view pager can implement its 
+     * custom behavior re: paging on the map view
+     */
+    private void getDisplayWidth(){
+    	Display display = getWindowManager().getDefaultDisplay();
+        display_width = display.getWidth();
     }
 }

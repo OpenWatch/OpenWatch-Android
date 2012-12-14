@@ -139,8 +139,12 @@ public class RecorderActivity extends Activity implements
 	        			MediaServerRequests.sendLQChunk(public_upload_token, recording_id, command[1]);
 	        		}
 	        	} else if(command[0].compareTo("hq") == 0){
-	        		if(command.length == 2)
+	        		if(command.length == 2){
+	        			OWLocalRecording recording = (OWLocalRecording) OWLocalRecording.objects(c.getApplicationContext(), OWLocalRecording.class).get(owlocalrecording_id);
+	        			recording.hq_filepath.set(command[1]);
+	        			recording.save(c.getApplicationContext());
 	        			MediaServerRequests.sendHQFile(public_upload_token, recording_id, command[1]);
+	        		}
 	        	}
 	        	return null;
 	        }

@@ -38,6 +38,7 @@ import android.view.View;
 import android.widget.ListView;
 import net.openwatch.reporter.LocalRecordingViewActivity;
 import net.openwatch.reporter.R;
+import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
 
@@ -45,6 +46,8 @@ import net.openwatch.reporter.contentprovider.OWContentProvider;
  * Demonstration of the implementation of a custom Loader.
  */
 public class MyFeedFragmentActivity extends FragmentActivity {
+	
+	private static final String TAG = "MyFeedFragmentActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +126,13 @@ public class MyFeedFragmentActivity extends FragmentActivity {
             // Insert desired behavior here.
             //Log.i("LoaderCustom", "Item clicked: " + id);
         	Intent i = new Intent(this.getActivity(), LocalRecordingViewActivity.class);
+        	try{
+        		i.putExtra(Constants.VIEW_TAG_MODEL, (Integer)v.getTag(R.id.list_item_model));
+        		//Log.i(TAG, "got model_id: " + String.valueOf(i.getIntExtra("model", 0)));
+        	}catch(Exception e){
+        		Log.e(TAG, "failed to load list item model tag");
+        		return;
+        	}
         	startActivity(i);
         	
         }
