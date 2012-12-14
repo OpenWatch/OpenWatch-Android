@@ -38,8 +38,8 @@ public class MapViewPager extends ViewPager {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
     
-    	return true; // signal touch event is handled
-       //return super.onTouchEvent(event);
+    	//return true; // signal touch event is handled
+       return super.onTouchEvent(event);
 
     }
 
@@ -49,11 +49,11 @@ public class MapViewPager extends ViewPager {
 	    	switch (event.getAction()) {
 	        case MotionEvent.ACTION_DOWN:
 	            lastX = event.getX();
-	            Log.d("DOWN","X: " + String.valueOf(lastX) + " MaxX: " + String.valueOf(maxX));
+	            //Log.d("DOWN","X: " + String.valueOf(lastX) + " MaxX: " + String.valueOf(maxX));
 	            break;
 	        case MotionEvent.ACTION_MOVE:
 	            if(lastX < maxX){
-	            	Log.i(TAG, "aborting pager scroll");
+	            	//Log.i(TAG, "aborting pager scroll");
 	                return false;
 	            }
     	}
