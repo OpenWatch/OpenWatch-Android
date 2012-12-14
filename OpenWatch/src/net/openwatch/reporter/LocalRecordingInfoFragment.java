@@ -26,8 +26,8 @@ public class LocalRecordingInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.local_recording_info_view, container, false);
-       ((TextView)v.findViewById(R.id.title)).setText("Injected title");
-       ((TextView)v.findViewById(R.id.descriptionLabel)).setText("Injected description");
+       ((TextView)v.findViewById(R.id.editTitle)).setText("Injected title");
+       ((TextView)v.findViewById(R.id.editDescription)).setText("Injected description");
         return v;
     }
 
