@@ -13,6 +13,7 @@ import com.loopj.android.http.*;
 
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.http.HttpClient;
+import net.openwatch.reporter.http.OWServiceRequests;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -209,9 +210,7 @@ public class LoginActivity extends Activity {
      * assuming mEmail and mPassword are pre-populated from the EditText fields
      */
     public void UserLogin(){
-    	http_client = HttpClient.setupHttpClient(this);
-    	Log.i(TAG,"Commencing login to: " + Constants.OW_URL + Constants.OW_LOGIN);
-    	http_client.post(null, Constants.OW_URL + Constants.OW_LOGIN, getAuthJSON(), "application/json", new JsonHttpResponseHandler(){
+    	JsonHttpResponseHandler  response_handler = new JsonHttpResponseHandler(){
     		
     		@Override
     		public void onStart(){
@@ -274,7 +273,9 @@ public class LoginActivity extends Activity {
     			Log.i(TAG,"OW login finish");
     			http_client = null;
     	     }
-    	});
+    	};
+    	
+    	OWServiceRequests.UserLogin(getApplicationContext(), getAuthJSON(), response_handler);
     	
     }
     
@@ -283,9 +284,7 @@ public class LoginActivity extends Activity {
      * assuming mEmail and mPassword are pre-populated from the EditText fields
      */
     public void UserSignup(){
-    	http_client = HttpClient.setupHttpClient(this);
-    	Log.i(TAG,"Commencing signup to: " + Constants.OW_URL + Constants.OW_SIGNUP);
-    	http_client.post(null, Constants.OW_URL + Constants.OW_SIGNUP, getAuthJSON(), "application/json", new JsonHttpResponseHandler(){
+    	JsonHttpResponseHandler response_handler = new JsonHttpResponseHandler(){
     		
     		@Override
     		public void onSuccess(JSONObject response){
@@ -338,42 +337,19 @@ public class LoginActivity extends Activity {
     			Log.i(TAG,"OW login finish");
     			http_client = null;
     	     }
-    	});
+    	};
+    	
+    	OWServiceRequests.UserSignup(getApplicationContext(), getAuthJSON(), response_handler);
     	
     }
+    
     /**
      * Registers this mobile app with the OpenWatch service
      * sends the application version number
      */
     public void RegisterApp(String public_upload_token){
-    	PackageInfo pInfo;
-    	String app_version = "Android-";
-		try {
-			pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-			app_version += pInfo.versionName;
-		} catch (NameNotFoundException e) {
-			Log.e(TAG, "Unable to read PackageName in RegisterApp");
-			e.printStackTrace();
-			app_version += "unknown";
-		}
-		
-		HashMap<String,String> params = new HashMap<String, String>();
-    	params.put(Constants.PUB_TOKEN, public_upload_token);
-    	params.put(Constants.OW_SIGNUP_TYPE, app_version);
-    	Gson gson = new Gson();
-    	StringEntity se = null;
-    	try {
-			se = new StringEntity(gson.toJson(params));
-		} catch (UnsupportedEncodingException e1) {
-			Log.e(TAG,"Failed to put JSON string in StringEntity");
-			e1.printStackTrace();
-			return;
-		}
-		
 		// Post public_upload_token, signup_type
-		http_client = HttpClient.setupHttpClient(this);
-    	Log.i(TAG,"Commencing ap registration to: " + Constants.OW_URL + Constants.OW_REGISTER + " pub_token: " + public_upload_token + " version: " + app_version);
-    	http_client.post(null, Constants.OW_URL + Constants.OW_REGISTER, se, "application/json", new JsonHttpResponseHandler(){
+    	JsonHttpResponseHandler response_handler = new JsonHttpResponseHandler(){
     		@Override
     		public void onSuccess(JSONObject response){
     			Log.i(TAG,"OW app register success: " +  response);
@@ -414,7 +390,9 @@ public class LoginActivity extends Activity {
     			Log.i(TAG,"OW app registration finish");
     			http_client = null;
     	     }
-    	});
+    	};
+    	
+    	OWServiceRequests.RegisterApp(getApplicationContext(), public_upload_token, response_handler);
 		
     	
     }

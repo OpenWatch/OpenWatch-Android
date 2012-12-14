@@ -29,5 +29,10 @@ public class DBConstants {
 	public static final String RECORDINGS_TABLE_VIEWS = "views";
 	public static final String RECORDINGS_TABLE_ACTIONS = "actions";
 	
+	// Tag table
+	public static final String TAG_TABLE_NAME = "name";
+	public static final String TAB_TABLE_FEATURED = "is_featured";
+	public static final String TAG_TABLE_RECORDINGS = "recordings";
+	
 
 }

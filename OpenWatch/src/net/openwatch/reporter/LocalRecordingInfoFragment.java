@@ -1,15 +1,11 @@
 package net.openwatch.reporter;
 
-import com.orm.androrm.DatabaseAdapter;
-
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.model.OWLocalRecording;
-import android.content.ContentValues;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,8 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.MediaController;
-import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
 import android.widget.VideoView;
 
 public class LocalRecordingInfoFragment extends Fragment {
@@ -27,6 +21,7 @@ public class LocalRecordingInfoFragment extends Fragment {
 	
 	EditText title;
 	EditText description;
+	EditText tags;
 
 	
 	static final String[] PROJECTION = new String[] {
@@ -47,6 +42,8 @@ public class LocalRecordingInfoFragment extends Fragment {
 		
 		title = ((EditText)v.findViewById(R.id.editTitle));
 		description = ((EditText)v.findViewById(R.id.editDescription));
+		tags = ((EditText)v.findViewById(R.id.editTags));
+		//tags.setOn
 		try{
 			OWLocalRecording recording = LocalRecordingViewActivity.recording;
 			if(recording.title.get() != null)
