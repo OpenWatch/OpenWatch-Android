@@ -12,6 +12,7 @@ import com.orm.androrm.field.IntegerField;
 import com.orm.androrm.field.ManyToManyField;
 
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.contentprovider.OWContentProvider;
 
 
 public class OWRecording extends Model{
@@ -79,6 +80,13 @@ public class OWRecording extends Model{
 		
 		tags = new ManyToManyField<OWRecording, OWRecordingTag> (OWRecording.class, OWRecordingTag.class);
 		
+	}
+	
+	@Override
+	public boolean save(Context context) {
+		// notify the ContentProvider that the dataset has changed
+		context.getContentResolver().notifyChange(OWContentProvider.getRecordingUri(this.getId()), null);
+		return super.save(context);
 	}
 	
 	/*

@@ -37,17 +37,17 @@
         android:layout_height="wrap_content"
         android:text="@string/tags" />
     
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/editTags"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10" />
 
-    <RelativeLayout
+    <net.openwatch.reporter.view.TagPoolLayout
         android:id="@+id/tagGroup"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="true" >
-    </RelativeLayout>
+        android:layout_height="match_parent"
+        android:gravity="left|top"
+        android:animateLayoutChanges="true" />
 
 </LinearLayout>

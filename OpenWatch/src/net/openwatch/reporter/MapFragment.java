@@ -1,5 +1,6 @@
 package net.openwatch.reporter;
 
+import net.openwatch.reporter.model.OWLocalRecording;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,8 +49,10 @@ public class MapFragment extends SupportMapFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        if(LocalRecordingViewActivity.recording != null){
-        	mLocation = new LatLng(LocalRecordingViewActivity.recording.begin_lat.get(), LocalRecordingViewActivity.recording.end_lat.get());
+        if(LocalRecordingViewActivity.model_id != -1){
+        	OWLocalRecording recording = OWLocalRecording.objects(getActivity().getApplicationContext(), OWLocalRecording.class)
+    				.get(LocalRecordingViewActivity.model_id);
+        	mLocation = new LatLng(recording.begin_lat.get(), recording.end_lat.get());
         	initMap();
         }
         return view;

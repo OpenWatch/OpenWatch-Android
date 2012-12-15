@@ -2,26 +2,28 @@ package net.openwatch.reporter;
 
 import net.openwatch.reporter.FeedActivity.TabsAdapter;
 import net.openwatch.reporter.constants.Constants;
-import net.openwatch.reporter.feeds.MyFeedFragmentActivity;
-import net.openwatch.reporter.feeds.RemoteFeedFragmentActivity;
 import net.openwatch.reporter.model.OWLocalRecording;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
-import android.os.Bundle;
 import android.app.Activity;
+import android.content.Context;
+import android.content.res.Configuration;
+import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.MediaController;
 import android.widget.TabHost;
+import android.widget.VideoView;
 
 public class LocalRecordingViewActivity extends FragmentActivity {
 
 	private static final String TAG = "LocalRecordingViewActivity";
+	
 	private GoogleMap mMap;
 	
 	TabHost mTabHost;
@@ -29,7 +31,6 @@ public class LocalRecordingViewActivity extends FragmentActivity {
     TabsAdapter mTabsAdapter;
     
     public static int model_id = -1;
-    public static OWLocalRecording recording;
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +42,8 @@ public class LocalRecordingViewActivity extends FragmentActivity {
         
         try{
         	model_id = getIntent().getExtras().getInt(Constants.VIEW_TAG_MODEL);
-        	recording = OWLocalRecording.objects(this, OWLocalRecording.class).get(model_id);
+        	setupVideoView(R.id.videoview, OWLocalRecording.objects(this, OWLocalRecording.class).get(model_id).hq_filepath.get());
+        	
         	//Log.i(TAG, "got model_id : " + String.valueOf(model_id));
         } catch (Exception e){
         	Log.e(TAG, "Could not load Intent extras");
@@ -71,6 +73,25 @@ public class LocalRecordingViewActivity extends FragmentActivity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.activity_local_recording_view, menu);
 		return true;
+	}
+	
+	public void setVideoViewVisible(boolean visible){
+		View video = findViewById(R.id.videoview);
+		if(visible){
+			video.setVisibility(View.VISIBLE);
+		}else{
+			video.setVisibility(View.GONE);
+		}
+			
+		
+	}
+	
+	public void setupVideoView(int view_id, String filepath){
+		VideoView myVideoView = (VideoView)findViewById(view_id);
+       myVideoView.setVideoURI(Uri.parse(filepath));
+       myVideoView.setMediaController(new MediaController(this));
+       myVideoView.requestFocus();
+       myVideoView.start();
 	}
 	
 

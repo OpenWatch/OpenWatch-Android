@@ -3,9 +3,11 @@ package net.openwatch.reporter.model;
 import java.util.Date;
 
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
 import android.content.Context;
 
+import com.orm.androrm.Filter;
 import com.orm.androrm.Model;
 import com.orm.androrm.QuerySet;
 import com.orm.androrm.field.BooleanField;
@@ -96,6 +98,12 @@ public class OWLocalRecording extends Model {
 		// notify the ContentProvider that the dataset has changed
 		context.getContentResolver().notifyChange(OWContentProvider.getLocalRecordingUri(this.getId()), null);
 		return super.save(context);
+	}
+	
+	public boolean hasTag(Context context, String tag_name){
+		Filter filter = new Filter();
+		filter.is(DBConstants.TAG_TABLE_NAME, tag_name);
+		return (this.tags.get(context, this).filter(filter).count() > 0);
 	}
 
 }
