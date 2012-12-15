@@ -2,6 +2,7 @@ package net.openwatch.reporter;
 
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.database.DatabaseManager;
+import net.openwatch.reporter.http.OWServiceRequests;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -47,21 +48,24 @@ public class MainActivity extends Activity {
 	 * @return
 	 */
 	public void checkUserStatus(){
+		
 		SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, 0);
 		boolean authenticated = profile.getBoolean(Constants.AUTHENTICATED, false);
 		boolean db_initialized = profile.getBoolean(Constants.DB_READY, false);
 	
 		if(!db_initialized){
-			DatabaseManager.setupDB(this); // do this every time to auto handle migrations
+			DatabaseManager.setupDB(getApplicationContext()); // do this every time to auto handle migrations
 			//DatabaseManager.testDB(this);
 		}else{
-			DatabaseManager.pointToDB(); // ensure androrm is set to our custom Database name.
+			DatabaseManager.registerModels(getApplicationContext()); // ensure androrm is set to our custom Database name.
 		}
 		
-		if(authenticated){
-			// TODO: Attempt to login with stored credentials
+		if(authenticated && db_initialized && !((OWApplication) this.getApplicationContext()).per_launch_sync){
+			// TODO: Attempt to login with stored credentials if we
+			// check this application state
+			OWServiceRequests.onLaunchSync(this.getApplicationContext()); // get list of tags, etc
 		}
-		else{
+		if(!authenticated){
 			Intent i = new Intent(this, LoginActivity.class	);
 			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 			String email = profile.getString(Constants.EMAIL, null);
