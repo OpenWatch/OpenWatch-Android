@@ -47,7 +47,7 @@ public class TagPoolLayout extends TableLayout {
 		int new_tag_width = new_tag.getWidth();
 		if(last_row == null || last_tag == null || new_tag_width + PIX_BUFFER >= last_row.getRight() - last_tag.getRight()){ // this is the first tag in new row
 			if(last_row != null && last_tag != null)
-				//Log.i(TAG, "new row spacing calc: " + String.valueOf(last_row.getRight()) + " - " + String.valueOf(last_tag.getRight()));
+				Log.i(TAG, "new row spacing calc: " + String.valueOf(last_row.getRight()) + " - " + String.valueOf(last_tag.getRight()));
 		
 			addTagToNewRow(new_tag);
 			
