@@ -9,6 +9,9 @@ import com.google.android.gms.maps.GoogleMap;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnPreparedListener;
+import android.media.MediaPlayer.OnVideoSizeChangedListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -23,48 +26,53 @@ import android.widget.VideoView;
 public class LocalRecordingViewActivity extends FragmentActivity {
 
 	private static final String TAG = "LocalRecordingViewActivity";
-	
+
 	private GoogleMap mMap;
-	
+
 	TabHost mTabHost;
-    ViewPager  mViewPager;
-    TabsAdapter mTabsAdapter;
-    
-    public static int model_id = -1;
-    
+	ViewPager mViewPager;
+	TabsAdapter mTabsAdapter;
+
+	public static int model_id = -1;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		setContentView(R.layout.activity_local_recording_view);
-        mTabHost = (TabHost)findViewById(android.R.id.tabhost);
-        mTabHost.setup();
-        
-        try{
-        	model_id = getIntent().getExtras().getInt(Constants.VIEW_TAG_MODEL);
-        	setupVideoView(R.id.videoview, OWLocalRecording.objects(this, OWLocalRecording.class).get(model_id).hq_filepath.get());
-        	
-        	//Log.i(TAG, "got model_id : " + String.valueOf(model_id));
-        } catch (Exception e){
-        	Log.e(TAG, "Could not load Intent extras");
-        }
+		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
+		mTabHost.setup();
 
-        mViewPager = (ViewPager)findViewById(R.id.pager);
+		try {
+			model_id = getIntent().getExtras().getInt(Constants.VIEW_TAG_MODEL);
+			setupVideoView(
+					R.id.videoview,
+					OWLocalRecording.objects(this, OWLocalRecording.class).get(
+							model_id).hq_filepath.get());
 
-        mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
+			// Log.i(TAG, "got model_id : " + String.valueOf(model_id));
+		} catch (Exception e) {
+			Log.e(TAG, "Could not load Intent extras");
+		}
 
-        mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_map)).setIndicator(getString(R.string.tab_map)),
-        		MapFragment.class, null);
-        mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_info)).setIndicator(getString(R.string.tab_info)),
-        		LocalRecordingInfoFragment.class, null);
+		mViewPager = (ViewPager) findViewById(R.id.pager);
 
-        if (savedInstanceState != null) {
-            mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
-        }
+		mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
+
+		mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_map))
+				.setIndicator(getString(R.string.tab_map)), MapFragment.class,
+				null);
+		mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_info))
+				.setIndicator(getString(R.string.tab_info)),
+				LocalRecordingInfoFragment.class, null);
+
+		if (savedInstanceState != null) {
+			mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
+		}
 	}
-	
+
 	@Override
-	protected void onResume(){
+	protected void onResume() {
 		super.onResume();
 	}
 
@@ -74,25 +82,39 @@ public class LocalRecordingViewActivity extends FragmentActivity {
 		getMenuInflater().inflate(R.menu.activity_local_recording_view, menu);
 		return true;
 	}
-	
-	public void setVideoViewVisible(boolean visible){
+
+	public void setVideoViewVisible(boolean visible) {
 		View video = findViewById(R.id.videoview);
-		if(visible){
+		if (visible) {
 			video.setVisibility(View.VISIBLE);
-		}else{
+		} else {
 			video.setVisibility(View.GONE);
 		}
-			
-		
+
 	}
-	
-	public void setupVideoView(int view_id, String filepath){
-		VideoView myVideoView = (VideoView)findViewById(view_id);
-       myVideoView.setVideoURI(Uri.parse(filepath));
-       myVideoView.setMediaController(new MediaController(this));
-       myVideoView.requestFocus();
-       myVideoView.start();
+
+	public void setupVideoView(int view_id, String filepath) {
+		VideoView video_view = (VideoView) findViewById(view_id);
+		video_view.setVideoURI(Uri.parse(filepath));
+		video_view.setOnPreparedListener(new OnPreparedListener() {
+			@Override
+			public void onPrepared(MediaPlayer mp) {
+				mp.setOnVideoSizeChangedListener(new OnVideoSizeChangedListener() {
+					@Override
+					public void onVideoSizeChanged(MediaPlayer mp, int width,
+							int height) {
+						MediaController mc = new MediaController(
+								LocalRecordingViewActivity.this);
+						VideoView video_view = (VideoView) findViewById(R.id.videoview);
+						video_view.setMediaController(mc);
+						mc.setAnchorView(video_view);
+						video_view.requestFocus();
+						video_view.start();
+					}
+				});
+			}
+		});
+		video_view.start();
 	}
-	
 
 }
