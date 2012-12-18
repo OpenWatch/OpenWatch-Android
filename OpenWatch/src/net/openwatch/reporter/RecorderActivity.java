@@ -183,7 +183,7 @@ public class RecorderActivity extends Activity implements
 			public void onClick(View v) {
 				if (av_recorder.is_recording) {
 					av_recorder.stopRecording();
-					Intent i = new Intent(RecorderActivity.this, MainActivity.class);
+					Intent i = new Intent(RecorderActivity.this, WhatHappenedActivity.class);
 					i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 					startActivity(i);
 				}

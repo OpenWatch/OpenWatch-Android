@@ -58,14 +58,19 @@
         </activity>
         <activity
             android:name="net.openwatch.reporter.LocalRecordingViewActivity"
-            android:label="@string/title_activity_local_recording_view"
-            android:configChanges="keyboardHidden" >
+            android:configChanges="keyboardHidden"
+            android:label="@string/title_activity_local_recording_view" >
         </activity>
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyD78e1qxX4_dB6w74tmykGJRECO-ucNQNY" >
         </meta-data>
+
+        <activity
+            android:name="net.openwatch.reporter.WhatHappenedActivity"
+            android:label="@string/title_activity_what_happened" >
+        </activity>
     </application>
 
 </manifest>

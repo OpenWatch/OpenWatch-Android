@@ -49,14 +49,16 @@
     <string name="loading_recordings">Loading Recordings</string>
     <string name="no_recordings">You have no recordings</string>
     <string name="title_activity_local_recording_view">LocalRecordingViewActivity</string>
-    
-    <!--  View Recording Activity -->
+
+    <!-- View Recording Activity -->
     <string name="tab_map">Map</string>
     <string name="tab_info">Info</string>
-    
     <string name="title">Title</string>
     <string name="description">Description</string>
     <string name="tags">Tags</string>
     
+    <!-- What Happened Activity -->
+    <string name="what_happened">What Happened?</string>
+    <string name="title_activity_what_happened">WhatHappenedActivity</string>
 
 </resources>
