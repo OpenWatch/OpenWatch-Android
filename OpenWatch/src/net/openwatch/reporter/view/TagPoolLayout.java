@@ -47,17 +47,17 @@ public class TagPoolLayout extends TableLayout {
 		int new_tag_width = new_tag.getWidth();
 		if(last_row == null || last_tag == null || new_tag_width + PIX_BUFFER >= last_row.getRight() - last_tag.getRight()){ // this is the first tag in new row
 			if(last_row != null && last_tag != null)
-				Log.i(TAG, "new row spacing calc: " + String.valueOf(last_row.getRight()) + " - " + String.valueOf(last_tag.getRight()));
+				//Log.i(TAG, "new row spacing calc: " + String.valueOf(last_row.getRight()) + " - " + String.valueOf(last_tag.getRight()));
 		
 			addTagToNewRow(new_tag);
 			
-			Log.i(TAG, "new tag view width: " + String.valueOf(new_tag.getRight()) + " right: " + String.valueOf(new_tag.getRight()));
+			//Log.i(TAG, "new tag view width: " + String.valueOf(new_tag.getRight()) + " right: " + String.valueOf(new_tag.getRight()));
 			return;
 		}
 		else{ // this tag will be appended to an existing row
 			last_row.addView(new_tag);
 			last_tag = new_tag;
-			Log.i(TAG, "new tag view width: " + String.valueOf(new_tag.getRight()) + " right: " + String.valueOf(new_tag.getRight()));
+			//Log.i(TAG, "new tag view width: " + String.valueOf(new_tag.getRight()) + " right: " + String.valueOf(new_tag.getRight()));
 		}
 	}
 	
@@ -83,14 +83,21 @@ public class TagPoolLayout extends TableLayout {
 		});
 		
 		if(first_tag){
-			Log.i(TAG, "adding first tag");
+			//Log.i(TAG, "adding first tag");
 			addTagToNewRow(new_tag);
 			first_tag = false;
 		} else{
-			Log.i(TAG, "queueing subsequent tag");
+			//Log.i(TAG, "queueing subsequent tag");
 			view_buffer.add(new_tag);
 		}
 		
+	}
+	
+	public void addTagPostLayout(OWRecordingTag tag){
+		TextView new_tag = (TextView) inflater.inflate( R.layout.tag_pool_item, last_row, false);
+		new_tag.setText(tag.name.get());
+		view_buffer.add(new_tag);
+		drawTag();
 	}
 	
 	@Override

@@ -1,6 +1,5 @@
 package net.openwatch.reporter;
 
-import com.orm.androrm.Filter;
 import com.orm.androrm.QuerySet;
 
 import net.openwatch.reporter.constants.DBConstants;
@@ -8,7 +7,6 @@ import net.openwatch.reporter.contentprovider.OWContentProvider;
 import net.openwatch.reporter.model.OWLocalRecording;
 import net.openwatch.reporter.model.OWRecordingTag;
 import net.openwatch.reporter.view.TagPoolLayout;
-import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -29,19 +27,11 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.view.ViewTreeObserver;
-import android.view.ViewTreeObserver.OnGlobalFocusChangeListener;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.MediaController;
-import android.widget.RelativeLayout;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.VideoView;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
@@ -54,6 +44,8 @@ public class LocalRecordingInfoFragment extends Fragment implements LoaderCallba
 	AutoCompleteTextView tags;
 	OWLocalRecording recording;
 	TagPoolLayout tagGroup;
+	
+	static boolean watch_tag_text = true;
 	
 	String mSelection = ""; // autocomplete tag input
 
@@ -78,17 +70,22 @@ public class LocalRecordingInfoFragment extends Fragment implements LoaderCallba
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View view, int arg2,
 					long arg3) {
+				Log.i(TAG, "Autocomplete select");
 				String tag_name = ((TextView)view).getText().toString();
 				//TagPoolLayout tagGroup = ((TagPoolLayout) getActivity().findViewById(R.id.tagGroup));
 				OWLocalRecording recording = OWLocalRecording.objects(getActivity().getApplicationContext(), OWLocalRecording.class)
 						.get(LocalRecordingViewActivity.model_id);
 				if(!recording.hasTag(getActivity().getApplicationContext(), tag_name)){
 					OWRecordingTag tag = OWRecordingTag.objects(getActivity().getApplicationContext(), OWRecordingTag.class).get((Integer)view.getTag(R.id.list_item_model));
-					addTagToTagPool(tag);
+					tagGroup.addTagPostLayout(tag);
+					//addTagToTagPool(tag);
 					recording.tags.add(tag);
 					recording.save(getActivity().getApplicationContext());
 				}
+				watch_tag_text = false;
 				tags.setText("");
+				watch_tag_text = true;
+				
 			}
 			
 		});
@@ -115,8 +112,11 @@ public class LocalRecordingInfoFragment extends Fragment implements LoaderCallba
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
-				mSelection = s.toString();
-				getLoaderManager().restartLoader(0, null, LocalRecordingInfoFragment.this);
+				if(watch_tag_text){
+					Log.i(TAG, "onTextChanged");
+					mSelection = s.toString();
+					getLoaderManager().restartLoader(0, null, LocalRecordingInfoFragment.this);
+				}
 				
 			}
 			
@@ -215,7 +215,8 @@ public class LocalRecordingInfoFragment extends Fragment implements LoaderCallba
 		//TagPoolLayout tagGroup = ((TagPoolLayout) getView().findViewById(R.id.tagGroup));
 		QuerySet<OWRecordingTag> tags = recording.tags.get(app_context, recording);
 		for(OWRecordingTag tag : tags){
-			addTagToTagPool(tag);
+			//addTagToTagPool(tag);
+			tagGroup.addTag(tag);
 			//tagGroup.addTag(tag.name.get());
 		}
 	}
