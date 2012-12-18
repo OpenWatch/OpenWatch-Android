@@ -36,16 +36,17 @@ int i;
 #define STREAM_PIX_FMT PIX_FMT_YUV420P
 int device_frame_rate = 15;
 int device_audio_sample_fmt = AV_SAMPLE_FMT_S16; // required for native aac
-//int codec_audio_sample_fmt = AV_SAMPLE_FMT_FLT;
-int codec_audio_sample_fmt = AV_SAMPLE_FMT_S16;
+int codec_audio_sample_fmt = AV_SAMPLE_FMT_FLT;
+//int codec_audio_sample_fmt = AV_SAMPLE_FMT_S16;
 int VIDEO_CODEC_ID = CODEC_ID_H264;
-//int AUDIO_CODEC_ID = CODEC_ID_AAC;
+int AUDIO_CODEC_ID = CODEC_ID_AAC;
 //int AUDIO_CODEC_ID = CODEC_ID_AC3;
-int AUDIO_CODEC_ID = CODEC_ID_MP2;
+//int AUDIO_CODEC_ID = CODEC_ID_MP2;
 long chunk_duration_ms = 5000; // 5s
 
 // Audio Parameters
-static int16_t *samples_hq, samples_lq;
+//static int16_t *samples_hq, samples_lq;
+static float *samples_hq, samples_lq;
 static int audio_input_frame_size;
 int num_audio_channels = 1;
 int audio_sample_rate = 44100;
@@ -446,10 +447,10 @@ static AVStream *add_audio_stream(AVFormatContext *oc, enum CodecID codec_id, in
     return st;
 }
 
-static void open_audio(AVFormatContext *oc, AVStream *st, int16_t **out_samples)
+static void open_audio(AVFormatContext *oc, AVStream *st, float **out_samples)
 {
     AVCodecContext *c;
-    int16_t * samples;
+    float * samples;
 
     c = st->codec;
 
@@ -485,7 +486,7 @@ static void open_audio(AVFormatContext *oc, AVStream *st, int16_t **out_samples)
     *out_samples = samples;
 }
 
-static void write_audio_frame(AVFormatContext *oc, AVStream *st, int16_t *samples)
+static void write_audio_frame(AVFormatContext *oc, AVStream *st, float *samples)
 {
     AVCodecContext *c;
     AVPacket pkt = { 0 }; // data and size must be 0;
@@ -519,7 +520,7 @@ static void write_audio_frame(AVFormatContext *oc, AVStream *st, int16_t *sample
     }
 }
 
-static void close_audio(AVFormatContext *oc, AVStream *st, int16_t *samples)
+static void close_audio(AVFormatContext *oc, AVStream *st, float *samples)
 {
     avcodec_close(st->codec);
 
@@ -536,12 +537,12 @@ static void close_audio(AVFormatContext *oc, AVStream *st, int16_t *samples)
  * Called on encoder initialize and when beginning
  * each new video chunk
  */
-int initializeAVFormatContext(AVFormatContext **out_oc, jbyte *output_filename, AVStream **out_video_st, AVFrame **out_picture, int video_width, int video_height, float video_crf, int *out_last_pts, int *out_video_frame_count, AVStream **out_audio_st, int16_t **out_samples, int audio_bitrate){
+int initializeAVFormatContext(AVFormatContext **out_oc, jbyte *output_filename, AVStream **out_video_st, AVFrame **out_picture, int video_width, int video_height, float video_crf, int *out_last_pts, int *out_video_frame_count, AVStream **out_audio_st, float **out_samples, int audio_bitrate){
 	AVFormatContext *oc;
 	AVStream *video_st;
 	AVStream *audio_st;
 	AVFrame *picture;
-	int16_t *samples;
+	float *samples;
 
 	// TODO: Can we do this only once?
 	/* Initialize libavcodec, and register all codecs and formats. */
@@ -649,7 +650,7 @@ int initializeHQAVFormatContext(jbyte* native_output_file){
 	return audio_frame_size;
 }
 
-void finalizeAVFormatContext(AVFormatContext **out_oc, AVStream **out_video_st, AVFrame **out_picture, AVStream **out_audio_st, int16_t **out_samples){
+void finalizeAVFormatContext(AVFormatContext **out_oc, AVStream **out_video_st, AVFrame **out_picture, AVStream **out_audio_st, float **out_samples){
 	/* Write the trailer, if any. The trailer must be written before you
 	 * close the CodecContexts open when you wrote the header; otherwise
 	 * av_write_trailer() may try to use memory that was freed on
@@ -662,7 +663,7 @@ void finalizeAVFormatContext(AVFormatContext **out_oc, AVStream **out_video_st, 
 	AVStream *video_st = *out_video_st;
 	AVFrame *picture = *out_picture;
 	AVStream *audio_st = *out_audio_st;
-	int16_t *samples = *out_samples;
+	float *samples = *out_samples;
 
 
 	//LOGI("finalizeAVFormatContext");
@@ -877,8 +878,8 @@ void Java_net_openwatch_reporter_recording_FFChunkedAudioVideoEncoder_processAVD
 			//TODO: conver samples to float based
 			//LOGI("pre audio sample copying");
 			for(y=0;y<audio_input_frame_size;y++){ // copy each sample
-				//samples[y] = (native_audio_frame_data[0] / 32767.0); // convert S16 to FLT. That was refreshingly simple
-				samples_hq[y] = native_audio_frame_data[0];
+				samples_hq[y] = (native_audio_frame_data[0] / 32767.0); // convert S16 to FLT. That was refreshingly simple
+				//samples_hq[y] = native_audio_frame_data[0];
 				native_audio_frame_data++;
 				audio_sample_count++;
 			}
