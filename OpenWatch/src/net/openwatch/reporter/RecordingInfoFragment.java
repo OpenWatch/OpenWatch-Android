@@ -83,8 +83,9 @@ public abstract class RecordingInfoFragment extends Fragment implements LoaderCa
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
+				Log.i(TAG, "onTextChanged. s: " + s.toString() + " start: " + String.valueOf(start) + " before: " + String.valueOf(before));
 				if(watch_tag_text){
-					Log.i(TAG, "onTextChanged");
+					//Log.i(TAG, "onTextChanged");
 					mSelection = s.toString();
 					getLoaderManager().restartLoader(0, null, RecordingInfoFragment.this);
 				}

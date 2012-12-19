@@ -11,11 +11,14 @@ import org.json.JSONArray;
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.file.FileUtils;
 import net.openwatch.reporter.http.MediaServerRequests;
+import net.openwatch.reporter.location.DeviceLocation;
+import net.openwatch.reporter.location.DeviceLocation.LocationResult;
 import net.openwatch.reporter.model.OWLocalRecording;
 import net.openwatch.reporter.recording.ChunkedAudioVideoSoftwareRecorder;
 import net.openwatch.reporter.recording.FFChunkedAudioVideoEncoder.ChunkedRecorderListener;
 
 import android.hardware.Camera;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
@@ -116,8 +119,18 @@ public class RecorderActivity extends Activity implements
 		    	        	Log.i(TAG, "initialize OWLocalRecording. id: " + String.valueOf(recording.getId()));
 		    	        	// make network request
 		    	        	owlocalrecording_id = recording.getId();
+		    	        	// poll for device location
+		    	        	RecorderActivity.this.runOnUiThread(new Runnable(){
+
+								@Override
+								public void run() {
+									DeviceLocation.setRecordingLocation(c, owlocalrecording_id, true);
+								}
+		    	        		
+		    	        	});
+		    	        	
+		        			MediaServerRequests.start(public_upload_token, recording_id, command[1]);
 	        			}
-	                	MediaServerRequests.start(public_upload_token, recording_id, command[1]);
 	                }
 	        	} else if(command[0].compareTo("end") == 0){
 	        		if(command.length == 4){
@@ -126,10 +139,22 @@ public class RecorderActivity extends Activity implements
 		        			String last_segment = all_files.get(all_files.size()-1);
 		        			String filename = last_segment.substring(last_segment.lastIndexOf(File.separator),last_segment.length());
 		        			String filepath = last_segment.substring(0,last_segment.lastIndexOf(File.separator));
+		        			recording.recording_end_time.set(command[2]);
 		        			recording.addSegment(c.getApplicationContext(), filepath, filename);
+		        			recording.save(c.getApplicationContext());
 		        			Log.i(TAG, "owlocalrecording addsegment");
+		        			// poll for device location
+		        			RecorderActivity.this.runOnUiThread(new Runnable(){
+
+								@Override
+								public void run() {
+									DeviceLocation.setRecordingLocation(c, owlocalrecording_id, true);
+								}
+		    	        		
+		    	        	});
+		        			MediaServerRequests.end(public_upload_token, recording, command[3]);
 	        			}
-	        			MediaServerRequests.end(public_upload_token, recording_id, command[1], command[2], command[3]);
+	        			
 	        		}
 	        	} else if(command[0].compareTo("chunk") == 0){
 	        		if(command.length == 2){
@@ -139,8 +164,9 @@ public class RecorderActivity extends Activity implements
 		        			String filepath = command[1].substring(0,command[1].lastIndexOf(File.separator));
 		        			recording.addSegment(c.getApplicationContext(), filepath, filename);
 		        			Log.i(TAG, "owlocalrecording addsegment");
+		        			MediaServerRequests.sendLQChunk(public_upload_token, recording_id, command[1]);
 	        			}
-	        			MediaServerRequests.sendLQChunk(public_upload_token, recording_id, command[1]);
+	        			
 	        		}
 	        	} else if(command[0].compareTo("hq") == 0){
 	        		if(command.length == 2){

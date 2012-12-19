@@ -44,7 +44,7 @@ public class OWServiceRequests {
 	 * @param app_context
 	 * @param cb
 	 */
-	public static void syncRecording(final Context app_context, OWLocalRecording recording, final RequestCallback cb){
+	public static void syncRecording(final Context app_context, OWLocalRecording recording){
 		final String METHOD = "syncRecording";
 		final int model_id = recording.getId();
 		JsonHttpResponseHandler get_handler = new JsonHttpResponseHandler(){
@@ -75,77 +75,8 @@ public class OWServiceRequests {
 			}
 			
 		};
-		
-		AsyncHttpClient client = HttpClient.setupHttpClient(app_context);
-		String url = Constants.OW_API_URL + Constants.OW_TAGS;
-		Log.i(TAG, "POST: " + url);
-		client.post(url, new JsonHttpResponseHandler(){
+		getRecordingMeta(app_context, recording.uuid.get(), get_handler);
 
-    		@Override
-    		public void onSuccess(JSONObject response){
-    			
-    			JSONArray array_json;
-				try {
-					array_json = (JSONArray) response.get("tags");
-					JSONObject tag_json;
-					
-					int tag_count = OWRecordingTag.objects(app_context, OWRecordingTag.class).count();
-	    			
-	    			DatabaseAdapter adapter = DatabaseAdapter.getInstance(app_context);
-	    			adapter.beginTransaction();
-	    			
-	    			OWRecordingTag tag = null;
-	    			for(int x=0; x<array_json.length(); x++){
-	    				tag_json = array_json.getJSONObject(x);
-	    				Filter filter = new Filter();
-	    				filter.is(DBConstants.TAG_TABLE_SERVER_ID, tag_json.getString("id"));
-	    				
-	    				tag = null;
-	    				
-	    				if(tag_count != 0){
-	    					// TODO: Override QuerySet.get to work on server_id field
-	    					QuerySet<OWRecordingTag> tags = OWRecordingTag.objects(app_context, OWRecordingTag.class).filter(filter);
-	    					for(OWRecordingTag temp_tag : tags){
-	    						tag = temp_tag;
-	    						break;
-	    					}
-	    				}
-	    				if(tag == null){
-	    					// this is a new tag
-	    					tag = new OWRecordingTag();
-	    					tag.server_id.set(tag_json.getInt("id"));
-	    				}
-    					tag.is_featured.set(tag_json.getBoolean("featured")); 
-    					tag.name.set(tag_json.getString("name")); 
-
-	    				tag.save(app_context);
-	    				Log.i(TAG, METHOD + " saved tag: " + tag_json.getString("name") );
-	    				
-	    			}
-	    			
-	    			adapter.commitTransaction();
-	    			if(cb != null)
-	    				cb.onSuccess();
-				} catch (JSONException e) {
-					Log.e(TAG, METHOD + " failed to parse JSON");
-					e.printStackTrace();
-				}
-
-    		}
-    		
-    		@Override
-    	     public void onFailure(Throwable e, String response) {
-    			Log.i(TAG, METHOD + " failure: " +  response);
-    			if(cb != null)
-    				cb.onFailure();
-    	     }
-    		
-    		@Override
-    	     public void onFinish() {
-    	        Log.i(TAG, METHOD +" finished");
-    	     }
-
-		});
 	}
 	
 	public static void getRecordingMeta(Context app_context, String recording_uuid, JsonHttpResponseHandler response_handler){

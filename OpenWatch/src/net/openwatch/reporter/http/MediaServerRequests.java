@@ -10,6 +10,7 @@ import java.util.Map;
 import org.json.JSONArray;
 
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.model.OWLocalRecording;
 
 import android.util.Log;
 
@@ -127,13 +128,21 @@ public class MediaServerRequests {
 	 * @param recording_end
 	 * @param all_files
 	 */
-	public static void end(String upload_token, String recording_id, String recording_start, String recording_end, String all_files){
+	public static void end(String upload_token, OWLocalRecording recording, String all_files){
 		AsyncHttpClient client = HttpClient.setupHttpClient();
 		RequestParams params = new RequestParams();
-		params.put(Constants.OW_REC_START, recording_start);
-		params.put(Constants.OW_REC_END, recording_end);
+		if(recording.begin_lat.get() != 0){
+			params.put(Constants.OW_START_LAT, recording.begin_lat.get().toString());
+			params.put(Constants.OW_START_LON, recording.begin_lon.get().toString());
+		}
+		if(recording.end_lat.get() != 0){
+			params.put(Constants.OW_END_LAT, recording.end_lat.get().toString());
+			params.put(Constants.OW_END_LON, recording.end_lon.get().toString());
+		}
+		params.put(Constants.OW_REC_START, recording.creation_time.get());
+		params.put(Constants.OW_REC_END, recording.recording_end_time.get());
 		params.put(Constants.OW_ALL_FILES, all_files);
-		String url = setupMediaURL(Constants.OW_MEDIA_END, upload_token, recording_id);
+		String url = setupMediaURL(Constants.OW_MEDIA_END, upload_token, recording.uuid.get());
 		Log.i(TAG, "sending end signal to " + url);
 		client.post(url, params, new AsyncHttpResponseHandler(){
 

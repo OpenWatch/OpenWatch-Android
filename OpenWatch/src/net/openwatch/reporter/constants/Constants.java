@@ -85,6 +85,10 @@ public class Constants {
 	public static final String OW_TITE = "title";
 	public static final String OW_DESCRIPTION = "description";
 	public static final String OW_EDIT_TIME = "last_edited";
+	public static final String OW_START_LAT = "start_lat";
+	public static final String OW_START_LON = "start_lon";
+	public static final String OW_END_LAT = "end_lat";
+	public static final String OW_END_LON = "end_lon";
 	
 		
 	

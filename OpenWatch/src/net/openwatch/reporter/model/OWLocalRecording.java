@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
+import net.openwatch.reporter.http.OWServiceRequests;
 import android.content.Context;
 import android.util.Log;
 
@@ -39,6 +40,7 @@ public class OWLocalRecording extends Model {
 	// username is queried often by ListViews, so it makes sense to duplicate
 	// info for performance
 	public CharField creation_time;
+	public CharField recording_end_time;
 	public CharField first_posted;
 	public CharField uuid;
 	public CharField last_edited;
@@ -68,6 +70,7 @@ public class OWLocalRecording extends Model {
 		thumb_url = new CharField();
 		creation_time = new CharField();
 		creation_time.set(Constants.sdf.format(new Date()));
+		recording_end_time = new CharField();
 		first_posted = new CharField();
 		uuid = new CharField();
 		last_edited = new CharField();
@@ -105,6 +108,7 @@ public class OWLocalRecording extends Model {
 		segment.filename.set(filename);
 		segment.local_recording.set(this);
 		segment.save(c);
+		this.segments.add(segment);
 	}
 
 	@Override
@@ -113,6 +117,9 @@ public class OWLocalRecording extends Model {
 		// notify the ContentProvider that the dataset has changed
 		context.getContentResolver().notifyChange(
 				OWContentProvider.getLocalRecordingUri(this.getId()), null);
+		
+		OWServiceRequests.syncRecording(context, this);
+		
 		return super.save(context);
 	}
 
@@ -176,7 +183,15 @@ public class OWLocalRecording extends Model {
 			params.put(Constants.OW_DESCRIPTION, this.description.get());
 		if (this.last_edited.get() != null)
 			params.put(Constants.OW_EDIT_TIME, this.last_edited.get());
-
+		if (this.begin_lat.get() != null)
+			params.put(Constants.OW_START_LAT, this.begin_lat.get().toString());
+		if (this.begin_lon.get() != null)
+			params.put(Constants.OW_START_LON, this.begin_lon.get().toString());
+		if (this.end_lat.get() != null)
+			params.put(Constants.OW_START_LAT, this.end_lat.get().toString());
+		if (this.end_lon.get() != null)
+			params.put(Constants.OW_START_LON, this.end_lon.get().toString());
+		
 		ArrayList<String> tags = new ArrayList<String>();
 		QuerySet<OWRecordingTag> qs = this.tags.get(app_context, this);
 		for (OWRecordingTag tag : qs) {
