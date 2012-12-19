@@ -123,12 +123,9 @@ public class MyFeedFragmentActivity extends FragmentActivity {
         }
 
         @Override public void onListItemClick(ListView l, View v, int position, long id) {
-            // Insert desired behavior here.
-            //Log.i("LoaderCustom", "Item clicked: " + id);
         	Intent i = new Intent(this.getActivity(), LocalRecordingViewActivity.class);
         	try{
-        		i.putExtra(Constants.VIEW_TAG_MODEL, (Integer)v.getTag(R.id.list_item_model));
-        		//Log.i(TAG, "got model_id: " + String.valueOf(i.getIntExtra("model", 0)));
+        		i.putExtra(Constants.INTERNAL_DB_ID, (Integer)v.getTag(R.id.list_item_model));
         	}catch(Exception e){
         		Log.e(TAG, "failed to load list item model tag");
         		return;

@@ -44,7 +44,7 @@ public class LocalRecordingViewActivity extends FragmentActivity {
 		mTabHost.setup();
 
 		try {
-			model_id = getIntent().getExtras().getInt(Constants.VIEW_TAG_MODEL);
+			model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
 			setupVideoView(
 					R.id.videoview,
 					OWLocalRecording.objects(this, OWLocalRecording.class).get(
