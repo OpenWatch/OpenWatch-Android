@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
@@ -26,7 +25,7 @@ public class WhatHappenedInfoFragment extends RecordingInfoFragment {
 		((EditText)v.findViewById(R.id.editDescription)).setHeight(300);
 		Log.i(TAG, "onCreateView");
 		try{
-			model_id = this.getActivity().getIntent().getExtras().getInt(Constants.REC_ID);
+			model_id = this.getActivity().getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
 			recording = OWLocalRecording.objects(getActivity().getApplicationContext(), OWLocalRecording.class)
 				.get(model_id);
 		}catch(Exception e){

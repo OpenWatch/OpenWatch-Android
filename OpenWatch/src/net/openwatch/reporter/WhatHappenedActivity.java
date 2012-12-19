@@ -1,5 +1,9 @@
 package net.openwatch.reporter;
 
+import java.util.Date;
+
+import org.json.JSONObject;
+
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import net.openwatch.reporter.constants.Constants;
@@ -9,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -21,6 +26,8 @@ import android.widget.EditText;
 public class WhatHappenedActivity extends FragmentActivity {
 	private static final String TAG = "WhatHappenedActivity";
 	static int model_id = -1;
+	String recording_uuid;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,10 +35,32 @@ public class WhatHappenedActivity extends FragmentActivity {
 		setContentView(R.layout.activity_what_happened);
 		Log.i(TAG, "onCreate");
 		try{
-			model_id = getIntent().getExtras().getInt(Constants.REC_ID);
+			model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
+			recording_uuid = getIntent().getExtras().getString(Constants.OW_REC_UUID);
 		}catch (Exception e){
 			Log.e(TAG, "could not load recording_id from intent");
 		}
+		final Context app_context = this.getApplicationContext();
+		OWServiceRequests.getRecordingMeta(app_context, recording_uuid, new JsonHttpResponseHandler(){
+			@Override
+    		public void onSuccess(JSONObject response){
+				Log.i(TAG, "Got server recording response!");
+				if(response.has("recording")){
+					try{
+						JSONObject recording_json = response.getJSONObject("recording");
+						// response was successful
+						OWLocalRecording recording = OWLocalRecording.objects(app_context, OWLocalRecording.class).get(model_id);
+						recording.updateWithJson(app_context, recording_json);
+					} catch(Exception e){
+						Log.e(TAG, "failed to handle response");
+						e.printStackTrace();
+					}
+				}
+					
+			}
+			
+		});
+		Log.i(TAG, "sent recordingMeta request");
 	}
 	
 	public void submitButtonClick(View v){

@@ -189,10 +189,12 @@ public class RecorderActivity extends Activity implements
 					av_recorder.stopRecording();
 					Intent i = new Intent(RecorderActivity.this, WhatHappenedActivity.class);
 					//i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-					if(recording_id != null)
-						i.putExtra(Constants.REC_ID, chunk_listener.getRecordingDBID());
+					if(recording_id != null){
+						i.putExtra(Constants.INTERNAL_DB_ID, chunk_listener.getRecordingDBID());
+					}
 					else
 						Log.e(TAG, "could not get chunk_listener's db id");
+					i.putExtra(Constants.OW_REC_UUID, recording_id);
 					startActivity(i);
 					finish(); // remove this activity from the stack
 				}

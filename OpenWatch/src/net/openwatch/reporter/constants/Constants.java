@@ -30,7 +30,7 @@ public class Constants {
 	public static final String PRIV_TOKEN = "private_upload_token";		// used for profile and to parse server login response
 	public static final String REGISTERED = "registered"; 
 	public static final String VIEW_TAG_MODEL = "model";		// key set on listview item holding corresponding model pk
-	public static final String REC_ID = "uuid";
+	public static final String INTERNAL_DB_ID = "id";
 	
 	// Email REGEX
 	public static final Pattern EMAIL_ADDRESS_PATTERN = Pattern.compile(
@@ -78,7 +78,7 @@ public class Constants {
 	// OpenWatch media capture web service POST keys
 	public static final String OW_REC_START = "recording_start";
 	public static final String OW_REC_END = "recording_end";
-	public static final String OW_REC_ID = "uuid";
+	public static final String OW_REC_UUID = "uuid";
 	public static final String OW_ALL_FILES = "all_files";
 	public static final String OW_UP_TOKEN = "upload_token";
 	public static final String OW_FILE = "upload";
