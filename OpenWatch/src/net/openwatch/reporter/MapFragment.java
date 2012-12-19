@@ -2,6 +2,7 @@ package net.openwatch.reporter;
 
 import net.openwatch.reporter.model.OWLocalRecording;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,22 +16,21 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapFragment extends SupportMapFragment {
+	private static final String TAG = "MapFragment";
+	
     private GoogleMap mMap;
-    private LatLng mLocation;
+    private LatLng mStartLocation;
+    private LatLng mStopLocation;
 
     public MapFragment() {
         super();
     }
 
-    public static MapFragment newInstance(LatLng posicion) {
+    public static MapFragment newInstance(LatLng start, LatLng stop) {
         MapFragment frag = new MapFragment();
-        frag.mLocation = posicion;
+        frag.mStartLocation = start;
+        frag.mStopLocation = stop;
         return frag;
-    }
-    
-    public void centerOnLocation(LatLng location){
-    	mLocation = location;
-    	initMap();
     }
 
     @Override
@@ -52,7 +52,9 @@ public class MapFragment extends SupportMapFragment {
         if(LocalRecordingViewActivity.model_id != -1){
         	OWLocalRecording recording = OWLocalRecording.objects(getActivity().getApplicationContext(), OWLocalRecording.class)
     				.get(LocalRecordingViewActivity.model_id);
-        	mLocation = new LatLng(recording.begin_lat.get(), recording.end_lat.get());
+        	Log.i(TAG, "recording begin point: " + String.valueOf(recording.begin_lat.get()) + ", " + String.valueOf(recording.begin_lon.get()));
+        	mStartLocation = new LatLng(recording.begin_lat.get(), recording.begin_lon.get());
+        	mStopLocation = new LatLng(recording.end_lat.get(), recording.end_lon.get());
         	initMap();
         }
         return view;
@@ -63,11 +65,16 @@ public class MapFragment extends SupportMapFragment {
         //settings.setAllGesturesEnabled(false);
         settings.setMyLocationButtonEnabled(false);
 
-        getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(mLocation, 16));
+        getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(mStartLocation, 10));
         getMap().addMarker(
-                new MarkerOptions().position(mLocation)
+                new MarkerOptions().position(mStartLocation)
                         .icon(BitmapDescriptorFactory
-                                .fromResource(R.drawable.marker)));
+                                .fromResource(R.drawable.marker_start)));
+        getMap().addMarker(
+                new MarkerOptions().position(mStopLocation)
+                        .icon(BitmapDescriptorFactory
+                                .fromResource(R.drawable.marker_stop)));
+        getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(mStartLocation, 18));
     }
 
 }

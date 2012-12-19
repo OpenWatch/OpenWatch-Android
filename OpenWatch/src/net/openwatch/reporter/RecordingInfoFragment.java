@@ -234,6 +234,8 @@ public abstract class RecordingInfoFragment extends Fragment implements LoaderCa
 	public void onLoadFinished(Loader<Cursor> arg0, Cursor cursor) {
 		Log.i(TAG, "onLoadFinished");
 		mAdapter.swapCursor(cursor);
+		if(tags.getAdapter() == null)
+			tags.setAdapter(mAdapter);
 		// TODO: Check if no tags found and say something nice
 		
 	}

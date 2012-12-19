@@ -52,7 +52,7 @@ public class LocalRecordingInfoFragment extends RecordingInfoFragment implements
 				watch_tag_text = false;
 				tags.setText("");
 				watch_tag_text = true;
-				
+				tags.setAdapter(null);
 			}
 			
 		});

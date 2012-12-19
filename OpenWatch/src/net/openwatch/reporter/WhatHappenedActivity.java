@@ -80,6 +80,7 @@ public class WhatHappenedActivity extends FragmentActivity {
 			public void onClick(DialogInterface dialog, int which) {
 				// No thanks
 				Intent i = new Intent(WhatHappenedActivity.this, MainActivity.class);
+				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 				startActivity(i);
 				dialog.dismiss();
 			}

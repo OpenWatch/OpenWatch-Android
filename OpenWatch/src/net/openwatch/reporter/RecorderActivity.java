@@ -148,7 +148,7 @@ public class RecorderActivity extends Activity implements
 
 								@Override
 								public void run() {
-									DeviceLocation.setRecordingLocation(c, owlocalrecording_id, true);
+									DeviceLocation.setRecordingLocation(c, owlocalrecording_id, false);
 								}
 		    	        		
 		    	        	});

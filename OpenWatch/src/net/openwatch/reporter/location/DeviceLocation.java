@@ -18,6 +18,7 @@ public class DeviceLocation {
     LocationResult locationResult;
     boolean gps_enabled=false;
     boolean network_enabled=false;
+    private static final String TAG = "DeviceLocation";
     
 
     public boolean getLocation(Context context, LocationResult result)
@@ -113,6 +114,7 @@ public class DeviceLocation {
                 //Got the location!
                 OWLocalRecording recording = OWLocalRecording.objects(app_context, OWLocalRecording.class).get(recording_db_id);
 	                if (location != null) {
+	                	Log.i(TAG, "gotLocation");
 	                	if(isStart){
 		                	recording.begin_lat.set(location.getLatitude());
 		                	recording.begin_lon.set(location.getLongitude());
@@ -125,6 +127,7 @@ public class DeviceLocation {
 	                }
                 };
             };
+       Log.i(TAG, "getLocation()...");
        deviceLocation.getLocation(app_context, locationResult);
 	}
     

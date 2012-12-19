@@ -53,7 +53,7 @@ public class WhatHappenedInfoFragment extends RecordingInfoFragment {
 				watch_tag_text = false;
 				tags.setText("");
 				watch_tag_text = true;
-				
+				tags.setAdapter(null);
 			}
 			
 		});
