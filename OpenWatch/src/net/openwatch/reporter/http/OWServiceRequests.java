@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import net.openwatch.reporter.OWApplication;
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
+import net.openwatch.reporter.model.OWLocalRecording;
 import net.openwatch.reporter.model.OWRecordingTag;
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -37,6 +38,13 @@ public class OWServiceRequests {
 		public void onSuccess();
 	}
 	
+	public static void editRecording(Context app_context, OWLocalRecording recording, JsonHttpResponseHandler response_handler){
+    	AsyncHttpClient http_client = HttpClient.setupHttpClient(app_context);
+    	Log.i(TAG,"Edit Recording: " + Constants.OW_API_URL + Constants.OW_RECORDING);
+    	http_client.post(app_context, Constants.OW_API_URL + Constants.OW_RECORDING, recording.toJson(app_context), "application/json", response_handler);
+    	
+    }
+	
 	/**
 	 * Merges server tag list with stored. Assume names are unchanging (treated as primary key)
 	 * @param app_context
@@ -45,7 +53,7 @@ public class OWServiceRequests {
 	public static void getTags(final Context app_context, final RequestCallback cb){
 		final String METHOD = "getTags";
 		AsyncHttpClient client = HttpClient.setupHttpClient(app_context);
-		String url = Constants.OW_URL + Constants.OW_TAGS;
+		String url = Constants.OW_API_URL + Constants.OW_TAGS;
 		Log.i(TAG, "POST: " + url);
 		client.post(url, new JsonHttpResponseHandler(){
 
@@ -121,8 +129,8 @@ public class OWServiceRequests {
      */
     public static void UserLogin(Context app_context, StringEntity post_body, JsonHttpResponseHandler response_handler){
     	AsyncHttpClient http_client = HttpClient.setupHttpClient(app_context);
-    	Log.i(TAG,"Commencing login to: " + Constants.OW_URL + Constants.OW_LOGIN);
-    	http_client.post(app_context, Constants.OW_URL + Constants.OW_LOGIN, post_body, "application/json", response_handler);
+    	Log.i(TAG,"Commencing login to: " + Constants.OW_API_URL + Constants.OW_LOGIN);
+    	http_client.post(app_context, Constants.OW_API_URL + Constants.OW_LOGIN, post_body, "application/json", response_handler);
     	
     }
     
@@ -130,9 +138,10 @@ public class OWServiceRequests {
      * Create a new account with the OpenWatch servicee
      */
     public static void UserSignup(Context app_context, StringEntity post_body, JsonHttpResponseHandler response_handler){
+    	
     	AsyncHttpClient http_client = HttpClient.setupHttpClient(app_context);
-    	Log.i(TAG,"Commencing signup to: " + Constants.OW_URL + Constants.OW_SIGNUP);
-    	http_client.post(app_context, Constants.OW_URL + Constants.OW_SIGNUP, post_body, "application/json", response_handler);
+    	Log.i(TAG,"Commencing signup to: " + Constants.OW_API_URL + Constants.OW_SIGNUP);
+    	http_client.post(app_context, Constants.OW_API_URL + Constants.OW_SIGNUP, post_body, "application/json", response_handler);
     	
     }
     
@@ -167,8 +176,8 @@ public class OWServiceRequests {
 		
 		// Post public_upload_token, signup_type
 		AsyncHttpClient http_client = HttpClient.setupHttpClient(app_context);
-    	Log.i(TAG,"Commencing ap registration to: " + Constants.OW_URL + Constants.OW_REGISTER + " pub_token: " + public_upload_token + " version: " + app_version);
-    	http_client.post(app_context, Constants.OW_URL + Constants.OW_REGISTER, se, "application/json", response_handler);
+    	Log.i(TAG,"Commencing ap registration to: " + Constants.OW_API_URL + Constants.OW_REGISTER + " pub_token: " + public_upload_token + " version: " + app_version);
+    	http_client.post(app_context, Constants.OW_API_URL + Constants.OW_REGISTER, se, "application/json", response_handler);
     	
     }
     

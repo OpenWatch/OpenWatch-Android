@@ -45,6 +45,7 @@ public class FFChunkedAudioVideoEncoder {
 	Date video_frame_date;
 	
 	public interface ChunkedRecorderListener{
+		public int getRecordingDBID();
 		public void setRecordingID(String recording_id);
 		public void setContext(Context c);
 		public void encoderStarted(Date start_date);

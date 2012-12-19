@@ -58,6 +58,10 @@ public class RecorderActivity extends Activity implements
 		ArrayList<String> all_files = null;
 		
 		@Override
+		public int getRecordingDBID(){
+			return owlocalrecording_id;
+		}
+		@Override
 		public void setRecordingID(String recording_id) {
 			this.recording_id = recording_id;
 			
@@ -184,8 +188,13 @@ public class RecorderActivity extends Activity implements
 				if (av_recorder.is_recording) {
 					av_recorder.stopRecording();
 					Intent i = new Intent(RecorderActivity.this, WhatHappenedActivity.class);
-					i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+					//i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+					if(recording_id != null)
+						i.putExtra(Constants.REC_ID, chunk_listener.getRecordingDBID());
+					else
+						Log.e(TAG, "could not get chunk_listener's db id");
 					startActivity(i);
+					finish(); // remove this activity from the stack
 				}
 			}
 

@@ -1,14 +1,22 @@
 package net.openwatch.reporter.model;
 
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+
+import org.apache.http.entity.StringEntity;
 
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
 import android.content.Context;
+import android.util.Log;
 
+import com.google.gson.Gson;
 import com.orm.androrm.Filter;
 import com.orm.androrm.Model;
+import com.orm.androrm.QuerySet;
 import com.orm.androrm.field.BooleanField;
 import com.orm.androrm.field.CharField;
 import com.orm.androrm.field.DoubleField;
@@ -103,6 +111,42 @@ public class OWLocalRecording extends Model {
 		Filter filter = new Filter();
 		filter.is(DBConstants.TAG_TABLE_NAME, tag_name);
 		return (this.tags.get(context, this).filter(filter).count() > 0);
+	}
+	
+	public StringEntity toJson(Context app_context){
+		HashMap<String,String> params = new HashMap<String, String>();
+		if(this.title.get() != null)
+			params.put(Constants.OW_TITE, this.title.get());
+		if(this.description.get() != null)
+			params.put(Constants.OW_DESCRIPTION, this.description.get());
+		if(this.last_edited.get() != null)
+			params.put(Constants.OW_EDIT_TIME, this.last_edited.get());
+
+    	ArrayList<String> tags = new ArrayList<String>();
+    	QuerySet<OWRecordingTag> qs = this.tags.get(app_context, this);
+    	for(OWRecordingTag tag : qs){
+    		tags.add(tag.name.get());
+    	}
+    	Gson gson = new Gson();
+    	StringEntity se = null;
+    	try{
+    		se = new StringEntity(gson.toJson(tags));
+    	} catch (UnsupportedEncodingException e){
+    		Log.e("OWLocalRecording" ,"Failed make json from tags");
+    	}
+    	
+    	params.put(Constants.OW_TAGS, se.toString());
+    	
+    	se = null;
+    	
+    	try {
+			se = new StringEntity(gson.toJson(params));
+		} catch (UnsupportedEncodingException e1) {
+			Log.e("OWLocalRecording" ,"Failed to make json from hashmap");
+			e1.printStackTrace();
+		}
+    	
+    	return se;
 	}
 
 }

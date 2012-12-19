@@ -114,7 +114,7 @@ public class DatabaseManager {
 		cv.put("name", "test name2");
 		adapter.open();
 		adapter.doInsertOrUpdate(DBConstants.TAG_TABLENAME, cv, new Where().and("name","test name"));
-		adapter.close();
+		//adapter.close();
 		
 		QuerySet<OWRecordingTag> qs2= OWRecordingTag.objects(app_context, OWRecordingTag.class).all();
 		for(OWRecordingTag tag : qs2){

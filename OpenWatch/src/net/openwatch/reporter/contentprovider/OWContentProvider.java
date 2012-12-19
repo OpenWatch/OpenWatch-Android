@@ -88,7 +88,7 @@ public class OWContentProvider extends ContentProvider {
 	}
 
 	@Override
-	public Cursor query(Uri uri, String[] projection, String selection,
+	public synchronized Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
 		SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 		
@@ -128,7 +128,6 @@ public class OWContentProvider extends ContentProvider {
 		sortOrder	How the rows in the cursor should be sorted. If null then the provider is free to define the sort order.
 		 */
 		DatabaseAdapter adapter = DatabaseAdapter.getInstance(getContext().getApplicationContext());
-		SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 		Log.i(TAG, adapter.getDatabaseName());
 		switch(uriType){
 			case LOCAL_RECORDINGS:
@@ -138,7 +137,7 @@ public class OWContentProvider extends ContentProvider {
 			case LOCAL_RECORDING_ID:
 				Log.i(TAG, select + " FROM " + DBConstants.LOCAL_RECORDINGS_TABLENAME + "WHERE mID="+uri.getLastPathSegment());
 				result = adapter.open().query(select + " FROM " + DBConstants.LOCAL_RECORDINGS_TABLENAME + "WHERE _id="+uri.getLastPathSegment());
-				adapter.close();
+				//adapter.close();
 				break;
 			case REMOTE_RECORDINGS:
 				result = adapter.open().query(select + " FROM " + DBConstants.REMOTE_RECORDINGS_TABLENAME + where + sortby);
@@ -159,7 +158,7 @@ public class OWContentProvider extends ContentProvider {
 		}
 		
 		// adapter is not closed!
-		
+		//adapter.close();
 		// Make sure that potential listeners are getting notified
 		if(result != null)
 			result.setNotificationUri(getContext().getContentResolver(), uri);

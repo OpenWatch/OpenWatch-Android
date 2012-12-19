@@ -30,6 +30,7 @@ public class Constants {
 	public static final String PRIV_TOKEN = "private_upload_token";		// used for profile and to parse server login response
 	public static final String REGISTERED = "registered"; 
 	public static final String VIEW_TAG_MODEL = "model";		// key set on listview item holding corresponding model pk
+	public static final String REC_ID = "uuid";
 	
 	// Email REGEX
 	public static final Pattern EMAIL_ADDRESS_PATTERN = Pattern.compile(
@@ -47,12 +48,15 @@ public class Constants {
 	
 	// OpenWatch web service root url and endpoints
 	//public static final String OW_URL = "http://www.openwatch.net/api/"; // TODO: HTTPS
-	public static final String OW_URL = "http://192.168.1.27:8000/api/";
+	public static final String OW_API_URL = "http://192.168.1.27:8000/api/";
+	public static final String OW_URL = "http://192.168.1.27:8000/";
+	public static final String OW_VIEW = "v/";
 	public static final String OW_LOGIN = "login_account";
 	public static final String OW_SIGNUP = "create_account";
 	public static final String OW_REGISTER = "register_app";
 	public static final String OW_RECORDING = "recording";
 	public static final String OW_TAGS = "tags";
+	public static final String OW_UPDATE_META = "update_metadata";
 	
 	// OpenWatch web service POST keys
 	public static final String OW_EMAIL = "email_address";
@@ -78,6 +82,9 @@ public class Constants {
 	public static final String OW_ALL_FILES = "all_files";
 	public static final String OW_UP_TOKEN = "upload_token";
 	public static final String OW_FILE = "upload";
+	public static final String OW_TITE = "title";
+	public static final String OW_DESCRIPTION = "description";
+	public static final String OW_EDIT_TIME = "last_edited";
 	
 		
 	
