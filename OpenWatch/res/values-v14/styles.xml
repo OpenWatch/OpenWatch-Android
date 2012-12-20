@@ -5,26 +5,55 @@
         AppBaseTheme from BOTH res/values/styles.xml and
         res/values-v11/styles.xml on API 14+ devices.
     -->
-    <style name="AppBaseTheme" parent="android:Theme.Holo.Light">
-        <item name="android:actionBarStyle">@style/ActionBar</item>
-        <!-- 
-        <item name="android:actionBarTabStyle">@style/ActionBarTabStyle</item>
-        <item name="android:popupMenuStyle">@style/PopupMenu</item>
-        <item name="android:dropDownListViewStyle">@style/DropDownListView</item>
-        <item name="android:actionBarWidgetTheme">@style/Theme.stylingactionbar.widget</item>
-        <item name="android:actionDropDownStyle">@style/DropDownNav</item>
-        <item name="android:spinnerDropDownItemStyle">@style/DropDownItem</item>
-        <item name="android:spinnerItemStyle">@style/SpinnerItem</item>
-         -->
+    <style name="Theme.openwatch" parent="@android:style/Theme.Holo.Light">
+        <item name="android:actionBarItemBackground">@drawable/selectable_background_openwatch</item>
+        <item name="android:popupMenuStyle">@style/openwatch_PopupMenu</item>
+        <item name="android:dropDownListViewStyle">@style/openwatch_DropDownListView</item>
+        <item name="android:actionBarTabStyle">@style/openwatch_ActionBarTabStyle</item>
+        <item name="android:actionDropDownStyle">@style/openwatch_DropDownNav</item>
+        <item name="android:actionBarStyle">@style/openwatch_solid_ActionBar</item>
+        <item name="android:panelBackground">@drawable/menu_hardkey_panel_openwatch</item>
+        
+    </style>
+
+    <style name="openwatch_solid_ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar.Solid">
+        <item name="android:background">@drawable/ab_solid_openwatch</item>
+        <item name="android:backgroundStacked">@drawable/ab_stacked_solid_openwatch</item>
+        <item name="android:backgroundSplit">@drawable/ab_bottom_solid_openwatch</item>
+        <item name="android:progressBarStyle">@style/openwatch_ProgressBar</item>
+    </style>
+
+    <style name="openwatch_transparent_ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@drawable/ab_transparent_openwatch</item>
+        <item name="android:progressBarStyle">@style/openwatch_ProgressBar</item>
+    </style>
+
+    <style name="openwatch_PopupMenu" parent="@android:style/Widget.Holo.Light.ListPopupWindow">
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_openwatch</item>	
+    </style>
+
+    <style name="openwatch_DropDownListView" parent="@android:style/Widget.Holo.Light.ListView.DropDown">
+        <item name="android:listSelector">@drawable/selectable_background_openwatch</item>
+    </style>
+
+    <style name="openwatch_ActionBarTabStyle" parent="@android:style/Widget.Holo.Light.ActionBar.TabView">
+        <item name="android:background">@drawable/tab_indicator_ab_openwatch</item>
+    </style>
+
+    <style name="openwatch_DropDownNav" parent="@android:style/Widget.Holo.Light.Spinner">
+        <item name="android:background">@drawable/spinner_background_ab_openwatch</item>
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_openwatch</item>
+        <item name="android:dropDownSelector">@drawable/selectable_background_openwatch</item>
     </style>
     
-    <style name="ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">@drawable/action_bar_bg</item>
-        <item name="android:titleTextStyle">@android:style/TextAppearance.Holo.Widget.ActionBar.Title</item>
-        <!-- 
-        <item name="android:backgroundStacked">@color/stacked_green</item>
-        <item name="android:backgroundSplit">@color/sa_green</item>
-         -->
+    <style name="openwatch_ProgressBar" parent="@android:style/Widget.Holo.Light.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progress_horizontal_openwatch</item>
+    </style>
+
+    <!-- this style is only referenced in a Light.DarkActionBar based theme -->
+    <style name="Theme.openwatch.widget" parent="@android:style/Theme.Holo">
+        <item name="android:popupMenuStyle">@style/openwatch_PopupMenu</item>
+        <item name="android:dropDownListViewStyle">@style/openwatch_DropDownListView</item>
     </style>
 
 </resources>
