@@ -4,7 +4,8 @@
 
     <header
         android:fragment="${packageName}.${activityClass}$GeneralPreferenceFragment"
-        android:title="@string/pref_header_account" />
+        android:title="@string/pref_header_account"
+        android:summary="@string/pref_description_account" />
 
 
 </preference-headers>

@@ -102,6 +102,19 @@ public class LoginActivity extends Activity {
 		getMenuInflater().inflate(R.menu.activity_login, menu);
 		return true;
 	}
+	
+	@Override
+	public void onResume(){
+		super.onResume();
+		SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
+		if(profile.contains(Constants.EMAIL)){
+			mEmailView.setText(profile.getString(Constants.EMAIL, ""));
+			if(profile.contains(Constants.AUTHENTICATED))
+				this.findViewById(R.id.login_state_message).setVisibility(View.VISIBLE);
+		} else{
+			this.findViewById(R.id.login_state_message).setVisibility(View.GONE);
+		}
+	}
 
 	/**
 	 * Attempts to sign in or register the account specified by the login form.
@@ -221,10 +234,10 @@ public class LoginActivity extends Activity {
     		public void onSuccess(JSONObject response){
     			Log.i(TAG,"OW login success: " +  response.toString());
     			try{
+    				setUserAuthenticated(response);
+    				
 	    			if( (Boolean)response.getBoolean(Constants.OW_SUCCESS) == true){
 	    				Log.i(TAG,"OW login success: " +  response.toString());
-	    				// Set authed preference 
-	    				setUserAuthenticated(response);
 	    		        
 	    		        Intent i = new Intent(LoginActivity.this, MainActivity.class);
 	    		        startActivity(i);
@@ -232,6 +245,7 @@ public class LoginActivity extends Activity {
 	    			} else{
 	    				AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this);
 	    				int error_code = response.getInt(Constants.OW_ERROR);
+	    				
 	    				switch(error_code){
 	    					
 	    					case 403: 	// No account with provided email
@@ -393,27 +407,36 @@ public class LoginActivity extends Activity {
     	};
     	
     	OWServiceRequests.RegisterApp(getApplicationContext(), public_upload_token, response_handler);
-		
-    	
     }
     
+    /**
+     * Makes the appropriate adjustments to the SharedPreferences
+     * based on the result stored in server_response
+     * @param server_response
+     */
     public void setUserAuthenticated(JSONObject server_response){
     	SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
-    	if(!profile.getBoolean(Constants.REGISTERED, false))
-			try {
-				RegisterApp(server_response.getString(Constants.PUB_TOKEN));
-			} catch (JSONException e) {
-				Log.e(TAG, "Error reading pub token from JSON");
-				e.printStackTrace();
-			} 
-    	// attempt registration on every login until it succeeds. 
-    	new SavePreferencesTask().execute(server_response);
+    	try {
+			if(server_response.getBoolean(Constants.OW_SUCCESS) && !profile.getBoolean(Constants.REGISTERED, false)){
+				try {
+					RegisterApp(server_response.getString(Constants.PUB_TOKEN));
+				} catch (JSONException e) {
+					Log.e(TAG, "Error parsing pub token from JSON");
+					e.printStackTrace();
+				}
+			}
+	    	new SavePreferencesTask().execute(server_response);
+		} catch (JSONException e) {
+			Log.e(TAG, "Error parsing server response in setUserAuthenticated");
+			e.printStackTrace();
+		}
     	
     }
     
     /**
      * Save the OpenWatch service login response data to SharedPreferences
-     * this includes the public and private upload token.
+     * this includes the public and private upload token, authentication state,
+     * and the submitted email.
      * @author davidbrodsky
      *
      */
@@ -427,10 +450,17 @@ public class LoginActivity extends Activity {
 			
 	        	SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
 	            SharedPreferences.Editor editor = profile.edit();
-	            editor.putBoolean(Constants.AUTHENTICATED, true);
-	            editor.putString(Constants.PUB_TOKEN, server_response.getString(Constants.PUB_TOKEN));
-	            editor.putString(Constants.PRIV_TOKEN, server_response.getString(Constants.PRIV_TOKEN));
-	            Log.i(TAG, "Got upload tokens. Pub: " +  server_response.getString(Constants.PUB_TOKEN) + " Priv: " + server_response.getString(Constants.PRIV_TOKEN));
+	            if(server_response.getBoolean(Constants.OW_SUCCESS)){
+	            	editor.putBoolean(Constants.AUTHENTICATED, true);
+		            editor.putString(Constants.PUB_TOKEN, server_response.getString(Constants.PUB_TOKEN));
+		            editor.putString(Constants.PRIV_TOKEN, server_response.getString(Constants.PRIV_TOKEN));
+		            Log.i(TAG, "Got upload tokens. Pub: " +  server_response.getString(Constants.PUB_TOKEN) + " Priv: " + server_response.getString(Constants.PRIV_TOKEN));
+	            }
+	            else
+	            	editor.putBoolean(Constants.AUTHENTICATED, false);
+	            
+	            editor.putString(Constants.EMAIL, mEmail); // save email even if login unsuccessful
+	            
 	            editor.commit();
         	} catch (JSONException e) {
         		Log.e(TAG, "SavePreferenceTask: Error reading JSONObject response");

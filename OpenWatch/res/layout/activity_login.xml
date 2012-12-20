@@ -49,6 +49,16 @@
         <LinearLayout
             style="@style/LoginFormContainer"
             android:orientation="vertical" >
+            <TextView
+                android:id="@+id/login_state_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginBottom="16dp"
+                android:fontFamily="sans-serif-light"
+                android:text="@string/message_account_stored"
+                android:visibility="gone"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <EditText
                 android:id="@+id/email"
