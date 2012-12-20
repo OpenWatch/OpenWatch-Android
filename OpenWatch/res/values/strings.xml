@@ -62,6 +62,7 @@
     
     <!--  AutoComplete Tag Field -->
     <string name="action_tag">Tag</string>
+    <string name="tag_hint">Add new tags here</string>
     
     <!-- What Happened Activity -->
     <string name="what_happened">What Happened?</string>

@@ -44,6 +44,7 @@
         android:ems="10"
         android:imeActionId="1337"
         android:imeActionLabel="@string/action_tag"
+        android:hint="@string/tag_hint"
         android:imeOptions="actionDone"
         android:inputType="text" />
 
