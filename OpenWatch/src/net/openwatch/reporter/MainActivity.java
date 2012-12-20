@@ -3,10 +3,15 @@ package net.openwatch.reporter;
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.database.DatabaseManager;
 import net.openwatch.reporter.http.OWServiceRequests;
+import android.os.Build;
 import android.os.Bundle;
+import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.view.Menu;
 import android.view.View;
 
@@ -16,6 +21,7 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		setActionBarBG();
 	}
 	
 	@Override
@@ -31,14 +37,28 @@ public class MainActivity extends Activity {
 	
 	public void watchButtonClick(View v){
 		Intent i = new Intent(this, FeedActivity.class);
-		//Intent i =  new Intent(this, ORMTestActivity.class);
+		startActivity(i);
+	}
+	
+	public void settingsButtonClick(View v){
+		Intent i = new Intent(this, SettingsActivity.class);
+		startActivity(i);
+	}
+	
+	public void localButtonClick(View v){
+		Intent i = new Intent(this, FeedActivity.class);
+		startActivity(i);
+	}
+	
+	public void savedButtonClick(View v){
+		Intent i = new Intent(this, FeedActivity.class);
 		startActivity(i);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_main, menu);
+		//getMenuInflater().inflate(R.menu.activity_main, menu);
 		return true;
 	}
 	
@@ -74,6 +94,18 @@ public class MainActivity extends Activity {
 			startActivity(i);
 		}
 		
+	}
+	
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void setActionBarBG(){
+		if (Build.VERSION.SDK_INT >= 11) {
+			ActionBar action_bar = this.getActionBar();
+			action_bar.setBackgroundDrawable(new ColorDrawable(Color.RED));
+			action_bar.setDisplayShowTitleEnabled(false);
+			action_bar.setDisplayShowTitleEnabled(true);
+			action_bar.setTitle("");
+			//this.getActionBar().setTitle("OW Tech Demo");
+		}
 	}
 
 }

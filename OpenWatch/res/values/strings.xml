@@ -8,6 +8,9 @@
     <!-- MainActivity -->
 
     <string name="record_button_text">Record</string>
+    <string name="saved_recordings_button_text">Saved</string>
+    <string name="local_button_text">Local</string>
+    <string name="settings_button_text">Settings</string>
     <string name="watch_button_text">Watch</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_recorder">RecorderActivity</string>
