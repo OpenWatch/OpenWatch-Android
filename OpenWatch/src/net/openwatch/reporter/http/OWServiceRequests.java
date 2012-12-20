@@ -81,7 +81,7 @@ public class OWServiceRequests {
 	
 	public static void getRecordingMeta(Context app_context, String recording_uuid, JsonHttpResponseHandler response_handler){
     	AsyncHttpClient http_client = HttpClient.setupHttpClient(app_context);
-    	Log.i(TAG,"Edit Recording: " + Constants.OW_API_URL + Constants.OW_RECORDING);
+    	Log.i(TAG,"Get Recording Meta: " + Constants.OW_API_URL + Constants.OW_RECORDING);
     	http_client.get(Constants.OW_API_URL + Constants.OW_RECORDING + "/" + recording_uuid, response_handler);
     }
 	

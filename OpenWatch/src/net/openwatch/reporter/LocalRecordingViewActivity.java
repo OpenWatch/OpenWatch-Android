@@ -42,7 +42,7 @@ public class LocalRecordingViewActivity extends FragmentActivity {
 		setContentView(R.layout.activity_local_recording_view);
 		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
 		mTabHost.setup();
-
+		mTabHost.requestFocus();
 		try {
 			model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
 			//Log.i(TAG, "HQ_filepath: " + OWLocalRecording.objects(this, OWLocalRecording.class).get(

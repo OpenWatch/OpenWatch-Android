@@ -65,7 +65,7 @@
         </activity>
         <activity
             android:name="net.openwatch.reporter.LocalRecordingViewActivity"
-            android:configChanges="keyboardHidden"
+            android:windowSoftInputMode="stateHidden"
             android:label="@string/title_activity_local_recording_view" >
         </activity>
 

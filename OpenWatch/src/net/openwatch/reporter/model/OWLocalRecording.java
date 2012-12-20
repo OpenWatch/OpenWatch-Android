@@ -110,16 +110,26 @@ public class OWLocalRecording extends Model {
 		segment.save(c);
 		this.segments.add(segment);
 	}
+	
+	/**
+	 * Save, sync with OpenWatch.net, and notify content provider
+	 * @param context
+	 * @return
+	 */
+	public boolean saveAndSync(Context context){
+		OWServiceRequests.syncRecording(context, this);
+		return save(context);
+	}
 
+	/**
+	 * Save and notify content provider
+	 */
 	@Override
 	public boolean save(Context context) {
 		this.last_edited.set(Constants.sdf.format(new Date()));
 		// notify the ContentProvider that the dataset has changed
 		context.getContentResolver().notifyChange(
 				OWContentProvider.getLocalRecordingUri(this.getId()), null);
-		
-		OWServiceRequests.syncRecording(context, this);
-		
 		return super.save(context);
 	}
 

@@ -52,6 +52,8 @@ public class LocalRecordingInfoFragment extends Fragment implements LoaderCallba
 	protected static boolean watch_tag_text = true;
 	protected String tag_query = ""; // autocomplete tag input
 	protected SimpleCursorAdapter mAdapter;
+	
+	boolean doSave = false; // if recording is mutated during this fragments life, saveAndSync onPause
 		
 	/**
 	 * This fragment assumes a database_id will be passed in the 
@@ -199,12 +201,20 @@ public class LocalRecordingInfoFragment extends Fragment implements LoaderCallba
     	super.onPause();
     	if(recording == null)
     		return;
-    	Log.i(TAG, "Saving recording. " + title.getText().toString() + " : " + description.getText().toString());
-    	//this.getActivity().getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder)
-    	//OWLocalRecording recording = OWLocalRecording.objects(getActivity().getApplicationContext(), OWLocalRecording.class).get(recording.getId());
-    	recording.title.set(title.getText().toString());
-    	recording.description.set(description.getText().toString());
-    	recording.save(getActivity().getApplicationContext());
+   
+    	// Title may not be set to empty string
+    	if(recording.title.get().compareTo(title.getText().toString()) != 0 && recording.title.get().compareTo("") != 0){
+    		doSave = true;
+    		recording.title.set(title.getText().toString());
+    	}
+    	if(recording.description.get().compareTo(description.getText().toString()) != 0){
+    		doSave = true;
+    		recording.description.set(description.getText().toString());
+    	}
+    	if(doSave){
+    		Log.i(TAG, "Saving recording. " + title.getText().toString() + " : " + description.getText().toString());
+    		recording.saveAndSync(getActivity().getApplicationContext());
+    	}
     }
     
     static final String[] TAG_PROJECTION = new String[] {
@@ -254,10 +264,7 @@ public class LocalRecordingInfoFragment extends Fragment implements LoaderCallba
 				String tag_name = ((TextView)view).getText().toString();
 				if(!recording.hasTag(getActivity().getApplicationContext(), tag_name)){
 					OWRecordingTag tag = OWRecordingTag.objects(getActivity().getApplicationContext(), OWRecordingTag.class).get((Integer)view.getTag(R.id.list_item_model));
-					tagGroup.addTagPostLayout(tag);
-					//addTagToTagPool(tag);
-					recording.tags.add(tag);
-					recording.save(getActivity().getApplicationContext());
+					addTagToRecording(tag, recording);
 				}
 				watch_tag_text = false;
 				tags.setText("");
@@ -268,6 +275,7 @@ public class LocalRecordingInfoFragment extends Fragment implements LoaderCallba
 		});
 		
 		// On keyboard enter
+		
 		tags.setOnEditorActionListener(new OnEditorActionListener(){
 
 			@Override
@@ -295,10 +303,7 @@ public class LocalRecordingInfoFragment extends Fragment implements LoaderCallba
 							selected_tag.save(getActivity().getApplicationContext());
 						}
 						
-						tagGroup.addTagPostLayout(selected_tag);
-						//addTagToTagPool(tag);
-						recording.tags.add(selected_tag);
-						recording.save(getActivity().getApplicationContext());
+						addTagToRecording(selected_tag, recording);
 						watch_tag_text = false;
 						view.setText("");
 						watch_tag_text = true;
@@ -335,6 +340,13 @@ public class LocalRecordingInfoFragment extends Fragment implements LoaderCallba
 			}
 			
 		});
+	}
+	
+	private void addTagToRecording(OWRecordingTag tag, OWLocalRecording recording){
+		tagGroup.addTagPostLayout(tag);
+		recording.tags.add(tag);
+		recording.save(getActivity().getApplicationContext());
+		doSave = true;
 	}
 
 }
