@@ -1,5 +1,6 @@
 package net.openwatch.reporter;
 
+import com.orm.androrm.Filter;
 import com.orm.androrm.QuerySet;
 
 import net.openwatch.reporter.constants.Constants;
@@ -22,6 +23,7 @@ import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,6 +37,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 
 public class LocalRecordingInfoFragment extends Fragment implements LoaderCallbacks<Cursor>{
 	
@@ -241,6 +244,7 @@ public class LocalRecordingInfoFragment extends Fragment implements LoaderCallba
 	protected void setTagAutoCompleteListeners(){
 		if(recording == null)
 			return;
+		// On autocomplete tag selection
 		tags.setOnItemClickListener(new OnItemClickListener(){
 
 			@Override
@@ -259,6 +263,46 @@ public class LocalRecordingInfoFragment extends Fragment implements LoaderCallba
 				tags.setText("");
 				watch_tag_text = true;
 				tags.setAdapter(null);
+			}
+			
+		});
+		
+		// On keyboard enter
+		tags.setOnEditorActionListener(new OnEditorActionListener(){
+
+			@Override
+			public boolean onEditorAction(TextView view, int actionId,
+					KeyEvent event) {
+				
+				String[] tag_name_array = view.getText().toString().split(",");
+				
+				for(int x=0;x < tag_name_array.length; x++){
+					String tag_name = tag_name_array[x];
+					
+					if(!recording.hasTag(getActivity().getApplicationContext(), tag_name)){
+						Filter filter = new Filter();
+						filter.is(DBConstants.TAG_TABLE_NAME, tag_name);
+						QuerySet<OWRecordingTag> tags = OWRecordingTag.objects(getActivity().getApplicationContext(), OWRecordingTag.class).filter(filter);
+						OWRecordingTag selected_tag = null;
+						for(OWRecordingTag tag : tags){
+							selected_tag = tag;
+							break;
+						}
+						if(selected_tag == null){
+							selected_tag = new OWRecordingTag();
+							selected_tag.name.set(tag_name);
+							selected_tag.is_featured.set(false);
+							selected_tag.save(getActivity().getApplicationContext());
+						}
+						
+						tagGroup.addTagPostLayout(selected_tag);
+						//addTagToTagPool(tag);
+						recording.tags.add(selected_tag);
+						recording.save(getActivity().getApplicationContext());
+					}
+				} // end for
+				
+				return true;
 			}
 			
 		});
