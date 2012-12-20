@@ -21,7 +21,6 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		setActionBarBG();
 	}
 	
 	@Override
@@ -94,18 +93,6 @@ public class MainActivity extends Activity {
 			startActivity(i);
 		}
 		
-	}
-	
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	private void setActionBarBG(){
-		if (Build.VERSION.SDK_INT >= 11) {
-			ActionBar action_bar = this.getActionBar();
-			action_bar.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
-			action_bar.setDisplayShowTitleEnabled(false);
-			action_bar.setDisplayShowTitleEnabled(true);
-			action_bar.setTitle("");
-			//this.getActionBar().setTitle("OW Tech Demo");
-		}
 	}
 
 }
