@@ -60,6 +60,9 @@
     <string name="description">Description</string>
     <string name="tags">Tags</string>
     
+    <!--  AutoComplete Tag Field -->
+    <string name="action_tag">Tag</string>
+    
     <!-- What Happened Activity -->
     <string name="what_happened">What Happened?</string>
     <string name="title_activity_what_happened">WhatHappenedActivity</string>

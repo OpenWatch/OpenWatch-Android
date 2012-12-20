@@ -36,18 +36,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/tags" />
-    
+
     <AutoCompleteTextView
         android:id="@+id/editTags"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10" />
+        android:ems="10"
+        android:imeActionId="1337"
+        android:imeActionLabel="@string/action_tag"
+        android:imeOptions="actionDone"
+        android:inputType="text" />
 
-    <net.openwatch.reporter.view.TagPoolLayout
-        android:id="@+id/tagGroup"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="left|top"
-        android:animateLayoutChanges="true" />
+        android:layout_height="match_parent" >
+
+        <net.openwatch.reporter.view.TagPoolLayout
+            android:id="@+id/tagGroup"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
+            android:gravity="left|top" />
+    </ScrollView>
 
 </LinearLayout>

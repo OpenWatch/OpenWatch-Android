@@ -277,7 +277,7 @@ public class LocalRecordingInfoFragment extends Fragment implements LoaderCallba
 				String[] tag_name_array = view.getText().toString().split(",");
 				
 				for(int x=0;x < tag_name_array.length; x++){
-					String tag_name = tag_name_array[x];
+					String tag_name = tag_name_array[x].trim();
 					
 					if(!recording.hasTag(getActivity().getApplicationContext(), tag_name)){
 						Filter filter = new Filter();
@@ -299,6 +299,10 @@ public class LocalRecordingInfoFragment extends Fragment implements LoaderCallba
 						//addTagToTagPool(tag);
 						recording.tags.add(selected_tag);
 						recording.save(getActivity().getApplicationContext());
+						watch_tag_text = false;
+						view.setText("");
+						watch_tag_text = true;
+						((AutoCompleteTextView)view).setAdapter(null);
 					}
 				} // end for
 				

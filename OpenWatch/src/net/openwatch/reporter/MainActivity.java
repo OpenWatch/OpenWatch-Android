@@ -100,7 +100,7 @@ public class MainActivity extends Activity {
 	private void setActionBarBG(){
 		if (Build.VERSION.SDK_INT >= 11) {
 			ActionBar action_bar = this.getActionBar();
-			action_bar.setBackgroundDrawable(new ColorDrawable(Color.RED));
+			action_bar.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
 			action_bar.setDisplayShowTitleEnabled(false);
 			action_bar.setDisplayShowTitleEnabled(true);
 			action_bar.setTitle("");

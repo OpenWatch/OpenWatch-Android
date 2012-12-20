@@ -38,6 +38,10 @@
             android:name="net.openwatch.reporter.LoginActivity"
             android:label="@string/app_name"
             android:windowSoftInputMode="adjustResize|stateVisible" >
+            <intent-filter>
+                <action android:name=".LoginActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity
             android:name="net.openwatch.reporter.MainActivity"
