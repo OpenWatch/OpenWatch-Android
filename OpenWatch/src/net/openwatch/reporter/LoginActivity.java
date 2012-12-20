@@ -456,8 +456,10 @@ public class LoginActivity extends Activity {
 		            editor.putString(Constants.PRIV_TOKEN, server_response.getString(Constants.PRIV_TOKEN));
 		            Log.i(TAG, "Got upload tokens. Pub: " +  server_response.getString(Constants.PUB_TOKEN) + " Priv: " + server_response.getString(Constants.PRIV_TOKEN));
 	            }
-	            else
+	            else{
+	            	Log.i(TAG, "Set user not authenticated");
 	            	editor.putBoolean(Constants.AUTHENTICATED, false);
+	            }
 	            
 	            editor.putString(Constants.EMAIL, mEmail); // save email even if login unsuccessful
 	            

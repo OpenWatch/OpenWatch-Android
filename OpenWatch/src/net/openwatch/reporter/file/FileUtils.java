@@ -56,12 +56,17 @@ public class FileUtils {
 
 		File result = new File(parent_directory, new_child_directory_name);
 		if(!result.exists())
-			result.mkdir();
+			if(result.mkdir())
+				return result;
+			else{
+				Log.e("getStorageDirectory", "Error creating " + result.getAbsolutePath());
+				return null;
+			}
 		else if(result.isFile()){
 			return null;
 		}
 		
-		Log.d("getStorageDirectory", result.getAbsolutePath());
+		Log.d("getStorageDirectory", "directory ready: " + result.getAbsolutePath());
 		return result;
 	}
 

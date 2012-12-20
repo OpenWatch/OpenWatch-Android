@@ -45,14 +45,18 @@ public class LocalRecordingViewActivity extends FragmentActivity {
 
 		try {
 			model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
+			//Log.i(TAG, "HQ_filepath: " + OWLocalRecording.objects(this, OWLocalRecording.class).get(
+			//		model_id).hq_filepath.get());
 			setupVideoView(
 					R.id.videoview,
 					OWLocalRecording.objects(this, OWLocalRecording.class).get(
 							model_id).hq_filepath.get());
+			
 
 			// Log.i(TAG, "got model_id : " + String.valueOf(model_id));
 		} catch (Exception e) {
 			Log.e(TAG, "Could not load Intent extras");
+			e.printStackTrace();
 		}
 
 		mViewPager = (ViewPager) findViewById(R.id.pager);

@@ -67,10 +67,20 @@ public class WhatHappenedActivity extends FragmentActivity {
 		saveRecordingMeta();
 		showCompleteDialog();
 		//showShareDialog();
-		
 	}
 	
+	/**
+	 * If a server_id was received, give option to share, else return to MainActivity
+	 */
 	private void showCompleteDialog(){
+		final OWLocalRecording recording = OWLocalRecording.objects(this.getApplicationContext(), OWLocalRecording.class).get(model_id);
+		if(recording.server_id.get() == null || recording.server_id.get() == 0){
+			Intent i = new Intent(WhatHappenedActivity.this, MainActivity.class);
+			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+			startActivity(i);
+		}
+			
+			
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(getString(R.string.share_dialog_title))
 		.setMessage(getString(R.string.share_dialog_message))
@@ -91,15 +101,13 @@ public class WhatHappenedActivity extends FragmentActivity {
 			public void onClick(DialogInterface dialog, int which) {
 				// Share
 				dialog.dismiss();
-				showShareDialog();
+				showShareDialog(recording);
 			}
 			
 		}).show();
 	}
 	
-	private void showShareDialog(){
-		OWLocalRecording recording = OWLocalRecording.objects(this.getApplicationContext(), OWLocalRecording.class).get(model_id);
-		
+	private void showShareDialog(OWLocalRecording recording){
 		String url = Constants.OW_URL +  Constants.OW_VIEW + recording.server_id.get();
 		Log.i(TAG, "model_id: " + String.valueOf(model_id) + " url: " + url);
 		

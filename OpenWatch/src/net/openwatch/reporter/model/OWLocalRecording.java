@@ -130,7 +130,6 @@ public class OWLocalRecording extends Model {
 	}
 	
 	public void updateWithJson(Context app_context, JSONObject json){
-		Log.i(TAG, "updateWIthJson");
 		try {
 			if(json.has("title"))
 				this.title.set(json.getString("title"));
@@ -169,6 +168,7 @@ public class OWLocalRecording extends Model {
 				}
 			}
 			this.save(app_context);
+			Log.i(TAG, "updateWIthJson. server_id: " + String.valueOf(this.server_id.get()));
 		} catch (JSONException e) {
 			Log.e(TAG, "failed to update model with json");
 			e.printStackTrace();

@@ -173,6 +173,7 @@ public class RecorderActivity extends Activity implements
 	        			OWLocalRecording recording = (OWLocalRecording) OWLocalRecording.objects(c.getApplicationContext(), OWLocalRecording.class).get(owlocalrecording_id);
 	        			recording.hq_filepath.set(command[1]);
 	        			recording.save(c.getApplicationContext());
+	        			Log.i(TAG, "hq filepath set:" + command[1]);
 	        			MediaServerRequests.sendHQFile(public_upload_token, recording_id, command[1]);
 	        		}
 	        	}
