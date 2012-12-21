@@ -35,7 +35,7 @@ public class MainActivity extends Activity {
 	}
 	
 	public void watchButtonClick(View v){
-		Intent i = new Intent(this, FeedActivity.class);
+		Intent i = new Intent(this, ActionBarFeedActivity.class);
 		startActivity(i);
 	}
 	

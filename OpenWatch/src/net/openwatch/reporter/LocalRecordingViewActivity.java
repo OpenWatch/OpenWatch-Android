@@ -9,6 +9,7 @@ import com.google.android.gms.maps.GoogleMap;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.media.MediaPlayer.OnVideoSizeChangedListener;
@@ -17,10 +18,14 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.VideoView;
 
 public class LocalRecordingViewActivity extends FragmentActivity {
@@ -34,6 +39,8 @@ public class LocalRecordingViewActivity extends FragmentActivity {
 	TabsAdapter mTabsAdapter;
 
 	public static int model_id = -1;
+	
+	LayoutInflater inflater;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +50,8 @@ public class LocalRecordingViewActivity extends FragmentActivity {
 		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
 		mTabHost.setup();
 		mTabHost.requestFocus();
+		
+		inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		try {
 			model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
 			//Log.i(TAG, "HQ_filepath: " + OWLocalRecording.objects(this, OWLocalRecording.class).get(
@@ -60,14 +69,13 @@ public class LocalRecordingViewActivity extends FragmentActivity {
 		}
 
 		mViewPager = (ViewPager) findViewById(R.id.pager);
-
 		mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
-
+				
 		mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_map))
-				.setIndicator(getString(R.string.tab_map)), MapFragment.class,
+				.setIndicator(inflateCustomTab(getString(R.string.tab_map))), MapFragment.class,
 				null);
 		mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_info))
-				.setIndicator(getString(R.string.tab_info)),
+				.setIndicator(inflateCustomTab(getString(R.string.tab_info))),
 				LocalRecordingInfoFragment.class, null);
 
 		if (savedInstanceState != null) {
@@ -95,6 +103,12 @@ public class LocalRecordingViewActivity extends FragmentActivity {
 			video.setVisibility(View.GONE);
 		}
 
+	}
+	
+	private View inflateCustomTab(String tab_title){
+    	LinearLayout tab = (LinearLayout) inflater.inflate(R.layout.tab_indicator_openwatch, (ViewGroup) findViewById(android.R.id.tabs), false);
+		((TextView)tab.findViewById(R.id.title)).setText(tab_title);
+		return tab;
 	}
 
 	public void setupVideoView(int view_id, String filepath) {

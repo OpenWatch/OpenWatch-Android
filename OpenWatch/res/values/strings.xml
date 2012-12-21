@@ -59,16 +59,18 @@
     <string name="title">Title</string>
     <string name="description">Description</string>
     <string name="tags">Tags</string>
-    
-    <!--  AutoComplete Tag Field -->
+
+    <!-- AutoComplete Tag Field -->
     <string name="action_tag">Tag</string>
     <string name="tag_hint">Add new tags here</string>
-    
+
     <!-- What Happened Activity -->
     <string name="what_happened">What Happened?</string>
     <string name="title_activity_what_happened">WhatHappenedActivity</string>
     <string name="submit">Submit</string>
     <string name="share_dialog_title">Share</string>
     <string name="share_dialog_message">Your recording is now visible on OpenWatch. Would you like to share it\'s url?</string>
-	<string name="share_dialog_no">No Thanks</string>
+    <string name="share_dialog_no">No Thanks</string>
+    <string name="title_activity_action_bar_feed">ActionBarFeedActivity</string>
+
 </resources>

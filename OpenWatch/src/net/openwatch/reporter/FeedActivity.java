@@ -16,17 +16,22 @@ package net.openwatch.reporter;
  * limitations under the License.
  */
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TabWidget;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -43,6 +48,8 @@ public class FeedActivity extends FragmentActivity {
     ViewPager  mViewPager;
     TabsAdapter mTabsAdapter;
     
+    LayoutInflater inflater;
+    
     public static int display_width = -1;
 
     @Override
@@ -52,19 +59,20 @@ public class FeedActivity extends FragmentActivity {
         setContentView(R.layout.fragment_tabs_pager);
         
         getDisplayWidth();
-        
         mTabHost = (TabHost)findViewById(android.R.id.tabhost);
         mTabHost.setup();
-
         mViewPager = (ViewPager)findViewById(R.id.pager);
 
         mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
+        
+        inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_local_user_recordings)).setIndicator(getString(R.string.tab_local_user_recordings)),
+        mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_local_user_recordings)).setIndicator(inflateCustomTab(getString(R.string.tab_local_user_recordings))),
                 MyFeedFragmentActivity.LocalRecordingsListFragment.class, null);
-        mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_hot)).setIndicator(getString(R.string.tab_hot)),
-                RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, null);
 
+        mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_hot)).setIndicator(inflateCustomTab(getString(R.string.tab_hot))),
+                RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, null);
+        
         if (savedInstanceState != null) {
             mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
         }
@@ -181,6 +189,12 @@ public class FeedActivity extends FragmentActivity {
         public void onPageScrollStateChanged(int state) {
         }
     }
+    
+    private View inflateCustomTab(String tab_title){
+    	LinearLayout tab = (LinearLayout) inflater.inflate(R.layout.tab_indicator_openwatch, (ViewGroup) findViewById(android.R.id.tabs), false);
+		((TextView)tab.findViewById(R.id.title)).setText(tab_title);
+		return tab;
+	}
     
     /**
      * Measure display width so the view pager can implement its 

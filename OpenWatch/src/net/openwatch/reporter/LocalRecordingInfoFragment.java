@@ -203,11 +203,11 @@ public class LocalRecordingInfoFragment extends Fragment implements LoaderCallba
     		return;
    
     	// Title may not be set to empty string
-    	if(recording.title.get().compareTo(title.getText().toString()) != 0 && recording.title.get().compareTo("") != 0){
+    	if(recording.title.get() != null && recording.title.get().compareTo(title.getText().toString()) != 0 && recording.title.get().compareTo("") != 0){
     		doSave = true;
     		recording.title.set(title.getText().toString());
     	}
-    	if(recording.description.get().compareTo(description.getText().toString()) != 0){
+    	if(recording.description.get() != null && recording.description.get().compareTo(description.getText().toString()) != 0){
     		doSave = true;
     		recording.description.set(description.getText().toString());
     	}
