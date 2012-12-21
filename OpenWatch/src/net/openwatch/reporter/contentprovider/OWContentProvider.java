@@ -43,7 +43,7 @@ public class OWContentProvider extends ContentProvider {
      public static Uri getLocalRecordingUri(int model_id){
     	 return LOCAL_RECORDING_URI.buildUpon().appendEncodedPath("/" + String.valueOf(model_id)).build();
      }
-     public static Uri getRecordingUri(int model_id){
+     public static Uri getRemoteRecordingUri(int model_id){
     	 return REMOTE_RECORDING_URI.buildUpon().appendEncodedPath("/" + String.valueOf(model_id)).build();
      }
      public static Uri getTagUri(int model_id){

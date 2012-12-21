@@ -59,6 +59,9 @@ public class Constants {
 	public static final String OW_RECORDING = "recording";
 	public static final String OW_TAGS = "tags";
 	public static final String OW_UPDATE_META = "update_metadata";
+	public static final String OW_FEED = "feed";
+	public static final String OW_LOCAL = "local";
+	public static final String OW_FEATURED = "featured";
 	
 	// OpenWatch web service POST keys
 	public static final String OW_EMAIL = "email_address";
@@ -69,6 +72,13 @@ public class Constants {
 	public static final String OW_SUCCESS = "success";
 	public static final String OW_ERROR = "code";
 	public static final String OW_REASON = "reason";
+	public static final String OW_SERVER_ID = "id";
+	public static final String OW_THUMB_URL = "thumbnail_url";
+	public static final String OW_LAST_EDITED = "last_edited";
+	public static final String OW_ACTIONS = "clicks";
+	public static final String OW_NO_VALUE = "None";
+	public static final String OW_USER = "user";
+	public static final String OW_USERNAME = "username";
 	
 	// OpenWatch media capture web service url and endpoints
 	public static final String OW_MEDIA_URL = "http://capture.openwatch.net/";

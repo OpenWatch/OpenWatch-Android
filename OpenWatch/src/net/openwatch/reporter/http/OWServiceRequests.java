@@ -12,6 +12,7 @@ import net.openwatch.reporter.OWApplication;
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.model.OWLocalRecording;
+import net.openwatch.reporter.model.OWRecording;
 import net.openwatch.reporter.model.OWRecordingTag;
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -39,6 +40,46 @@ public class OWServiceRequests {
 		public void onSuccess();
 	}
 	
+	enum OWFeed{
+		FEATURED, LOCAL
+	}
+	
+	/**
+	 * Parse an OpenWatch.net feed, saving its contents to the databasee
+	 * @param app_context
+	 * @param feed The type of feed to return. See OWServiceRequests.OWFeed
+	 */
+	public static void getFeed(final Context app_context, OWFeed feed){
+		final String METHOD = "getFeed";
+		JsonHttpResponseHandler get_handler = new JsonHttpResponseHandler(){
+			@Override
+    		public void onSuccess(JSONObject response){
+				if(response.has("recordings")){
+						JSONArray json_array;
+						try {
+							json_array = response.getJSONArray("recordings");
+							OWRecording.createOWRecordingsFromJSONArray(app_context, json_array);
+						} catch (JSONException e) {
+							Log.e(TAG, METHOD + " Error parsing recordings array from response");
+							e.printStackTrace();
+						}
+				}
+			}
+		};
+		
+		AsyncHttpClient http_client = HttpClient.setupHttpClient(app_context);
+		String endpoint = "";
+		switch(feed){
+			case FEATURED:
+				endpoint = Constants.OW_FEATURED;
+				break;
+			case LOCAL:
+				endpoint = Constants.OW_LOCAL;
+		}
+		http_client.get(Constants.OW_API_URL + Constants.OW_FEED + endpoint, get_handler);
+			
+	}
+
 	/**
 	 * Fetch server recordingd data, check last_edited, and push update if necessary
 	 * @param app_context

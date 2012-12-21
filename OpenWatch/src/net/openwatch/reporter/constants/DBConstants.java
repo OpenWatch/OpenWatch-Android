@@ -8,7 +8,6 @@ public class DBConstants {
 	// These correlate to field names in OWRecording
 	public static final String DB_NAME = "OpenWatchDB";
 	public static final String LOCAL_RECORDINGS_TABLENAME = "owlocalrecording";
-	public static final String USER_TABLENAME = "owuser";
 	public static final String REMOTE_RECORDINGS_TABLENAME = "owrecording";
 	public static final String RECORDINGS_TABLE_TITLE = "title";
 	public static final String RECORDINGS_TABLE_DESC = "description";
@@ -34,6 +33,13 @@ public class DBConstants {
 	public static final String TAB_TABLE_FEATURED = "is_featured";
 	public static final String TAG_TABLE_RECORDINGS = "recordings";
 	public static final String TAG_TABLE_SERVER_ID = "server_id";
+	
+	// User table
+	public static final String USER_TABLENAME = "owuser";
+	public static final String USER_USERNAME = "username";
+	public static final String USER_SERVER_ID = "server_id";
+	public static final String USER_RECORDINGS = "recordings";
+	public static final String USER_TAGS = "tags";
 	
 
 }

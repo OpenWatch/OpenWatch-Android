@@ -112,11 +112,14 @@ public class OWLocalRecording extends Model {
 	}
 	
 	/**
-	 * Save, sync with OpenWatch.net, and notify content provider
+	 * Save, sync with OpenWatch.net, and notify content provider.
+	 * Called from LocalRecordingInfoFragment
 	 * @param context
 	 * @return
 	 */
 	public boolean saveAndSync(Context context){
+		this.last_edited.set(Constants.sdf.format(new Date()));
+		// notify the ContentProvider that the dataset has changed
 		OWServiceRequests.syncRecording(context, this);
 		return save(context);
 	}
@@ -126,8 +129,6 @@ public class OWLocalRecording extends Model {
 	 */
 	@Override
 	public boolean save(Context context) {
-		this.last_edited.set(Constants.sdf.format(new Date()));
-		// notify the ContentProvider that the dataset has changed
 		context.getContentResolver().notifyChange(
 				OWContentProvider.getLocalRecordingUri(this.getId()), null);
 		return super.save(context);

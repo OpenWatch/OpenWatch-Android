@@ -2,20 +2,30 @@ package net.openwatch.reporter.model;
 
 import java.util.Date;
 
-import android.content.Context;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import android.content.Context;
+import android.util.Log;
+
+import com.orm.androrm.DatabaseAdapter;
+import com.orm.androrm.Filter;
 import com.orm.androrm.Model;
 import com.orm.androrm.QuerySet;
 import com.orm.androrm.field.CharField;
 import com.orm.androrm.field.DoubleField;
+import com.orm.androrm.field.ForeignKeyField;
 import com.orm.androrm.field.IntegerField;
 import com.orm.androrm.field.ManyToManyField;
 
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
 
 
 public class OWRecording extends Model{
+	private static final String TAG = "OWRecording";
 	/*
 	public CharField title = new CharField();
 	public CharField description = new CharField();
@@ -55,6 +65,7 @@ public class OWRecording extends Model{
 	public IntegerField actions;
 
 	public ManyToManyField<OWRecording, OWRecordingTag> tags;
+	public ForeignKeyField<OWUser> user;
 	
 	public OWRecording(){
 		super();
@@ -82,10 +93,66 @@ public class OWRecording extends Model{
 		
 	}
 	
+	public static void createOWRecordingsFromJSONArray(Context app_context, JSONArray json_array){
+		try {
+			DatabaseAdapter adapter = DatabaseAdapter.getInstance(app_context);
+			adapter.beginTransaction();
+			
+			Filter filter;
+			JSONObject json_obj;
+			JSONObject json_user;
+			QuerySet<OWUser> existing_users;
+			QuerySet<OWRecording> existing_recs;
+			OWRecording existing_rec = null;
+			OWUser user = null;
+			for(int x=0; x<json_array.length();x++){	
+				json_obj = json_array.getJSONObject(x);
+				filter = new Filter();
+				filter.is(DBConstants.RECORDINGS_TABLE_UUID, json_obj.getString(DBConstants.RECORDINGS_TABLE_UUID));
+				existing_recs = OWRecording.objects(app_context, OWRecording.class).filter(filter);
+				for(OWRecording rec : existing_recs){
+					existing_rec = rec;
+					break;
+				}
+				if(existing_rec == null)
+					existing_rec = new OWRecording();
+				existing_rec.views.set(json_obj.getInt(DBConstants.RECORDINGS_TABLE_VIEWS));
+				existing_rec.title.set(json_obj.getString(DBConstants.RECORDINGS_TABLE_TITLE));
+				existing_rec.server_id.set(json_obj.getInt(Constants.OW_SERVER_ID));
+				if(json_obj.getString(Constants.OW_THUMB_URL).compareTo(Constants.OW_NO_VALUE)!= 0)
+					existing_rec.thumb_url.set(json_obj.getString(Constants.OW_THUMB_URL));
+				existing_rec.last_edited.set(json_obj.getString(Constants.OW_LAST_EDITED));
+				existing_rec.actions.set(json_obj.getInt(Constants.OW_ACTIONS));
+				
+				json_user = json_obj.getJSONObject(Constants.OW_USER);
+				filter = new Filter();
+				filter.is(DBConstants.USER_SERVER_ID, json_user.getInt(Constants.OW_SERVER_ID));
+				existing_users = OWUser.objects(app_context, OWUser.class).filter(filter);
+				for(OWUser existing_user : existing_users){
+					user = existing_user;
+					break;
+				}
+				if(user == null){
+					user = new OWUser();
+					user.username.set(json_user.getString(Constants.OW_USERNAME));
+					user.server_id.set(json_user.getInt(Constants.OW_SERVER_ID));
+					user.save(app_context);
+				}
+				existing_rec.user.set(user.getId());
+				existing_rec.save(app_context);
+			}
+			adapter.commitTransaction();
+			
+		} catch (JSONException e) {
+			Log.e(TAG, " Error parsing feed's recording array");
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	public boolean save(Context context) {
 		// notify the ContentProvider that the dataset has changed
-		context.getContentResolver().notifyChange(OWContentProvider.getRecordingUri(this.getId()), null);
+		context.getContentResolver().notifyChange(OWContentProvider.getRemoteRecordingUri(this.getId()), null);
 		return super.save(context);
 	}
 	
