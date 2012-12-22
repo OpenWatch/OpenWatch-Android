@@ -224,7 +224,7 @@ public class LoginActivity extends Activity {
      */
     public void UserLogin(){
     	JsonHttpResponseHandler  response_handler = new JsonHttpResponseHandler(){
-    		
+    		private static final String TAG = "OWServiceRequests";
     		@Override
     		public void onStart(){
     			Log.i(TAG, "onStart");
@@ -299,7 +299,7 @@ public class LoginActivity extends Activity {
      */
     public void UserSignup(){
     	JsonHttpResponseHandler response_handler = new JsonHttpResponseHandler(){
-    		
+    		private static final String TAG = "OWServiceRequests";
     		@Override
     		public void onSuccess(JSONObject response){
     			Log.i(TAG,"OW signup success: " +  response);
@@ -364,6 +364,7 @@ public class LoginActivity extends Activity {
     public void RegisterApp(String public_upload_token){
 		// Post public_upload_token, signup_type
     	JsonHttpResponseHandler response_handler = new JsonHttpResponseHandler(){
+    		private static final String TAG = "OWServiceRequests";
     		@Override
     		public void onSuccess(JSONObject response){
     			Log.i(TAG,"OW app register success: " +  response);
@@ -445,12 +446,11 @@ public class LoginActivity extends Activity {
         	JSONObject server_response = server_response_array[0];
         	// Confirm returned email matches  
         	try {
-				if( (server_response.getString(Constants.OW_EMAIL)).compareTo(mEmail) != 0)
-					Log.e(TAG, "Email mismatch. Client submitted " + mEmail + " Server responded: " + ((String)server_response.get(Constants.OW_EMAIL)));
-			
 	        	SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
 	            SharedPreferences.Editor editor = profile.edit();
 	            if(server_response.getBoolean(Constants.OW_SUCCESS)){
+	            	if( (server_response.getString(Constants.OW_EMAIL)).compareTo(mEmail) != 0)
+						Log.e(TAG, "Email mismatch. Client submitted " + mEmail + " Server responded: " + ((String)server_response.get(Constants.OW_EMAIL)));
 	            	editor.putBoolean(Constants.AUTHENTICATED, true);
 		            editor.putString(Constants.PUB_TOKEN, server_response.getString(Constants.PUB_TOKEN));
 		            editor.putString(Constants.PRIV_TOKEN, server_response.getString(Constants.PRIV_TOKEN));
@@ -465,7 +465,7 @@ public class LoginActivity extends Activity {
 	            
 	            editor.commit();
         	} catch (JSONException e) {
-        		Log.e(TAG, "SavePreferenceTask: Error reading JSONObject response");
+        		Log.e(TAG, "SavePreferenceTask: Error reading JSONObject response: " + server_response.toString());
 				e.printStackTrace();
 			}
         	return null;

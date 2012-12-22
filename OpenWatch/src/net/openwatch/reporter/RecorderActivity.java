@@ -22,7 +22,10 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -212,19 +215,7 @@ public class RecorderActivity extends Activity implements
 
 			@Override
 			public void onClick(View v) {
-				if (av_recorder.is_recording) {
-					av_recorder.stopRecording();
-					Intent i = new Intent(RecorderActivity.this, WhatHappenedActivity.class);
-					//i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-					if(recording_id != null){
-						i.putExtra(Constants.INTERNAL_DB_ID, chunk_listener.getRecordingDBID());
-					}
-					else
-						Log.e(TAG, "could not get chunk_listener's db id");
-					i.putExtra(Constants.OW_REC_UUID, recording_id);
-					startActivity(i);
-					finish(); // remove this activity from the stack
-				}
+				showStopRecordingDialog();
 			}
 
 		}); // end onClickListener
@@ -317,11 +308,45 @@ public class RecorderActivity extends Activity implements
 	 * returns the focus to MainActivity, clearing the back stack
 	 */
 	private void stopRecording(){
-		av_recorder.stopRecording();
-		recording_end = String.valueOf(new Date().getTime() / 1000);
-		Intent i = new Intent(RecorderActivity.this, MainActivity.class);
-		i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-		startActivity(i);	
+		if (av_recorder.is_recording) {
+			av_recorder.stopRecording();
+			recording_end = String.valueOf(new Date().getTime() / 1000);
+			Intent i = new Intent(RecorderActivity.this, WhatHappenedActivity.class);
+			i.putExtra(Constants.INTERNAL_DB_ID, chunk_listener.getRecordingDBID());
+			i.putExtra(Constants.OW_REC_UUID, recording_id);
+			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+			startActivity(i);
+			finish(); // ensure this activity removed from the stack
+		}
+	}
+	
+	@Override
+	public void onBackPressed() {
+		showStopRecordingDialog();
+	}
+	
+	private void showStopRecordingDialog(){
+		if(av_recorder.is_recording){
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle(getString(R.string.stop_recording_dialog_title))
+			.setMessage(getString(R.string.stop_recording_dialog_message))
+			.setPositiveButton(getString(R.string.stop_recording_dialog_stop), new DialogInterface.OnClickListener(){
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					stopRecording();
+					
+				}
+				
+			}).setNegativeButton(getString(R.string.stop_recording_dialog_continue), new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+					
+				}
+			}).show();
+		}
 	}
 	
 	

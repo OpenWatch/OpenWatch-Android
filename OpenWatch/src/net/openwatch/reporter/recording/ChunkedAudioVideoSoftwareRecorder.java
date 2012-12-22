@@ -186,7 +186,7 @@ public class ChunkedAudioVideoSoftwareRecorder {
 						+ " Read: "
 						+ String.valueOf(audio_poller.recorderTask.total_frames_read));
 		
-		double elapsed_time = (double) (end_time.getTime() - start_time.getTime()) / 1000;
+		double elapsed_time = (double) (end_time.getTime() - start_time.getTime()) / 1000; // NPE here
 		int expected_num_frames = (int) (elapsed_time * fps);
 		double frame_success = 100 * ((double) frame_count)
 				/ expected_num_frames;

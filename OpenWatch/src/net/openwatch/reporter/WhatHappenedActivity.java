@@ -42,21 +42,34 @@ public class WhatHappenedActivity extends FragmentActivity {
 		}
 		final Context app_context = this.getApplicationContext();
 		OWServiceRequests.getRecordingMeta(app_context, recording_uuid, new JsonHttpResponseHandler(){
+			private static final String TAG = "OWServiceRequests";
 			@Override
     		public void onSuccess(JSONObject response){
-				Log.i(TAG, "Got server recording response!");
 				if(response.has("recording")){
+					Log.i(TAG, "Got server recording response!");
 					try{
 						JSONObject recording_json = response.getJSONObject("recording");
 						// response was successful
 						OWLocalRecording recording = OWLocalRecording.objects(app_context, OWLocalRecording.class).get(model_id);
 						recording.updateWithJson(app_context, recording_json);
+						Log.i(TAG, "recording updated with server meta response");
+						return;
 					} catch(Exception e){
-						Log.e(TAG, "failed to handle response");
 						e.printStackTrace();
 					}
 				}
+				Log.i(TAG, "Failed to handle server recording response!");
 					
+			}
+			
+			@Override
+			public void onFailure(Throwable e, String response){
+				Log.i(TAG, "get recording meta failed: " + response);
+			}
+			
+			@Override
+			public void onFinish(){
+				Log.i(TAG, "get recording meta finish");
 			}
 			
 		});
@@ -64,7 +77,6 @@ public class WhatHappenedActivity extends FragmentActivity {
 	}
 	
 	public void submitButtonClick(View v){
-		saveRecordingMeta();
 		showCompleteDialog();
 		//showShareDialog();
 	}
@@ -75,11 +87,12 @@ public class WhatHappenedActivity extends FragmentActivity {
 	private void showCompleteDialog(){
 		final OWLocalRecording recording = OWLocalRecording.objects(this.getApplicationContext(), OWLocalRecording.class).get(model_id);
 		if(recording.server_id.get() == null || recording.server_id.get() == 0){
+			Log.i(TAG, "recording does not have a valid server_id. Cannot present share dialog");
 			Intent i = new Intent(WhatHappenedActivity.this, MainActivity.class);
 			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 			startActivity(i);
 		}
-			
+		Log.i(TAG, "recording server_id: " + String.valueOf(recording.server_id.get()));
 			
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(getString(R.string.share_dialog_title))
@@ -120,27 +133,8 @@ public class WhatHappenedActivity extends FragmentActivity {
 	@Override
 	public void onPause(){
 		super.onPause();
-		saveRecordingMeta();
 	}
 	
-	private void saveRecordingMeta(){
-		if(model_id == -1)
-			return;
-		
-		String title = ((EditText)this.findViewById(R.id.editTitle)).getText().toString().trim();
-		String description = ((EditText)this.findViewById(R.id.editDescription)).getText().toString().trim();
-		
-		Log.i(TAG, "Saving recording. ");
-    	//this.getActivity().getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder)
-    	OWLocalRecording recording = OWLocalRecording.objects(this.getApplicationContext(), OWLocalRecording.class).get(model_id);
-    	if(title.compareTo("") != 0)
-    		recording.title.set(title);
-    	recording.description.set(description);
-    	recording.save(this.getApplicationContext());
-    	OWServiceRequests.editRecording(this.getApplicationContext(), recording, new JsonHttpResponseHandler(){
-    		// TODO: What should happen if this request fails?
-    	});
-	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

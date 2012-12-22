@@ -3,15 +3,10 @@ package net.openwatch.reporter;
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.database.DatabaseManager;
 import net.openwatch.reporter.http.OWServiceRequests;
-import android.os.Build;
 import android.os.Bundle;
-import android.annotation.TargetApi;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.view.Menu;
 import android.view.View;
 
@@ -35,7 +30,7 @@ public class MainActivity extends Activity {
 	}
 	
 	public void watchButtonClick(View v){
-		Intent i = new Intent(this, ActionBarFeedActivity.class);
+		Intent i = new Intent(this, FeedActivity.class);
 		startActivity(i);
 	}
 	

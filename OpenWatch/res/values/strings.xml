@@ -73,4 +73,9 @@
     <string name="share_dialog_no">No Thanks</string>
     <string name="title_activity_action_bar_feed">ActionBarFeedActivity</string>
 
+    <!--  RecorderActivity -->
+    <string name="stop_recording_dialog_title">Stop Recording?</string>
+    <string name="stop_recording_dialog_message">Are you sure you want to stop recording?</string>
+    <string name="stop_recording_dialog_stop">Stop</string>
+    <string name="stop_recording_dialog_continue">Continue</string>
 </resources>

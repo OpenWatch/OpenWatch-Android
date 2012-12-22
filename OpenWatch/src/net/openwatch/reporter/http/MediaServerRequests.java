@@ -2,12 +2,10 @@ package net.openwatch.reporter.http;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.json.JSONArray;
+import org.json.JSONObject;
 
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.model.OWLocalRecording;
@@ -21,7 +19,7 @@ import com.loopj.android.http.RequestParams;
 
 public class MediaServerRequests {
 	
-	private static final String TAG = "Uploader";
+	private static final String TAG = "OWMediaServiceRequests";
 	
 	/**
 	 * POSTs the start signal to the OW NodeMediaCapture Service
@@ -113,9 +111,15 @@ public class MediaServerRequests {
     		}
     		
     		@Override
-    	     public void onFailure(Throwable e, String response) {
+    		public void onFailure(Throwable e, String response){
     			Log.i(TAG,"chunk signal failure: " +  response);
+    			e.printStackTrace();
     	     }
+    		
+    		@Override
+    		public void onFinish(){
+    			Log.i(TAG, "chunk signal finished");
+    		}
 
 		});
 	}
@@ -170,6 +174,7 @@ public class MediaServerRequests {
     		@Override
     	     public void onFailure(Throwable e, String response) {
     			Log.i(TAG,"end signal failure: " +  response);
+    			e.printStackTrace();
     	     }
 
 		});
@@ -219,7 +224,13 @@ public class MediaServerRequests {
     		@Override
     	     public void onFailure(Throwable e, String response) {
     			Log.i(TAG,"hq signal failure: " +  response);
+    			e.printStackTrace();
     	     }
+    		
+    		@Override
+	   	     public void onFinish() {
+	   			Log.i(TAG,"hq signal finished ");
+	   	     }
 
 		});
 	}
