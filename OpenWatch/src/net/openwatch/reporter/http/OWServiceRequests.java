@@ -91,6 +91,7 @@ public class OWServiceRequests {
 		JsonHttpResponseHandler get_handler = new JsonHttpResponseHandler(){
 			@Override
     		public void onSuccess(JSONObject response){
+				Log.i(TAG, "getMeta response: " + response.toString());
 				if(response.has("recording")){
 					try{
 						JSONObject recording_json = response.getJSONObject("recording");
@@ -98,6 +99,7 @@ public class OWServiceRequests {
 						OWLocalRecording recording = OWLocalRecording.objects(app_context, OWLocalRecording.class).get(model_id);
 						Date last_edited_remote = Constants.sdf.parse(recording_json.getString("last_edited"));
 						Date last_edited_local = Constants.sdf.parse(recording.last_edited.get());
+						Log.i(TAG, "Sync dates. Remote: " + recording_json.getString("last_edited") + " local: " + recording.last_edited.get());
 						if(last_edited_remote.after(last_edited_local)){
 							// copy remote data to local
 							Log.i(TAG, "remote recording data is more recent");
@@ -105,7 +107,17 @@ public class OWServiceRequests {
 						}else if(last_edited_remote.before(last_edited_local)){
 							// copy local to remote
 							Log.i(TAG, "local recording data is more recent");
-							OWServiceRequests.editRecording(app_context, recording, null);
+							OWServiceRequests.editRecording(app_context, recording, new JsonHttpResponseHandler(){
+								@Override
+					    		public void onSuccess(JSONObject response){
+									Log.i(TAG, "editRecording response: " + response);
+								}
+								@Override
+								public void onFailure(Throwable e, JSONObject response){
+									Log.i(TAG, "editRecording failed: " + response);
+									e.printStackTrace();
+								}
+							});
 						}
 					} catch(Exception e){
 						Log.e(TAG, METHOD + "failed to handle response");
@@ -145,8 +157,8 @@ public class OWServiceRequests {
 	 */
 	public static void editRecording(Context app_context, OWLocalRecording recording, JsonHttpResponseHandler response_handler){
     	AsyncHttpClient http_client = HttpClient.setupHttpClient(app_context);
-    	Log.i(TAG,"Commencing Edit Recording: " + Constants.OW_API_URL + Constants.OW_RECORDING);
-    	http_client.post(app_context, Constants.OW_API_URL + Constants.OW_RECORDING, recording.toJson(app_context), "application/json", response_handler);
+    	Log.i(TAG,"Commencing Edit Recording: " + recording.toJson(app_context));
+    	http_client.post(app_context, Constants.OW_API_URL + Constants.OW_RECORDING + "/" + recording.uuid.get().toString(), recording.toJson(app_context), "application/json", response_handler);
     	
     }
 	
@@ -200,7 +212,7 @@ public class OWServiceRequests {
     					tag.name.set(tag_json.getString("name")); 
 
 	    				tag.save(app_context);
-	    				Log.i(TAG, METHOD + " saved tag: " + tag_json.getString("name") );
+	    				//Log.i(TAG, METHOD + " saved tag: " + tag_json.getString("name") );
 	    				
 	    			}
 	    			

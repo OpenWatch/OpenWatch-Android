@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import net.openwatch.reporter.constants.Constants;
@@ -17,7 +18,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
-public class MediaServerRequests {
+public class OWMediaRequests {
 	
 	private static final String TAG = "OWMediaServiceRequests";
 	
@@ -134,17 +135,7 @@ public class MediaServerRequests {
 	 */
 	public static void end(String upload_token, OWLocalRecording recording, String all_files){
 		AsyncHttpClient client = HttpClient.setupHttpClient();
-		RequestParams params = new RequestParams();
-		if(recording.begin_lat.get() != 0){
-			params.put(Constants.OW_START_LAT, recording.begin_lat.get().toString());
-			params.put(Constants.OW_START_LON, recording.begin_lon.get().toString());
-		}
-		if(recording.end_lat.get() != 0){
-			params.put(Constants.OW_END_LAT, recording.end_lat.get().toString());
-			params.put(Constants.OW_END_LON, recording.end_lon.get().toString());
-		}
-		params.put(Constants.OW_REC_START, recording.creation_time.get());
-		params.put(Constants.OW_REC_END, recording.recording_end_time.get());
+		RequestParams params = initializeRequestParamsWithLocalRecording(recording);
 		params.put(Constants.OW_ALL_FILES, all_files);
 		String url = setupMediaURL(Constants.OW_MEDIA_END, upload_token, recording.uuid.get());
 		Log.i(TAG, "sending end signal to " + url);
@@ -168,6 +159,29 @@ public class MediaServerRequests {
     			} else{
     				Log.i(TAG,"end signal server error: " +  map.toString());
     			}
+
+    		}
+    		
+    		@Override
+    	     public void onFailure(Throwable e, String response) {
+    			Log.i(TAG,"end signal failure: " +  response);
+    			e.printStackTrace();
+    	     }
+
+		});
+	}
+	
+	public static void updateMeta(String upload_token, OWLocalRecording recording){
+		AsyncHttpClient client = HttpClient.setupHttpClient();
+		RequestParams params = initializeRequestParamsWithLocalRecording(recording);
+		Log.i(TAG, "updateMeta: " + params.toString());
+		String url = setupMediaURL(Constants.OW_MEDIA_UPDATE_META, upload_token, recording.uuid.get());
+		
+		client.post(url, params, new AsyncHttpResponseHandler(){
+
+    		@Override
+    		public void onSuccess(String response){
+    			Log.i(TAG, "got meta response " + response);
 
     		}
     		
@@ -237,6 +251,29 @@ public class MediaServerRequests {
 	
 	private static String setupMediaURL(String endpoint, String public_upload_token, String recording_id){
 		return Constants.OW_MEDIA_URL + endpoint + "/" + public_upload_token + "/" + recording_id;
+	}
+	
+	private static RequestParams initializeRequestParamsWithLocalRecording(OWLocalRecording recording){
+		RequestParams params = new RequestParams();
+		if(recording.begin_lat.get() != 0){
+			Log.i(TAG, "sending START GEO: " + recording.begin_lat.get().toString() + ", " + recording.begin_lon.get().toString());
+			params.put(Constants.OW_START_LOC + "[" + Constants.OW_LAT + "]", recording.begin_lat.get().toString());
+			params.put(Constants.OW_START_LOC + "[" + Constants.OW_LON + "]", recording.begin_lon.get().toString());
+
+		}
+		if(recording.end_lat.get() != 0){
+			Log.i(TAG, "sending END GEO: " + recording.end_lat.get().toString() + ", " + recording.end_lon.get().toString());
+			params.put(Constants.OW_END_LOC + "[" + Constants.OW_LAT + "]", recording.end_lat.get().toString());
+			params.put(Constants.OW_END_LOC + "[" + Constants.OW_LON + "]", recording.end_lon.get().toString());
+
+		}
+		if(recording.title.get() != null && recording.title.get().compareTo("") != 0){
+			params.put(Constants.OW_TITLE, recording.title.get());
+		}
+		if(recording.description.get() != null){
+			params.put(Constants.OW_DESCRIPTION, recording.description.get());
+		}
+		return params;
 	}
 
 }

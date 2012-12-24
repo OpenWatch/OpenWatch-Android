@@ -10,7 +10,7 @@ import org.json.JSONArray;
 
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.file.FileUtils;
-import net.openwatch.reporter.http.MediaServerRequests;
+import net.openwatch.reporter.http.OWMediaRequests;
 import net.openwatch.reporter.location.DeviceLocation;
 import net.openwatch.reporter.location.DeviceLocation.LocationResult;
 import net.openwatch.reporter.model.OWLocalRecording;
@@ -79,13 +79,11 @@ public class RecorderActivity extends Activity implements
 		
 		@Override
 		public void encoderShifted(final String finalized_file) {
-			setupSDF();
 			new MediaSignalTask().execute("chunk", finalized_file);
 		}
 
 		@Override
 		public void encoderStarted(Date start_date) {
-			setupSDF();
 			new MediaSignalTask().execute("start", Constants.sdf.format(start_date));
 			
 		}
@@ -93,23 +91,17 @@ public class RecorderActivity extends Activity implements
 		@Override
 		public void encoderStopped(Date start_date, Date stop_date,
 				String hq_filename, ArrayList<String> all_files) {
-			setupSDF();
 			this.all_files = all_files;
 			Log.i(TAG,"start-date: " + Constants.sdf.format(start_date) + " stop-date: " + Constants.sdf.format(stop_date));
 			new MediaSignalTask().execute("end", Constants.sdf.format(start_date), Constants.sdf.format(stop_date), new JSONArray(all_files).toString());
 			new MediaSignalTask().execute("hq", hq_filename);
 		}
 		
-		private void setupSDF(){
-			if(!Constants.sdf.getTimeZone().equals(TimeZone.getTimeZone("UTC")))
-					Constants.sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-		}
-		
 		class MediaSignalTask extends AsyncTask<String, Void, Void> {
 	        protected Void doInBackground(String... command) {
 	        	Log.i(TAG, "sendMediaCapture command: " + command[0] + " command length: " + command.length + " recording_id: " + recording_id);
 	        	SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
-	            String public_upload_token = profile.getString(Constants.PUB_TOKEN, "");
+	            final String public_upload_token = profile.getString(Constants.PUB_TOKEN, "");
 	            if(public_upload_token.compareTo("") == 0 || recording_id == null)
 	            	return null;
 
@@ -127,12 +119,12 @@ public class RecorderActivity extends Activity implements
 
 								@Override
 								public void run() {
-									DeviceLocation.setRecordingLocation(c, owlocalrecording_id, true);
+									DeviceLocation.setRecordingLocation(c, public_upload_token, owlocalrecording_id, true);
 								}
 		    	        		
 		    	        	});
 		    	        	
-		        			MediaServerRequests.start(public_upload_token, recording_id, command[1]);
+		        			OWMediaRequests.start(public_upload_token, recording_id, command[1]);
 	        			}
 	                }
 	        	} else if(command[0].compareTo("end") == 0){
@@ -151,11 +143,11 @@ public class RecorderActivity extends Activity implements
 
 								@Override
 								public void run() {
-									DeviceLocation.setRecordingLocation(c, owlocalrecording_id, false);
+									DeviceLocation.setRecordingLocation(c, public_upload_token, owlocalrecording_id, false);
 								}
 		    	        		
 		    	        	});
-		        			MediaServerRequests.end(public_upload_token, recording, command[3]);
+		        			OWMediaRequests.end(public_upload_token, recording, command[3]);
 	        			}
 	        			
 	        		}
@@ -167,7 +159,7 @@ public class RecorderActivity extends Activity implements
 		        			String filepath = command[1].substring(0,command[1].lastIndexOf(File.separator));
 		        			recording.addSegment(c.getApplicationContext(), filepath, filename);
 		        			Log.i(TAG, "owlocalrecording addsegment");
-		        			MediaServerRequests.sendLQChunk(public_upload_token, recording_id, command[1]);
+		        			OWMediaRequests.sendLQChunk(public_upload_token, recording_id, command[1]);
 	        			}
 	        			
 	        		}
@@ -177,7 +169,7 @@ public class RecorderActivity extends Activity implements
 	        			recording.hq_filepath.set(command[1]);
 	        			recording.save(c.getApplicationContext());
 	        			Log.i(TAG, "hq filepath set:" + command[1]);
-	        			MediaServerRequests.sendHQFile(public_upload_token, recording_id, command[1]);
+	        			OWMediaRequests.sendHQFile(public_upload_token, recording_id, command[1]);
 	        		}
 	        	}
 	        	return null;

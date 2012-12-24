@@ -41,7 +41,7 @@ import android.widget.TextView.OnEditorActionListener;
 
 public class LocalRecordingInfoFragment extends Fragment implements LoaderCallbacks<Cursor>{
 	
-	private static final String TAG = "RecordingInfoFragment";
+	private static final String TAG = "LocalRecordingInfoFragment";
 	
 	protected EditText title;
 	protected EditText description;
@@ -207,7 +207,13 @@ public class LocalRecordingInfoFragment extends Fragment implements LoaderCallba
     		doSave = true;
     		recording.title.set(title.getText().toString());
     	}
+    	// if recording has a description, make sure it has changed before saving
     	if(recording.description.get() != null && recording.description.get().compareTo(description.getText().toString()) != 0){
+    		doSave = true;
+    		recording.description.set(description.getText().toString());
+    	}
+    	// If recording does not have a description, make sure the EditText description is not blank
+    	else if(recording.description.get() == null && "".compareTo(description.getText().toString()) != 0){
     		doSave = true;
     		recording.description.set(description.getText().toString());
     	}

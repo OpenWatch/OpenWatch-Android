@@ -117,11 +117,11 @@ public class OWLocalRecording extends Model {
 	 * @param context
 	 * @return
 	 */
-	public boolean saveAndSync(Context context){
-		this.last_edited.set(Constants.sdf.format(new Date()));
+	public void saveAndSync(Context context){
 		// notify the ContentProvider that the dataset has changed
+		save(context);
 		OWServiceRequests.syncRecording(context, this);
-		return save(context);
+		return;
 	}
 
 	/**
@@ -129,6 +129,7 @@ public class OWLocalRecording extends Model {
 	 */
 	@Override
 	public boolean save(Context context) {
+		this.last_edited.set(Constants.sdf.format(new Date()));
 		context.getContentResolver().notifyChange(
 				OWContentProvider.getLocalRecordingUri(this.getId()), null);
 		return super.save(context);
@@ -187,47 +188,43 @@ public class OWLocalRecording extends Model {
 	}
 
 	public StringEntity toJson(Context app_context) {
-		HashMap<String, String> params = new HashMap<String, String>();
-		if (this.title.get() != null)
-			params.put(Constants.OW_TITE, this.title.get());
-		if (this.description.get() != null)
-			params.put(Constants.OW_DESCRIPTION, this.description.get());
-		if (this.last_edited.get() != null)
-			params.put(Constants.OW_EDIT_TIME, this.last_edited.get());
-		if (this.begin_lat.get() != null)
-			params.put(Constants.OW_START_LAT, this.begin_lat.get().toString());
-		if (this.begin_lon.get() != null)
-			params.put(Constants.OW_START_LON, this.begin_lon.get().toString());
-		if (this.end_lat.get() != null)
-			params.put(Constants.OW_START_LAT, this.end_lat.get().toString());
-		if (this.end_lon.get() != null)
-			params.put(Constants.OW_START_LON, this.end_lon.get().toString());
-		
-		ArrayList<String> tags = new ArrayList<String>();
-		QuerySet<OWRecordingTag> qs = this.tags.get(app_context, this);
-		for (OWRecordingTag tag : qs) {
-			tags.add(tag.name.get());
+		JSONObject json_obj = new JSONObject();
+		try{
+			if (this.title.get() != null)
+				json_obj.put(Constants.OW_TITLE, this.title.get());
+			if (this.description.get() != null)
+				json_obj.put(Constants.OW_DESCRIPTION, this.description.get());
+			if (this.last_edited.get() != null)
+				json_obj.put(Constants.OW_EDIT_TIME, this.last_edited.get());
+			if (this.begin_lat.get() != null)
+				json_obj.put(Constants.OW_START_LAT, this.begin_lat.get().toString());
+			if (this.begin_lon.get() != null)
+				json_obj.put(Constants.OW_START_LON, this.begin_lon.get().toString());
+			if (this.end_lat.get() != null)
+				json_obj.put(Constants.OW_START_LAT, this.end_lat.get().toString());
+			if (this.end_lon.get() != null)
+				json_obj.put(Constants.OW_START_LON, this.end_lon.get().toString());
+			
+			QuerySet<OWRecordingTag> qs = this.tags.get(app_context, this);
+			JSONArray tags = new JSONArray();
+			
+			for (OWRecordingTag tag : qs) {
+				tags.put(tag.name.get());
+			}
+			json_obj.put(Constants.OW_TAGS, tags);
+			StringEntity se = null;
+			try {
+				se = new StringEntity(json_obj.toString());
+				Log.i(TAG, "recordingToJson: " + json_obj.toString());
+				return se;
+			} catch (UnsupportedEncodingException e1) {
+				Log.e(TAG, "json->stringentity failed");
+				e1.printStackTrace();
+			}
+		}catch(JSONException e){
+			Log.e(TAG, "Error serializing recording to json");
+			e.printStackTrace();
 		}
-		Gson gson = new Gson();
-		StringEntity se = null;
-		try {
-			se = new StringEntity(gson.toJson(tags));
-		} catch (UnsupportedEncodingException e) {
-			Log.e("OWLocalRecording", "Failed make json from tags");
-		}
-
-		params.put(Constants.OW_TAGS, se.toString());
-
-		se = null;
-
-		try {
-			se = new StringEntity(gson.toJson(params));
-		} catch (UnsupportedEncodingException e1) {
-			Log.e("OWLocalRecording", "Failed to make json from hashmap");
-			e1.printStackTrace();
-		}
-
-		return se;
+		return null;
 	}
-
 }

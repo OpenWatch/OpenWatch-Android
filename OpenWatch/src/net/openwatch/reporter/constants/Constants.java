@@ -2,6 +2,7 @@ package net.openwatch.reporter.constants;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 /**
@@ -14,6 +15,10 @@ import java.util.regex.Pattern;
 public class Constants {
 	// Date Formatter for OW server time
 	public static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+	
+	static{
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+	}
 
 	// SharedPreferences titles
 	public static final String PROFILE_PREFS = "Profile";
@@ -48,10 +53,10 @@ public class Constants {
 	
 	// OpenWatch web service root url and endpoints
 	//public static final String OW_URL = "http://www.openwatch.net/api/"; // TODO: HTTPS
-	//public static final String OW_API_URL = "http://192.168.1.27:8000/api/";
-	//public static final String OW_URL = "http://192.168.1.27:8000/";
-	public static final String OW_API_URL = "http://alpha.openwatch.net/api/";
-	public static final String OW_URL = "http://alpha.openwatch.net/";
+	public static final String OW_API_URL = "http://192.168.1.96:8000/api/";
+	public static final String OW_URL = "http://192.168.1.96:8000/";
+	//public static final String OW_API_URL = "http://alpha.openwatch.net/api/";
+	//public static final String OW_URL = "http://alpha.openwatch.net/";
 	public static final String OW_VIEW = "v/";
 	public static final String OW_LOGIN = "login_account";
 	public static final String OW_SIGNUP = "create_account";
@@ -81,11 +86,13 @@ public class Constants {
 	public static final String OW_USERNAME = "username";
 	
 	// OpenWatch media capture web service url and endpoints
-	public static final String OW_MEDIA_URL = "http://capture.openwatch.net/";
+	public static final String OW_MEDIA_URL = "http://192.168.1.96:5000/";
+	//public static final String OW_MEDIA_URL = "http://capture.openwatch.net/";
 	public static final String OW_MEDIA_START = "start";
 	public static final String OW_MEDIA_END = "end";
 	public static final String OW_MEDIA_UPLOAD = "upload";
 	public static final String OW_MEDIA_HQ_UPLOAD = "upload_hq";
+	public static final String OW_MEDIA_UPDATE_META = "update_metadata";
 	
 	// OpenWatch media capture web service POST keys
 	public static final String OW_REC_START = "recording_start";
@@ -94,13 +101,17 @@ public class Constants {
 	public static final String OW_ALL_FILES = "all_files";
 	public static final String OW_UP_TOKEN = "upload_token";
 	public static final String OW_FILE = "upload";
-	public static final String OW_TITE = "title";
+	public static final String OW_TITLE = "title";
 	public static final String OW_DESCRIPTION = "description";
 	public static final String OW_EDIT_TIME = "last_edited";
+	public static final String OW_START_LOC = "start_location";
+	public static final String OW_END_LOC = "end_location";
 	public static final String OW_START_LAT = "start_lat";
 	public static final String OW_START_LON = "start_lon";
 	public static final String OW_END_LAT = "end_lat";
 	public static final String OW_END_LON = "end_lon";
+	public static final String OW_LAT = "latitude";
+	public static final String OW_LON = "longitude";
 	
 		
 	

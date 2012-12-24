@@ -3,6 +3,7 @@ package net.openwatch.reporter.location;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import net.openwatch.reporter.http.OWMediaRequests;
 import net.openwatch.reporter.model.OWLocalRecording;
 import android.content.Context;
 import android.location.Location;
@@ -19,10 +20,22 @@ public class DeviceLocation {
     boolean gps_enabled=false;
     boolean network_enabled=false;
     private static final String TAG = "DeviceLocation";
+    private Location bestLocation;
+    private boolean waitForGpsFix;
     
-
-    public boolean getLocation(Context context, LocationResult result)
+    private static final float ACCURATE_LOCATION_THRESHOLD_METERS = 20;
+    
+    /**
+     * 
+     * @param context
+     * @param result
+     * @param waitForGpsFix even if a network location is gotten, wait for a gps fix
+     * @return
+     */
+    public boolean getLocation(Context context, LocationResult result, boolean waitForGpsFix)
     {
+    	this.waitForGpsFix = waitForGpsFix;
+    	
         //I use LocationResult callback class to pass location value from MyLocation to user code.
         locationResult=result;
         if(lm==null)
@@ -41,16 +54,23 @@ public class DeviceLocation {
         if(network_enabled)
             lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNetwork);
         timer1=new Timer();
-        timer1.schedule(new GetLastLocation(), 20000);
+        timer1.schedule(new GetBestLocation(), 20000);
         return true;
     }
 
     LocationListener locationListenerGps = new LocationListener() {
         public void onLocationChanged(Location location) {
-            timer1.cancel();
-            locationResult.gotLocation(location);
-            lm.removeUpdates(this);
-            lm.removeUpdates(locationListenerNetwork);
+        	
+        	if(bestLocation == null || bestLocation.getAccuracy() > location.getAccuracy())
+            	bestLocation = location;
+        	
+        	if(!waitForGpsFix || bestLocation.getAccuracy() < ACCURATE_LOCATION_THRESHOLD_METERS){
+        		timer1.cancel();
+                locationResult.gotLocation(bestLocation);
+                lm.removeUpdates(this);
+                lm.removeUpdates(locationListenerNetwork);
+        	}
+            
         }
         public void onProviderDisabled(String provider) {}
         public void onProviderEnabled(String provider) {}
@@ -59,17 +79,23 @@ public class DeviceLocation {
 
     LocationListener locationListenerNetwork = new LocationListener() {
         public void onLocationChanged(Location location) {
-            timer1.cancel();
-            locationResult.gotLocation(location);
-            lm.removeUpdates(this);
-            lm.removeUpdates(locationListenerGps);
+        	if(bestLocation == null || bestLocation.getAccuracy() > location.getAccuracy())
+            	bestLocation = location;
+        	
+        	if(!waitForGpsFix || bestLocation.getAccuracy() < ACCURATE_LOCATION_THRESHOLD_METERS){
+        		timer1.cancel();
+                locationResult.gotLocation(bestLocation);
+                lm.removeUpdates(this);
+                lm.removeUpdates(locationListenerGps);
+        	}
+      
         }
         public void onProviderDisabled(String provider) {}
         public void onProviderEnabled(String provider) {}
         public void onStatusChanged(String provider, int status, Bundle extras) {}
     };
 
-    class GetLastLocation extends TimerTask {
+    class GetBestLocation extends TimerTask {
         @Override
         public void run() {
              lm.removeUpdates(locationListenerGps);
@@ -106,8 +132,16 @@ public class DeviceLocation {
         public abstract void gotLocation(Location location);
     }
     
-    public static void setRecordingLocation(final Context app_context, final int recording_db_id, final boolean isStart){
+    /**
+     * Specific method for interacting with DeviceLocation
+     * in the context of media start and stop signals
+     * @param app_context
+     * @param recording_db_id
+     * @param isStart
+     */
+    public static void setRecordingLocation(final Context app_context, final String upload_token, final int recording_db_id, final boolean isStart){
 		DeviceLocation deviceLocation = new DeviceLocation();
+		
         LocationResult locationResult = new LocationResult(){
             @Override
             public void gotLocation(final Location location){
@@ -124,11 +158,19 @@ public class DeviceLocation {
 	                	}
 	                	recording.save(app_context);
 	                   Log.d("RefreshLocation"," accuracy: "+ String.valueOf(location.getAccuracy())+" meters");
+	                   // If this was the end signal, check to see if 
+	                   // server_id has been retrieved. If so, send another updateMetadata
+	                   // request to ensure geo data available
+	                   if(!isStart){
+	                	   OWMediaRequests.updateMeta(upload_token, recording);
+	                   }
 	                }
                 };
             };
        Log.i(TAG, "getLocation()...");
-       deviceLocation.getLocation(app_context, locationResult);
+       // For start, get location as quickly as possible
+       // For end, wait for additional accuracy
+       deviceLocation.getLocation(app_context, locationResult, !isStart);
 	}
     
     
