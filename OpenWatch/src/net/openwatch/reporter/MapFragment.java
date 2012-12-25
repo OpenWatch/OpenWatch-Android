@@ -52,7 +52,10 @@ public class MapFragment extends SupportMapFragment {
         if(LocalRecordingViewActivity.model_id != -1){
         	OWLocalRecording recording = OWLocalRecording.objects(getActivity().getApplicationContext(), OWLocalRecording.class)
     				.get(LocalRecordingViewActivity.model_id);
-        	Log.i(TAG, "recording begin point: " + String.valueOf(recording.begin_lat.get()) + ", " + String.valueOf(recording.begin_lon.get()));
+        	if(recording.begin_lat.get() != null && recording.end_lat.get() != null)
+        		Log.i(TAG, "recording begin point: " + String.valueOf(recording.begin_lat.get()) + ", " + String.valueOf(recording.begin_lon.get()));
+        	if(recording.end_lat.get() != null && recording.end_lat.get() != null)
+        		Log.i(TAG, "recording end point: " + String.valueOf(recording.end_lat.get()) + ", " + String.valueOf(recording.end_lon.get()));
         	mStartLocation = new LatLng(recording.begin_lat.get(), recording.begin_lon.get());
         	mStopLocation = new LatLng(recording.end_lat.get(), recording.end_lon.get());
         	initMap();
