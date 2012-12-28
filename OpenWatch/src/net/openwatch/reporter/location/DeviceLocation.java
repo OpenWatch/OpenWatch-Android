@@ -60,7 +60,7 @@ public class DeviceLocation {
 
     LocationListener locationListenerGps = new LocationListener() {
         public void onLocationChanged(Location location) {
-        	
+        	Log.i(TAG, "got GPS loc accurate to " + String.valueOf(location.getAccuracy()) + "m");
         	if(bestLocation == null || bestLocation.getAccuracy() > location.getAccuracy())
             	bestLocation = location;
         	
@@ -79,6 +79,7 @@ public class DeviceLocation {
 
     LocationListener locationListenerNetwork = new LocationListener() {
         public void onLocationChanged(Location location) {
+        	Log.i(TAG, "got network loc accurate to " + String.valueOf(location.getAccuracy()) + "m");
         	if(bestLocation == null || bestLocation.getAccuracy() > location.getAccuracy())
             	bestLocation = location;
         	
@@ -98,6 +99,7 @@ public class DeviceLocation {
     class GetBestLocation extends TimerTask {
         @Override
         public void run() {
+        	Log.i(TAG, "Timer expired before adequate location acquired");
              lm.removeUpdates(locationListenerGps);
              lm.removeUpdates(locationListenerNetwork);
 
@@ -172,6 +174,4 @@ public class DeviceLocation {
        // For end, wait for additional accuracy
        deviceLocation.getLocation(app_context, locationResult, !isStart);
 	}
-    
-    
 }

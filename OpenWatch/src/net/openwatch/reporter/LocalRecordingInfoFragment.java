@@ -39,7 +39,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-public class LocalRecordingInfoFragment extends Fragment implements LoaderCallbacks<Cursor>{
+public class LocalRecordingInfoFragment extends Fragment{
 	
 	private static final String TAG = "LocalRecordingInfoFragment";
 	
@@ -51,7 +51,7 @@ public class LocalRecordingInfoFragment extends Fragment implements LoaderCallba
 	
 	protected static boolean watch_tag_text = true;
 	protected String tag_query = ""; // autocomplete tag input
-	protected SimpleCursorAdapter mAdapter;
+	protected OWTagArrayAdapter mAdapter;
 	
 	boolean doSave = false; // if recording is mutated during this fragments life, saveAndSync onPause
 		
@@ -77,8 +77,12 @@ public class LocalRecordingInfoFragment extends Fragment implements LoaderCallba
 		recording = OWLocalRecording.objects(getActivity().getApplicationContext(), OWLocalRecording.class)
 				.get(this.getActivity().getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID));
 		
+		
 		setTagAutoCompleteListeners();
 	
+		mAdapter = new OWTagArrayAdapter(getActivity().getApplicationContext(), R.layout.autocomplete_tag_item, OWRecordingTag.objects(getActivity(), OWRecordingTag.class).all().toList());
+		
+		/*
 		mAdapter = new SimpleCursorAdapter(getActivity().getApplicationContext(), R.layout.autocomplete_tag_item, null, new String[]{DBConstants.TAG_TABLE_NAME}, new int[]{R.id.name}, 0);
 		
 		mAdapter.setViewBinder(new ViewBinder(){
@@ -100,11 +104,14 @@ public class LocalRecordingInfoFragment extends Fragment implements LoaderCallba
 			}
 			
 		});
+		*/
 		tags.setAdapter(mAdapter);
+		tags.setThreshold(1);
 		
-		getLoaderManager().initLoader(0, null, this);
 		
-        Log.i(TAG, "onCreateView");
+		//getLoaderManager().initLoader(0, null, this);
+		
+        Log.i(TAG, "onCreateView. tag adapter size:" + String.valueOf(mAdapter.getCount()));
         return v;
     }
 	
@@ -227,32 +234,6 @@ public class LocalRecordingInfoFragment extends Fragment implements LoaderCallba
 		DBConstants.ID,
 		DBConstants.TAG_TABLE_NAME
     };
-
-	@Override
-	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
-		Uri baseUri = OWContentProvider.getTagSearchUri(tag_query);
-		String selection = null;
-        String[] selectionArgs = null;
-        String order = null;
-        
-		return new CursorLoader(getActivity(), baseUri, TAG_PROJECTION, selection, selectionArgs, order);
-	}
-
-	@Override
-	public void onLoadFinished(Loader<Cursor> arg0, Cursor cursor) {
-		Log.i(TAG, "onLoadFinished");
-		mAdapter.swapCursor(cursor);
-		if(tags.getAdapter() == null)
-			tags.setAdapter(mAdapter);
-		// TODO: Check if no tags found and say something nice
-		
-	}
-
-	@Override
-	public void onLoaderReset(Loader<Cursor> arg0) {
-		mAdapter.swapCursor(null);
-		
-	}
 	
 	/*
 	 * This must be set after recording has been initialized and set
@@ -272,10 +253,10 @@ public class LocalRecordingInfoFragment extends Fragment implements LoaderCallba
 					OWRecordingTag tag = OWRecordingTag.objects(getActivity().getApplicationContext(), OWRecordingTag.class).get((Integer)view.getTag(R.id.list_item_model));
 					addTagToRecording(tag, recording);
 				}
-				watch_tag_text = false;
+				//watch_tag_text = false;
 				tags.setText("");
-				watch_tag_text = true;
-				tags.setAdapter(null);
+				//watch_tag_text = true;
+				//tags.setAdapter(null);
 			}
 			
 		});
@@ -310,10 +291,10 @@ public class LocalRecordingInfoFragment extends Fragment implements LoaderCallba
 						}
 						
 						addTagToRecording(selected_tag, recording);
-						watch_tag_text = false;
+						//watch_tag_text = false;
 						view.setText("");
-						watch_tag_text = true;
-						((AutoCompleteTextView)view).setAdapter(null);
+						//watch_tag_text = true;
+						//((AutoCompleteTextView)view).setAdapter(null);
 					}
 				} // end for
 				
@@ -322,6 +303,7 @@ public class LocalRecordingInfoFragment extends Fragment implements LoaderCallba
 			
 		});
 		
+		/*
 		tags.addTextChangedListener(new TextWatcher(){
 
 			@Override
@@ -340,12 +322,12 @@ public class LocalRecordingInfoFragment extends Fragment implements LoaderCallba
 				if(watch_tag_text){
 					//Log.i(TAG, "onTextChanged");
 					tag_query = s.toString();
-					getLoaderManager().restartLoader(0, null, LocalRecordingInfoFragment.this);
 				}
 				
 			}
 			
 		});
+		*/
 	}
 	
 	private void addTagToRecording(OWRecordingTag tag, OWLocalRecording recording){

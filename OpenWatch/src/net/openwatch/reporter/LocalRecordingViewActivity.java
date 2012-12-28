@@ -54,8 +54,8 @@ public class LocalRecordingViewActivity extends FragmentActivity {
 		inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		try {
 			model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
-			//Log.i(TAG, "HQ_filepath: " + OWLocalRecording.objects(this, OWLocalRecording.class).get(
-			//		model_id).hq_filepath.get());
+			Log.i(TAG, "HQ_filepath: " + OWLocalRecording.objects(this, OWLocalRecording.class).get(
+					model_id).hq_filepath.get());
 			setupVideoView(
 					R.id.videoview,
 					OWLocalRecording.objects(this, OWLocalRecording.class).get(

@@ -91,6 +91,7 @@ public class WhatHappenedActivity extends FragmentActivity {
 			Intent i = new Intent(WhatHappenedActivity.this, MainActivity.class);
 			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 			startActivity(i);
+			return;
 		}
 		Log.i(TAG, "recording server_id: " + String.valueOf(recording.server_id.get()));
 			
