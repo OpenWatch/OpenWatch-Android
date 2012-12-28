@@ -6,10 +6,8 @@ import net.openwatch.reporter.model.OWLocalRecording;
 
 import com.google.android.gms.maps.GoogleMap;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.media.MediaPlayer.OnVideoSizeChangedListener;
@@ -22,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.TabHost;
@@ -45,11 +44,10 @@ public class LocalRecordingViewActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+			requestWindowFeature(Window.FEATURE_NO_TITLE);
+		
 		setContentView(R.layout.activity_local_recording_view);
-		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
-		mTabHost.setup();
-		mTabHost.requestFocus();
 		
 		inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		try {
@@ -68,18 +66,23 @@ public class LocalRecordingViewActivity extends FragmentActivity {
 			e.printStackTrace();
 		}
 
-		mViewPager = (ViewPager) findViewById(R.id.pager);
-		mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
-				
-		mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_map))
-				.setIndicator(inflateCustomTab(getString(R.string.tab_map))), MapFragment.class,
-				null);
-		mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_info))
-				.setIndicator(inflateCustomTab(getString(R.string.tab_info))),
-				LocalRecordingInfoFragment.class, null);
-
-		if (savedInstanceState != null) {
-			mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
+		if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+			mTabHost = (TabHost) findViewById(android.R.id.tabhost);
+			mTabHost.setup();
+			mTabHost.requestFocus();
+			mViewPager = (ViewPager) findViewById(R.id.pager);
+			mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
+					
+			mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_map))
+					.setIndicator(inflateCustomTab(getString(R.string.tab_map))), MapFragment.class,
+					null);
+			mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_info))
+					.setIndicator(inflateCustomTab(getString(R.string.tab_info))),
+					LocalRecordingInfoFragment.class, null);
+	
+			if (savedInstanceState != null) {
+				mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
+			}
 		}
 	}
 
