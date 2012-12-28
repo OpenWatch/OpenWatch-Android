@@ -9,7 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import net.openwatch.reporter.constants.Constants;
-import net.openwatch.reporter.model.OWLocalRecording;
+import net.openwatch.reporter.model.OWRecording;
 
 import android.util.Log;
 
@@ -133,7 +133,7 @@ public class OWMediaRequests {
 	 * @param recording_end
 	 * @param all_files
 	 */
-	public static void end(String upload_token, OWLocalRecording recording, String all_files){
+	public static void end(String upload_token, OWRecording recording, String all_files){
 		AsyncHttpClient client = HttpClient.setupHttpClient();
 		RequestParams params = initializeRequestParamsWithLocalRecording(recording);
 		params.put(Constants.OW_ALL_FILES, all_files);
@@ -171,7 +171,7 @@ public class OWMediaRequests {
 		});
 	}
 	
-	public static void updateMeta(String upload_token, OWLocalRecording recording){
+	public static void updateMeta(String upload_token, OWRecording recording){
 		AsyncHttpClient client = HttpClient.setupHttpClient();
 		RequestParams params = initializeRequestParamsWithLocalRecording(recording);
 		Log.i(TAG, "updateMeta: " + params.toString());
@@ -253,7 +253,7 @@ public class OWMediaRequests {
 		return Constants.OW_MEDIA_URL + endpoint + "/" + public_upload_token + "/" + recording_id;
 	}
 	
-	private static RequestParams initializeRequestParamsWithLocalRecording(OWLocalRecording recording){
+	private static RequestParams initializeRequestParamsWithLocalRecording(OWRecording recording){
 		RequestParams params = new RequestParams();
 		if(recording.begin_lat.get() != 0){
 			Log.i(TAG, "sending START GEO: " + recording.begin_lat.get().toString() + ", " + recording.begin_lon.get().toString());

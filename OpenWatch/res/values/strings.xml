@@ -59,6 +59,12 @@
     <string name="title">Title</string>
     <string name="description">Description</string>
     <string name="tags">Tags</string>
+    
+    <!--  TagPoolLayout -->
+    <string name="remove_tag_dialog_title">Remove Tag?</string>
+    <string name="remove_tag_dialog_msg">Would you like to remove this tag from this recording?</string>
+    <string name="remove_tag_dialog_yes">Remove Tag</string>
+    <string name="remove_tag_dialog_cancel">Cancel</string>
 
     <!-- AutoComplete Tag Field -->
     <string name="action_tag">Tag</string>

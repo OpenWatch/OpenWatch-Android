@@ -14,6 +14,7 @@ import net.openwatch.reporter.http.OWMediaRequests;
 import net.openwatch.reporter.location.DeviceLocation;
 import net.openwatch.reporter.location.DeviceLocation.LocationResult;
 import net.openwatch.reporter.model.OWLocalRecording;
+import net.openwatch.reporter.model.OWRecording;
 import net.openwatch.reporter.recording.ChunkedAudioVideoSoftwareRecorder;
 import net.openwatch.reporter.recording.FFChunkedAudioVideoEncoder.ChunkedRecorderListener;
 
@@ -60,12 +61,12 @@ public class RecorderActivity extends Activity implements
 		private static final String TAG = "ChunkedRecorderListener";
 		Context c; // for db transactions
 		String recording_id; // recording uuid for OW service
-		int owlocalrecording_id = -1; // database id for OWLocalRecording
+		int owrecording_id = -1; // database id for OWLocalRecording
 		ArrayList<String> all_files = null;
 		
 		@Override
 		public int getRecordingDBID(){
-			return owlocalrecording_id;
+			return owrecording_id;
 		}
 		@Override
 		public void setRecordingID(String recording_id) {
@@ -109,17 +110,18 @@ public class RecorderActivity extends Activity implements
 	        		if(command.length == 2){
 	        			// make db entry
 	        			if(recording_id != null){
-		        			OWLocalRecording recording = new OWLocalRecording();
-		    	        	recording.initializeRecording(c.getApplicationContext(), command[1], recording_id, 0.0, 0.0);
-		    	        	Log.i(TAG, "initialize OWLocalRecording. id: " + String.valueOf(recording.getId()));
+		        			OWRecording local = new OWRecording(c.getApplicationContext());
+		    	        	local.initializeRecording(c.getApplicationContext(), command[1], recording_id, 0.0, 0.0);
+		    	        	Log.i(TAG, "initialize OWLocalRecording. id: " + String.valueOf(local.getId()));
+		    	        	local.save(c.getApplicationContext());
 		    	        	// make network request
-		    	        	owlocalrecording_id = recording.getId();
+		    	        	owrecording_id = local.getId();
 		    	        	// poll for device location
 		    	        	RecorderActivity.this.runOnUiThread(new Runnable(){
 
 								@Override
 								public void run() {
-									DeviceLocation.setRecordingLocation(c, public_upload_token, owlocalrecording_id, true);
+									DeviceLocation.setRecordingLocation(c, public_upload_token, owrecording_id, true);
 								}
 		    	        		
 		    	        	});
@@ -130,12 +132,15 @@ public class RecorderActivity extends Activity implements
 	        	} else if(command[0].compareTo("end") == 0){
 	        		if(command.length == 4){
 	        			if(all_files != null){
-	        				OWLocalRecording recording = (OWLocalRecording) OWLocalRecording.objects(c.getApplicationContext(), OWLocalRecording.class).get(owlocalrecording_id);
+	        				OWRecording recording = (OWRecording) OWRecording.objects(c.getApplicationContext(), OWRecording.class).get(owrecording_id);
+	        				//recording.local is null here...
 		        			String last_segment = all_files.get(all_files.size()-1);
 		        			String filename = last_segment.substring(last_segment.lastIndexOf(File.separator),last_segment.length());
 		        			String filepath = last_segment.substring(0,last_segment.lastIndexOf(File.separator));
-		        			recording.recording_end_time.set(command[2]);
-		        			recording.addSegment(c.getApplicationContext(), filepath, filename);
+		        			OWLocalRecording local = recording.local.get(c.getApplicationContext());
+		        			local.recording_end_time.set(command[2]);
+		        			local.addSegment(c.getApplicationContext(), filepath, filename);
+		        			local.save(c.getApplicationContext());
 		        			recording.save(c.getApplicationContext());
 		        			Log.i(TAG, "owlocalrecording addsegment");
 		        			// poll for device location
@@ -143,7 +148,7 @@ public class RecorderActivity extends Activity implements
 
 								@Override
 								public void run() {
-									DeviceLocation.setRecordingLocation(c, public_upload_token, owlocalrecording_id, false);
+									DeviceLocation.setRecordingLocation(c, public_upload_token, owrecording_id, false);
 								}
 		    	        		
 		    	        	});
@@ -153,11 +158,11 @@ public class RecorderActivity extends Activity implements
 	        		}
 	        	} else if(command[0].compareTo("chunk") == 0){
 	        		if(command.length == 2){
-	        			if(owlocalrecording_id != -1){
-		        			OWLocalRecording recording = (OWLocalRecording) OWLocalRecording.objects(c.getApplicationContext(), OWLocalRecording.class).get(owlocalrecording_id);
+	        			if(owrecording_id != -1){
+		        			OWRecording recording = (OWRecording) OWRecording.objects(c.getApplicationContext(), OWRecording.class).get(owrecording_id);
 		        			String filename = command[1].substring(command[1].lastIndexOf(File.separator),command[1].length());
 		        			String filepath = command[1].substring(0,command[1].lastIndexOf(File.separator));
-		        			recording.addSegment(c.getApplicationContext(), filepath, filename);
+		        			recording.local.get(c.getApplicationContext()).addSegment(c.getApplicationContext(), filepath, filename);
 		        			Log.i(TAG, "owlocalrecording addsegment");
 		        			OWMediaRequests.sendLQChunk(public_upload_token, recording_id, command[1]);
 	        			}
@@ -165,10 +170,11 @@ public class RecorderActivity extends Activity implements
 	        		}
 	        	} else if(command[0].compareTo("hq") == 0){
 	        		if(command.length == 2){
-	        			OWLocalRecording recording = (OWLocalRecording) OWLocalRecording.objects(c.getApplicationContext(), OWLocalRecording.class).get(owlocalrecording_id);
-	        			recording.hq_filepath.set(command[1]);
-	        			recording.save(c.getApplicationContext());
-	        			Log.i(TAG, "hq filepath set:" + command[1]);
+	        			OWRecording recording = (OWRecording) OWRecording.objects(c.getApplicationContext(), OWRecording.class).get(owrecording_id);
+	        			OWLocalRecording local = recording.local.get(c.getApplicationContext());
+	        			local.hq_filepath.set(command[1]);
+	        			local.save(c.getApplicationContext());
+	        			Log.i(TAG, "id: " + owrecording_id + " hq filepath set:" + command[1]);
 	        			OWMediaRequests.sendHQFile(public_upload_token, recording_id, command[1]);
 	        		}
 	        	}

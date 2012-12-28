@@ -36,7 +36,7 @@ public class OWContentProvider extends ContentProvider {
      
      // Externally accessed uris
      public static final Uri LOCAL_RECORDING_URI = AUTHORITY_URI.buildUpon().appendPath(DBConstants.LOCAL_RECORDINGS_TABLENAME).build();
-     public static final Uri REMOTE_RECORDING_URI = AUTHORITY_URI.buildUpon().appendPath(DBConstants.REMOTE_RECORDINGS_TABLENAME).build();
+     public static final Uri REMOTE_RECORDING_URI = AUTHORITY_URI.buildUpon().appendPath(DBConstants.RECORDINGS_TABLENAME).build();
      public static final Uri TAG_URI = AUTHORITY_URI.buildUpon().appendPath(DBConstants.TAG_TABLENAME).build();
      public static final Uri TAG_SEARCH_URI = TAG_URI.buildUpon().appendPath("search").build();
 	
@@ -131,16 +131,16 @@ public class OWContentProvider extends ContentProvider {
 		Log.i(TAG, adapter.getDatabaseName());
 		switch(uriType){
 			case LOCAL_RECORDINGS:
-				Log.i(TAG, select + " FROM " + DBConstants.LOCAL_RECORDINGS_TABLENAME + where + sortby);
-				result = adapter.open().query(select + " FROM " + DBConstants.LOCAL_RECORDINGS_TABLENAME + where + sortby);
+				Log.i(TAG, select + " FROM " + DBConstants.RECORDINGS_TABLENAME + where + sortby);
+				result = adapter.open().query(select + " FROM " + DBConstants.RECORDINGS_TABLENAME + where + sortby);
 				break;
 			case LOCAL_RECORDING_ID:
-				Log.i(TAG, select + " FROM " + DBConstants.LOCAL_RECORDINGS_TABLENAME + "WHERE mID="+uri.getLastPathSegment());
-				result = adapter.open().query(select + " FROM " + DBConstants.LOCAL_RECORDINGS_TABLENAME + "WHERE _id="+uri.getLastPathSegment());
+				Log.i(TAG, select + " FROM " + DBConstants.RECORDINGS_TABLENAME + "WHERE mID="+uri.getLastPathSegment());
+				result = adapter.open().query(select + " FROM " + DBConstants.RECORDINGS_TABLENAME + "WHERE _id="+uri.getLastPathSegment());
 				//adapter.close();
 				break;
 			case REMOTE_RECORDINGS:
-				result = adapter.open().query(select + " FROM " + DBConstants.REMOTE_RECORDINGS_TABLENAME + where + sortby);
+				result = adapter.open().query(select + " FROM " + DBConstants.RECORDINGS_TABLENAME + where + sortby);
 				break;
 			case REMOTE_RECORDING_ID:
 				break;

@@ -11,7 +11,6 @@ import org.json.JSONObject;
 import net.openwatch.reporter.OWApplication;
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
-import net.openwatch.reporter.model.OWLocalRecording;
 import net.openwatch.reporter.model.OWRecording;
 import net.openwatch.reporter.model.OWRecordingTag;
 import android.content.Context;
@@ -85,7 +84,7 @@ public class OWServiceRequests {
 	 * @param app_context
 	 * @param cb
 	 */
-	public static void syncRecording(final Context app_context, OWLocalRecording recording){
+	public static void syncRecording(final Context app_context, OWRecording recording){
 		final String METHOD = "syncRecording";
 		final int model_id = recording.getId();
 		JsonHttpResponseHandler get_handler = new JsonHttpResponseHandler(){
@@ -96,7 +95,7 @@ public class OWServiceRequests {
 					try{
 						JSONObject recording_json = response.getJSONObject("recording");
 						// response was successful
-						OWLocalRecording recording = OWLocalRecording.objects(app_context, OWLocalRecording.class).get(model_id);
+						OWRecording recording = OWRecording.objects(app_context, OWRecording.class).get(model_id);
 						Date last_edited_remote = Constants.sdf.parse(recording_json.getString("last_edited"));
 						Date last_edited_local = Constants.sdf.parse(recording.last_edited.get());
 						Log.i(TAG, "Sync dates. Remote: " + recording_json.getString("last_edited") + " local: " + recording.last_edited.get());
@@ -155,7 +154,7 @@ public class OWServiceRequests {
 	 * @param recording
 	 * @param response_handler
 	 */
-	public static void editRecording(Context app_context, OWLocalRecording recording, JsonHttpResponseHandler response_handler){
+	public static void editRecording(Context app_context, OWRecording recording, JsonHttpResponseHandler response_handler){
     	AsyncHttpClient http_client = HttpClient.setupHttpClient(app_context);
     	Log.i(TAG,"Commencing Edit Recording: " + recording.toJson(app_context));
     	http_client.post(app_context, Constants.OW_API_URL + Constants.OW_RECORDING + "/" + recording.uuid.get().toString(), recording.toJson(app_context), "application/json", response_handler);

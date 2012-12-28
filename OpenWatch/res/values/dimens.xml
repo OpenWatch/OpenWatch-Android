@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Dialog title height -->
+    <dimen name="alert_dialog_title_height">64dip</dimen>
+    <!-- Dialog button bar height -->
+    <dimen name="alert_dialog_button_bar_height">48dip</dimen>
+
+</resources>

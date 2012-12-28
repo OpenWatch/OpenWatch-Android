@@ -67,7 +67,6 @@ public class MyFeedFragmentActivity extends FragmentActivity {
             implements LoaderManager.LoaderCallbacks<Cursor> {
 
         // This is the Adapter being used to display the list's data.
-        //AppListAdapter mAdapter;
     	OWLocalRecordingAdapter mAdapter;
 
         // If non-null, this is the current filter the user has provided.

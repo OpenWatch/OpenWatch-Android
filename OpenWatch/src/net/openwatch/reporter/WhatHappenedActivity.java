@@ -8,7 +8,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.http.OWServiceRequests;
-import net.openwatch.reporter.model.OWLocalRecording;
+import net.openwatch.reporter.model.OWRecording;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.AlertDialog;
@@ -50,7 +50,7 @@ public class WhatHappenedActivity extends FragmentActivity {
 					try{
 						JSONObject recording_json = response.getJSONObject("recording");
 						// response was successful
-						OWLocalRecording recording = OWLocalRecording.objects(app_context, OWLocalRecording.class).get(model_id);
+						OWRecording recording = OWRecording.objects(app_context, OWRecording.class).get(model_id);
 						recording.updateWithJson(app_context, recording_json);
 						Log.i(TAG, "recording updated with server meta response");
 						return;
@@ -85,7 +85,7 @@ public class WhatHappenedActivity extends FragmentActivity {
 	 * If a server_id was received, give option to share, else return to MainActivity
 	 */
 	private void showCompleteDialog(){
-		final OWLocalRecording recording = OWLocalRecording.objects(this.getApplicationContext(), OWLocalRecording.class).get(model_id);
+		final OWRecording recording = OWRecording.objects(this.getApplicationContext(), OWRecording.class).get(model_id);
 		if(recording.server_id.get() == null || recording.server_id.get() == 0){
 			Log.i(TAG, "recording does not have a valid server_id. Cannot present share dialog");
 			Intent i = new Intent(WhatHappenedActivity.this, MainActivity.class);
@@ -121,7 +121,7 @@ public class WhatHappenedActivity extends FragmentActivity {
 		}).show();
 	}
 	
-	private void showShareDialog(OWLocalRecording recording){
+	private void showShareDialog(OWRecording recording){
 		String url = Constants.OW_URL +  Constants.OW_VIEW + recording.server_id.get();
 		Log.i(TAG, "model_id: " + String.valueOf(model_id) + " url: " + url);
 		

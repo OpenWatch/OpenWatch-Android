@@ -5,6 +5,7 @@ import java.util.TimerTask;
 
 import net.openwatch.reporter.http.OWMediaRequests;
 import net.openwatch.reporter.model.OWLocalRecording;
+import net.openwatch.reporter.model.OWRecording;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
@@ -148,7 +149,7 @@ public class DeviceLocation {
             @Override
             public void gotLocation(final Location location){
                 //Got the location!
-                OWLocalRecording recording = OWLocalRecording.objects(app_context, OWLocalRecording.class).get(recording_db_id);
+                OWRecording recording = OWRecording.objects(app_context, OWRecording.class).get(recording_db_id);
 	                if (location != null) {
 	                	Log.i(TAG, "gotLocation");
 	                	if(isStart){

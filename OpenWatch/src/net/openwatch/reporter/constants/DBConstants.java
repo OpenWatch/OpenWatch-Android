@@ -8,7 +8,7 @@ public class DBConstants {
 	// These correlate to field names in OWRecording
 	public static final String DB_NAME = "OpenWatchDB";
 	public static final String LOCAL_RECORDINGS_TABLENAME = "owlocalrecording";
-	public static final String REMOTE_RECORDINGS_TABLENAME = "owrecording";
+	public static final String RECORDINGS_TABLENAME = "owrecording";
 	public static final String RECORDINGS_TABLE_TITLE = "title";
 	public static final String RECORDINGS_TABLE_DESC = "description";
 	public static final String RECORDINGS_TABLE_THUMB_URL = "thumb_url";

@@ -239,8 +239,7 @@ public class LoginActivity extends Activity {
 	    			if( (Boolean)response.getBoolean(Constants.OW_SUCCESS) == true){
 	    				Log.i(TAG,"OW login success: " +  response.toString());
 	    		        
-	    		        Intent i = new Intent(LoginActivity.this, MainActivity.class);
-	    		        startActivity(i);
+	    				returnToMainActivity();
 	    		        return;
 	    			} else{
 	    				AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this);
@@ -309,9 +308,7 @@ public class LoginActivity extends Activity {
     				// Set authed preference 
     				setUserAuthenticated(response);
     		        
-    		        Intent i = new Intent(LoginActivity.this, MainActivity.class);
-    		        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-    		        startActivity(i);
+    				returnToMainActivity();
     		        return;
     			} else{
     				AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this);
@@ -373,10 +370,7 @@ public class LoginActivity extends Activity {
 	    			if( response.getBoolean(Constants.OW_SUCCESS) == true){
 	    				Log.i(TAG,"OW app registration success: " +  response.toString());
 	    				
-	    				setRegisteredTask task = (setRegisteredTask) new setRegisteredTask().execute();
-	    		        
-	    		        Intent i = new Intent(LoginActivity.this, MainActivity.class);
-	    		        startActivity(i);
+	    				setRegisteredTask task = (setRegisteredTask) new setRegisteredTask().execute();	    		        
 	    		        return;
 	    			} else{
 	    				int error_code =  response.getInt(Constants.OW_ERROR);
@@ -529,5 +523,11 @@ public class LoginActivity extends Activity {
 		}
     	
     };
+    
+    private void returnToMainActivity(){
+    	 Intent i = new Intent(LoginActivity.this, MainActivity.class);
+	     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+	     startActivity(i);
+    }
 
 }

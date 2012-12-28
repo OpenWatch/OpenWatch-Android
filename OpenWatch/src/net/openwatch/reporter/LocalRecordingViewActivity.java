@@ -2,7 +2,7 @@ package net.openwatch.reporter;
 
 import net.openwatch.reporter.FeedActivity.TabsAdapter;
 import net.openwatch.reporter.constants.Constants;
-import net.openwatch.reporter.model.OWLocalRecording;
+import net.openwatch.reporter.model.OWRecording;
 
 import com.google.android.gms.maps.GoogleMap;
 
@@ -52,12 +52,12 @@ public class LocalRecordingViewActivity extends FragmentActivity {
 		inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		try {
 			model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
-			Log.i(TAG, "HQ_filepath: " + OWLocalRecording.objects(this, OWLocalRecording.class).get(
-					model_id).hq_filepath.get());
+			Log.i(TAG, "HQ_filepath: " + OWRecording.objects(this, OWRecording.class).get(
+					model_id).local.get(getApplicationContext()).hq_filepath.get());
 			setupVideoView(
 					R.id.videoview,
-					OWLocalRecording.objects(this, OWLocalRecording.class).get(
-							model_id).hq_filepath.get());
+					OWRecording.objects(this, OWRecording.class).get(
+							model_id).local.get(getApplicationContext()).hq_filepath.get());
 			
 
 			// Log.i(TAG, "got model_id : " + String.valueOf(model_id));

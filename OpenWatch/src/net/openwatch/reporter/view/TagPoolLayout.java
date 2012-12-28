@@ -2,8 +2,12 @@ package net.openwatch.reporter.view;
 
 import java.util.LinkedList;
 import net.openwatch.reporter.R;
+import net.openwatch.reporter.model.OWRecording;
 import net.openwatch.reporter.model.OWRecordingTag;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +24,8 @@ public class TagPoolLayout extends TableLayout {
 	LinkedList<View> view_buffer = new LinkedList<View>();
 	boolean delete_dummy = true;
 	boolean first_tag = true;
+	
+	OWRecording recording;
 
 	LayoutInflater inflater = (LayoutInflater)getContext().getSystemService
     (Context.LAYOUT_INFLATER_SERVICE);
@@ -30,6 +36,15 @@ public class TagPoolLayout extends TableLayout {
 	
 	public TagPoolLayout(Context context) {
 		super(context);
+	}
+	
+	public TagPoolLayout(Context context, OWRecording recording) {
+		super(context);
+		this.recording = recording;
+	}
+	
+	public void setRecording(OWRecording recording){
+		this.recording = recording;
 	}
 
 	LinearLayout last_row;
@@ -71,8 +86,7 @@ public class TagPoolLayout extends TableLayout {
 
 	
 	public void addTag(OWRecordingTag tag){
-		TextView new_tag = (TextView) inflater.inflate( R.layout.tag_pool_item, last_row, false);
-		new_tag.setText(tag.name.get());
+		TextView new_tag = (TextView) initTagView(tag);
 		new_tag.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener(){
 
 			@Override
@@ -94,10 +108,48 @@ public class TagPoolLayout extends TableLayout {
 	}
 	
 	public void addTagPostLayout(OWRecordingTag tag){
-		TextView new_tag = (TextView) inflater.inflate( R.layout.tag_pool_item, last_row, false);
-		new_tag.setText(tag.name.get());
+		TextView new_tag = (TextView) initTagView(tag);
 		view_buffer.add(new_tag);
 		drawTag();
+	}
+	
+	private View initTagView(final OWRecordingTag tag){
+		final Context c = this.getContext();
+		final TagPoolLayout tpl = this;
+		TextView new_tag = (TextView) inflater.inflate( R.layout.tag_pool_item, last_row, false);
+		new_tag.setText(tag.name.get());
+		new_tag.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(final View v) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(c);
+				builder.setTitle(c.getString(R.string.remove_tag_dialog_title))
+				.setMessage(c.getString(R.string.remove_tag_dialog_msg))
+				.setPositiveButton(c.getString(R.string.remove_tag_dialog_yes), new DialogInterface.OnClickListener(){
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						v.setVisibility(View.GONE);
+						recording.removeTag(c, tag);
+						//OWRecording.objects(c, OWRecording.class).get(ow_recording_db_id).removeTag(c, tag);
+						dialog.dismiss();
+					}
+
+				
+				}).setNegativeButton(c.getString(R.string.remove_tag_dialog_cancel), new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				}).show();
+				
+				
+			}
+			
+		});
+		
+		return new_tag;
 	}
 	
 	@Override

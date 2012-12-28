@@ -1,6 +1,7 @@
 package net.openwatch.reporter.database;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import net.openwatch.reporter.constants.Constants;
@@ -27,7 +28,7 @@ public class DatabaseManager {
 	
 	private static final String TAG = "DatabaseManager";
 	
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 	private static boolean models_registered = false; // ensure this is only called once per app launch
 	
 	public static void setupDB(final Context app_context){
@@ -84,17 +85,38 @@ public class DatabaseManager {
 		sample_tag.is_featured.set(true);
 		sample_tag.save(app_context);
 		
-		OWRecording sample_recording = new OWRecording();
 		
+		OWRecording sample_recording = new OWRecording();
+		OWLocalRecording sample_local = new OWLocalRecording();
+		boolean saved_local = sample_local.save(app_context);
+		
+		OWLocalRecordingSegment segment = new OWLocalRecordingSegment();
+		segment.filename.set("test");
+		segment.local_recording.set(sample_local);
+		segment.save(app_context);
+		int seg_id = segment.getId();
+		
+		segment = OWLocalRecordingSegment.objects(app_context, OWLocalRecordingSegment.class).get(seg_id);
+		// is segment.local_recording null?
+		
+		sample_recording.local.set(sample_local);
+		//sample_recording.initializeRecording(app_context, Constants.sdf.format(new Date()), "dksdlf3209dfklsdfklf", 0.0, 0.0);
+		boolean saved_recording = sample_recording.save(app_context);
+		int rec_id = sample_recording.getId();
+		
+		sample_recording = OWRecording.objects(app_context, OWRecording.class).get(rec_id);
+		sample_recording.local.set(rec_id);
+		sample_recording.save(app_context);
+		sample_recording = OWRecording.objects(app_context, OWRecording.class).get(rec_id);
+		OWLocalRecording local = sample_recording.local.get();
+		/*
 		sample_recording.tags.add(sample_tag);
 		sample_recording.title.set("test recording");
+		sample_recording.description.set("test description");
 		sample_recording.save(app_context);
 		
 		OWLocalRecording sample_local = new OWLocalRecording();
-		sample_local.title.set("test local recording");
-		sample_local.description.set("test description");
-		sample_local.tags.add(sample_tag);
-		sample_local.recording.set(sample_recording);
+		//sample_local.recording.set(sample_recording);
 		sample_local.save(app_context);
 		
 		Log.i(TAG, "models saved");
@@ -106,7 +128,7 @@ public class DatabaseManager {
 		
 		QuerySet<OWLocalRecording> qs3 = OWRecording.objects(app_context, OWLocalRecording.class).all();
 		for(OWLocalRecording ow : qs3){
-			Log.i(TAG, "OWLocalRecording QuerySet " + ow.title.toString() + " tags: " +  ow.tags.get(app_context, ow));
+			//Log.i(TAG, "OWLocalRecording QuerySet " + ow.recording.get().title.toString() + " tags: " +  ow.recording.get().tags.get(app_context, ow.recording.get()));
 		}
 		
 		// Test manual db actions
@@ -120,6 +142,7 @@ public class DatabaseManager {
 		for(OWRecordingTag tag : qs2){
 			Log.i(TAG,"OWRecordingTag QuerySet: " + tag.name.toString() + " id: " + String.valueOf(tag.getId()));
 		}
+		*/
 	}
 	
 	public static void addChunk(Context c, String filepath){

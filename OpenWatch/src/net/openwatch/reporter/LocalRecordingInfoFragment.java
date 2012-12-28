@@ -5,30 +5,19 @@ import com.orm.androrm.QuerySet;
 
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
-import net.openwatch.reporter.contentprovider.OWContentProvider;
 import net.openwatch.reporter.model.OWLocalRecording;
+import net.openwatch.reporter.model.OWRecording;
 import net.openwatch.reporter.model.OWRecordingTag;
 import net.openwatch.reporter.view.TagPoolLayout;
 import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager.LoaderCallbacks;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.support.v4.widget.SimpleCursorAdapter;
-import android.support.v4.widget.SimpleCursorAdapter.CursorToStringConverter;
-import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
@@ -46,7 +35,7 @@ public class LocalRecordingInfoFragment extends Fragment{
 	protected EditText title;
 	protected EditText description;
 	protected AutoCompleteTextView tags;
-	protected OWLocalRecording recording = null;
+	protected OWRecording recording = null;
 	protected TagPoolLayout tagGroup;
 	
 	protected static boolean watch_tag_text = true;
@@ -74,9 +63,9 @@ public class LocalRecordingInfoFragment extends Fragment{
 		description = ((EditText)v.findViewById(R.id.editDescription));
 		tags = ((AutoCompleteTextView)v.findViewById(R.id.editTags));
 		
-		recording = OWLocalRecording.objects(getActivity().getApplicationContext(), OWLocalRecording.class)
+		recording = OWRecording.objects(getActivity().getApplicationContext(), OWRecording.class)
 				.get(this.getActivity().getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID));
-		
+		tagGroup.setRecording((OWRecording)recording);
 		
 		setTagAutoCompleteListeners();
 	
@@ -141,7 +130,7 @@ public class LocalRecordingInfoFragment extends Fragment{
 			}
 	}
 	
-	protected void populateViews(OWLocalRecording recording, Context app_context){
+	protected void populateViews(OWRecording recording, Context app_context){
 		try{
 			if(recording.title.get() != null)
 				title.setText(recording.title.get());
@@ -160,7 +149,7 @@ public class LocalRecordingInfoFragment extends Fragment{
 		tagGroup.addTag(tag);
 	}
 	
-	public void populateTagPool(OWLocalRecording recording, Context app_context){
+	public void populateTagPool(OWRecording recording, Context app_context){
 		Log.i(TAG, "populateTagPool");
 		//TagPoolLayout tagGroup = ((TagPoolLayout) getActivity().findViewById(R.id.tagGroup));
 		//TagPoolLayout tagGroup = ((TagPoolLayout) getView().findViewById(R.id.tagGroup));
@@ -330,7 +319,7 @@ public class LocalRecordingInfoFragment extends Fragment{
 		*/
 	}
 	
-	private void addTagToRecording(OWRecordingTag tag, OWLocalRecording recording){
+	private void addTagToRecording(OWRecordingTag tag, OWRecording recording){
 		tagGroup.addTagPostLayout(tag);
 		recording.tags.add(tag);
 		recording.save(getActivity().getApplicationContext());
