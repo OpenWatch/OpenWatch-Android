@@ -3,9 +3,6 @@ package net.openwatch.reporter.contentprovider;
 import com.orm.androrm.DatabaseAdapter;
 
 import net.openwatch.reporter.constants.DBConstants;
-import net.openwatch.reporter.database.DatabaseManager;
-import net.openwatch.reporter.model.OWLocalRecording;
-import net.openwatch.reporter.model.OWRecordingTag;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
@@ -132,21 +129,22 @@ public class OWContentProvider extends ContentProvider {
 		switch(uriType){
 			case LOCAL_RECORDINGS:
 				Log.i(TAG, select + " FROM " + DBConstants.RECORDINGS_TABLENAME + where + sortby);
-				result = adapter.open().query(select + " FROM " + DBConstants.RECORDINGS_TABLENAME + where + sortby);
+				result = adapter.open().query(select + " FROM " + DBConstants.RECORDINGS_TABLENAME + " WHERE " + DBConstants.RECORDINGS_TABLE_LOCAL + " IS NOT NULL " + sortby);
 				break;
 			case LOCAL_RECORDING_ID:
 				Log.i(TAG, select + " FROM " + DBConstants.RECORDINGS_TABLENAME + "WHERE mID="+uri.getLastPathSegment());
-				result = adapter.open().query(select + " FROM " + DBConstants.RECORDINGS_TABLENAME + "WHERE _id="+uri.getLastPathSegment());
+				result = adapter.open().query(select + " FROM " + DBConstants.RECORDINGS_TABLENAME + " WHERE " + DBConstants.ID + "=" +uri.getLastPathSegment());
 				//adapter.close();
 				break;
 			case REMOTE_RECORDINGS:
-				result = adapter.open().query(select + " FROM " + DBConstants.RECORDINGS_TABLENAME + where + sortby);
+				result = adapter.open().query(select + " FROM " + DBConstants.RECORDINGS_TABLENAME + " " + where + sortby);
 				break;
 			case REMOTE_RECORDING_ID:
+				result = adapter.open().query(select + " FROM " + DBConstants.RECORDINGS_TABLENAME + " WHERE " + DBConstants.ID + "=" + uri.getLastPathSegment());
 				break;
 			case TAGS:
 				Log.i(TAG, select + " FROM " + DBConstants.TAG_TABLE_NAME + where + sortby);
-				result = adapter.open().query(select + " FROM " + DBConstants.TAG_TABLENAME + where + sortby);
+				result = adapter.open().query(select + " FROM " + DBConstants.TAG_TABLENAME + " " + where + sortby);
 				break;
 			case TAG_SEARCH:
 				//queryBuilder.setTables(DBConstants.TAG_TABLENAME);

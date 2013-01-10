@@ -80,6 +80,12 @@ public class DatabaseManager {
 		
 		String TAG = "DatabaseManager-DEBUG";
 		
+		// Some devices have an initial bogus recording
+		int count = OWLocalRecording.objects(app_context, OWLocalRecording.class).count();
+		if(count > 0)
+			Log.i(TAG, "Database has " + String.valueOf(count) + " OWRecordings");
+		
+		/*
 		OWRecordingTag sample_tag = new OWRecordingTag();
 		sample_tag.name.set("test tag");
 		sample_tag.is_featured.set(true);
@@ -109,6 +115,7 @@ public class DatabaseManager {
 		sample_recording.save(app_context);
 		sample_recording = OWRecording.objects(app_context, OWRecording.class).get(rec_id);
 		OWLocalRecording local = sample_recording.local.get();
+		*/
 		/*
 		sample_recording.tags.add(sample_tag);
 		sample_recording.title.set("test recording");

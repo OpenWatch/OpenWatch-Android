@@ -26,6 +26,7 @@ public class DBConstants {
 	public static final String RECORDINGS_TABLE_END_LON = "end_lon";
 	public static final String RECORDINGS_TABLE_VIEWS = "views";
 	public static final String RECORDINGS_TABLE_ACTIONS = "actions";
+	public static final String RECORDINGS_TABLE_LOCAL = "local";
 	
 	// Tag table
 	public static final String TAG_TABLENAME = "owrecordingtag";
