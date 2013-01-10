@@ -4,6 +4,8 @@ import java.util.Date;
 
 import org.json.JSONObject;
 
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import net.openwatch.reporter.constants.Constants;
@@ -19,11 +21,10 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 
-public class WhatHappenedActivity extends FragmentActivity {
+public class WhatHappenedActivity extends SherlockFragmentActivity {
 	private static final String TAG = "WhatHappenedActivity";
 	static int model_id = -1;
 	String recording_uuid;
@@ -140,7 +141,7 @@ public class WhatHappenedActivity extends FragmentActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_what_happened, menu);
+		getSupportMenuInflater().inflate(R.menu.activity_what_happened, menu);
 		return true;
 	}
 

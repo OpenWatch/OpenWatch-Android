@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- File created by the Android Action Bar Style Generator
+
+     Copyright (C) 2012 readyState Software Ltd
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+  
+          http://www.apache.org/licenses/LICENSE-2.0
+  
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<resources>
+
+    <style name="Theme.openwatch" parent="@style/Theme.Sherlock.Light.DarkActionBar">
+        <item name="actionBarItemBackground">@drawable/selectable_background_openwatch</item>
+        <item name="popupMenuStyle">@style/openwatch_PopupMenu</item>
+        <item name="dropDownListViewStyle">@style/openwatch_DropDownListView</item>
+        <item name="actionBarTabStyle">@style/openwatch_ActionBarTabStyle</item>
+        <item name="actionDropDownStyle">@style/openwatch_DropDownNav</item>
+        <item name="actionBarStyle">@style/openwatch_solid_ActionBar</item>
+
+        <item name="android:actionBarItemBackground">@drawable/selectable_background_openwatch</item>
+        <item name="android:popupMenuStyle">@style/openwatch_PopupMenu</item>
+        <item name="android:dropDownListViewStyle">@style/openwatch_DropDownListView</item>
+        <item name="android:actionBarTabStyle">@style/openwatch_ActionBarTabStyle</item>
+        <item name="android:actionDropDownStyle">@style/openwatch_DropDownNav</item>
+        <item name="android:actionBarStyle">@style/openwatch_solid_ActionBar</item>
+        <item name="android:panelBackground">@drawable/menu_hardkey_panel_openwatch</item>
+        
+                <!-- Light.DarkActionBar specific -->
+        <item name="actionBarWidgetTheme">@style/Theme.openwatch.widget</item>
+        <item name="android:actionBarWidgetTheme">@style/Theme.openwatch.widget</item>
+
+    </style>
+
+    <style name="openwatch_solid_ActionBar" parent="@style/Widget.Sherlock.Light.ActionBar.Solid.Inverse">
+        <item name="background">@drawable/ab_solid_openwatch</item>
+        <item name="backgroundStacked">@drawable/ab_stacked_solid_openwatch</item>
+        <item name="backgroundSplit">@drawable/ab_bottom_solid_openwatch</item>
+        <item name="progressBarStyle">@style/openwatch_ProgressBar</item>
+        <item name="titleTextStyle">@style/Theme.acluaz.NoTitleText</item>
+        <item name="subtitleTextStyle">@style/Theme.openwatch.NoTitleText</item>
+        <item name="titleTextStyle">@style/Theme.openwatch.NoTitleText</item>
+        <item name="subtitleTextStyle">@style/Theme.openwatch.NoTitleText</item>
+        
+        <item name="android:subtitleTextStyle">@style/Theme.openwatch.NoTitleText</item>
+        <item name="android:titleTextStyle">@style/Theme.openwatch.NoTitleText</item>
+        <item name="android:subtitleTextStyle">@style/Theme.openwatch.NoTitleText</item>
+        <item name="android:background">@drawable/ab_solid_openwatch</item>
+        <item name="android:backgroundStacked">@drawable/ab_stacked_solid_openwatch</item>
+        <item name="android:backgroundSplit">@drawable/ab_bottom_solid_openwatch</item>
+        <item name="android:progressBarStyle">@style/openwatch_ProgressBar</item>
+    </style>
+
+    <style name="openwatch_transparent_ActionBar" parent="@style/Widget.Sherlock.ActionBar">
+        <item name="background">@drawable/ab_transparent_openwatch</item>
+        <item name="progressBarStyle">@style/openwatch_ProgressBar</item>
+        
+        <item name="android:background">@drawable/ab_transparent_openwatch</item>
+        <item name="android:progressBarStyle">@style/openwatch_ProgressBar</item>
+    </style>
+	
+    <style name="openwatch_PopupMenu" parent="@style/Widget.Sherlock.ListPopupWindow">	
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_openwatch</item>	
+    </style>
+	
+    <style name="openwatch_DropDownListView" parent="@style/Widget.Sherlock.ListView.DropDown">
+        <item name="android:listSelector">@drawable/selectable_background_openwatch</item>
+    </style>
+
+    <style name="openwatch_ActionBarTabStyle" parent="@style/Widget.Sherlock.ActionBar.TabView">
+        <item name="background">@drawable/tab_indicator_ab_openwatch</item>
+
+        <item name="android:background">@drawable/tab_indicator_ab_openwatch</item>
+    </style>
+	
+    <style name="openwatch_DropDownNav" parent="@style/Widget.Sherlock.Spinner.DropDown.ActionBar">
+        <item name="background">@drawable/spinner_background_ab_openwatch</item>
+
+        <item name="android:background">@drawable/spinner_background_ab_openwatch</item>
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_openwatch</item>
+        <item name="android:dropDownSelector">@drawable/selectable_background_openwatch</item>
+    </style>
+    
+    <style name="openwatch_ProgressBar" parent="@style/Widget.Sherlock.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progress_horizontal_openwatch</item>
+    </style>
+    
+    <!-- this style is only referenced in a Light.DarkActionBar based theme -->
+    <style name="Theme.openwatch.widget" parent="@style/Theme.Sherlock">
+        <item name="popupMenuStyle">@style/openwatch_PopupMenu</item>
+        <item name="dropDownListViewStyle">@style/openwatch_DropDownListView</item>
+        
+        <item name="android:popupMenuStyle">@style/openwatch_PopupMenu</item>
+        <item name="android:dropDownListViewStyle">@style/openwatch_DropDownListView</item>
+    </style>
+    
+    <style name="Theme.openwatch.TabText" parent="@style/Widget.Sherlock.ActionBar.TabText">
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:maxWidth">180dip</item>
+    </style>
+    
+    <style name="Theme.openwatch.NoTitleText">
+        <item name="android:textSize">0sp</item>
+        <item name="android:textColor">#00000000</item>
+    </style>
+
+</resources>

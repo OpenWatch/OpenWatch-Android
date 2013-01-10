@@ -4,6 +4,8 @@ import net.openwatch.reporter.FeedActivity.TabsAdapter;
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.model.OWRecording;
 
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
 import com.google.android.gms.maps.GoogleMap;
 
 import android.content.Context;
@@ -17,7 +19,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -27,7 +28,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-public class LocalRecordingViewActivity extends FragmentActivity {
+public class LocalRecordingViewActivity extends SherlockFragmentActivity {
 
 	private static final String TAG = "LocalRecordingViewActivity";
 
@@ -94,7 +95,7 @@ public class LocalRecordingViewActivity extends FragmentActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_local_recording_view, menu);
+		getSupportMenuInflater().inflate(R.menu.activity_local_recording_view, menu);
 		return true;
 	}
 
@@ -109,7 +110,7 @@ public class LocalRecordingViewActivity extends FragmentActivity {
 	}
 	
 	private View inflateCustomTab(String tab_title){
-    	LinearLayout tab = (LinearLayout) inflater.inflate(R.layout.tab_indicator_openwatch, (ViewGroup) findViewById(android.R.id.tabs), false);
+    	ViewGroup tab = (ViewGroup) inflater.inflate(R.layout.tab_indicator_openwatch, (ViewGroup) this.findViewById(android.R.id.tabs), false);
 		((TextView)tab.findViewById(R.id.title)).setText(tab_title);
 		return tab;
 	}

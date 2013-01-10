@@ -4,3 +4,6 @@
 [submodule "android-async-http"]
 	path = android-async-http
 	url = https://github.com/OnlyInAmerica/android-async-http
+[submodule "ActionBarSherlock"]
+	path = ActionBarSherlock
+	url = https://github.com/JakeWharton/ActionBarSherlock

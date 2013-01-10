@@ -1,5 +1,8 @@
 package net.openwatch.reporter;
 
+import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.orm.androrm.Filter;
 import com.orm.androrm.QuerySet;
 
@@ -15,8 +18,6 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -28,7 +29,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-public class LocalRecordingInfoFragment extends Fragment{
+public class LocalRecordingInfoFragment extends SherlockFragment{
 	
 	private static final String TAG = "LocalRecordingInfoFragment";
 	

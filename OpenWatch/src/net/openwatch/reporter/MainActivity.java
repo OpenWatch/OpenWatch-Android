@@ -1,5 +1,8 @@
 package net.openwatch.reporter;
 
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.database.DatabaseManager;
 import net.openwatch.reporter.http.OWServiceRequests;
@@ -7,10 +10,9 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.view.Menu;
 import android.view.View;
 
-public class MainActivity extends Activity {
+public class MainActivity extends SherlockActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

@@ -16,9 +16,7 @@ package net.openwatch.reporter;
  * limitations under the License.
  */
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -28,12 +26,13 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 import net.openwatch.reporter.feeds.MyFeedFragmentActivity;
 import net.openwatch.reporter.feeds.RemoteFeedFragmentActivity;
@@ -43,7 +42,7 @@ import net.openwatch.reporter.feeds.RemoteFeedFragmentActivity;
  * that switches between tabs and also allows the user to perform horizontal
  * flicks to move between the tabs.
  */
-public class FeedActivity extends FragmentActivity {
+public class FeedActivity extends SherlockFragmentActivity {
     TabHost mTabHost;
     ViewPager  mViewPager;
     TabsAdapter mTabsAdapter;
@@ -191,7 +190,7 @@ public class FeedActivity extends FragmentActivity {
     }
     
     private View inflateCustomTab(String tab_title){
-    	LinearLayout tab = (LinearLayout) inflater.inflate(R.layout.tab_indicator_openwatch, (ViewGroup) findViewById(android.R.id.tabs), false);
+    	ViewGroup tab = (ViewGroup) inflater.inflate(R.layout.tab_indicator_openwatch, (ViewGroup) this.findViewById(android.R.id.tabs), false);
 		((TextView)tab.findViewById(R.id.title)).setText(tab_title);
 		return tab;
 	}

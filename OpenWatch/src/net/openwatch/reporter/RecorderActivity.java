@@ -8,6 +8,9 @@ import java.util.UUID;
 
 import org.json.JSONArray;
 
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.file.FileUtils;
 import net.openwatch.reporter.http.OWMediaRequests;
@@ -30,13 +33,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
-import android.view.Menu;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-public class RecorderActivity extends Activity implements
+public class RecorderActivity extends SherlockActivity implements
 		SurfaceHolder.Callback {
 
 	private static final String TAG = "RecorderActivity";
@@ -237,7 +239,7 @@ public class RecorderActivity extends Activity implements
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_recorder, menu);
+		getSupportMenuInflater().inflate(R.menu.activity_recorder, menu);
 		return true;
 	}
 
