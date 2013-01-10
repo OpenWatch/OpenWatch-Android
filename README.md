@@ -7,11 +7,8 @@ Downloading the Source
 ----------------------
 When downloading the source make sure to clone the repository with:
 
-    $ git clone git@github.com:OpenWatch/OpenWatch-Android.git
+    $ git clone git@github.com:OpenWatch/OpenWatch-Android.git --recursive
     
-### Library Project Dependency
-This project is currently configured to depend on two Library projects: [android-async-http](https://github.com/OnlyInAmerica/android-async-http) and [androrm](https://github.com/OnlyInAmerica/androrm). This is temporary as we contribute changes upstream to this project. To setup, clone the project, import "Existing Android Code" in Eclipse, right click on the OpenWatch project -> Android -> Libraries -> Add Class Folder -> Point to android-async-http root.
-
 
 Running
 ----------------------
@@ -32,6 +29,4 @@ On OSX:
 
 TODO
 ----
-+ Send available meta data during MediaCapture calls
 + Adjust bitrate of LQ stream per sendVideoChunk() network performance
-+ 

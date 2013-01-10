@@ -1,0 +1,6 @@
+[submodule "androrm"]
+	path = androrm
+	url = git@github.com:OnlyInAmerica/androrm.git
+[submodule "android-async-http"]
+	path = android-async-http
+	url = https://github.com/OnlyInAmerica/android-async-http
