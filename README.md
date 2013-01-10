@@ -30,3 +30,4 @@ On OSX:
 TODO
 ----
 + Adjust bitrate of LQ stream per sendVideoChunk() network performance
+
