@@ -20,8 +20,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="@android:color/transparent"
-            android:drawableTop="@drawable/record_button"
             android:drawablePadding="-10dp"
+            android:drawableTop="@drawable/record_button"
             android:onClick="recordButtonClick"
             android:text="@string/record_button_text"
             android:textColor="#000000"
@@ -35,56 +35,36 @@
         android:gravity="center" >
 
         <Button
-            android:id="@+id/button_saved"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_margin="20dp"
-            android:background="@android:color/transparent"
-            android:drawableTop="@drawable/saved_button"
-            android:onClick="savedButtonClick"
-            android:text="@string/saved_recordings_button_text"
-            android:textColor="#000000"
-            android:textSize="20sp" />
+            android:id="@+id/button_watch"
+            style="@style/Theme.openwatch.DashButton"
+            android:drawableTop="@drawable/watch_button"
+            android:onClick="watchButtonClick"
+            android:text="@string/watch_button_text" />
 
         <Button
             android:id="@+id/button_local"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_margin="20dp"
-            android:layout_toRightOf="@id/button_saved"
-            android:background="@android:color/transparent"
+            style="@style/Theme.openwatch.DashButton"
+            android:layout_toRightOf="@id/button_watch"
             android:drawableTop="@drawable/local_button"
             android:onClick="localButtonClick"
-            android:text="@string/local_button_text"
-            android:textColor="#000000"
-            android:textSize="20sp" />
+            android:text="@string/local_button_text" />
 
         <Button
-            android:id="@+id/button_watch"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_below="@id/button_saved"
-            android:layout_margin="20dp"
-            android:background="@android:color/transparent"
-            android:drawableTop="@drawable/watch_button"
-            android:onClick="watchButtonClick"
-            android:text="@string/watch_button_text"
-            android:textColor="#000000"
-            android:textSize="20sp" />
+            android:id="@+id/button_saved"
+            style="@style/Theme.openwatch.DashButton"
+            android:layout_below="@id/button_watch"
+            android:drawableTop="@drawable/saved_button"
+            android:onClick="savedButtonClick"
+            android:text="@string/saved_recordings_button_text" />
 
         <Button
             android:id="@+id/button_settings"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            style="@style/Theme.openwatch.DashButton"
             android:layout_below="@id/button_local"
-            android:layout_toRightOf="@id/button_watch"
-            android:layout_margin="20dp"
-            android:background="@android:color/transparent"
+            android:layout_toRightOf="@id/button_saved"
             android:drawableTop="@drawable/settings_button"
             android:onClick="settingsButtonClick"
-            android:text="@string/settings_button_text"
-            android:textColor="#000000"
-            android:textSize="20sp" />
+            android:text="@string/settings_button_text" />
     </RelativeLayout>
 
 </LinearLayout>
