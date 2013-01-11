@@ -18,4 +18,5 @@
 
 <resources>
     <color name="pressed_openwatch">#CC450000</color>
+    <color name="text_light">#66000000</color>
 </resources>

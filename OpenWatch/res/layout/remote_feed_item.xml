@@ -6,91 +6,74 @@
     android:layout_height="100dp"
     android:layout_margin="3dp" >
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="80dp" >
+        android:layout_height="75dp"
+        android:gravity="center" >
 
         <com.github.ignition.core.widgets.RemoteImageView
             android:id="@+id/thumbnail"
             android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            ignition:autoLoad="false"
-            android:scaleType="fitXY"
-            android:src="@drawable/protest" />
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="5dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/thumbnail_placeholder"
+            ignition:autoLoad="false" />
 
         <!-- Multiline textview ellipsize is broken in Android -->
 
         <TextView
             android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="3dp"
-            android:ellipsize="marquee"
-            android:maxLines="3"
-            android:padding="2dp"
-            android:text="Market Street Protest against some bad stuff"
-            android:textSize="20dp" >
-        </TextView>
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/header"
-        android:layout_marginTop="3dp"
-        android:ellipsize="marquee"
-        android:singleLine="true"
-        android:text="UserName"
-        android:textSize="18dp" >
-    </TextView>
+            style="@style/Theme.openwatch.feedItemTitleText"
+            android:layout_toRightOf="@id/thumbnail" />
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/action_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Theme.openwatch.feedItemOtherText"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_below="@id/header"
-        android:layout_marginTop="3dp"
-        android:layout_marginRight="3dp"
-        android:ellipsize="marquee"
-        android:singleLine="true"
-        android:text="16"
-        android:textSize="18dp" />
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="5dp" />
 
     <ImageView
         android:id="@+id/action_icon"
-        android:layout_width="15dp"
-        android:layout_height="wrap_content"
+        style="@style/Theme.openwatch.feedItemIcon"
         android:layout_below="@id/header"
-        android:layout_marginTop="3dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
         android:layout_toLeftOf="@id/action_count"
-        android:layout_marginLeft="3dp"
         android:src="@drawable/runner" />
 
     <TextView
         android:id="@+id/view_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Theme.openwatch.feedItemOtherText"
         android:layout_below="@id/header"
-        android:layout_marginTop="3dp"
-        android:layout_toLeftOf="@id/action_icon"
-        android:ellipsize="marquee"
-        android:singleLine="true"
-        android:text="20"
-        android:textSize="18dp" />
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@id/action_icon" />
 
     <ImageView
         android:id="@+id/view_icon"
-        android:layout_width="15dp"
-        android:layout_height="wrap_content"
+        style="@style/Theme.openwatch.feedItemIcon"
         android:layout_below="@id/header"
-        android:layout_marginTop="3dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
         android:layout_toLeftOf="@id/view_count"
         android:src="@drawable/eye" />
+
+    <TextView
+        android:id="@+id/username"
+        style="@style/Theme.openwatch.feedItemOtherText"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_toLeftOf="@id/view_icon"
+        android:textColor="@color/text_light" />
 
 </RelativeLayout>

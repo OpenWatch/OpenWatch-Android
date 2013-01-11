@@ -33,6 +33,8 @@ public class OWRecordingAdapter extends SimpleCursorAdapter {
         	view_cache.title_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_TITLE);   
         	view_cache.username_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_USERNAME);   
         	view_cache.thumbnail_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_THUMB_URL);
+        	view_cache.views_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_VIEWS);
+        	view_cache.actions_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_ACTIONS);
         	view_cache._id_col = cursor.getColumnIndexOrThrow(DBConstants.ID);
             view.setTag(R.id.list_item_cache, view_cache);
         }
@@ -48,7 +50,7 @@ public class OWRecordingAdapter extends SimpleCursorAdapter {
         	view_cache.thumbnail_set = true;
         }
         
-        view.setTag(R.id.list_item_cache, cursor.getInt(view_cache._id_col));
+        view.setTag(R.id.list_item_model, cursor.getInt(view_cache._id_col));
 	}
 	
 	// Cache the views within a ListView row item 

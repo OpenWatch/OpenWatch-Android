@@ -56,8 +56,8 @@ public class Constants {
 	//public static final String OW_URL = "http://www.openwatch.net/api/"; // TODO: HTTPS
 	//public static final String OW_API_URL = "http://192.168.1.112:8000/api/";
 	//public static final String OW_URL = "http://192.168.1.112:8000/";
-	public static final String OW_API_URL = "http://alpha.openwatch.net/api/";
-	public static final String OW_URL = "http://alpha.openwatch.net/";
+	public static final String OW_API_URL = "https://alpha.openwatch.net/api/";
+	public static final String OW_URL = "https://alpha.openwatch.net/";
 	public static final String OW_VIEW = "v/";
 	public static final String OW_LOGIN = "login_account";
 	public static final String OW_SIGNUP = "create_account";
@@ -74,6 +74,22 @@ public class Constants {
 	// Feed types : Each is related to an API endpoint in OWServiceRequests getFeed
 	public static enum OWFeedType{
 		FEATURED, LOCAL, FOLLOWING
+	}
+	
+	public static String feedEndpointFromType(OWFeedType type){
+		String endpoint = "";
+		switch(type){
+		case FEATURED:
+			endpoint = Constants.OW_FEATURED;
+			break;
+		case LOCAL:
+			endpoint = Constants.OW_LOCAL;
+			break;
+		case FOLLOWING:
+			endpoint = Constants.OW_FOLLOWING;
+			break;
+		}
+		return endpoint;
 	}
 	
 	// OpenWatch web service POST keys

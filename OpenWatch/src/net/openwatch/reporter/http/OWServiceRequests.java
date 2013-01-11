@@ -72,18 +72,8 @@ public class OWServiceRequests {
 		};
 		
 		AsyncHttpClient http_client = HttpClient.setupHttpClient(app_context);
-		String endpoint = "";
-		switch(feed){
-			case FEATURED:
-				endpoint = Constants.OW_FEATURED;
-				break;
-			case LOCAL:
-				endpoint = Constants.OW_LOCAL;
-				break;
-			case FOLLOWING:
-				endpoint = Constants.OW_FOLLOWING;
-				break;
-		}
+		String endpoint = Constants.feedEndpointFromType(feed);
+
 		http_client.get(Constants.OW_API_URL + Constants.OW_FEED + File.separator + endpoint, get_handler);
 		Log.i(TAG, "getFeed: " + Constants.OW_API_URL + Constants.OW_FEED + File.separator + endpoint);
 	}

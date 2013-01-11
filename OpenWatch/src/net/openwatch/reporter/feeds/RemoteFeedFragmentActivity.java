@@ -33,6 +33,7 @@ import android.view.View;
 import android.widget.ListView;
 import net.openwatch.reporter.R;
 import net.openwatch.reporter.constants.Constants.OWFeedType;
+import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
 import net.openwatch.reporter.http.OWServiceRequests;
@@ -59,6 +60,10 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 
     public static class RemoteRecordingsListFragment extends ListFragment
             implements LoaderManager.LoaderCallbacks<Cursor> {
+    	
+    	static String TAG = "RemoteFeedFragment";
+    	
+    	OWFeedType feed;
 
         // This is the Adapter being used to display the list's data.
         //AppListAdapter mAdapter;
@@ -85,13 +90,17 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 
             // Start out with a progress indicator.
             setListShown(false);
-
+            
+            feed = (OWFeedType) this.getArguments().getSerializable(Constants.OW_FEED);
+            Log.i(TAG, "got feed name: " +  feed.toString() );
+            
             // Prepare the loader.  Either re-connect with an existing one,
             // or start a new one.
             getLoaderManager().initLoader(0, null, this);
             
-            // Temporarily get a sample remote feed
-            OWServiceRequests.getFeed(this.getActivity().getApplicationContext(), OWFeedType.FOLLOWING);
+            // Refresh the feed view
+            OWServiceRequests.getFeed(this.getActivity().getApplicationContext(), feed);
+
         }
 
         @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -159,8 +168,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 
 		@Override
 		public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
-			// TODO Auto-generated method stub
-			Uri baseUri = OWContentProvider.getFeedUri("following");
+			Uri baseUri = OWContentProvider.getFeedUri(feed);
 			String selection = null;
             String[] selectionArgs = null;
             String order = null;

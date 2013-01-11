@@ -2,6 +2,8 @@ package net.openwatch.reporter.contentprovider;
 
 import com.orm.androrm.DatabaseAdapter;
 
+import net.openwatch.reporter.constants.Constants.OWFeedType;
+import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -44,8 +46,8 @@ public class OWContentProvider extends ContentProvider {
      public static Uri getRemoteRecordingUri(int model_id){
     	 return REMOTE_RECORDING_URI.buildUpon().appendEncodedPath("/" + String.valueOf(model_id)).build();
      }
-     public static Uri getFeedUri(String feed_name){
-    	 return REMOTE_RECORDING_URI.buildUpon().appendEncodedPath("/" + feed_name).build();
+     public static Uri getFeedUri(OWFeedType feed_type){
+    	 return REMOTE_RECORDING_URI.buildUpon().appendEncodedPath("/" + Constants.feedEndpointFromType(feed_type)).build();
      }
      public static Uri getTagUri(int model_id){
     	 return TAG_URI.buildUpon().appendEncodedPath("/" + String.valueOf(model_id)).build();

@@ -121,5 +121,35 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
     
+    <style name="Theme.openwatch.feedItemTitleText">
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginLeft">3dp</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:maxLines">3</item>
+		<item name="android:padding">2dp</item>
+		<item name="android:textSize">20sp</item>
+    </style>
+    
+    <style name="Theme.openwatch.feedItemOtherText">
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="Theme.openwatch.feedItemIcon">
+        <item name="android:layout_width">15dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:layout_marginLeft">3dp</item>
+        <item name="android:layout_marginRight">3dp</item>
+    </style>
 
 </resources>

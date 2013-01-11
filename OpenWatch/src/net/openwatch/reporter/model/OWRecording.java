@@ -35,7 +35,6 @@ public class OWRecording extends Model{
 	public CharField title = new CharField();
 	public CharField description = new CharField();
 	public CharField thumb_url = new CharField();
-	public IntegerField user_id = new IntegerField();
 	public CharField username = new CharField(); 
 	// username is queried often by ListViews, so it makes sense to duplicate info for performance 
 	public CharField creation_time = new CharField();
@@ -130,6 +129,7 @@ public class OWRecording extends Model{
 				filter = new Filter();
 				filter.is(DBConstants.RECORDINGS_TABLE_UUID, json_obj.getString(Constants.OW_UUID));
 				existing_recs = OWRecording.objects(app_context, OWRecording.class).filter(filter);
+				Log.i(TAG, String.format("Found %d recordings with uuid %s", existing_recs.count(), json_obj.getString(Constants.OW_UUID)));
 				for(OWRecording rec : existing_recs){
 					existing_rec = rec;
 					Log.i(TAG, "found existing recording for uuid: " + String.valueOf( json_obj.getString(Constants.OW_UUID)));
@@ -139,6 +139,8 @@ public class OWRecording extends Model{
 					Log.i(TAG, "creating new recording");
 					existing_rec = new OWRecording();
 				}
+				if(json_obj.has(Constants.OW_UUID))
+					existing_rec.uuid.set(json_obj.getString(Constants.OW_UUID));
 				if(json_obj.has(Constants.OW_VIEWS))
 					existing_rec.views.set(json_obj.getInt(Constants.OW_VIEWS));
 				if(json_obj.has(Constants.OW_TITLE))
@@ -168,6 +170,7 @@ public class OWRecording extends Model{
 						user.server_id.set(json_user.getInt(Constants.OW_SERVER_ID));
 						user.save(app_context);
 					}
+					existing_rec.username.set(user.username.get());
 					existing_rec.user.set(user.getId());
 				} // end if user
 				

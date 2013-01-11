@@ -9,8 +9,26 @@ When downloading the source make sure to clone the repository with:
 
     $ git clone git@github.com:OpenWatch/OpenWatch-Android.git --recursive
     
-### Ignition
-In case I stick with Ignition, here's how you do it:
+#### SSL Certificate KeyStore
+
+OpenWatch-Android uses a bundled KeyStore to verify ssl connections against. To adapt this to your application you need to generate a BKS format KeyStore, place it in res/raw/, and modify HttpClient.java appropriately with the keystore filename. Place the keystore password in SECRETS.java:
+
+Create a file named `SECRETS.java` in /src/net/openwatch/reporter with the following content:
+
+
+	package net.openwatch.reporter;
+
+	public class SECRETS {
+		public static final String SSL_KEYSTORE_PASS = "your_keystore_password";
+	}
+##### Creating a KeyStore from your SSL certificates:
+
+ 1. Get your server's X509 format ssl certificates. You'll need the root and all intermediate certificates, but not your local cert. [In my experience this was easiest to do in Firefox](http://superuser.com/a/97203/185405)
+ 2. [Generate a BKS format keystore with your certificates](http://blog.antoine.li/2010/10/22/android-trusting-ssl-certificates/)
+ 3. Place your keystore in /res/raw and update `HttpClient` with the appropriate filename
+ 
+### [Ignition](https://github.com/kaeppler/ignition)
+Ignition is a general extension to the Android SDK. OpenWatch-Android currently uses its RemoteImageView for async remote image loading & caching. In case we stick with Ignition, here's how you do it:
 
 1. Make sure you have maven 3 installed:
 
