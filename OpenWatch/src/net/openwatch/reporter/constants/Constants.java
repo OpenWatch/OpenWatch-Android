@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
  *
  */
 public class Constants {
+	
 	// Date Formatter for OW server time
 	public static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 	
@@ -55,8 +56,8 @@ public class Constants {
 	//public static final String OW_URL = "http://www.openwatch.net/api/"; // TODO: HTTPS
 	//public static final String OW_API_URL = "http://192.168.1.112:8000/api/";
 	//public static final String OW_URL = "http://192.168.1.112:8000/";
-	public static final String OW_API_URL = "http://alpha.openwatch.net/api/";
-	public static final String OW_URL = "http://alpha.openwatch.net/";
+	public static final String OW_API_URL = "https://alpha.openwatch.net/api/";
+	public static final String OW_URL = "https://alpha.openwatch.net/";
 	public static final String OW_VIEW = "v/";
 	public static final String OW_LOGIN = "login_account";
 	public static final String OW_SIGNUP = "create_account";
@@ -65,8 +66,31 @@ public class Constants {
 	public static final String OW_TAGS = "tags";
 	public static final String OW_UPDATE_META = "update_metadata";
 	public static final String OW_FEED = "feed";
+	
+	// Feed names
 	public static final String OW_LOCAL = "local";
 	public static final String OW_FEATURED = "featured";
+	public static final String OW_FOLLOWING = "following";
+	// Feed types : Each is related to an API endpoint in OWServiceRequests getFeed
+	public static enum OWFeedType{
+		FEATURED, LOCAL, FOLLOWING
+	}
+	
+	public static String feedEndpointFromType(OWFeedType type){
+		String endpoint = "";
+		switch(type){
+		case FEATURED:
+			endpoint = Constants.OW_FEATURED;
+			break;
+		case LOCAL:
+			endpoint = Constants.OW_LOCAL;
+			break;
+		case FOLLOWING:
+			endpoint = Constants.OW_FOLLOWING;
+			break;
+		}
+		return endpoint;
+	}
 	
 	// OpenWatch web service POST keys
 	public static final String OW_EMAIL = "email_address";
@@ -83,7 +107,11 @@ public class Constants {
 	public static final String OW_ACTIONS = "clicks";
 	public static final String OW_NO_VALUE = "None";
 	public static final String OW_USER = "user";
+	public static final String OW_VIEWS = "views";
+	public static final String OW_TITLE = "title";
 	public static final String OW_USERNAME = "username";
+	public static final String OW_CLICKS = "clicks";
+	public static final String OW_UUID = "uuid";
 	
 	// OpenWatch media capture web service url and endpoints
 	//public static final String OW_MEDIA_URL = "http://192.168.1.112:5000/";
@@ -101,7 +129,7 @@ public class Constants {
 	public static final String OW_ALL_FILES = "all_files";
 	public static final String OW_UP_TOKEN = "upload_token";
 	public static final String OW_FILE = "upload";
-	public static final String OW_TITLE = "title";
+	public static final String OW_MEDIA_TITLE = "title";
 	public static final String OW_DESCRIPTION = "description";
 	public static final String OW_EDIT_TIME = "last_edited";
 	public static final String OW_START_LOC = "start_location";
@@ -112,9 +140,5 @@ public class Constants {
 	public static final String OW_END_LON = "end_lon";
 	public static final String OW_LAT = "latitude";
 	public static final String OW_LON = "longitude";
-	
-		
-	
-	
 
 }

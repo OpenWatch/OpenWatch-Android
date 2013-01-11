@@ -1,5 +1,6 @@
 package net.openwatch.reporter.http;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
@@ -10,7 +11,9 @@ import org.json.JSONObject;
 
 import net.openwatch.reporter.OWApplication;
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.Constants.OWFeedType;
 import net.openwatch.reporter.constants.DBConstants;
+import net.openwatch.reporter.model.OWFeed;
 import net.openwatch.reporter.model.OWRecording;
 import net.openwatch.reporter.model.OWRecordingTag;
 import android.content.Context;
@@ -38,17 +41,13 @@ public class OWServiceRequests {
 		public void onFailure();
 		public void onSuccess();
 	}
-	
-	enum OWFeed{
-		FEATURED, LOCAL
-	}
-	
+
 	/**
 	 * Parse an OpenWatch.net feed, saving its contents to the databasee
 	 * @param app_context
 	 * @param feed The type of feed to return. See OWServiceRequests.OWFeed
 	 */
-	public static void getFeed(final Context app_context, OWFeed feed){
+	public static void getFeed(final Context app_context, final OWFeedType feed){
 		final String METHOD = "getFeed";
 		JsonHttpResponseHandler get_handler = new JsonHttpResponseHandler(){
 			@Override
@@ -57,26 +56,26 @@ public class OWServiceRequests {
 						JSONArray json_array;
 						try {
 							json_array = response.getJSONArray("recordings");
-							OWRecording.createOWRecordingsFromJSONArray(app_context, json_array);
+							OWRecording.createOWRecordingsFromJSONArray(app_context, json_array, OWFeed.getFeedFromFeedType(app_context, feed));
 						} catch (JSONException e) {
 							Log.e(TAG, METHOD + " Error parsing recordings array from response");
 							e.printStackTrace();
 						}
 				}
 			}
+			
+			@Override
+			public void onFailure(Throwable e, JSONObject errorResponse){
+				Log.i(TAG, METHOD + " failed: " + errorResponse.toString());
+				e.printStackTrace();
+			}
 		};
 		
 		AsyncHttpClient http_client = HttpClient.setupHttpClient(app_context);
-		String endpoint = "";
-		switch(feed){
-			case FEATURED:
-				endpoint = Constants.OW_FEATURED;
-				break;
-			case LOCAL:
-				endpoint = Constants.OW_LOCAL;
-		}
-		http_client.get(Constants.OW_API_URL + Constants.OW_FEED + endpoint, get_handler);
-			
+		String endpoint = Constants.feedEndpointFromType(feed);
+
+		http_client.get(Constants.OW_API_URL + Constants.OW_FEED + File.separator + endpoint, get_handler);
+		Log.i(TAG, "getFeed: " + Constants.OW_API_URL + Constants.OW_FEED + File.separator + endpoint);
 	}
 
 	/**

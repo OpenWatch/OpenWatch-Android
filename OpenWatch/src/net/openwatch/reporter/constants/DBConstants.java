@@ -42,5 +42,8 @@ public class DBConstants {
 	public static final String USER_RECORDINGS = "recordings";
 	public static final String USER_TAGS = "tags";
 	
+	// Feed table
+	public static final String FEED_TABLENAME = "owfeed";
+	public static final String FEED_NAME = "name";
 
 }

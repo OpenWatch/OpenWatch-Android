@@ -1,5 +1,7 @@
 package net.openwatch.reporter.feeds;
 
+import com.github.ignition.core.widgets.RemoteImageView;
+
 import net.openwatch.reporter.R;
 import net.openwatch.reporter.constants.DBConstants;
 import android.content.Context;
@@ -7,7 +9,6 @@ import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 public class OWLocalRecordingAdapter extends SimpleCursorAdapter {
@@ -24,7 +25,7 @@ public class OWLocalRecordingAdapter extends SimpleCursorAdapter {
         if (view_cache == null) {
         	view_cache = new ViewCache();
         	view_cache.title = (TextView) view.findViewById(R.id.title);
-        	view_cache.thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
+        	view_cache.thumbnail = (RemoteImageView) view.findViewById(R.id.thumbnail);
         	view_cache.date = (TextView) view.findViewById(R.id.date);
             
         	view_cache.title_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_TITLE);   
@@ -36,7 +37,11 @@ public class OWLocalRecordingAdapter extends SimpleCursorAdapter {
         
         view_cache.title.setText(cursor.getString(view_cache.title_col));
         view_cache.date.setText(cursor.getString(view_cache.date_col));
-        //TODO: droidfu's WebImageView
+        if(!view_cache.thumbnail_set && cursor.getString(view_cache.thumbnail_col) != null && cursor.getString(view_cache.thumbnail_col).compareTo("") != 0){
+        	view_cache.thumbnail.setImageUrl(cursor.getString(view_cache.thumbnail_col));
+        	view_cache.thumbnail.loadImage();
+        	view_cache.thumbnail_set = true;
+        }
         //Log.i("OWLocalRecordingAdapter", "got id: " + String.valueOf(cursor.getInt(view_cache._id_col)));
         view.setTag(R.id.list_item_model, cursor.getInt(view_cache._id_col));
 	}
@@ -44,8 +49,10 @@ public class OWLocalRecordingAdapter extends SimpleCursorAdapter {
 	// Cache the views within a ListView row item 
     static class ViewCache {
         TextView title;
-        ImageView thumbnail;
+        RemoteImageView thumbnail;
         TextView date;
+        
+        boolean thumbnail_set = false;
         
         int title_col; 
         int thumbnail_col;

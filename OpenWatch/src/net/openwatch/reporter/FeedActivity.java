@@ -34,6 +34,7 @@ import java.util.ArrayList;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 
+import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.feeds.MyFeedFragmentActivity;
 import net.openwatch.reporter.feeds.RemoteFeedFragmentActivity;
 
@@ -65,12 +66,14 @@ public class FeedActivity extends SherlockFragmentActivity {
         mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
         
         inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
+        
         mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_local_user_recordings)).setIndicator(inflateCustomTab(getString(R.string.tab_local_user_recordings))),
                 MyFeedFragmentActivity.LocalRecordingsListFragment.class, null);
-
+        
+        Bundle feedBundle = new Bundle(1);
+        feedBundle.putSerializable(Constants.OW_FEED, Constants.OWFeedType.FOLLOWING);
         mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_hot)).setIndicator(inflateCustomTab(getString(R.string.tab_hot))),
-                RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, null);
+                RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, feedBundle);
         
         if (savedInstanceState != null) {
             mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));

@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
+import net.openwatch.reporter.model.OWFeed;
 import net.openwatch.reporter.model.OWLocalRecording;
 import net.openwatch.reporter.model.OWLocalRecordingSegment;
 import net.openwatch.reporter.model.OWRecording;
@@ -63,6 +64,7 @@ public class DatabaseManager {
 		models.add(OWLocalRecording.class);
 		models.add(OWLocalRecordingSegment.class);
 		models.add(OWUser.class);
+		models.add(OWFeed.class);
 		
 		pointToDB();
 		DatabaseAdapter adapter = DatabaseAdapter.getInstance(app_context);

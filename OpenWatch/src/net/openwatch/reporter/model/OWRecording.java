@@ -23,6 +23,7 @@ import com.orm.androrm.field.IntegerField;
 import com.orm.androrm.field.ManyToManyField;
 
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.Constants.OWFeedType;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
 import net.openwatch.reporter.http.OWServiceRequests;
@@ -34,7 +35,6 @@ public class OWRecording extends Model{
 	public CharField title = new CharField();
 	public CharField description = new CharField();
 	public CharField thumb_url = new CharField();
-	public IntegerField user_id = new IntegerField();
 	public CharField username = new CharField(); 
 	// username is queried often by ListViews, so it makes sense to duplicate info for performance 
 	public CharField creation_time = new CharField();
@@ -49,6 +49,8 @@ public class OWRecording extends Model{
 	public DoubleField end_lon = new DoubleField();
 	public IntegerField views = new IntegerField();
 	public IntegerField actions = new IntegerField();
+	
+	// For internal use
 	
 	public ForeignKeyField<OWLocalRecording> local; // = new ForeignKeyField<OWLocalRecording>(OWLocalRecording.class);
 	public ManyToManyField<OWRecording, OWRecordingTag> tags = new ManyToManyField<OWRecording, OWRecordingTag> (OWRecording.class, OWRecordingTag.class);
@@ -103,7 +105,8 @@ public class OWRecording extends Model{
 		return;
 	}
 	
-	public static void createOWRecordingsFromJSONArray(Context app_context, JSONArray json_array){
+	public static void createOWRecordingsFromJSONArray(Context app_context, JSONArray json_array, OWFeed feed){
+		String TAG = "createOWRecordingsFromJSONArray";
 		try {
 			DatabaseAdapter adapter = DatabaseAdapter.getInstance(app_context);
 			adapter.beginTransaction();
@@ -115,44 +118,72 @@ public class OWRecording extends Model{
 			QuerySet<OWRecording> existing_recs;
 			OWRecording existing_rec = null;
 			OWUser user = null;
+			// TESTING
+			Log.i(TAG, "Total OWRecordings: " + String.valueOf(OWRecording.objects(app_context, OWRecording.class).count()) );
+			Log.i(TAG, "json len: " + String.valueOf(json_array.length()) );
 			for(int x=0; x<json_array.length();x++){	
+				existing_rec = null;
+				user = null;
 				json_obj = json_array.getJSONObject(x);
+				//Log.i(TAG, "Evaluating json recording: " + json_obj.toString());
 				filter = new Filter();
-				filter.is(DBConstants.RECORDINGS_TABLE_UUID, json_obj.getString(DBConstants.RECORDINGS_TABLE_UUID));
+				filter.is(DBConstants.RECORDINGS_TABLE_UUID, json_obj.getString(Constants.OW_UUID));
 				existing_recs = OWRecording.objects(app_context, OWRecording.class).filter(filter);
+				Log.i(TAG, String.format("Found %d recordings with uuid %s", existing_recs.count(), json_obj.getString(Constants.OW_UUID)));
 				for(OWRecording rec : existing_recs){
 					existing_rec = rec;
+					Log.i(TAG, "found existing recording for uuid: " + String.valueOf( json_obj.getString(Constants.OW_UUID)));
 					break;
 				}
-				if(existing_rec == null)
+				if(existing_rec == null){
+					Log.i(TAG, "creating new recording");
 					existing_rec = new OWRecording();
-				existing_rec.views.set(json_obj.getInt(DBConstants.RECORDINGS_TABLE_VIEWS));
-				existing_rec.title.set(json_obj.getString(DBConstants.RECORDINGS_TABLE_TITLE));
-				existing_rec.server_id.set(json_obj.getInt(Constants.OW_SERVER_ID));
-				if(json_obj.getString(Constants.OW_THUMB_URL).compareTo(Constants.OW_NO_VALUE)!= 0)
+				}
+				if(json_obj.has(Constants.OW_UUID))
+					existing_rec.uuid.set(json_obj.getString(Constants.OW_UUID));
+				if(json_obj.has(Constants.OW_VIEWS))
+					existing_rec.views.set(json_obj.getInt(Constants.OW_VIEWS));
+				if(json_obj.has(Constants.OW_TITLE))
+					existing_rec.title.set(json_obj.getString(Constants.OW_TITLE));
+				if(json_obj.has(Constants.OW_SERVER_ID))
+					existing_rec.server_id.set(json_obj.getInt(Constants.OW_SERVER_ID));
+				if(json_obj.has(Constants.OW_THUMB_URL) && json_obj.getString(Constants.OW_THUMB_URL).compareTo(Constants.OW_NO_VALUE)!= 0)
 					existing_rec.thumb_url.set(json_obj.getString(Constants.OW_THUMB_URL));
-				existing_rec.last_edited.set(json_obj.getString(Constants.OW_LAST_EDITED));
-				existing_rec.actions.set(json_obj.getInt(Constants.OW_ACTIONS));
+				if(json_obj.has(Constants.OW_LAST_EDITED))
+					existing_rec.last_edited.set(json_obj.getString(Constants.OW_LAST_EDITED));
+				if(json_obj.has(Constants.OW_ACTIONS))
+					existing_rec.actions.set(json_obj.getInt(Constants.OW_ACTIONS));
 				
-				json_user = json_obj.getJSONObject(Constants.OW_USER);
-				filter = new Filter();
-				filter.is(DBConstants.USER_SERVER_ID, json_user.getInt(Constants.OW_SERVER_ID));
-				existing_users = OWUser.objects(app_context, OWUser.class).filter(filter);
-				for(OWUser existing_user : existing_users){
-					user = existing_user;
-					break;
-				}
-				if(user == null){
-					user = new OWUser();
-					user.username.set(json_user.getString(Constants.OW_USERNAME));
-					user.server_id.set(json_user.getInt(Constants.OW_SERVER_ID));
-					user.save(app_context);
-				}
-				existing_rec.user.set(user.getId());
+				if(json_obj.has(Constants.OW_USER)){
+					json_user = null;
+					json_user = json_obj.getJSONObject(Constants.OW_USER);
+					filter = new Filter();
+					filter.is(DBConstants.USER_SERVER_ID, json_user.getInt(Constants.OW_SERVER_ID));
+					existing_users = OWUser.objects(app_context, OWUser.class).filter(filter);
+					for(OWUser existing_user : existing_users){
+						user = existing_user;
+						break;
+					}
+					if(user == null){
+						user = new OWUser();
+						user.username.set(json_user.getString(Constants.OW_USERNAME));
+						user.server_id.set(json_user.getInt(Constants.OW_SERVER_ID));
+						user.save(app_context);
+					}
+					existing_rec.username.set(user.username.get());
+					existing_rec.user.set(user.getId());
+				} // end if user
+				
 				existing_rec.save(app_context);
-			}
+				
+				// add recording to feed if not null
+				if(feed != null){
+					feed.recordings.add(existing_rec);
+				}
+			} // end json recording for loop
 			adapter.commitTransaction();
-			
+			// TESTING
+			Log.i(TAG, "Total OWRecordings: " + String.valueOf(OWRecording.objects(app_context, OWRecording.class).count()) );
 		} catch (JSONException e) {
 			Log.e(TAG, " Error parsing feed's recording array");
 			e.printStackTrace();
