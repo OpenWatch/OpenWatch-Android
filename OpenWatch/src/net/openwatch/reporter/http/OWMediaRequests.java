@@ -268,7 +268,7 @@ public class OWMediaRequests {
 
 		}
 		if(recording.title.get() != null && recording.title.get().compareTo("") != 0){
-			params.put(Constants.OW_TITLE, recording.title.get());
+			params.put(Constants.OW_MEDIA_TITLE, recording.title.get());
 		}
 		if(recording.description.get() != null){
 			params.put(Constants.OW_DESCRIPTION, recording.description.get());

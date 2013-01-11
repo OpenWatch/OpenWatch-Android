@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ignition="http://github.com/ignition/schema"
     android:id="@+id/container"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -10,13 +11,13 @@
         android:layout_width="match_parent"
         android:layout_height="80dp" >
 
-        <ImageView
+        <com.github.ignition.core.widgets.RemoteImageView
             android:id="@+id/thumbnail"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
+            ignition:autoLoad="false"
             android:scaleType="fitXY"
-            android:src="@drawable/protest" >
-        </ImageView>
+            android:src="@drawable/protest" />
 
         <!-- Multiline textview ellipsize is broken in Android -->
 

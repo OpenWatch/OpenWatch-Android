@@ -25,19 +25,17 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.SearchViewCompat;
 import android.support.v4.widget.SearchViewCompat.OnQueryTextListenerCompat;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import net.openwatch.reporter.R;
+import net.openwatch.reporter.constants.Constants.OWFeedType;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
+import net.openwatch.reporter.http.OWServiceRequests;
 
 /**
  * Demonstration of the implementation of a custom Loader.
@@ -55,6 +53,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             RemoteRecordingsListFragment list = new RemoteRecordingsListFragment();
             fm.beginTransaction().add(android.R.id.content, list).commit();
         }
+        
     }
 
 
@@ -90,6 +89,9 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             // Prepare the loader.  Either re-connect with an existing one,
             // or start a new one.
             getLoaderManager().initLoader(0, null, this);
+            
+            // Temporarily get a sample remote feed
+            OWServiceRequests.getFeed(this.getActivity().getApplicationContext(), OWFeedType.FOLLOWING);
         }
 
         @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -150,14 +152,15 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 			DBConstants.RECORDINGS_TABLE_TITLE,
 			DBConstants.RECORDINGS_TABLE_VIEWS,
 			DBConstants.RECORDINGS_TABLE_ACTIONS,
-			DBConstants.RECORDINGS_TABLE_THUMB_URL
+			DBConstants.RECORDINGS_TABLE_THUMB_URL,
+			DBConstants.RECORDINGS_TABLE_USERNAME
 
 	    };
 
 		@Override
 		public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
 			// TODO Auto-generated method stub
-			Uri baseUri = OWContentProvider.REMOTE_RECORDING_URI;
+			Uri baseUri = OWContentProvider.getFeedUri("following");
 			String selection = null;
             String[] selectionArgs = null;
             String order = null;

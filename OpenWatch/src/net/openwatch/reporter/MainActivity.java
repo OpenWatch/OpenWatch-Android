@@ -81,7 +81,7 @@ public class MainActivity extends SherlockActivity {
 			// check this application state
 			OWServiceRequests.onLaunchSync(this.getApplicationContext()); // get list of tags, etc
 		}
-		if(!authenticated){
+		if(!authenticated && !this.getIntent().hasExtra(Constants.AUTHENTICATED)){
 			Intent i = new Intent(this, LoginActivity.class	);
 			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 			String email = profile.getString(Constants.EMAIL, null);

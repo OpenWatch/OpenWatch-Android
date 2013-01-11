@@ -14,6 +14,7 @@ import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.http.OWServiceRequests;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -233,7 +234,7 @@ public class LoginActivity extends SherlockActivity {
 	    			if( (Boolean)response.getBoolean(Constants.OW_SUCCESS) == true){
 	    				Log.i(TAG,"OW login success: " +  response.toString());
 	    		        
-	    				returnToMainActivity();
+	    				returnToMainActivity(true);
 	    		        return;
 	    			} else{
 	    				AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this);
@@ -302,7 +303,7 @@ public class LoginActivity extends SherlockActivity {
     				// Set authed preference 
     				setUserAuthenticated(response);
     		        
-    				returnToMainActivity();
+    				returnToMainActivity(true);
     		        return;
     			} else{
     				AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this);
@@ -518,9 +519,15 @@ public class LoginActivity extends SherlockActivity {
     	
     };
     
-    private void returnToMainActivity(){
+    @SuppressLint("NewApi")
+	private void returnToMainActivity(boolean didLogin){
     	 Intent i = new Intent(LoginActivity.this, MainActivity.class);
 	     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+	     // It's possible the sharedPreference setting won't be written by the time MainActivity
+	     // checks its state, causing an erroneous redirect back to LoginActivity
+	     if(didLogin)
+	    	 i.putExtra(Constants.AUTHENTICATED, true);
+
 	     startActivity(i);
     }
 

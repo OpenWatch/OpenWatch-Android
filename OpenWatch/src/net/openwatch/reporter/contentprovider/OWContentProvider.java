@@ -26,7 +26,8 @@ public class OWContentProvider extends ContentProvider {
      
      private static final int REMOTE_RECORDINGS = 3;
      private static final int REMOTE_RECORDING_ID = 4;
-     
+     private static final int REMOTE_RECORDING_BY_FEED = 8;
+          
      private static final int TAGS = 5;
      private static final int TAG_ID = 6;
      private static final int TAG_SEARCH = 7;
@@ -43,6 +44,9 @@ public class OWContentProvider extends ContentProvider {
      public static Uri getRemoteRecordingUri(int model_id){
     	 return REMOTE_RECORDING_URI.buildUpon().appendEncodedPath("/" + String.valueOf(model_id)).build();
      }
+     public static Uri getFeedUri(String feed_name){
+    	 return REMOTE_RECORDING_URI.buildUpon().appendEncodedPath("/" + feed_name).build();
+     }
      public static Uri getTagUri(int model_id){
     	 return TAG_URI.buildUpon().appendEncodedPath("/" + String.valueOf(model_id)).build();
      }
@@ -55,6 +59,7 @@ public class OWContentProvider extends ContentProvider {
 	    mUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.LOCAL_RECORDINGS_TABLENAME, LOCAL_RECORDINGS);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.LOCAL_RECORDINGS_TABLENAME + "/#", LOCAL_RECORDING_ID);
+	    mUriMatcher.addURI(AUTHORITY, DBConstants.RECORDINGS_TABLENAME + "/*", REMOTE_RECORDING_BY_FEED);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.TAG_TABLENAME, TAGS);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.TAG_TABLENAME + "/#", TAG_ID);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.TAG_TABLENAME + "/search/*", TAG_SEARCH);
@@ -135,6 +140,12 @@ public class OWContentProvider extends ContentProvider {
 				Log.i(TAG, select + " FROM " + DBConstants.RECORDINGS_TABLENAME + "WHERE mID="+uri.getLastPathSegment());
 				result = adapter.open().query(select + " FROM " + DBConstants.RECORDINGS_TABLENAME + " WHERE " + DBConstants.ID + "=" +uri.getLastPathSegment());
 				//adapter.close();
+				break;
+			case REMOTE_RECORDING_BY_FEED:
+				// get feed id from name
+				// select owrecording where 
+				// Temporarily return all recordings
+				result = adapter.open().query(select + " FROM " + DBConstants.RECORDINGS_TABLENAME + " " + where + sortby);
 				break;
 			case REMOTE_RECORDINGS:
 				result = adapter.open().query(select + " FROM " + DBConstants.RECORDINGS_TABLENAME + " " + where + sortby);

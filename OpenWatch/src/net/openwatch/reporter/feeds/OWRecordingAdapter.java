@@ -1,5 +1,7 @@
 package net.openwatch.reporter.feeds;
 
+import com.github.ignition.core.widgets.RemoteImageView;
+
 import net.openwatch.reporter.R;
 import net.openwatch.reporter.constants.DBConstants;
 import android.content.Context;
@@ -24,7 +26,7 @@ public class OWRecordingAdapter extends SimpleCursorAdapter {
         	view_cache = new ViewCache();
         	view_cache.title = (TextView) view.findViewById(R.id.title);
         	view_cache.username = (TextView) view.findViewById(R.id.username);
-        	view_cache.thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
+        	view_cache.thumbnail = (RemoteImageView) view.findViewById(R.id.thumbnail);
         	view_cache.views = (TextView) view.findViewById(R.id.view_count);
         	view_cache.actions = (TextView) view.findViewById(R.id.action_count);
             
@@ -39,7 +41,12 @@ public class OWRecordingAdapter extends SimpleCursorAdapter {
         view_cache.username.setText(cursor.getString(view_cache.username_col));
         view_cache.views.setText(cursor.getString(view_cache.views_col));
         view_cache.actions.setText(cursor.getString(view_cache.actions_col));
-        //TODO: droidfu's WebImageView
+        
+        if(!view_cache.thumbnail_set && cursor.getString(view_cache.thumbnail_col) != null && cursor.getString(view_cache.thumbnail_col).compareTo("") != 0){
+        	view_cache.thumbnail.setImageUrl(cursor.getString(view_cache.thumbnail_col));
+        	view_cache.thumbnail.loadImage();
+        	view_cache.thumbnail_set = true;
+        }
         
         view.setTag(R.id.list_item_cache, cursor.getInt(view_cache._id_col));
 	}
@@ -48,9 +55,11 @@ public class OWRecordingAdapter extends SimpleCursorAdapter {
     static class ViewCache {
         TextView title;
         TextView username;
-        ImageView thumbnail;
+        RemoteImageView thumbnail;
         TextView views;
         TextView actions;
+        
+        boolean thumbnail_set = false;
         
         int title_col; 
         int thumbnail_col;
