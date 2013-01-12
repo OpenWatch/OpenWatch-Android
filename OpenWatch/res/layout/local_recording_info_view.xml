@@ -1,57 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_height="match_parent" >
 
-    <TextView
-        android:id="@+id/titleLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/title" />
-
-    <EditText
-        android:id="@+id/editTitle"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:ems="10" >
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
 
-        <requestFocus />
-    </EditText>
+        <TextView
+            android:id="@+id/titleLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title" />
 
-    <TextView
-        android:id="@+id/descriptionLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/description" />
+        <EditText
+            android:id="@+id/editTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:singleLine="true" >
 
-    <EditText
-        android:id="@+id/editDescription"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10" />
+            <requestFocus />
+        </EditText>
 
-    <TextView
-        android:id="@+id/tagLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/tags" />
+        <TextView
+            android:id="@+id/descriptionLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/description" />
 
-    <AutoCompleteTextView
-        android:id="@+id/editTags"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/tag_hint"
-        android:imeActionId="1337"
-        android:imeActionLabel="@string/action_tag"
-        android:imeOptions="actionDone"
-        android:inputType="text" />
+        <EditText
+            android:id="@+id/editDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10" />
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        <TextView
+            android:id="@+id/tagLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tags" />
+
+        <AutoCompleteTextView
+            android:id="@+id/editTags"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/tag_hint"
+            android:imeActionId="1337"
+            android:imeActionLabel="@string/action_tag"
+            android:imeOptions="actionDone"
+            android:inputType="text" />
 
         <net.openwatch.reporter.view.TagPoolLayout
             android:id="@+id/tagGroup"
@@ -59,6 +59,6 @@
             android:layout_height="match_parent"
             android:animateLayoutChanges="true"
             android:gravity="left|top" />
-    </ScrollView>
+    </LinearLayout>
 
-</LinearLayout>
+</ScrollView>

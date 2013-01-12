@@ -41,6 +41,38 @@ public class OWServiceRequests {
 		public void onFailure();
 		public void onSuccess();
 	}
+	
+	public static void getRecording(final Context app_context, final String uuid, final RequestCallback callback){
+		final String METHOD = "getRecording";
+		if(uuid == null)
+			return;
+		
+		JsonHttpResponseHandler get_handler = new JsonHttpResponseHandler(){
+			@Override
+    		public void onSuccess(JSONObject response){
+				if(response.has(Constants.OW_RECORDING)){
+					try {
+						OWRecording.createOrUpdateOWRecordingWithJson(app_context, response.getJSONObject(Constants.OW_RECORDING));
+						callback.onSuccess();
+					} catch (JSONException e) {
+						Log.e(TAG, "Error creating or updating Recording with json");
+						e.printStackTrace();
+					}
+				}
+			}
+			
+			@Override
+			public void onFailure(Throwable e, JSONObject errorResponse){
+				Log.i(TAG, METHOD + " failed: " + errorResponse.toString());
+				e.printStackTrace();
+				callback.onFailure();
+			}
+		};
+		
+		AsyncHttpClient http_client = HttpClient.setupHttpClient(app_context);
+		http_client.get(Constants.OW_API_URL + Constants.OW_RECORDING + File.separator + uuid, get_handler);
+		Log.i(TAG, METHOD + " : " + Constants.OW_API_URL + Constants.OW_RECORDING + File.separator + uuid);
+	}
 
 	/**
 	 * Parse an OpenWatch.net feed, saving its contents to the databasee

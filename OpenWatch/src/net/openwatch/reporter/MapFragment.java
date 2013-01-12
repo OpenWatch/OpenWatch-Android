@@ -49,9 +49,9 @@ public class MapFragment extends SupportMapFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        if(LocalRecordingViewActivity.model_id != -1){
+        if(RecordingViewActivity.model_id != -1){
         	OWRecording recording = OWRecording.objects(getActivity().getApplicationContext(), OWRecording.class)
-    				.get(LocalRecordingViewActivity.model_id);
+    				.get(RecordingViewActivity.model_id);
         	if(recording.begin_lat.get() != null && recording.end_lat.get() != null)
         		Log.i(TAG, "recording begin point: " + String.valueOf(recording.begin_lat.get()) + ", " + String.valueOf(recording.begin_lon.get()));
         	if(recording.end_lat.get() != null && recording.end_lat.get() != null)
@@ -64,6 +64,9 @@ public class MapFragment extends SupportMapFragment {
     }
 
     private void initMap() {
+    	if(this.getMap() == null)
+    		return;
+    	
         UiSettings settings = getMap().getUiSettings();
         //settings.setAllGesturesEnabled(false);
         settings.setMyLocationButtonEnabled(false);

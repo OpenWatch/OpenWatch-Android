@@ -65,7 +65,7 @@
             android:label="@string/title_activity_feed" >
         </activity>
         <activity
-            android:name="net.openwatch.reporter.LocalRecordingViewActivity"
+            android:name="net.openwatch.reporter.RecordingViewActivity"
             android:label="@string/title_activity_local_recording_view"
             android:windowSoftInputMode="stateHidden|adjustPan" >
         </activity>

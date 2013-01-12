@@ -16,6 +16,7 @@
 
 package net.openwatch.reporter.feeds;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ListView;
+import net.openwatch.reporter.RecordingViewActivity;
 import net.openwatch.reporter.R;
 import net.openwatch.reporter.constants.Constants.OWFeedType;
 import net.openwatch.reporter.constants.Constants;
@@ -79,7 +81,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 
             // Give some text to display if there is no data.  In a real
             // application this would come from a resource.
-            setEmptyText(getString(R.string.loading_recordings));
+            setEmptyText(getString(R.string.loading_feed));
 
             // We have a menu item to show in action bar.
             setHasOptionsMenu(true);
@@ -131,6 +133,14 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
         @Override public void onListItemClick(ListView l, View v, int position, long id) {
             // Insert desired behavior here.
             Log.i("LoaderCustom", "Item clicked: " + id);
+            Intent i = new Intent(this.getActivity(), RecordingViewActivity.class);
+        	try{
+        		i.putExtra(Constants.INTERNAL_DB_ID, (Integer)v.getTag(R.id.list_item_model));
+        	}catch(Exception e){
+        		Log.e(TAG, "failed to load list item model tag");
+        		return;
+        	}
+        	startActivity(i);
         }
 
         
@@ -145,7 +155,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             }
             
            if(cursor != null && cursor.getCount() == 0){
-        		setEmptyText(getString(R.string.no_recordings));
+        		setEmptyText(getString(R.string.feed_empty));
            }
 			
 		}

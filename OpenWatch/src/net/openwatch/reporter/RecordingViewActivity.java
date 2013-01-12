@@ -2,12 +2,12 @@ package net.openwatch.reporter;
 
 import net.openwatch.reporter.FeedActivity.TabsAdapter;
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.http.OWServiceRequests;
+import net.openwatch.reporter.http.OWServiceRequests.RequestCallback;
 import net.openwatch.reporter.model.OWRecording;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
-import com.google.android.gms.maps.GoogleMap;
-
 import android.content.Context;
 import android.content.res.Configuration;
 import android.media.MediaPlayer;
@@ -15,24 +15,20 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.media.MediaPlayer.OnVideoSizeChangedListener;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-public class LocalRecordingViewActivity extends SherlockFragmentActivity {
+public class RecordingViewActivity extends SherlockFragmentActivity {
 
-	private static final String TAG = "LocalRecordingViewActivity";
-
-	private GoogleMap mMap;
+	private static final String TAG = "RecordingViewActivity";
 
 	TabHost mTabHost;
 	ViewPager mViewPager;
@@ -51,14 +47,44 @@ public class LocalRecordingViewActivity extends SherlockFragmentActivity {
 		setContentView(R.layout.activity_local_recording_view);
 		
 		inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		String video_path = null;
 		try {
 			model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
-			Log.i(TAG, "HQ_filepath: " + OWRecording.objects(this, OWRecording.class).get(
-					model_id).local.get(getApplicationContext()).hq_filepath.get());
-			setupVideoView(
-					R.id.videoview,
-					OWRecording.objects(this, OWRecording.class).get(
-							model_id).local.get(getApplicationContext()).hq_filepath.get());
+			if( OWRecording.objects(this, OWRecording.class).get(model_id).local.get(getApplicationContext()) != null ){
+				// This is a local recording, attempt to play HQ file
+				video_path = OWRecording.objects(this, OWRecording.class).get(model_id).local.get(getApplicationContext()).hq_filepath.get();
+				
+			} else if( OWRecording.objects(this, OWRecording.class).get(model_id).video_url.get() != null ){
+				// remote recording, and video_url present
+				video_path = OWRecording.objects(this, OWRecording.class).get(model_id).video_url.get();
+			} else if (OWRecording.objects(this, OWRecording.class).get(model_id).video_url.get() == null ){
+				// remote recording, and need to get video_url
+				final Context c = this.getApplicationContext();
+				RequestCallback cb = new RequestCallback(){
+
+					@Override
+					public void onFailure() {
+					
+					}
+
+					@Override
+					public void onSuccess() {
+						if( OWRecording.objects(c, OWRecording.class).get(model_id).video_url.get() != null ){
+							setupVideoView(R.id.videoview, OWRecording.objects(c, OWRecording.class).get(model_id).video_url.get());
+							//RecordingViewActivity.this.getFragmentManager().get
+						}
+					}
+					
+				};
+				OWServiceRequests.getRecording(getApplicationContext(), OWRecording.objects(this, OWRecording.class).get(model_id).uuid.get(), cb);
+			}
+			
+			if(video_path != null){
+				Log.i(TAG, "Video uri: " + video_path);
+				setupVideoView(R.id.videoview, video_path);
+			} else{
+				Log.e(TAG, "Recording has no local or remote video uri specified");
+			}
 			
 
 			// Log.i(TAG, "got model_id : " + String.valueOf(model_id));
@@ -79,7 +105,7 @@ public class LocalRecordingViewActivity extends SherlockFragmentActivity {
 					null);
 			mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_info))
 					.setIndicator(inflateCustomTab(getString(R.string.tab_info))),
-					LocalRecordingInfoFragment.class, null);
+					RecordingInfoFragment.class, null);
 	
 			if (savedInstanceState != null) {
 				mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
@@ -126,7 +152,7 @@ public class LocalRecordingViewActivity extends SherlockFragmentActivity {
 					public void onVideoSizeChanged(MediaPlayer mp, int width,
 							int height) {
 						MediaController mc = new MediaController(
-								LocalRecordingViewActivity.this);
+								RecordingViewActivity.this);
 						VideoView video_view = (VideoView) findViewById(R.id.videoview);
 						video_view.setMediaController(mc);
 						mc.setAnchorView(video_view);
