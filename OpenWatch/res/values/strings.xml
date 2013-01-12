@@ -49,8 +49,10 @@
     <string name="tab_local">Local</string>
     <string name="tab_hot">Hot</string>
     <string name="title_activity_ormtest">ORMTestActivity</string>
-    <string name="loading_recordings">Loading Recordings</string>
+    <string name="loading_recordings">Loading recordings</string>
     <string name="no_recordings">You have no recordings</string>
+    <string name="loading_feed">Loading feed</string>
+    <string name="feed_empty">No feed entries</string>
     <string name="title_activity_local_recording_view">LocalRecordingViewActivity</string>
 
     <!-- View Recording Activity -->

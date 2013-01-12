@@ -29,9 +29,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-public class LocalRecordingInfoFragment extends SherlockFragment{
+public class RecordingInfoFragment extends SherlockFragment{
 	
-	private static final String TAG = "LocalRecordingInfoFragment";
+	private static final String TAG = "RecordingInfoFragment";
 	
 	protected EditText title;
 	protected EditText description;

@@ -112,6 +112,10 @@ public class Constants {
 	public static final String OW_USERNAME = "username";
 	public static final String OW_CLICKS = "clicks";
 	public static final String OW_UUID = "uuid";
+	public static final String OW_VIDEO_URL = "video_url";
+	public static final String OW_FIRST_POSTED = "first_posted";
+	public static final String OW_END_LOCATION = "end_location";
+	public static final String OW_START_LOCATION = "start_location";
 	
 	// OpenWatch media capture web service url and endpoints
 	//public static final String OW_MEDIA_URL = "http://192.168.1.112:5000/";
