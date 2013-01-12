@@ -4,35 +4,38 @@
     android:id="@+id/container"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp" >
+    android:layout_margin="3dp" >
 
     <RelativeLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="80dp" >
+        android:layout_height="75dp" >
 
         <com.github.ignition.core.widgets.RemoteImageView
             android:id="@+id/thumbnail"
             android:layout_width="100dp"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
-            ignition:autoLoad="false"
-            android:scaleType="fitCenter"
-            android:src="@drawable/thumbnail_placeholder" />
+            android:layout_margin="5dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/thumbnail_placeholder"
+            ignition:autoLoad="false" />
 
         <!-- Multiline textview ellipsize is broken in Android -->
 
         <TextView
             android:id="@+id/title"
-            android:layout_toRightOf="@id/thumbnail"
-            style="@style/Theme.openwatch.feedItemTitleText" />
-  
+            style="@style/Theme.openwatch.feedItemTitleText"
+            android:layout_toRightOf="@id/thumbnail" />
     </RelativeLayout>
 
     <TextView
         android:id="@+id/date"
         style="@style/Theme.openwatch.feedItemOtherText"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
         android:layout_alignParentRight="true"
+        android:layout_marginTop="5dp"
         android:layout_below="@id/header" />
 
     <ImageView
@@ -40,6 +43,7 @@
         style="@style/Theme.openwatch.feedItemIcon"
         android:layout_below="@id/header"
         android:layout_toLeftOf="@id/date"
+        android:layout_marginBottom="5dp"
         android:src="@drawable/calendar" />
 
 </RelativeLayout>

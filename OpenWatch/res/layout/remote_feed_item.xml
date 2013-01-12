@@ -43,8 +43,8 @@
         android:id="@+id/action_icon"
         style="@style/Theme.openwatch.feedItemIcon"
         android:layout_below="@id/header"
-        android:layout_marginRight="5dp"
         android:layout_marginBottom="5dp"
+        android:layout_marginRight="5dp"
         android:layout_toLeftOf="@id/action_count"
         android:src="@drawable/runner" />
 
@@ -60,8 +60,8 @@
         android:id="@+id/view_icon"
         style="@style/Theme.openwatch.feedItemIcon"
         android:layout_below="@id/header"
-        android:layout_marginRight="5dp"
         android:layout_marginBottom="5dp"
+        android:layout_marginRight="5dp"
         android:layout_toLeftOf="@id/view_count"
         android:src="@drawable/eye" />
 

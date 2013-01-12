@@ -8,13 +8,12 @@ import com.orm.androrm.QuerySet;
 
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
-import net.openwatch.reporter.model.OWLocalRecording;
+import net.openwatch.reporter.constants.Constants.OWFeedType;
 import net.openwatch.reporter.model.OWRecording;
 import net.openwatch.reporter.model.OWRecordingTag;
 import net.openwatch.reporter.view.TagPoolLayout;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -29,7 +28,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-public class RecordingInfoFragment extends SherlockFragment{
+public class RecordingInfoFragment extends SherlockFragment implements OWRecordingBackedEntity{
 	
 	private static final String TAG = "RecordingInfoFragment";
 	
@@ -72,34 +71,11 @@ public class RecordingInfoFragment extends SherlockFragment{
 	
 		mAdapter = new OWTagArrayAdapter(getActivity().getApplicationContext(), R.layout.autocomplete_tag_item, OWRecordingTag.objects(getActivity(), OWRecordingTag.class).all().toList());
 		
-		/*
-		mAdapter = new SimpleCursorAdapter(getActivity().getApplicationContext(), R.layout.autocomplete_tag_item, null, new String[]{DBConstants.TAG_TABLE_NAME}, new int[]{R.id.name}, 0);
-		
-		mAdapter.setViewBinder(new ViewBinder(){
-
-			@Override
-			public boolean setViewValue(View arg0, Cursor arg1, int arg2) {
-				((TextView)arg0.findViewById(R.id.name)).setText(arg1.getString(arg2));
-				((TextView)arg0.findViewById(R.id.name)).setTag(R.id.list_item_model, arg1.getInt(arg1.getColumnIndex(DBConstants.ID)));
-				return false;
-			}
-			
-		});
-		
-		mAdapter.setCursorToStringConverter(new CursorToStringConverter(){
-
-			@Override
-			public CharSequence convertToString(Cursor cursor) {
-				return cursor.getString(cursor.getColumnIndexOrThrow(DBConstants.TAG_TABLE_NAME)); 
-			}
-			
-		});
-		*/
 		tags.setAdapter(mAdapter);
 		tags.setThreshold(1);
-		
-		
+
 		//getLoaderManager().initLoader(0, null, this);
+		setInfoFieldsEnabled(this.getArguments().getBoolean(Constants.IS_LOCAL_RECORDING));
 		
         Log.i(TAG, "onCreateView. tag adapter size:" + String.valueOf(mAdapter.getCount()));
         return v;
@@ -110,6 +86,12 @@ public class RecordingInfoFragment extends SherlockFragment{
 		super.onResume();
 		Log.i(TAG, "onResume");
 		//populateViews(recording, getActivity().getApplicationContext());
+	}
+	
+	private void setInfoFieldsEnabled(boolean doEnable){
+		title.setEnabled(doEnable);
+		description.setEnabled(doEnable);
+		tags.setEnabled(doEnable);
 	}
 	
 	@Override
@@ -131,7 +113,7 @@ public class RecordingInfoFragment extends SherlockFragment{
 			}
 	}
 	
-	protected void populateViews(OWRecording recording, Context app_context){
+	public void populateViews(OWRecording recording, Context app_context){
 		try{
 			if(recording.title.get() != null)
 				title.setText(recording.title.get());
