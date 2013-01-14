@@ -28,8 +28,8 @@ public class MapViewPager extends ViewPager {
 	
     public MapViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
-        if(FeedActivity.display_width != -1)
-        	maxX = FeedActivity.display_width - cutoff_threshold;
+        if(FeedFragmentActivity.display_width != -1)
+        	maxX = FeedFragmentActivity.display_width - cutoff_threshold;
         	//maxX = InputDevice.getMotionRange(MotionEvent.AXIS_X).getMax() - cutoff_threshold ;
         //InputDevice.getDevice(id)
         //Log.d("ViewPager-Maxwidth:",String.valueOf(this.getMeasuredWidth()));

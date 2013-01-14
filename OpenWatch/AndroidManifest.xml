@@ -61,7 +61,7 @@
             android:screenOrientation="landscape" >
         </activity>
         <activity
-            android:name="net.openwatch.reporter.FeedActivity"
+            android:name="net.openwatch.reporter.FeedFragmentActivity"
             android:label="@string/title_activity_feed" >
         </activity>
         <activity

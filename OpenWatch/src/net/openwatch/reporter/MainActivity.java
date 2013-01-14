@@ -4,6 +4,7 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.Constants.OWFeedType;
 import net.openwatch.reporter.database.DatabaseManager;
 import net.openwatch.reporter.http.OWServiceRequests;
 import android.os.Bundle;
@@ -32,7 +33,8 @@ public class MainActivity extends SherlockActivity {
 	}
 	
 	public void watchButtonClick(View v){
-		Intent i = new Intent(this, FeedActivity.class);
+		Intent i = new Intent(this, FeedFragmentActivity.class);
+		i.putExtra(Constants.FEED_TYPE, OWFeedType.FEATURED);
 		startActivity(i);
 	}
 	
@@ -42,12 +44,13 @@ public class MainActivity extends SherlockActivity {
 	}
 	
 	public void localButtonClick(View v){
-		Intent i = new Intent(this, FeedActivity.class);
+		Intent i = new Intent(this, FeedFragmentActivity.class);
+		i.putExtra(Constants.FEED_TYPE, OWFeedType.LOCAL);
 		startActivity(i);
 	}
 	
 	public void savedButtonClick(View v){
-		Intent i = new Intent(this, FeedActivity.class);
+		Intent i = new Intent(this, FeedFragmentActivity.class);
 		startActivity(i);
 	}
 

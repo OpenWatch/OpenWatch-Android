@@ -2,7 +2,7 @@ package net.openwatch.reporter;
 
 import java.util.ArrayList;
 
-import net.openwatch.reporter.FeedActivity.TabsAdapter;
+import net.openwatch.reporter.FeedFragmentActivity.TabsAdapter;
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.http.OWServiceRequests;
 import net.openwatch.reporter.http.OWServiceRequests.RequestCallback;

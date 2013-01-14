@@ -6,7 +6,10 @@
 	url = https://github.com/OnlyInAmerica/android-async-http
 [submodule "ActionBarSherlock"]
 	path = ActionBarSherlock
-	url = https://github.com/JakeWharton/ActionBarSherlock
+	url = https://github.com/OnlyInAmerica/ActionBarSherlock
 [submodule "ignition"]
 	path = ignition
 	url = git@github.com:kaeppler/ignition.git
+[submodule "Android-ViewPagerIndicator"]
+	path = Android-ViewPagerIndicator
+	url = https://github.com/OnlyInAmerica/Android-ViewPagerIndicator

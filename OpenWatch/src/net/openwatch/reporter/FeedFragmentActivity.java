@@ -31,10 +31,13 @@ import android.widget.TabWidget;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.viewpagerindicator.TitlePageIndicator;
 
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.Constants.OWFeedType;
 import net.openwatch.reporter.feeds.MyFeedFragmentActivity;
 import net.openwatch.reporter.feeds.RemoteFeedFragmentActivity;
 
@@ -43,10 +46,13 @@ import net.openwatch.reporter.feeds.RemoteFeedFragmentActivity;
  * that switches between tabs and also allows the user to perform horizontal
  * flicks to move between the tabs.
  */
-public class FeedActivity extends SherlockFragmentActivity {
+public class FeedFragmentActivity extends SherlockFragmentActivity {
     TabHost mTabHost;
     ViewPager  mViewPager;
     TabsAdapter mTabsAdapter;
+    TitlePageIndicator mTitleIndicator;
+    
+    HashMap<OWFeedType, Integer> mTabMap;
     
     LayoutInflater inflater;
     
@@ -58,36 +64,47 @@ public class FeedActivity extends SherlockFragmentActivity {
 
         setContentView(R.layout.fragment_tabs_pager);
         
+        mTabMap = new HashMap<OWFeedType, Integer>();
+        
         getDisplayWidth();
         mTabHost = (TabHost)findViewById(android.R.id.tabhost);
         mTabHost.setup();
         mViewPager = (ViewPager)findViewById(R.id.pager);
-
         mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
         
+        mTitleIndicator = (TitlePageIndicator)findViewById(R.id.titles);
+        mTitleIndicator.setViewPager(mViewPager);
+
         inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         
         mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_local_user_recordings)).setIndicator(inflateCustomTab(getString(R.string.tab_local_user_recordings))),
                 MyFeedFragmentActivity.LocalRecordingsListFragment.class, null);
         
         Bundle feedBundle = new Bundle(1);
-        feedBundle.putSerializable(Constants.OW_FEED, Constants.OWFeedType.FOLLOWING);
+        feedBundle.putSerializable(Constants.OW_FEED, OWFeedType.FOLLOWING);
         mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_following)).setIndicator(inflateCustomTab(getString(R.string.tab_following))),
                 RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, feedBundle);
+        mTabMap.put(OWFeedType.FOLLOWING, 1);
         
         feedBundle = new Bundle(1);
-        feedBundle.putSerializable(Constants.OW_FEED, Constants.OWFeedType.FEATURED);
+        feedBundle.putSerializable(Constants.OW_FEED, OWFeedType.FEATURED);
         mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_featured)).setIndicator(inflateCustomTab(getString(R.string.tab_featured))),
                 RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, feedBundle);
+        mTabMap.put(OWFeedType.FEATURED, 2);
         
         feedBundle = new Bundle(1);
-        feedBundle.putSerializable(Constants.OW_FEED, Constants.OWFeedType.LOCAL);
+        feedBundle.putSerializable(Constants.OW_FEED, OWFeedType.LOCAL);
         mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_local)).setIndicator(inflateCustomTab(getString(R.string.tab_local))),
                 RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, feedBundle);
-        
+        mTabMap.put(OWFeedType.LOCAL, 3);
+        // See if initiating intent specified a tab
+        if(getIntent().getExtras() != null && getIntent().getExtras().containsKey(Constants.FEED_TYPE) )
+        	mTitleIndicator.setCurrentItem(mTabMap.get(getIntent().getExtras().getSerializable(Constants.FEED_TYPE)));
+        // Try to restore last tab state
         if (savedInstanceState != null) {
             mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
         }
+
     }
 
     @Override
@@ -160,6 +177,11 @@ public class FeedActivity extends SherlockFragmentActivity {
             mTabs.add(info);
             mTabHost.addTab(tabSpec);
             notifyDataSetChanged();
+        }
+        
+        @Override
+        public CharSequence getPageTitle (int position){
+        	return mTabs.get(position).tag;
         }
 
         @Override

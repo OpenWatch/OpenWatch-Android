@@ -1,0 +1,71 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/background"
+    android:orientation="vertical"
+    android:weightSum="1.0"
+    tools:context=".MainActivity" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="0dp"
+        android:layout_weight=".35"
+        android:clickable="true"
+        android:gravity="center" >
+
+        <Button
+            android:id="@+id/button_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"
+            android:drawablePadding="-10dp"
+            android:drawableTop="@drawable/record_button"
+            android:onClick="recordButtonClick"
+            android:text="@string/record_button_text"
+            android:textColor="#000000"
+            android:textSize="40sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".65"
+        android:gravity="center" >
+
+        <Button
+            android:id="@+id/button_watch"
+            style="@style/Theme.openwatch.DashButton.sw600dp"
+            android:drawableTop="@drawable/watch_button"
+            android:onClick="watchButtonClick"
+            android:text="@string/watch_button_text" />
+
+        <Button
+            android:id="@+id/button_local"
+            style="@style/Theme.openwatch.DashButton.sw600dp"
+            android:layout_toRightOf="@id/button_watch"
+            android:drawableTop="@drawable/local_button"
+            android:onClick="localButtonClick"
+            android:text="@string/local_button_text" />
+
+        <Button
+            android:id="@+id/button_saved"
+            style="@style/Theme.openwatch.DashButton.sw600dp"
+            android:layout_below="@id/button_watch"
+            android:drawableTop="@drawable/saved_button"
+            android:onClick="savedButtonClick"
+            android:text="@string/saved_recordings_button_text" />
+
+        <Button
+            android:id="@+id/button_settings"
+            style="@style/Theme.openwatch.DashButton.sw600dp"
+            android:layout_below="@id/button_local"
+            android:layout_toRightOf="@id/button_saved"
+            android:drawableTop="@drawable/settings_button"
+            android:onClick="settingsButtonClick"
+            android:text="@string/settings_button_text" />
+    </RelativeLayout>
+
+</LinearLayout>
