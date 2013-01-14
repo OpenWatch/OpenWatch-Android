@@ -5,6 +5,7 @@ import com.orm.androrm.DatabaseAdapter;
 import net.openwatch.reporter.constants.Constants.OWFeedType;
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
+import net.openwatch.reporter.model.OWFeed;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
@@ -133,6 +134,7 @@ public class OWContentProvider extends ContentProvider {
 		 */
 		DatabaseAdapter adapter = DatabaseAdapter.getInstance(getContext().getApplicationContext());
 		Log.i(TAG, adapter.getDatabaseName());
+		Log.i(TAG, uri.toString());
 		switch(uriType){
 			case LOCAL_RECORDINGS:
 				Log.i(TAG, select + " FROM " + DBConstants.RECORDINGS_TABLENAME + where + sortby);
@@ -147,7 +149,22 @@ public class OWContentProvider extends ContentProvider {
 				// get feed id from name
 				// select owrecording where 
 				// Temporarily return all recordings
-				result = adapter.open().query(select + " FROM " + DBConstants.RECORDINGS_TABLENAME + " " + where + sortby);
+				// select __ from owrecording JOIN owfeed_owrecording on owfeed = FEED_PK;
+				int feed_id = -1;
+				Log.i(TAG, "get feed _id query:" + " SELECT " + DBConstants.ID + " from owfeed where NAME = \"" + uri.getLastPathSegment() + "\"");
+				Cursor feed_cursor = adapter.open().query("SELECT " + DBConstants.ID + "  from " + DBConstants.FEED_TABLENAME +" WHERE " + DBConstants.FEED_NAME+ "= \"" + uri.getLastPathSegment() + "\""); // empty
+				if(feed_cursor.moveToFirst()){
+					feed_id = feed_cursor.getInt(0);
+					Log.i(TAG, String.format("got feed_id: %d", feed_id));
+					feed_cursor.close();
+				}
+				else
+					return null;
+												
+				Log.i(TAG, String.format("fetching feed id: %d", feed_id));
+				String query = select + " FROM " + DBConstants.RECORDINGS_TABLENAME + " JOIN " +  DBConstants.FEED_RECORDING_TABLENAME + " ON " + DBConstants.FEED_RECORDING_FEED + "=" + String.valueOf(feed_id) + where + sortby;
+				Log.i(TAG, "Query: " + query);
+				result = adapter.open().query(query);
 				break;
 			case REMOTE_RECORDINGS:
 				result = adapter.open().query(select + " FROM " + DBConstants.RECORDINGS_TABLENAME + " " + where + sortby);

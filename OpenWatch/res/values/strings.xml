@@ -47,7 +47,8 @@
     <!-- Feed Activity -->
     <string name="tab_local_user_recordings">Your Recordings</string>
     <string name="tab_local">Local</string>
-    <string name="tab_hot">Hot</string>
+    <string name="tab_following">Following</string>
+    <string name="tab_featured">Featured</string>
     <string name="title_activity_ormtest">ORMTestActivity</string>
     <string name="loading_recordings">Loading recordings</string>
     <string name="no_recordings">You have no recordings</string>

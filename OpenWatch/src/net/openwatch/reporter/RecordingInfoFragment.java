@@ -88,10 +88,15 @@ public class RecordingInfoFragment extends SherlockFragment implements OWRecordi
 		//populateViews(recording, getActivity().getApplicationContext());
 	}
 	
+	/**
+	 * This method prepares the fragment for read-only display
+	 * @param doEnable
+	 */
 	private void setInfoFieldsEnabled(boolean doEnable){
 		title.setEnabled(doEnable);
 		description.setEnabled(doEnable);
 		tags.setEnabled(doEnable);
+		tagGroup.setTagRemovalAllowed(false);
 	}
 	
 	@Override
@@ -308,5 +313,6 @@ public class RecordingInfoFragment extends SherlockFragment implements OWRecordi
 		recording.save(getActivity().getApplicationContext());
 		doSave = true;
 	}
+
 
 }

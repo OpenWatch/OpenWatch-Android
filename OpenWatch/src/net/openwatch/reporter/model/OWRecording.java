@@ -125,10 +125,12 @@ public class OWRecording extends Model{
 			Log.i(TAG, "Total OWRecordings: " + String.valueOf(OWRecording.objects(app_context, OWRecording.class).count()) );
 			Log.i(TAG, "json len: " + String.valueOf(json_array.length()) );
 			for(int x=0; x<json_array.length();x++){	
-				createOrUpdateOWRecordingWithJson(app_context, json_array.getJSONObject(x) );
+				existing_rec = createOrUpdateOWRecordingWithJson(app_context, json_array.getJSONObject(x) );
 				// add recording to feed if not null
 				if(feed != null){
+					Log.i(TAG, String.format("Adding recording %s to feed %s", existing_rec.uuid.get(), feed.name.get()));
 					feed.recordings.add(existing_rec);
+					feed.save(app_context);
 				}
 			} // end json recording for loop
 			adapter.commitTransaction();
@@ -140,6 +142,21 @@ public class OWRecording extends Model{
 		}
 	}
 	
+
+	public static OWRecording createOrUpdateOWRecordingWithJson(Context app_context, JSONObject json_obj, OWFeed feed) throws JSONException{
+		OWRecording rec = createOrUpdateOWRecordingWithJson(app_context, json_obj);
+		// add recording to feed if not null
+		if(feed != null){
+			Log.i(TAG, String.format("Adding recording %s to feed %s", rec.uuid.get(), feed.name.get()));
+			feed.recordings.add(rec);
+			feed.save(app_context);
+			Log.i(TAG, String.format("Feed %s now has %d items", feed.name.get(), feed.recordings.get(app_context, feed).count()) );
+		}
+		
+		return rec;
+	}
+	
+
 	public static OWRecording createOrUpdateOWRecordingWithJson(Context app_context, JSONObject json_obj) throws JSONException{
 		//Log.i(TAG, "Evaluating json recording: " + json_obj.toString());
 		OWRecording existing_rec = null;

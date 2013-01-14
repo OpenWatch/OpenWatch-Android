@@ -101,7 +101,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             getLoaderManager().initLoader(0, null, this);
             
             // Refresh the feed view
-            OWServiceRequests.getFeed(this.getActivity().getApplicationContext(), feed);
+            OWServiceRequests.getFeed(this.getActivity().getApplicationContext(), feed, 1);
 
         }
 

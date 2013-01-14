@@ -79,21 +79,55 @@ public class OWServiceRequests {
 	 * @param app_context
 	 * @param feed The type of feed to return. See OWServiceRequests.OWFeed
 	 */
-	public static void getFeed(final Context app_context, final OWFeedType feed){
+	public static void getFeed(final Context app_context, final OWFeedType feed, int page){
 		final String METHOD = "getFeed";
+		
 		JsonHttpResponseHandler get_handler = new JsonHttpResponseHandler(){
 			@Override
     		public void onSuccess(JSONObject response){
-				if(response.has("recordings")){
-						JSONArray json_array;
-						try {
-							json_array = response.getJSONArray("recordings");
-							OWRecording.createOWRecordingsFromJSONArray(app_context, json_array, OWFeed.getFeedFromFeedType(app_context, feed));
-						} catch (JSONException e) {
-							Log.e(TAG, METHOD + " Error parsing recordings array from response");
-							e.printStackTrace();
-						}
-				}
+				if(response.has("objects")){
+					Log.i(TAG, String.format("got %s feed response: %s ",feed.toString(), response.toString()) );
+					final JSONArray json_array;
+					try {
+						json_array = response.getJSONArray("objects");
+						/*
+						new Thread(new Runnable(){
+
+							@Override
+							public void run() {
+							
+								try {
+								*/
+									DatabaseAdapter adapter = DatabaseAdapter.getInstance(app_context);
+									adapter.beginTransaction();
+									
+									JSONObject json_obj;
+									for(int x=0; x<json_array.length(); x++){
+										json_obj = json_array.getJSONObject(x);
+										if(json_obj.has("type")){
+											if(json_obj.getString("type").compareTo("video") == 0)
+												OWRecording.createOrUpdateOWRecordingWithJson(app_context, json_obj, OWFeed.getFeedFromFeedType(app_context, feed));
+											// TODO: Story, audio, etc
+										}
+									}
+									adapter.commitTransaction();
+								/*
+								} catch (JSONException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								
+							}
+							
+						}).start();
+						*/
+						//OWRecording.createOWRecordingsFromJSONArray(app_context, json_array, OWFeed.getFeedFromFeedType(app_context, feed));
+					} catch (JSONException e) {
+						Log.e(TAG, METHOD + " Error parsing recordings array from response");
+						e.printStackTrace();
+					}
+				}else
+					Log.e(TAG, "Feed response format unexpected" + response.toString());
 			}
 			
 			@Override
@@ -106,7 +140,7 @@ public class OWServiceRequests {
 		AsyncHttpClient http_client = HttpClient.setupHttpClient(app_context);
 		String endpoint = Constants.feedEndpointFromType(feed);
 
-		http_client.get(Constants.OW_API_URL + Constants.OW_FEED + File.separator + endpoint, get_handler);
+		http_client.get(Constants.OW_API_URL + Constants.OW_FEED + File.separator + endpoint + File.separator + String.valueOf(page), get_handler);
 		Log.i(TAG, "getFeed: " + Constants.OW_API_URL + Constants.OW_FEED + File.separator + endpoint);
 	}
 

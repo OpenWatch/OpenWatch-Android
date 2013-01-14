@@ -72,7 +72,17 @@ public class FeedActivity extends SherlockFragmentActivity {
         
         Bundle feedBundle = new Bundle(1);
         feedBundle.putSerializable(Constants.OW_FEED, Constants.OWFeedType.FOLLOWING);
-        mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_hot)).setIndicator(inflateCustomTab(getString(R.string.tab_hot))),
+        mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_following)).setIndicator(inflateCustomTab(getString(R.string.tab_following))),
+                RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, feedBundle);
+        
+        feedBundle = new Bundle(1);
+        feedBundle.putSerializable(Constants.OW_FEED, Constants.OWFeedType.FEATURED);
+        mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_featured)).setIndicator(inflateCustomTab(getString(R.string.tab_featured))),
+                RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, feedBundle);
+        
+        feedBundle = new Bundle(1);
+        feedBundle.putSerializable(Constants.OW_FEED, Constants.OWFeedType.LOCAL);
+        mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_local)).setIndicator(inflateCustomTab(getString(R.string.tab_local))),
                 RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, feedBundle);
         
         if (savedInstanceState != null) {

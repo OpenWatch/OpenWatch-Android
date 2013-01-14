@@ -25,6 +25,8 @@ public class TagPoolLayout extends TableLayout {
 	boolean delete_dummy = true;
 	boolean first_tag = true;
 	
+	boolean allow_tag_removal = false;
+	
 	OWRecording recording;
 
 	LayoutInflater inflater = (LayoutInflater)getContext().getSystemService
@@ -45,6 +47,10 @@ public class TagPoolLayout extends TableLayout {
 	
 	public void setRecording(OWRecording recording){
 		this.recording = recording;
+	}
+	
+	public void setTagRemovalAllowed(boolean isAllowed){
+		allow_tag_removal = isAllowed;
 	}
 
 	LinearLayout last_row;
@@ -118,10 +124,14 @@ public class TagPoolLayout extends TableLayout {
 		final TagPoolLayout tpl = this;
 		TextView new_tag = (TextView) inflater.inflate( R.layout.tag_pool_item, last_row, false);
 		new_tag.setText(tag.name.get());
+		
 		new_tag.setOnClickListener(new OnClickListener(){
 
 			@Override
 			public void onClick(final View v) {
+				if(!allow_tag_removal)
+					return;
+				
 				AlertDialog.Builder builder = new AlertDialog.Builder(c);
 				builder.setTitle(c.getString(R.string.remove_tag_dialog_title))
 				.setMessage(c.getString(R.string.remove_tag_dialog_msg))

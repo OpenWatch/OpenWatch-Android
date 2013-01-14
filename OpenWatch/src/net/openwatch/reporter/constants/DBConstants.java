@@ -45,5 +45,10 @@ public class DBConstants {
 	// Feed table
 	public static final String FEED_TABLENAME = "owfeed";
 	public static final String FEED_NAME = "name";
+	
+	// Recording - Feed Relation table
+	public static final String FEED_RECORDING_TABLENAME = "owfeed_owrecording";
+	public static final String FEED_RECORDING_FEED = "owfeed";
+	public static final String FEED_RECORDING_RECORDING = "owrecording";
 
 }
