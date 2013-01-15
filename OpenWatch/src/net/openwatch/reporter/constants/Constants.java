@@ -106,6 +106,7 @@ public class Constants {
 	public static final String OW_SERVER_ID = "id";
 	public static final String OW_THUMB_URL = "thumbnail_url";
 	public static final String OW_LAST_EDITED = "last_edited";
+	public static final String OW_CREATION_TIME = "reported_creation_time";
 	public static final String OW_ACTIONS = "clicks";
 	public static final String OW_NO_VALUE = "None";
 	public static final String OW_USER = "user";

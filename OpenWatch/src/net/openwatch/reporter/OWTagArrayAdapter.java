@@ -34,7 +34,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import net.openwatch.reporter.model.OWRecordingTag;
+import net.openwatch.reporter.model.OWTag;
 
 /**
  * A concrete BaseAdapter that is backed by an array of arbitrary
@@ -56,7 +56,7 @@ public class OWTagArrayAdapter extends BaseAdapter implements Filterable {
      * Contains the list of objects that represent the data of this ArrayAdapter.
      * The content of this list is referred to as "the array" in the documentation.
      */
-    private List<OWRecordingTag> mObjects;
+    private List<OWTag> mObjects;
 
     /**
      * Lock used to modify the content of {@link #mObjects}. Any write operation
@@ -95,7 +95,7 @@ public class OWTagArrayAdapter extends BaseAdapter implements Filterable {
 
     // A copy of the original mObjects array, initialized from and then used instead as soon as
     // the mFilter ArrayFilter is used. mObjects will then only contain the filtered values.
-    private ArrayList<OWRecordingTag> mOriginalValues;
+    private ArrayList<OWTag> mOriginalValues;
     private ArrayFilter mFilter;
 
     private LayoutInflater mInflater;
@@ -108,7 +108,7 @@ public class OWTagArrayAdapter extends BaseAdapter implements Filterable {
      *                 instantiating views.
      */
     public OWTagArrayAdapter(Context context, int textViewResourceId) {
-        init(context, textViewResourceId, 0, new ArrayList<OWRecordingTag>());
+        init(context, textViewResourceId, 0, new ArrayList<OWTag>());
     }
 
     /**
@@ -120,7 +120,7 @@ public class OWTagArrayAdapter extends BaseAdapter implements Filterable {
      * @param textViewResourceId The id of the TextView within the layout resource to be populated
      */
     public OWTagArrayAdapter(Context context, int resource, int textViewResourceId) {
-        init(context, resource, textViewResourceId, new ArrayList<OWRecordingTag>());
+        init(context, resource, textViewResourceId, new ArrayList<OWTag>());
     }
 
     /**
@@ -131,7 +131,7 @@ public class OWTagArrayAdapter extends BaseAdapter implements Filterable {
      *                 instantiating views.
      * @param objects The objects to represent in the ListView.
      */
-    public OWTagArrayAdapter(Context context, int textViewResourceId, OWRecordingTag[] objects) {
+    public OWTagArrayAdapter(Context context, int textViewResourceId, OWTag[] objects) {
         init(context, textViewResourceId, 0, Arrays.asList(objects));
     }
 
@@ -144,7 +144,7 @@ public class OWTagArrayAdapter extends BaseAdapter implements Filterable {
      * @param textViewResourceId The id of the TextView within the layout resource to be populated
      * @param objects The objects to represent in the ListView.
      */
-    public OWTagArrayAdapter(Context context, int resource, int textViewResourceId, OWRecordingTag[] objects) {
+    public OWTagArrayAdapter(Context context, int resource, int textViewResourceId, OWTag[] objects) {
         init(context, resource, textViewResourceId, Arrays.asList(objects));
     }
 
@@ -156,7 +156,7 @@ public class OWTagArrayAdapter extends BaseAdapter implements Filterable {
      *                 instantiating views.
      * @param objects The objects to represent in the ListView.
      */
-    public OWTagArrayAdapter(Context context, int textViewResourceId, List<OWRecordingTag> objects) {
+    public OWTagArrayAdapter(Context context, int textViewResourceId, List<OWTag> objects) {
         init(context, textViewResourceId, 0, objects);
     }
 
@@ -169,7 +169,7 @@ public class OWTagArrayAdapter extends BaseAdapter implements Filterable {
      * @param textViewResourceId The id of the TextView within the layout resource to be populated
      * @param objects The objects to represent in the ListView.
      */
-    public OWTagArrayAdapter(Context context, int resource, int textViewResourceId, List<OWRecordingTag> objects) {
+    public OWTagArrayAdapter(Context context, int resource, int textViewResourceId, List<OWTag> objects) {
         init(context, resource, textViewResourceId, objects);
     }
 
@@ -178,7 +178,7 @@ public class OWTagArrayAdapter extends BaseAdapter implements Filterable {
      *
      * @param object The object to add at the end of the array.
      */
-    public void add(OWRecordingTag object) {
+    public void add(OWTag object) {
         synchronized (mLock) {
             if (mOriginalValues != null) {
                 mOriginalValues.add(object);
@@ -194,7 +194,7 @@ public class OWTagArrayAdapter extends BaseAdapter implements Filterable {
      *
      * @param collection The Collection to add at the end of the array.
      */
-    public void addAll(Collection<? extends OWRecordingTag> collection) {
+    public void addAll(Collection<? extends OWTag> collection) {
         synchronized (mLock) {
             if (mOriginalValues != null) {
                 mOriginalValues.addAll(collection);
@@ -210,7 +210,7 @@ public class OWTagArrayAdapter extends BaseAdapter implements Filterable {
      *
      * @param items The items to add at the end of the array.
      */
-    public void addAll(OWRecordingTag ... items) {
+    public void addAll(OWTag ... items) {
         synchronized (mLock) {
             if (mOriginalValues != null) {
                 Collections.addAll(mOriginalValues, items);
@@ -227,7 +227,7 @@ public class OWTagArrayAdapter extends BaseAdapter implements Filterable {
      * @param object The object to insert into the array.
      * @param index The index at which the object must be inserted.
      */
-    public void insert(OWRecordingTag object, int index) {
+    public void insert(OWTag object, int index) {
         synchronized (mLock) {
             if (mOriginalValues != null) {
                 mOriginalValues.add(index, object);
@@ -243,7 +243,7 @@ public class OWTagArrayAdapter extends BaseAdapter implements Filterable {
      *
      * @param object The object to remove.
      */
-    public void remove(OWRecordingTag object) {
+    public void remove(OWTag object) {
         synchronized (mLock) {
             if (mOriginalValues != null) {
                 mOriginalValues.remove(object);
@@ -274,7 +274,7 @@ public class OWTagArrayAdapter extends BaseAdapter implements Filterable {
      * @param comparator The comparator used to sort the objects contained
      *        in this adapter.
      */
-    public void sort(Comparator<? super OWRecordingTag> comparator) {
+    public void sort(Comparator<? super OWTag> comparator) {
         synchronized (mLock) {
             if (mOriginalValues != null) {
                 Collections.sort(mOriginalValues, comparator);
@@ -312,7 +312,7 @@ public class OWTagArrayAdapter extends BaseAdapter implements Filterable {
         mNotifyOnChange = notifyOnChange;
     }
 
-    private void init(Context context, int resource, int textViewResourceId, List<OWRecordingTag> objects) {
+    private void init(Context context, int resource, int textViewResourceId, List<OWTag> objects) {
         mContext = context;
         mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mResource = mDropDownResource = resource;
@@ -340,7 +340,7 @@ public class OWTagArrayAdapter extends BaseAdapter implements Filterable {
     /**
      * {@inheritDoc}
      */
-    public OWRecordingTag getItem(int position) {
+    public OWTag getItem(int position) {
         return mObjects.get(position);
     }
 
@@ -351,7 +351,7 @@ public class OWTagArrayAdapter extends BaseAdapter implements Filterable {
      *
      * @return The position of the specified item.
      */
-    public int getPosition(OWRecordingTag item) {
+    public int getPosition(OWTag item) {
         return mObjects.indexOf(item);
     }
 
@@ -394,7 +394,7 @@ public class OWTagArrayAdapter extends BaseAdapter implements Filterable {
                     "ArrayAdapter requires the resource ID to be a TextView", e);
         }
 
-        OWRecordingTag tag = ((OWRecordingTag) getItem(position));
+        OWTag tag = ((OWTag) getItem(position));
         text.setText(tag.name.get());
         
         text.setTag(R.id.list_item_model, tag.getId());
@@ -458,30 +458,30 @@ public class OWTagArrayAdapter extends BaseAdapter implements Filterable {
 
             if (mOriginalValues == null) {
                 synchronized (mLock) {
-                    mOriginalValues = new ArrayList<OWRecordingTag>(mObjects);
+                    mOriginalValues = new ArrayList<OWTag>(mObjects);
                 }
             }
 
             if (prefix == null || prefix.length() == 0) {
-                ArrayList<OWRecordingTag> list;
+                ArrayList<OWTag> list;
                 synchronized (mLock) {
-                    list = new ArrayList<OWRecordingTag>(mOriginalValues);
+                    list = new ArrayList<OWTag>(mOriginalValues);
                 }
                 results.values = list;
                 results.count = list.size();
             } else {
                 String prefixString = prefix.toString().toLowerCase();
 
-                ArrayList<OWRecordingTag> values;
+                ArrayList<OWTag> values;
                 synchronized (mLock) {
-                    values = new ArrayList<OWRecordingTag>(mOriginalValues);
+                    values = new ArrayList<OWTag>(mOriginalValues);
                 }
 
                 final int count = values.size();
-                final ArrayList<OWRecordingTag> newValues = new ArrayList<OWRecordingTag>();
+                final ArrayList<OWTag> newValues = new ArrayList<OWTag>();
 
                 for (int i = 0; i < count; i++) {
-                    final OWRecordingTag value = ((OWRecordingTag) values.get(i));
+                    final OWTag value = ((OWTag) values.get(i));
                     final String valueText = value.name.get();
 
                     // First match against the whole, non-splitted value
@@ -511,7 +511,7 @@ public class OWTagArrayAdapter extends BaseAdapter implements Filterable {
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             //noinspection unchecked
-            mObjects = (List<OWRecordingTag>) results.values;
+            mObjects = (List<OWTag>) results.values;
             if (results.count > 0) {
                 notifyDataSetChanged();
             } else {

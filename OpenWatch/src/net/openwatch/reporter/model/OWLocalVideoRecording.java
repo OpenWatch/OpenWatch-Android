@@ -13,7 +13,7 @@ import com.orm.androrm.field.ForeignKeyField;
 import com.orm.androrm.field.IntegerField;
 import com.orm.androrm.field.OneToManyField;
 
-public class OWLocalRecording extends Model {
+public class OWLocalVideoRecording extends Model {
 	private static final String TAG = "OWLocalRecording";
 
 	public CharField recording_end_time = new CharField();
@@ -24,29 +24,31 @@ public class OWLocalRecording extends Model {
 	public BooleanField lq_synced = new BooleanField();
 	public IntegerField recording_id = new IntegerField();
 
-	public OneToManyField<OWLocalRecording, OWLocalRecordingSegment> segments = new OneToManyField<OWLocalRecording, OWLocalRecordingSegment>(
-			OWLocalRecording.class, OWLocalRecordingSegment.class);
+	public OneToManyField<OWLocalVideoRecording, OWLocalVideoRecordingSegment> segments = new OneToManyField<OWLocalVideoRecording, OWLocalVideoRecordingSegment>(
+			OWLocalVideoRecording.class, OWLocalVideoRecordingSegment.class);
 	//public OneToManyField<OWLocalRecording, OWRecording> recording = new OneToManyField<OWLocalRecording, OWRecording>(OWLocalRecording.class, OWRecording.class);
 	//public ForeignKeyField<OWRecording> recording = new ForeignKeyField<OWRecording>(OWRecording.class);
 	//public ManyToManyField<OWLocalRecording, OWRecordingTag> tags = new ManyToManyField<OWLocalRecording, OWRecordingTag> (OWLocalRecording.class, OWRecordingTag.class);
 	
-	public OWLocalRecording() {
+	public OWLocalVideoRecording() {
 		super();
 	}
 	
-	public OWLocalRecording(Context c){
+	public OWLocalVideoRecording(Context c){
 		super();
 		this.save(c);
-		OWRecording recording = new OWRecording();
+		
+		OWVideoRecording recording = new OWVideoRecording(c);
 		recording.creation_time.set(Constants.sdf.format(new Date()));
 		recording.local.set(this.getId());
+		recording.media_object.get(c).local_video_recording.set(getId());
 		recording.save(c);
 		this.recording_id.set(recording.getId());
 		this.save(c);
 	}
 
 	public void addSegment(Context c, String filepath, String filename) {
-		OWLocalRecordingSegment segment = new OWLocalRecordingSegment();
+		OWLocalVideoRecordingSegment segment = new OWLocalVideoRecordingSegment();
 		segment.filepath.set(filepath);
 		segment.filename.set(filename);
 		segment.local_recording.set(this);
@@ -60,7 +62,7 @@ public class OWLocalRecording extends Model {
 	@Override
 	public boolean save(Context context) {
 		if(this.recording_id.get() != 0)
-			OWRecording.objects(context, OWRecording.class).get(this.recording_id.get()).last_edited.set(Constants.sdf.format(new Date()));
+			OWVideoRecording.objects(context, OWVideoRecording.class).get(this.recording_id.get()).last_edited.set(Constants.sdf.format(new Date()));
 		context.getContentResolver().notifyChange(
 				OWContentProvider.getLocalRecordingUri(this.getId()), null);
 		return super.save(context);

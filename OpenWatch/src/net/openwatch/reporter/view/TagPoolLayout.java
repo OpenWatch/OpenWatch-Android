@@ -2,8 +2,8 @@ package net.openwatch.reporter.view;
 
 import java.util.LinkedList;
 import net.openwatch.reporter.R;
-import net.openwatch.reporter.model.OWRecording;
-import net.openwatch.reporter.model.OWRecordingTag;
+import net.openwatch.reporter.model.OWVideoRecording;
+import net.openwatch.reporter.model.OWTag;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
@@ -27,7 +27,7 @@ public class TagPoolLayout extends TableLayout {
 	
 	boolean allow_tag_removal = false;
 	
-	OWRecording recording;
+	OWVideoRecording recording;
 
 	LayoutInflater inflater = (LayoutInflater)getContext().getSystemService
     (Context.LAYOUT_INFLATER_SERVICE);
@@ -40,12 +40,12 @@ public class TagPoolLayout extends TableLayout {
 		super(context);
 	}
 	
-	public TagPoolLayout(Context context, OWRecording recording) {
+	public TagPoolLayout(Context context, OWVideoRecording recording) {
 		super(context);
 		this.recording = recording;
 	}
 	
-	public void setRecording(OWRecording recording){
+	public void setRecording(OWVideoRecording recording){
 		this.recording = recording;
 	}
 	
@@ -91,7 +91,7 @@ public class TagPoolLayout extends TableLayout {
 	}
 
 	
-	public void addTag(OWRecordingTag tag){
+	public void addTag(OWTag tag){
 		TextView new_tag = (TextView) initTagView(tag);
 		new_tag.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener(){
 
@@ -113,13 +113,13 @@ public class TagPoolLayout extends TableLayout {
 		
 	}
 	
-	public void addTagPostLayout(OWRecordingTag tag){
+	public void addTagPostLayout(OWTag tag){
 		TextView new_tag = (TextView) initTagView(tag);
 		view_buffer.add(new_tag);
 		drawTag();
 	}
 	
-	private View initTagView(final OWRecordingTag tag){
+	private View initTagView(final OWTag tag){
 		final Context c = this.getContext();
 		final TagPoolLayout tpl = this;
 		TextView new_tag = (TextView) inflater.inflate( R.layout.tag_pool_item, last_row, false);

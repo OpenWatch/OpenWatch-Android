@@ -16,8 +16,8 @@ import net.openwatch.reporter.file.FileUtils;
 import net.openwatch.reporter.http.OWMediaRequests;
 import net.openwatch.reporter.location.DeviceLocation;
 import net.openwatch.reporter.location.DeviceLocation.LocationResult;
-import net.openwatch.reporter.model.OWLocalRecording;
-import net.openwatch.reporter.model.OWRecording;
+import net.openwatch.reporter.model.OWLocalVideoRecording;
+import net.openwatch.reporter.model.OWVideoRecording;
 import net.openwatch.reporter.recording.ChunkedAudioVideoSoftwareRecorder;
 import net.openwatch.reporter.recording.FFChunkedAudioVideoEncoder.ChunkedRecorderListener;
 
@@ -112,7 +112,7 @@ public class RecorderActivity extends SherlockActivity implements
 	        		if(command.length == 2){
 	        			// make db entry
 	        			if(recording_id != null){
-		        			OWRecording local = new OWRecording(c.getApplicationContext());
+		        			OWVideoRecording local = new OWVideoRecording(c.getApplicationContext());
 		    	        	local.initializeRecording(c.getApplicationContext(), command[1], recording_id, 0.0, 0.0);
 		    	        	Log.i(TAG, "initialize OWLocalRecording. id: " + String.valueOf(local.getId()));
 		    	        	local.save(c.getApplicationContext());
@@ -134,12 +134,12 @@ public class RecorderActivity extends SherlockActivity implements
 	        	} else if(command[0].compareTo("end") == 0){
 	        		if(command.length == 4){
 	        			if(all_files != null){
-	        				OWRecording recording = (OWRecording) OWRecording.objects(c.getApplicationContext(), OWRecording.class).get(owrecording_id);
+	        				OWVideoRecording recording = (OWVideoRecording) OWVideoRecording.objects(c.getApplicationContext(), OWVideoRecording.class).get(owrecording_id);
 	        				//recording.local is null here...
 		        			String last_segment = all_files.get(all_files.size()-1);
 		        			String filename = last_segment.substring(last_segment.lastIndexOf(File.separator),last_segment.length());
 		        			String filepath = last_segment.substring(0,last_segment.lastIndexOf(File.separator));
-		        			OWLocalRecording local = recording.local.get(c.getApplicationContext());
+		        			OWLocalVideoRecording local = recording.local.get(c.getApplicationContext());
 		        			local.recording_end_time.set(command[2]);
 		        			local.addSegment(c.getApplicationContext(), filepath, filename);
 		        			local.save(c.getApplicationContext());
@@ -154,14 +154,14 @@ public class RecorderActivity extends SherlockActivity implements
 								}
 		    	        		
 		    	        	});
-		        			OWMediaRequests.end(public_upload_token, recording, command[3]);
+		        			OWMediaRequests.end(c.getApplicationContext(), public_upload_token, recording, command[3]);
 	        			}
 	        			
 	        		}
 	        	} else if(command[0].compareTo("chunk") == 0){
 	        		if(command.length == 2){
 	        			if(owrecording_id != -1){
-		        			OWRecording recording = (OWRecording) OWRecording.objects(c.getApplicationContext(), OWRecording.class).get(owrecording_id);
+		        			OWVideoRecording recording = (OWVideoRecording) OWVideoRecording.objects(c.getApplicationContext(), OWVideoRecording.class).get(owrecording_id);
 		        			String filename = command[1].substring(command[1].lastIndexOf(File.separator),command[1].length());
 		        			String filepath = command[1].substring(0,command[1].lastIndexOf(File.separator));
 		        			recording.local.get(c.getApplicationContext()).addSegment(c.getApplicationContext(), filepath, filename);
@@ -172,8 +172,8 @@ public class RecorderActivity extends SherlockActivity implements
 	        		}
 	        	} else if(command[0].compareTo("hq") == 0){
 	        		if(command.length == 2){
-	        			OWRecording recording = (OWRecording) OWRecording.objects(c.getApplicationContext(), OWRecording.class).get(owrecording_id);
-	        			OWLocalRecording local = recording.local.get(c.getApplicationContext());
+	        			OWVideoRecording recording = (OWVideoRecording) OWVideoRecording.objects(c.getApplicationContext(), OWVideoRecording.class).get(owrecording_id);
+	        			OWLocalVideoRecording local = recording.local.get(c.getApplicationContext());
 	        			local.hq_filepath.set(command[1]);
 	        			local.save(c.getApplicationContext());
 	        			Log.i(TAG, "id: " + owrecording_id + " hq filepath set:" + command[1]);

@@ -10,9 +10,10 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.http.OWServiceRequests;
-import net.openwatch.reporter.model.OWRecording;
+import net.openwatch.reporter.model.OWVideoRecording;
 import android.net.Uri;
 import android.os.Bundle;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
@@ -51,7 +52,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 					try{
 						JSONObject recording_json = response.getJSONObject("recording");
 						// response was successful
-						OWRecording recording = OWRecording.objects(app_context, OWRecording.class).get(model_id);
+						OWVideoRecording recording = OWVideoRecording.objects(app_context, OWVideoRecording.class).get(model_id);
 						recording.updateWithJson(app_context, recording_json);
 						Log.i(TAG, "recording updated with server meta response");
 						return;
@@ -86,21 +87,22 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 	 * If a server_id was received, give option to share, else return to MainActivity
 	 */
 	private void showCompleteDialog(){
-		final OWRecording recording = OWRecording.objects(this.getApplicationContext(), OWRecording.class).get(model_id);
-		if(recording.server_id.get() == null || recording.server_id.get() == 0){
+		final OWVideoRecording recording = OWVideoRecording.objects(this.getApplicationContext(), OWVideoRecording.class).get(model_id);
+		if( recording.getServerId(getApplicationContext()) == 0){
 			Log.i(TAG, "recording does not have a valid server_id. Cannot present share dialog");
 			Intent i = new Intent(WhatHappenedActivity.this, MainActivity.class);
 			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 			startActivity(i);
 			return;
 		}
-		Log.i(TAG, "recording server_id: " + String.valueOf(recording.server_id.get()));
+		Log.i(TAG, "recording server_id: " + String.valueOf(recording.getServerId(getApplicationContext())));
 			
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(getString(R.string.share_dialog_title))
 		.setMessage(getString(R.string.share_dialog_message))
 		.setPositiveButton(getString(R.string.share_dialog_no), new OnClickListener(){
 
+			@SuppressLint("NewApi")
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				// No thanks
@@ -122,8 +124,8 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 		}).show();
 	}
 	
-	private void showShareDialog(OWRecording recording){
-		String url = Constants.OW_URL +  Constants.OW_VIEW + recording.server_id.get();
+	private void showShareDialog(OWVideoRecording recording){
+		String url = Constants.OW_URL +  Constants.OW_VIEW + recording.getServerId(getApplicationContext());
 		Log.i(TAG, "model_id: " + String.valueOf(model_id) + " url: " + url);
 		
 		Intent i = new Intent(Intent.ACTION_SEND);

@@ -7,10 +7,12 @@ import java.util.List;
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.model.OWFeed;
-import net.openwatch.reporter.model.OWLocalRecording;
-import net.openwatch.reporter.model.OWLocalRecordingSegment;
-import net.openwatch.reporter.model.OWRecording;
-import net.openwatch.reporter.model.OWRecordingTag;
+import net.openwatch.reporter.model.OWLocalVideoRecording;
+import net.openwatch.reporter.model.OWLocalVideoRecordingSegment;
+import net.openwatch.reporter.model.OWMediaObject;
+import net.openwatch.reporter.model.OWVideoRecording;
+import net.openwatch.reporter.model.OWTag;
+import net.openwatch.reporter.model.OWStory;
 import net.openwatch.reporter.model.OWUser;
 
 import android.content.ContentValues;
@@ -59,12 +61,14 @@ public class DatabaseManager {
 			return;
 		
 		List<Class<? extends Model>> models = new ArrayList<Class<? extends Model>>();
-		models.add(OWRecording.class);
-		models.add(OWRecordingTag.class);
-		models.add(OWLocalRecording.class);
-		models.add(OWLocalRecordingSegment.class);
+		models.add(OWVideoRecording.class);
+		models.add(OWTag.class);
+		models.add(OWLocalVideoRecording.class);
+		models.add(OWLocalVideoRecordingSegment.class);
 		models.add(OWUser.class);
 		models.add(OWFeed.class);
+		models.add(OWStory.class);
+		models.add(OWMediaObject.class);
 		
 		pointToDB();
 		DatabaseAdapter adapter = DatabaseAdapter.getInstance(app_context);
@@ -83,7 +87,7 @@ public class DatabaseManager {
 		String TAG = "DatabaseManager-DEBUG";
 		
 		// Some devices have an initial bogus recording
-		int count = OWLocalRecording.objects(app_context, OWLocalRecording.class).count();
+		int count = OWLocalVideoRecording.objects(app_context, OWLocalVideoRecording.class).count();
 		if(count > 0)
 			Log.i(TAG, "Database has " + String.valueOf(count) + " OWRecordings");
 		
@@ -158,7 +162,7 @@ public class DatabaseManager {
 		String[] filepathArray = filepath.split("/");
 		String filename = filepathArray[filepathArray.length-1];
 		
-		OWLocalRecordingSegment segment = new OWLocalRecordingSegment();
+		OWLocalVideoRecordingSegment segment = new OWLocalVideoRecordingSegment();
 		segment.filepath.set(filepath);
 		segment.filename.set(filename);
 		segment.save(c);

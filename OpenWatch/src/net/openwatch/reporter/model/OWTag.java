@@ -9,21 +9,21 @@ import com.orm.androrm.field.CharField;
 import com.orm.androrm.field.IntegerField;
 import com.orm.androrm.field.ManyToManyField;
 
-public class OWRecordingTag extends Model{
+public class OWTag extends Model{
 	
 	public CharField name;
 	public BooleanField is_featured;
 	public IntegerField server_id;
 	
-	public ManyToManyField<OWRecordingTag, OWRecording> recordings;
+	public ManyToManyField<OWTag, OWVideoRecording> recordings;
 	
-	public OWRecordingTag(){
+	public OWTag(){
 		super();
 		name = new CharField();
 		is_featured = new BooleanField();
 		server_id = new IntegerField();
 		
-		recordings = new ManyToManyField<OWRecordingTag, OWRecording>(OWRecordingTag.class, OWRecording.class);
+		recordings = new ManyToManyField<OWTag, OWVideoRecording>(OWTag.class, OWVideoRecording.class);
 	}
 	
 	@Override

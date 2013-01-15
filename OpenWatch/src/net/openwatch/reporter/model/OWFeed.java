@@ -17,7 +17,8 @@ public class OWFeed extends Model{
 	
 	public CharField name = new CharField();
 	
-	public ManyToManyField<OWFeed, OWRecording> recordings = new ManyToManyField<OWFeed, OWRecording>(OWFeed.class, OWRecording.class);
+	//public ManyToManyField<OWFeed, OWStory> stories = new ManyToManyField<OWFeed, OWStory>(OWFeed.class, OWStory.class);
+	//public ManyToManyField<OWFeed, OWRecording> audio_recordings = new ManyToManyField<OWFeed, OWRecording>(OWFeed.class, OWRecording.class);
 	
 	public OWFeed(){
 		super();		

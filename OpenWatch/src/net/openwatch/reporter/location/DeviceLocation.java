@@ -4,8 +4,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import net.openwatch.reporter.http.OWMediaRequests;
-import net.openwatch.reporter.model.OWLocalRecording;
-import net.openwatch.reporter.model.OWRecording;
+import net.openwatch.reporter.model.OWLocalVideoRecording;
+import net.openwatch.reporter.model.OWVideoRecording;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
@@ -149,7 +149,7 @@ public class DeviceLocation {
             @Override
             public void gotLocation(final Location location){
                 //Got the location!
-                OWRecording recording = OWRecording.objects(app_context, OWRecording.class).get(recording_db_id);
+                OWVideoRecording recording = OWVideoRecording.objects(app_context, OWVideoRecording.class).get(recording_db_id);
 	                if (location != null) {
 	                	Log.i(TAG, "gotLocation");
 	                	if(isStart){
@@ -165,7 +165,7 @@ public class DeviceLocation {
 	                   // server_id has been retrieved. If so, send another updateMetadata
 	                   // request to ensure geo data available
 	                   if(!isStart){
-	                	   OWMediaRequests.updateMeta(upload_token, recording);
+	                	   OWMediaRequests.updateMeta(app_context, upload_token, recording);
 	                   }
 	                }
                 };

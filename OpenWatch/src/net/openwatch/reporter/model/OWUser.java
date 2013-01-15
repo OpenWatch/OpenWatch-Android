@@ -8,20 +8,15 @@ import com.orm.androrm.field.OneToManyField;
 
 public class OWUser extends Model{
 	
-	public CharField username;
-	public IntegerField server_id;
+	public CharField username = new CharField();;
+	public CharField thumbnail_url = new CharField();;
+	public IntegerField server_id = new IntegerField();;
 	
-	public OneToManyField<OWUser, OWRecording> recordings;
-	public ManyToManyField<OWUser, OWRecordingTag> tags;
+	public OneToManyField<OWUser, OWVideoRecording> recordings = new OneToManyField<OWUser, OWVideoRecording>(OWUser.class, OWVideoRecording.class);
+	public ManyToManyField<OWUser, OWTag> tags = new ManyToManyField<OWUser, OWTag>(OWUser.class, OWTag.class);
 	
 	public OWUser(){
-		super();
-		username = new CharField();
-		server_id = new IntegerField();
-		
-		recordings = new OneToManyField<OWUser, OWRecording>(OWUser.class, OWRecording.class);
-		tags = new ManyToManyField<OWUser, OWRecordingTag>(OWUser.class, OWRecordingTag.class);
-		
+		super();				
 	}
 
 }

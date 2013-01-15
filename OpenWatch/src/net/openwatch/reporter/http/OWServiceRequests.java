@@ -14,8 +14,9 @@ import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.Constants.OWFeedType;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.model.OWFeed;
-import net.openwatch.reporter.model.OWRecording;
-import net.openwatch.reporter.model.OWRecordingTag;
+import net.openwatch.reporter.model.OWVideoRecording;
+import net.openwatch.reporter.model.OWTag;
+import net.openwatch.reporter.model.OWStory;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -52,7 +53,7 @@ public class OWServiceRequests {
     		public void onSuccess(JSONObject response){
 				if(response.has(Constants.OW_RECORDING)){
 					try {
-						OWRecording.createOrUpdateOWRecordingWithJson(app_context, response.getJSONObject(Constants.OW_RECORDING));
+						OWVideoRecording.createOrUpdateOWRecordingWithJson(app_context, response.getJSONObject(Constants.OW_RECORDING));
 						callback.onSuccess();
 					} catch (JSONException e) {
 						Log.e(TAG, "Error creating or updating Recording with json");
@@ -106,7 +107,9 @@ public class OWServiceRequests {
 										json_obj = json_array.getJSONObject(x);
 										if(json_obj.has("type")){
 											if(json_obj.getString("type").compareTo("video") == 0)
-												OWRecording.createOrUpdateOWRecordingWithJson(app_context, json_obj, OWFeed.getFeedFromFeedType(app_context, feed));
+												OWVideoRecording.createOrUpdateOWRecordingWithJson(app_context, json_obj, OWFeed.getFeedFromFeedType(app_context, feed));
+											else if(json_obj.getString("type").compareTo("story") == 0)
+												OWStory.createOrUpdateOWStoryWithJson(app_context, json_obj, OWFeed.getFeedFromFeedType(app_context, feed));
 											// TODO: Story, audio, etc
 										}
 									}
@@ -149,7 +152,7 @@ public class OWServiceRequests {
 	 * @param app_context
 	 * @param cb
 	 */
-	public static void syncRecording(final Context app_context, OWRecording recording){
+	public static void syncRecording(final Context app_context, OWVideoRecording recording){
 		final String METHOD = "syncRecording";
 		final int model_id = recording.getId();
 		JsonHttpResponseHandler get_handler = new JsonHttpResponseHandler(){
@@ -160,7 +163,7 @@ public class OWServiceRequests {
 					try{
 						JSONObject recording_json = response.getJSONObject("recording");
 						// response was successful
-						OWRecording recording = OWRecording.objects(app_context, OWRecording.class).get(model_id);
+						OWVideoRecording recording = OWVideoRecording.objects(app_context, OWVideoRecording.class).get(model_id);
 						Date last_edited_remote = Constants.sdf.parse(recording_json.getString("last_edited"));
 						Date last_edited_local = Constants.sdf.parse(recording.last_edited.get());
 						Log.i(TAG, "Sync dates. Remote: " + recording_json.getString("last_edited") + " local: " + recording.last_edited.get());
@@ -219,7 +222,7 @@ public class OWServiceRequests {
 	 * @param recording
 	 * @param response_handler
 	 */
-	public static void editRecording(Context app_context, OWRecording recording, JsonHttpResponseHandler response_handler){
+	public static void editRecording(Context app_context, OWVideoRecording recording, JsonHttpResponseHandler response_handler){
     	AsyncHttpClient http_client = HttpClient.setupHttpClient(app_context);
     	Log.i(TAG,"Commencing Edit Recording: " + recording.toJson(app_context));
     	http_client.post(app_context, Constants.OW_API_URL + Constants.OW_RECORDING + "/" + recording.uuid.get().toString(), recording.toJson(app_context), "application/json", response_handler);
@@ -246,12 +249,12 @@ public class OWServiceRequests {
 					array_json = (JSONArray) response.get("tags");
 					JSONObject tag_json;
 					
-					int tag_count = OWRecordingTag.objects(app_context, OWRecordingTag.class).count();
+					int tag_count = OWTag.objects(app_context, OWTag.class).count();
 	    			
 	    			DatabaseAdapter adapter = DatabaseAdapter.getInstance(app_context);
 	    			adapter.beginTransaction();
 	    			
-	    			OWRecordingTag tag = null;
+	    			OWTag tag = null;
 	    			for(int x=0; x<array_json.length(); x++){
 	    				tag_json = array_json.getJSONObject(x);
 	    				Filter filter = new Filter();
@@ -261,15 +264,15 @@ public class OWServiceRequests {
 	    				
 	    				if(tag_count != 0){
 	    					// TODO: Override QuerySet.get to work on server_id field
-	    					QuerySet<OWRecordingTag> tags = OWRecordingTag.objects(app_context, OWRecordingTag.class).filter(filter);
-	    					for(OWRecordingTag temp_tag : tags){
+	    					QuerySet<OWTag> tags = OWTag.objects(app_context, OWTag.class).filter(filter);
+	    					for(OWTag temp_tag : tags){
 	    						tag = temp_tag;
 	    						break;
 	    					}
 	    				}
 	    				if(tag == null){
 	    					// this is a new tag
-	    					tag = new OWRecordingTag();
+	    					tag = new OWTag();
 	    					tag.server_id.set(tag_json.getInt("id"));
 	    				}
     					tag.is_featured.set(tag_json.getBoolean("featured")); 

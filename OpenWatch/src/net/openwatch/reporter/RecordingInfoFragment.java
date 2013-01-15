@@ -9,8 +9,8 @@ import com.orm.androrm.QuerySet;
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.constants.Constants.OWFeedType;
-import net.openwatch.reporter.model.OWRecording;
-import net.openwatch.reporter.model.OWRecordingTag;
+import net.openwatch.reporter.model.OWVideoRecording;
+import net.openwatch.reporter.model.OWTag;
 import net.openwatch.reporter.view.TagPoolLayout;
 import android.content.Context;
 import android.os.Bundle;
@@ -35,7 +35,7 @@ public class RecordingInfoFragment extends SherlockFragment implements OWRecordi
 	protected EditText title;
 	protected EditText description;
 	protected AutoCompleteTextView tags;
-	protected OWRecording recording = null;
+	protected OWVideoRecording recording = null;
 	protected TagPoolLayout tagGroup;
 	
 	protected static boolean watch_tag_text = true;
@@ -63,13 +63,13 @@ public class RecordingInfoFragment extends SherlockFragment implements OWRecordi
 		description = ((EditText)v.findViewById(R.id.editDescription));
 		tags = ((AutoCompleteTextView)v.findViewById(R.id.editTags));
 		
-		recording = OWRecording.objects(getActivity().getApplicationContext(), OWRecording.class)
+		recording = OWVideoRecording.objects(getActivity().getApplicationContext(), OWVideoRecording.class)
 				.get(this.getActivity().getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID));
-		tagGroup.setRecording((OWRecording)recording);
+		tagGroup.setRecording((OWVideoRecording)recording);
 		
 		setTagAutoCompleteListeners();
 	
-		mAdapter = new OWTagArrayAdapter(getActivity().getApplicationContext(), R.layout.autocomplete_tag_item, OWRecordingTag.objects(getActivity(), OWRecordingTag.class).all().toList());
+		mAdapter = new OWTagArrayAdapter(getActivity().getApplicationContext(), R.layout.autocomplete_tag_item, OWTag.objects(getActivity(), OWTag.class).all().toList());
 		
 		tags.setAdapter(mAdapter);
 		tags.setThreshold(1);
@@ -118,13 +118,13 @@ public class RecordingInfoFragment extends SherlockFragment implements OWRecordi
 			}
 	}
 	
-	public void populateViews(OWRecording recording, Context app_context){
+	public void populateViews(OWVideoRecording recording, Context app_context){
 		try{
-			if(recording.title.get() != null)
-				title.setText(recording.title.get());
-			if(recording.description.get() != null)
-				description.setText(recording.description.get());
-			if(recording.tags.get(app_context, recording) != null)
+			if(recording.getTitle(app_context) != null)
+				title.setText(recording.getTitle(app_context));
+			if(recording.getDescription(app_context) != null)
+				description.setText(recording.getDescription(app_context));
+			if(recording.getTags(app_context) != null)
 				populateTagPool(recording, app_context);
 		} catch(Exception e){
 			e.printStackTrace();
@@ -133,16 +133,16 @@ public class RecordingInfoFragment extends SherlockFragment implements OWRecordi
 
 	}
 	
-	public void addTagToTagPool(OWRecordingTag tag){
+	public void addTagToTagPool(OWTag tag){
 		tagGroup.addTag(tag);
 	}
 	
-	public void populateTagPool(OWRecording recording, Context app_context){
+	public void populateTagPool(OWVideoRecording recording, Context app_context){
 		Log.i(TAG, "populateTagPool");
 		//TagPoolLayout tagGroup = ((TagPoolLayout) getActivity().findViewById(R.id.tagGroup));
 		//TagPoolLayout tagGroup = ((TagPoolLayout) getView().findViewById(R.id.tagGroup));
-		QuerySet<OWRecordingTag> tags = recording.tags.get(app_context, recording);
-		for(OWRecordingTag tag : tags){
+		QuerySet<OWTag> tags = recording.getTags(app_context);
+		for(OWTag tag : tags){
 			//addTagToTagPool(tag);
 			tagGroup.addTag(tag);
 			//tagGroup.addTag(tag.name.get());
@@ -185,21 +185,21 @@ public class RecordingInfoFragment extends SherlockFragment implements OWRecordi
     	super.onPause();
     	if(recording == null)
     		return;
-   
+    	
     	// Title may not be set to empty string
-    	if(recording.title.get() != null && recording.title.get().compareTo(title.getText().toString()) != 0 && recording.title.get().compareTo("") != 0){
+    	if(recording.getTitle(getActivity().getApplicationContext()).compareTo(title.getText().toString()) != 0 && recording.getTitle(getActivity().getApplicationContext()).compareTo("") != 0){
     		doSave = true;
-    		recording.title.set(title.getText().toString());
+    		recording.setTitle(getActivity().getApplicationContext(), title.getText().toString());
     	}
     	// if recording has a description, make sure it has changed before saving
-    	if(recording.description.get() != null && recording.description.get().compareTo(description.getText().toString()) != 0){
+    	if(recording.getDescription(getActivity().getApplicationContext()).compareTo(description.getText().toString()) != 0){
     		doSave = true;
-    		recording.description.set(description.getText().toString());
+    		recording.setDescription(getActivity().getApplicationContext(), description.getText().toString());
     	}
     	// If recording does not have a description, make sure the EditText description is not blank
-    	else if(recording.description.get() == null && "".compareTo(description.getText().toString()) != 0){
+    	else if("".compareTo(description.getText().toString()) != 0){
     		doSave = true;
-    		recording.description.set(description.getText().toString());
+    		recording.setDescription(getActivity().getApplicationContext(), description.getText().toString());
     	}
     	if(doSave){
     		Log.i(TAG, "Saving recording. " + title.getText().toString() + " : " + description.getText().toString());
@@ -227,7 +227,7 @@ public class RecordingInfoFragment extends SherlockFragment implements OWRecordi
 				Log.i(TAG, "Autocomplete select");
 				String tag_name = ((TextView)view).getText().toString();
 				if(!recording.hasTag(getActivity().getApplicationContext(), tag_name)){
-					OWRecordingTag tag = OWRecordingTag.objects(getActivity().getApplicationContext(), OWRecordingTag.class).get((Integer)view.getTag(R.id.list_item_model));
+					OWTag tag = OWTag.objects(getActivity().getApplicationContext(), OWTag.class).get((Integer)view.getTag(R.id.list_item_model));
 					addTagToRecording(tag, recording);
 				}
 				//watch_tag_text = false;
@@ -254,14 +254,14 @@ public class RecordingInfoFragment extends SherlockFragment implements OWRecordi
 					if(!recording.hasTag(getActivity().getApplicationContext(), tag_name)){
 						Filter filter = new Filter();
 						filter.is(DBConstants.TAG_TABLE_NAME, tag_name);
-						QuerySet<OWRecordingTag> tags = OWRecordingTag.objects(getActivity().getApplicationContext(), OWRecordingTag.class).filter(filter);
-						OWRecordingTag selected_tag = null;
-						for(OWRecordingTag tag : tags){
+						QuerySet<OWTag> tags = OWTag.objects(getActivity().getApplicationContext(), OWTag.class).filter(filter);
+						OWTag selected_tag = null;
+						for(OWTag tag : tags){
 							selected_tag = tag;
 							break;
 						}
 						if(selected_tag == null){
-							selected_tag = new OWRecordingTag();
+							selected_tag = new OWTag();
 							selected_tag.name.set(tag_name);
 							selected_tag.is_featured.set(false);
 							selected_tag.save(getActivity().getApplicationContext());
@@ -307,9 +307,9 @@ public class RecordingInfoFragment extends SherlockFragment implements OWRecordi
 		*/
 	}
 	
-	private void addTagToRecording(OWRecordingTag tag, OWRecording recording){
+	private void addTagToRecording(OWTag tag, OWVideoRecording recording){
 		tagGroup.addTagPostLayout(tag);
-		recording.tags.add(tag);
+		recording.addTag(getActivity().getApplicationContext(), tag);
 		recording.save(getActivity().getApplicationContext());
 		doSave = true;
 	}

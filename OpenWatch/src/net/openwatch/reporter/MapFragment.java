@@ -1,6 +1,6 @@
 package net.openwatch.reporter;
 
-import net.openwatch.reporter.model.OWRecording;
+import net.openwatch.reporter.model.OWVideoRecording;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -64,7 +64,7 @@ public class MapFragment extends SupportMapFragment implements OWRecordingBacked
             Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         if(RecordingViewActivity.model_id != -1){
-        	OWRecording recording = OWRecording.objects(getActivity().getApplicationContext(), OWRecording.class)
+        	OWVideoRecording recording = OWVideoRecording.objects(getActivity().getApplicationContext(), OWVideoRecording.class)
     				.get(RecordingViewActivity.model_id);
         	
         	if(recording != null)
@@ -81,7 +81,7 @@ public class MapFragment extends SupportMapFragment implements OWRecordingBacked
         return view;
     }
     
-    private void mapRecording(OWRecording recording){
+    private void mapRecording(OWVideoRecording recording){
     	if(recording.begin_lat.get() != null && recording.end_lat.get() != null)
     		Log.i(TAG, "recording begin point: " + String.valueOf(recording.begin_lat.get()) + ", " + String.valueOf(recording.begin_lon.get()));
     	if(recording.end_lat.get() != null && recording.end_lat.get() != null)
@@ -112,7 +112,7 @@ public class MapFragment extends SupportMapFragment implements OWRecordingBacked
     }
 
 	@Override
-	public void populateViews(OWRecording recording, Context app_context) {
+	public void populateViews(OWVideoRecording recording, Context app_context) {
 		mapRecording(recording);
 		
 	}

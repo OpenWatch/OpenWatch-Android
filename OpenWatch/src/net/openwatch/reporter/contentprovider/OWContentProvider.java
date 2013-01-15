@@ -137,12 +137,12 @@ public class OWContentProvider extends ContentProvider {
 		Log.i(TAG, uri.toString());
 		switch(uriType){
 			case LOCAL_RECORDINGS:
-				Log.i(TAG, select + " FROM " + DBConstants.RECORDINGS_TABLENAME + where + sortby);
-				result = adapter.open().query(select + " FROM " + DBConstants.RECORDINGS_TABLENAME + " WHERE " + DBConstants.RECORDINGS_TABLE_LOCAL + " IS NOT NULL " + sortby);
+				Log.i(TAG, select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " WHERE " + DBConstants.MEDIA_OBJECT_LOCAL_VIDEO + " IS NOT NULL " + sortby);
+				result = adapter.open().query(select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " WHERE " + DBConstants.MEDIA_OBJECT_LOCAL_VIDEO + " IS NOT NULL " + sortby);
 				break;
 			case LOCAL_RECORDING_ID:
-				Log.i(TAG, select + " FROM " + DBConstants.RECORDINGS_TABLENAME + "WHERE mID="+uri.getLastPathSegment());
-				result = adapter.open().query(select + " FROM " + DBConstants.RECORDINGS_TABLENAME + " WHERE " + DBConstants.ID + "=" +uri.getLastPathSegment());
+				Log.i(TAG, select + " FROM " + DBConstants.RECORDINGS_TABLENAME + "WHERE _id="+uri.getLastPathSegment());
+				result = adapter.open().query(select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " WHERE " + DBConstants.MEDIA_OBJECT_LOCAL_VIDEO + " IS NOT NULL AND " + DBConstants.ID + "=" +uri.getLastPathSegment());
 				//adapter.close();
 				break;
 			case REMOTE_RECORDING_BY_FEED:
@@ -162,9 +162,15 @@ public class OWContentProvider extends ContentProvider {
 					return null;
 												
 				Log.i(TAG, String.format("fetching feed id: %d", feed_id));
-				String query = select + " FROM " + DBConstants.RECORDINGS_TABLENAME + " JOIN " +  DBConstants.FEED_RECORDING_TABLENAME + " ON " + DBConstants.FEED_RECORDING_FEED + "=" + String.valueOf(feed_id) + where + sortby;
+				//String query = select + " FROM " + DBConstants.RECORDINGS_TABLENAME + " JOIN " +  DBConstants.FEED_RECORDING_TABLENAME + " ON " + DBConstants.FEED_TABLENAME + "=" + String.valueOf(feed_id) + 
+				//String query = "SELECT owrecording._id, owrecording.title, owrecording.views, owrecording.actions, owrecording.thumbnail_url, owrecording.username, owstory._id, owstory.title, owstory.views, owstory.actions, owstory.thumbnail_url, owstory.username FROM owrecording JOIN owfeed_owrecording ON owfeed_owrecording.owfeed=1 JOIN owstory ON owfeed_owstory.owstory=1";
+				//String query = "SELECT owrecording._id, owrecording.title, owrecording.views, owrecording.actions, owrecording.thumbnail_url, owrecording.username, owstory._id, owstory.title, owstory.views, owstory.actions, owstory.thumbnail_url, owstory.username FROM owrecording, owstory";
+				//String query = "select * from " + DBConstants.RECORDINGS_TABLENAME;
+				String query = select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " JOIN " + DBConstants.FEED_MEDIA_OBJ_TABLENAME + " ON " + DBConstants.FEED_MEDIA_OBJ_TABLENAME+"."+DBConstants.MEDIA_OBJECT_TABLENAME + "=" + DBConstants.MEDIA_OBJECT_TABLENAME+"." + DBConstants.ID + " WHERE " + DBConstants.FEED_MEDIA_OBJ_TABLENAME + "." + DBConstants.FEED_TABLENAME + "=" + String.valueOf(feed_id);
 				Log.i(TAG, "Query: " + query);
 				result = adapter.open().query(query);
+				if(result.moveToFirst())
+					Log.i(TAG, "Got feed cursor: " + result.getColumnCount());
 				break;
 			case REMOTE_RECORDINGS:
 				result = adapter.open().query(select + " FROM " + DBConstants.RECORDINGS_TABLENAME + " " + where + sortby);
