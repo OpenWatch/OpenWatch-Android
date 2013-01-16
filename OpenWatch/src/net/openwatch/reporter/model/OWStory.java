@@ -1,7 +1,10 @@
 package net.openwatch.reporter.model;
 
+import java.util.Date;
+
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
+import net.openwatch.reporter.contentprovider.OWContentProvider;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,10 +18,16 @@ import com.orm.androrm.Filter;
 import com.orm.androrm.Model;
 import com.orm.androrm.QuerySet;
 import com.orm.androrm.Where;
+import com.orm.androrm.field.CharField;
 import com.orm.androrm.field.ForeignKeyField;
 
 public class OWStory extends Model implements OWMediaObjectInterface{
 	private static final String TAG = "OWStory";
+	
+	public CharField blurb = new CharField();
+	public CharField slug = new CharField();
+	public CharField body = new CharField();
+	
 	
 	public ForeignKeyField<OWMediaObject> media_object = new ForeignKeyField<OWMediaObject> ( OWMediaObject.class );
 	
@@ -30,13 +39,35 @@ public class OWStory extends Model implements OWMediaObjectInterface{
 		super();
 		this.save(c);
 		OWMediaObject media_object = new OWMediaObject();
-		media_object.save(c);
 		media_object.story.set(getId());
+		media_object.save(c);
 		this.media_object.set(media_object);
+		this.save(c);
+	}
+	
+	@Override
+	public boolean save(Context context) {
+		// notify the ContentProvider that the dataset has changed
+		context.getContentResolver().notifyChange(OWContentProvider.getMediaObjectUri(getId()), null);
+		if(media_object.get() != null) // this is called once in <init> to get db id before medi_object created
+			setLastEdited(context, Constants.sdf.format(new Date()));
+		return super.save(context);
 	}
 	
 	public void updateWithJson(Context app_context, JSONObject json){
 		this.media_object.get(app_context).updateWithJson(app_context, json);
+		
+		try{
+			if(json.has(Constants.OW_BODY))
+				body.set(json.getString(Constants.OW_BODY));
+			if(json.has(Constants.OW_BLURB))
+				blurb.set(json.getString(Constants.OW_BLURB));
+			if(json.has(Constants.OW_SLUG))
+				slug.set(json.getString(Constants.OW_SLUG));
+		}catch(JSONException e){
+			Log.e(TAG, "Error deserializing story");
+			e.printStackTrace();
+		}
 		// If story has no thumbnail_url, try using user's thumbnail
 		if( (this.getThumbnailUrl(app_context) == null || this.getThumbnailUrl(app_context).compareTo("") == 0) && json.has(Constants.OW_USER)){
 			JSONObject json_user = null;
@@ -179,6 +210,44 @@ public class OWStory extends Model implements OWMediaObjectInterface{
 	@Override
 	public void addToFeed(Context c, OWFeed feed) {
 		this.media_object.get(c).addToFeed(c, feed);
+	}
+
+	@Override
+	public String getFirstPosted(Context c) {
+		return media_object.get(c).getFirstPosted(c);
+	}
+
+	@Override
+	public void setFirstPosted(Context c, String first_posted) {
+		media_object.get(c).setFirstPosted(c, first_posted);
+	}
+
+	@Override
+	public String getLastEdited(Context c) {
+		return media_object.get(c).getLastEdited(c);
+	}
+
+	@Override
+	public void setLastEdited(Context c, String last_edited) {
+		media_object.get(c).setLastEdited(c, last_edited);
+	}
+
+	@Override
+	public JSONObject toJsonObject(Context app_context) {
+		JSONObject json_obj = media_object.get(app_context).toJsonObject(app_context);
+		try{
+			if (blurb.get() != null)
+				json_obj.put(Constants.OW_BLURB, blurb.get().toString());
+			if (slug.get() != null)
+				json_obj.put(Constants.OW_SLUG, slug.get().toString());
+			if (body.get() != null)
+				json_obj.put(Constants.OW_BODY, body.get().toString());
+			
+		}catch(JSONException e){
+			Log.e(TAG, "Error serializing recording to json");
+			e.printStackTrace();
+		}
+		return json_obj;
 	}
 
 }

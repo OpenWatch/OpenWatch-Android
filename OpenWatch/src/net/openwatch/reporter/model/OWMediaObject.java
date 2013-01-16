@@ -29,6 +29,8 @@ public class OWMediaObject extends Model implements OWMediaObjectInterface{
 	public CharField description = new CharField();
 	public CharField thumbnail_url = new CharField();
 	public CharField username = new CharField();
+	public CharField first_posted = new CharField();
+	public CharField last_edited = new CharField();
 	
 	public ForeignKeyField<OWUser> user = new ForeignKeyField<OWUser>(
 			OWUser.class);
@@ -62,6 +64,10 @@ public class OWMediaObject extends Model implements OWMediaObjectInterface{
 				this.setActions(app_context, json.getInt(Constants.OW_CLICKS));
 			if(json.has(Constants.OW_SERVER_ID))
 				this.setServerId(app_context, json.getInt(Constants.OW_SERVER_ID));
+			if(json.has(Constants.OW_LAST_EDITED))
+				this.last_edited.set(json.getString(Constants.OW_LAST_EDITED));
+			if(json.has(Constants.OW_FIRST_POSTED))
+				this.first_posted.set(json.getString(Constants.OW_FIRST_POSTED));
 
 			
 			if(json.has(Constants.OW_THUMB_URL) && json.getString(Constants.OW_THUMB_URL).compareTo(Constants.OW_NO_VALUE)!= 0)
@@ -220,6 +226,69 @@ public class OWMediaObject extends Model implements OWMediaObjectInterface{
 	public void addToFeed(Context c, OWFeed feed) {
 		this.feeds.add(feed);
 		this.save(c);
+	}
+
+
+	@Override
+	public String getFirstPosted(Context c) {
+		return this.first_posted.get();
+	}
+
+
+	@Override
+	public void setFirstPosted(Context c, String first_posted) {
+		this.first_posted.set(first_posted);
+	}
+
+
+	@Override
+	public String getLastEdited(Context c) {
+		return this.last_edited.get();
+	}
+
+
+	@Override
+	public void setLastEdited(Context c, String last_edited) {
+		this.last_edited.set(last_edited);
+	}
+
+
+	@Override
+	public JSONObject toJsonObject(Context c) {
+		JSONObject json_obj = new JSONObject();
+		try {
+			if(getTitle(c) != null)
+				json_obj.put(Constants.OW_TITLE, getTitle(c));
+			if(getViews(c) != 0)
+				json_obj.put(Constants.OW_VIEWS, getViews(c));
+			if(getActions(c) != 0)
+				json_obj.put(Constants.OW_ACTIONS, getActions(c));
+			if(getServerId(c) != 0)
+				json_obj.put(Constants.OW_SERVER_ID, getServerId(c));
+			if(getDescription(c) != null)
+				json_obj.put(Constants.OW_DESCRIPTION, getDescription(c));
+			if(getThumbnailUrl(c) != null)
+				json_obj.put(Constants.OW_THUMB_URL, getThumbnailUrl(c));
+			if(getUser(c) != null)
+				json_obj.put(Constants.OW_USER, getUser(c).toJSON());
+			if(getLastEdited(c) != null)
+				json_obj.put(Constants.OW_EDIT_TIME, getLastEdited(c));
+			if(getFirstPosted(c) != null)
+				json_obj.put(Constants.OW_FIRST_POSTED, getFirstPosted(c));
+			
+			QuerySet<OWTag> qs = getTags(c);
+			JSONArray tags = new JSONArray();
+			
+			for (OWTag tag : qs) {
+				tags.put(tag.name.get());
+			}
+			json_obj.put(Constants.OW_TAGS, tags);
+			
+		} catch (JSONException e) {
+			Log.e(TAG, "Error serializing OWMediaObject");
+			e.printStackTrace();
+		}
+		return json_obj;
 	}
 
 }

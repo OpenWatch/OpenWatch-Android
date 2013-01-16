@@ -165,8 +165,8 @@ public class OWServiceRequests {
 						// response was successful
 						OWVideoRecording recording = OWVideoRecording.objects(app_context, OWVideoRecording.class).get(model_id);
 						Date last_edited_remote = Constants.sdf.parse(recording_json.getString("last_edited"));
-						Date last_edited_local = Constants.sdf.parse(recording.last_edited.get());
-						Log.i(TAG, "Sync dates. Remote: " + recording_json.getString("last_edited") + " local: " + recording.last_edited.get());
+						Date last_edited_local = Constants.sdf.parse(recording.getLastEdited(app_context));
+						Log.i(TAG, "Sync dates. Remote: " + recording_json.getString("last_edited") + " local: " + recording.getLastEdited(app_context));
 						if(last_edited_remote.after(last_edited_local)){
 							// copy remote data to local
 							Log.i(TAG, "remote recording data is more recent");
@@ -224,8 +224,8 @@ public class OWServiceRequests {
 	 */
 	public static void editRecording(Context app_context, OWVideoRecording recording, JsonHttpResponseHandler response_handler){
     	AsyncHttpClient http_client = HttpClient.setupHttpClient(app_context);
-    	Log.i(TAG,"Commencing Edit Recording: " + recording.toJson(app_context));
-    	http_client.post(app_context, Constants.OW_API_URL + Constants.OW_RECORDING + "/" + recording.uuid.get().toString(), recording.toJson(app_context), "application/json", response_handler);
+    	Log.i(TAG,"Commencing Edit Recording: " + recording.toJsonObject(app_context));
+    	http_client.post(app_context, Constants.OW_API_URL + Constants.OW_RECORDING + "/" + recording.uuid.get().toString(), Utils.JSONObjectToStringEntity(recording.toJsonObject(app_context)), "application/json", response_handler);
     	
     }
 	

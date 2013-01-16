@@ -11,6 +11,12 @@ public interface OWMediaObjectInterface {
 	public String getTitle(Context c);
 	public void setTitle(Context c, String title);
 	
+	public String getFirstPosted(Context c);
+	public void setFirstPosted(Context c, String first_posted);
+	
+	public String getLastEdited(Context c);
+	public void setLastEdited(Context c, String last_edited);
+	
 	public void setViews(Context c, int views);
 	public int getViews(Context c);
 	
@@ -36,6 +42,8 @@ public interface OWMediaObjectInterface {
 	public void addToFeed(Context c, OWFeed feed); 
 	
 	public void updateWithJson(Context c, JSONObject json);
+	
+	public JSONObject toJsonObject(Context c);
 	
 	public boolean save(Context c);
 }

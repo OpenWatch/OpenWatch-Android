@@ -5,11 +5,9 @@ import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
 import android.content.Context;
 
-import com.orm.androrm.Filter;
 import com.orm.androrm.Model;
 import com.orm.androrm.field.BooleanField;
 import com.orm.androrm.field.CharField;
-import com.orm.androrm.field.ForeignKeyField;
 import com.orm.androrm.field.IntegerField;
 import com.orm.androrm.field.OneToManyField;
 
@@ -62,7 +60,7 @@ public class OWLocalVideoRecording extends Model {
 	@Override
 	public boolean save(Context context) {
 		if(this.recording_id.get() != 0)
-			OWVideoRecording.objects(context, OWVideoRecording.class).get(this.recording_id.get()).last_edited.set(Constants.sdf.format(new Date()));
+			OWVideoRecording.objects(context, OWVideoRecording.class).get(this.recording_id.get()).media_object.get(context).setLastEdited(context, Constants.sdf.format(new Date()) );
 		context.getContentResolver().notifyChange(
 				OWContentProvider.getLocalRecordingUri(this.getId()), null);
 		return super.save(context);

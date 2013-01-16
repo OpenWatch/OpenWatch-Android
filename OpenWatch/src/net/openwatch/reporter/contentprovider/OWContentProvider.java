@@ -38,23 +38,27 @@ public class OWContentProvider extends ContentProvider {
      // Externally accessed uris
      public static final Uri LOCAL_RECORDING_URI = AUTHORITY_URI.buildUpon().appendPath(DBConstants.LOCAL_RECORDINGS_TABLENAME).build();
      public static final Uri REMOTE_RECORDING_URI = AUTHORITY_URI.buildUpon().appendPath(DBConstants.RECORDINGS_TABLENAME).build();
+     public static final Uri MEDIA_OBJECT_URI = AUTHORITY_URI.buildUpon().appendPath(DBConstants.MEDIA_OBJECT_TABLENAME).build();
      public static final Uri TAG_URI = AUTHORITY_URI.buildUpon().appendPath(DBConstants.TAG_TABLENAME).build();
      public static final Uri TAG_SEARCH_URI = TAG_URI.buildUpon().appendPath("search").build();
 	
      public static Uri getLocalRecordingUri(int model_id){
-    	 return LOCAL_RECORDING_URI.buildUpon().appendEncodedPath("/" + String.valueOf(model_id)).build();
+    	 return LOCAL_RECORDING_URI.buildUpon().appendEncodedPath(String.valueOf(model_id)).build();
      }
      public static Uri getRemoteRecordingUri(int model_id){
-    	 return REMOTE_RECORDING_URI.buildUpon().appendEncodedPath("/" + String.valueOf(model_id)).build();
+    	 return REMOTE_RECORDING_URI.buildUpon().appendEncodedPath(String.valueOf(model_id)).build();
      }
      public static Uri getFeedUri(OWFeedType feed_type){
-    	 return REMOTE_RECORDING_URI.buildUpon().appendEncodedPath("/" + Constants.feedEndpointFromType(feed_type)).build();
+    	 return REMOTE_RECORDING_URI.buildUpon().appendEncodedPath(Constants.feedEndpointFromType(feed_type)).build();
+     }
+     public static Uri getMediaObjectUri(int model_id){
+    	 return MEDIA_OBJECT_URI.buildUpon().appendEncodedPath(String.valueOf(model_id)).build();
      }
      public static Uri getTagUri(int model_id){
-    	 return TAG_URI.buildUpon().appendEncodedPath("/" + String.valueOf(model_id)).build();
+    	 return TAG_URI.buildUpon().appendEncodedPath(String.valueOf(model_id)).build();
      }
      public static Uri getTagSearchUri(String query){
-    	 return TAG_SEARCH_URI.buildUpon().appendEncodedPath("/" + query).build();
+    	 return TAG_SEARCH_URI.buildUpon().appendEncodedPath(query).build();
      }
      
      public OWContentProvider(){

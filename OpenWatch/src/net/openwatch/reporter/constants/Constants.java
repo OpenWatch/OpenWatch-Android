@@ -5,6 +5,8 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
+import com.github.ignition.core.widgets.RemoteImageView;
+
 /**
  * A class containing values that are not user-facing and so
  * are not intended for translation.
@@ -119,6 +121,9 @@ public class Constants {
 	public static final String OW_FIRST_POSTED = "first_posted";
 	public static final String OW_END_LOCATION = "end_location";
 	public static final String OW_START_LOCATION = "start_location";
+	public static final String OW_BLURB = "blurb";
+	public static final String OW_SLUG = "slug";
+	public static final String OW_BODY = "body";
 	
 	// OpenWatch media capture web service url and endpoints
 	//public static final String OW_MEDIA_URL = "http://192.168.1.112:5000/";

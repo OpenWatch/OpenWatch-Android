@@ -1,6 +1,10 @@
 package net.openwatch.reporter.http;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.security.KeyStore;
 import java.util.List;
 
@@ -29,7 +33,7 @@ public class HttpClient {
     	http_client.setCookieStore(cookie_store);
     	//List cookies = cookie_store.getCookies();
     	//Log.i(TAG, "Setting cookie store. size: " + cookie_store.getCookies().size());
-    	http_client.setSSLSocketFactory(newSslSocketFactory(c));
+    	http_client.setSSLSocketFactory(createApacheOWSSLSocketFactory(c));
     	return http_client;
     }
 	
@@ -38,7 +42,7 @@ public class HttpClient {
 		return new AsyncHttpClient();
 	}
 	
-	private static SSLSocketFactory newSslSocketFactory(Context context) {
+	public static SSLSocketFactory createApacheOWSSLSocketFactory(Context context) {
         try {
             // Get an instance of the Bouncy Castle KeyStore format
             KeyStore trusted = KeyStore.getInstance("BKS");
