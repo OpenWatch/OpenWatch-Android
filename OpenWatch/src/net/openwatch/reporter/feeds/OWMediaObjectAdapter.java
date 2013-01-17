@@ -3,17 +3,17 @@ package net.openwatch.reporter.feeds;
 import com.github.ignition.core.widgets.RemoteImageView;
 
 import net.openwatch.reporter.R;
+import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-public class OWRecordingAdapter extends SimpleCursorAdapter {
+public class OWMediaObjectAdapter extends SimpleCursorAdapter {
 
-	public OWRecordingAdapter(Context context, Cursor c) {
+	public OWMediaObjectAdapter(Context context, Cursor c) {
 		super(context, R.layout.remote_feed_item, c, new String[]{}, new int[]{},0);
 	}
 	
@@ -51,6 +51,11 @@ public class OWRecordingAdapter extends SimpleCursorAdapter {
         }
         
         view.setTag(R.id.list_item_model, cursor.getInt(view_cache._id_col));
+        
+        if(!cursor.isNull(cursor.getColumnIndex(DBConstants.MEDIA_OBJECT_VIDEO)))
+        	view.setTag(R.id.list_item_model_type, Constants.OWContentType.VIDEO);
+        if(!cursor.isNull(cursor.getColumnIndex(DBConstants.MEDIA_OBJECT_STORY)))
+        	view.setTag(R.id.list_item_model_type, Constants.OWContentType.STORY);
 	}
 	
 	// Cache the views within a ListView row item 

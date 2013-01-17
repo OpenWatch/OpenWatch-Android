@@ -62,8 +62,8 @@
     <string name="title">Title</string>
     <string name="description">Description</string>
     <string name="tags">Tags</string>
-    
-    <!--  TagPoolLayout -->
+
+    <!-- TagPoolLayout -->
     <string name="remove_tag_dialog_title">Remove Tag?</string>
     <string name="remove_tag_dialog_msg">Would you like to remove this tag from this recording?</string>
     <string name="remove_tag_dialog_yes">Remove Tag</string>
@@ -82,9 +82,11 @@
     <string name="share_dialog_no">No Thanks</string>
     <string name="title_activity_action_bar_feed">ActionBarFeedActivity</string>
 
-    <!--  RecorderActivity -->
+    <!-- RecorderActivity -->
     <string name="stop_recording_dialog_title">Stop Recording?</string>
     <string name="stop_recording_dialog_message">Are you sure you want to stop recording?</string>
     <string name="stop_recording_dialog_stop">Stop</string>
     <string name="stop_recording_dialog_continue">Continue</string>
+    <string name="title_activity_story_view">StoryViewActivity</string>
+
 </resources>

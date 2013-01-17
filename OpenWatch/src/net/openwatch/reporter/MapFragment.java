@@ -1,5 +1,6 @@
 package net.openwatch.reporter;
 
+import net.openwatch.reporter.model.OWMediaObject;
 import net.openwatch.reporter.model.OWVideoRecording;
 import android.content.Context;
 import android.os.Bundle;
@@ -18,7 +19,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapFragment extends SupportMapFragment implements OWRecordingBackedEntity{
+public class MapFragment extends SupportMapFragment implements OWMediaObjectBackedEntity{
 	private static final String TAG = "MapFragment";
 	
     private GoogleMap mMap;
@@ -112,9 +113,8 @@ public class MapFragment extends SupportMapFragment implements OWRecordingBacked
     }
 
 	@Override
-	public void populateViews(OWVideoRecording recording, Context app_context) {
-		mapRecording(recording);
-		
+	public void populateViews(OWMediaObject media_object, Context app_context) {
+		mapRecording(media_object.video_recording.get(app_context));
 	}
 
 }

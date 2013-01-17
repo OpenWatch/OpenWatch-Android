@@ -34,6 +34,8 @@ import android.view.View;
 import android.widget.ListView;
 import net.openwatch.reporter.RecordingViewActivity;
 import net.openwatch.reporter.R;
+import net.openwatch.reporter.StoryViewActivity;
+import net.openwatch.reporter.constants.Constants.OWContentType;
 import net.openwatch.reporter.constants.Constants.OWFeedType;
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
@@ -69,7 +71,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 
         // This is the Adapter being used to display the list's data.
         //AppListAdapter mAdapter;
-    	OWRecordingAdapter mAdapter;
+    	OWMediaObjectAdapter mAdapter;
 
         // If non-null, this is the current filter the user has provided.
         String mCurFilter;
@@ -87,7 +89,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             setHasOptionsMenu(true);
 
             // Initialize adapter without cursor. Let loader provide it when ready
-            mAdapter = new OWRecordingAdapter(getActivity(), null); 
+            mAdapter = new OWMediaObjectAdapter(getActivity(), null); 
             setListAdapter(mAdapter);
 
             // Start out with a progress indicator.
@@ -131,16 +133,25 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
         }
 
         @Override public void onListItemClick(ListView l, View v, int position, long id) {
-            // Insert desired behavior here.
             Log.i("LoaderCustom", "Item clicked: " + id);
-            Intent i = new Intent(this.getActivity(), RecordingViewActivity.class);
         	try{
+        		Intent i = null;
+        		switch((OWContentType)v.getTag(R.id.list_item_model_type)){
+        		case VIDEO:
+        			i = new Intent(this.getActivity(), RecordingViewActivity.class);
+        			break;
+        		case STORY:
+        			i = new Intent(this.getActivity(), StoryViewActivity.class);
+        			break;
+        		}
         		i.putExtra(Constants.INTERNAL_DB_ID, (Integer)v.getTag(R.id.list_item_model));
+        		if(i != null)
+        			startActivity(i);
         	}catch(Exception e){
         		Log.e(TAG, "failed to load list item model tag");
         		return;
         	}
-        	startActivity(i);
+        	
         }
 
         
@@ -172,7 +183,9 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 			DBConstants.RECORDINGS_TABLE_VIEWS,
 			DBConstants.RECORDINGS_TABLE_ACTIONS,
 			DBConstants.RECORDINGS_TABLE_THUMB_URL,
-			DBConstants.RECORDINGS_TABLE_USERNAME
+			DBConstants.RECORDINGS_TABLE_USERNAME,
+			DBConstants.MEDIA_OBJECT_STORY,
+			DBConstants.MEDIA_OBJECT_VIDEO
 
 	    };
 

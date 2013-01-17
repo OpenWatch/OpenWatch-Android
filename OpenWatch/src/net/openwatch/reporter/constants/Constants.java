@@ -15,6 +15,9 @@ import com.github.ignition.core.widgets.RemoteImageView;
  *
  */
 public class Constants {
+	// For view tag
+	public static enum OWContentType { VIDEO, STORY };
+	public static final String OW_CONTENT_TYPE = "owcontent_type";
 	
 	// Date Formatter for OW server time
 	public static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
@@ -67,6 +70,7 @@ public class Constants {
 	public static final String OW_SIGNUP = "create_account";
 	public static final String OW_REGISTER = "register_app";
 	public static final String OW_RECORDING = "recording";
+	public static final String OW_STORY = "story";
 	public static final String OW_TAGS = "tags";
 	public static final String OW_UPDATE_META = "update_metadata";
 	public static final String OW_FEED = "feed";

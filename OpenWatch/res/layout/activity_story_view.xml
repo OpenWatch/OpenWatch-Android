@@ -1,0 +1,40 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="5dp"
+    tools:context=".StoryViewActivity" >
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/Theme.openwatch.storyTitleText"
+        android:layout_alignParentTop="true"/>
+    
+     <TextView
+        android:id="@+id/blurb"
+        style="@style/Theme.openwatch.storyBlurbText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title" />
+     
+     <TextView
+        android:id="@+id/author"
+        style="@style/Theme.openwatch.storyAuthorText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/blurb"
+        android:layout_alignParentLeft="true" />
+     
+     <TextView
+        android:id="@+id/date"
+        style="@style/Theme.openwatch.storyDateText"
+        android:layout_below="@id/blurb"
+        android:layout_alignParentRight="true"
+        android:layout_toLeftOf="@id/author" />
+     
+      <TextView
+        android:id="@+id/body"
+        android:layout_below="@id/author"
+        style="@style/Theme.openwatch.storyBodyText" />
+
+</RelativeLayout>

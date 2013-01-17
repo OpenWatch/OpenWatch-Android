@@ -87,6 +87,14 @@
             android:name="net.openwatch.reporter.ActionBarFeedActivity"
             android:label="@string/title_activity_action_bar_feed" >
         </activity>
+        <activity
+            android:name="net.openwatch.reporter.StoryViewActivity"
+            android:label="@string/title_activity_story_view"
+            android:parentActivityName="net.openwatch.reporter.FeedFragmentActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.openwatch.reporter.FeedFragmentActivity" />
+        </activity>
     </application>
 
 </manifest>

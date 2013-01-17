@@ -6,6 +6,7 @@ import net.openwatch.reporter.FeedFragmentActivity.TabsAdapter;
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.http.OWServiceRequests;
 import net.openwatch.reporter.http.OWServiceRequests.RequestCallback;
+import net.openwatch.reporter.model.OWMediaObject;
 import net.openwatch.reporter.model.OWVideoRecording;
 
 import com.actionbarsherlock.app.SherlockFragment;
@@ -57,15 +58,15 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 		String video_path = null;
 		try {
 			model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
-			if( OWVideoRecording.objects(this, OWVideoRecording.class).get(model_id).local.get(getApplicationContext()) != null ){
+			if( OWMediaObject.objects(this, OWMediaObject.class).get(model_id).local_video_recording.get(getApplicationContext()) != null ){
 				// This is a local recording, attempt to play HQ file
 				is_local = true;
-				video_path = OWVideoRecording.objects(this, OWVideoRecording.class).get(model_id).local.get(getApplicationContext()).hq_filepath.get();
+				video_path = OWMediaObject.objects(this, OWMediaObject.class).get(model_id).local_video_recording.get(getApplicationContext()).hq_filepath.get();
 				
-			} else if( OWVideoRecording.objects(this, OWVideoRecording.class).get(model_id).video_url.get() != null ){
+			} else if( OWMediaObject.objects(this, OWMediaObject.class).get(model_id).video_recording.get(getApplicationContext()) != null && OWMediaObject.objects(this, OWMediaObject.class).get(model_id).video_recording.get(getApplicationContext()).video_url.get() != null){
 				// remote recording, and video_url present
-				video_path = OWVideoRecording.objects(this, OWVideoRecording.class).get(model_id).video_url.get();
-			} else if (OWVideoRecording.objects(this, OWVideoRecording.class).get(model_id).video_url.get() == null ){
+				video_path = OWMediaObject.objects(this, OWMediaObject.class).get(model_id).video_recording.get(getApplicationContext()).video_url.get();
+			} else if (OWMediaObject.objects(this, OWMediaObject.class).get(model_id).video_recording.get(getApplicationContext()).video_url.get() == null ){
 				// remote recording, and need to get video_url
 				final Context c = this.getApplicationContext();
 				RequestCallback cb = new RequestCallback(){
@@ -77,10 +78,10 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 
 					@Override
 					public void onSuccess() {
-						if( OWVideoRecording.objects(c, OWVideoRecording.class).get(model_id).video_url.get() != null ){
-							setupVideoView(R.id.videoview, OWVideoRecording.objects(c, OWVideoRecording.class).get(model_id).video_url.get());
-							((OWRecordingBackedEntity) RecordingViewActivity.this.getMapFragment() ).populateViews(OWVideoRecording.objects(c, OWVideoRecording.class).get(model_id), c);
-							((OWRecordingBackedEntity) RecordingViewActivity.this.getInfoFragment() ).populateViews(OWVideoRecording.objects(c, OWVideoRecording.class).get(model_id), c);
+						if( OWMediaObject.objects(c, OWMediaObject.class).get(model_id).video_recording.get(c).video_url.get() != null ){
+							setupVideoView(R.id.videoview, OWMediaObject.objects(c, OWMediaObject.class).get(model_id).video_recording.get(c).video_url.get());
+							((OWMediaObjectBackedEntity) RecordingViewActivity.this.getMapFragment() ).populateViews(OWMediaObject.objects(c, OWMediaObject.class).get(model_id), c);
+							((OWMediaObjectBackedEntity) RecordingViewActivity.this.getInfoFragment() ).populateViews(OWMediaObject.objects(c, OWMediaObject.class).get(model_id), c);
 						}
 					}
 					
@@ -177,7 +178,7 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 	}
 	
 	public void onAttachFragment (Fragment fragment){
-    	if(OWRecordingBackedEntity.class.isInstance(fragment))
+    	if(OWMediaObjectBackedEntity.class.isInstance(fragment))
     		attached_fragments.add((Fragment)fragment);
     }
 	

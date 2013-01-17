@@ -50,6 +50,12 @@ public class OWMediaObject extends Model implements OWMediaObjectInterface{
 		super();
 	}
 	
+	public boolean hasTag(Context context, String tag_name) {
+		Filter filter = new Filter();
+		filter.is(DBConstants.TAG_TABLE_NAME, tag_name);
+		return (tags.get(context, this).filter(filter).count() > 0);
+	}
+	
 
 	@Override
 	public void updateWithJson(Context app_context, JSONObject json) {
