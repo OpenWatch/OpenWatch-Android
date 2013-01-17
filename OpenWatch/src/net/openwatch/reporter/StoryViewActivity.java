@@ -13,6 +13,8 @@ import com.actionbarsherlock.view.MenuItem;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -35,7 +37,8 @@ public class StoryViewActivity extends SherlockActivity implements OWMediaObject
 			} else if(OWMediaObject.objects(this, OWMediaObject.class).get(model_id).title.get() != null){
 				((TextView)findViewById(R.id.title)).setText(OWMediaObject.objects(this, OWMediaObject.class).get(model_id).title.get());
 				final Context c = this.getApplicationContext();
-				OWServiceRequests.getStory(getApplicationContext(), model_id, new RequestCallback(){
+				int story_server_id = OWMediaObject.objects(this, OWMediaObject.class).get(model_id).getServerId(c);
+				OWServiceRequests.getStory(getApplicationContext(), story_server_id, new RequestCallback(){
 
 					@Override
 					public void onFailure() {
@@ -87,7 +90,8 @@ public class StoryViewActivity extends SherlockActivity implements OWMediaObject
 		((TextView) this.findViewById(R.id.blurb)).setText(media_object.story.get(app_context).blurb.get());
 		((TextView) this.findViewById(R.id.author)).setText(media_object.username.get());
 		((TextView) this.findViewById(R.id.date)).setText(media_object.getFirstPosted(app_context));
-		((TextView) this.findViewById(R.id.body)).setText(media_object.story.get(app_context).body.get());
+		((TextView) this.findViewById(R.id.body)).setMovementMethod(LinkMovementMethod.getInstance());
+		((TextView) this.findViewById(R.id.body)).setText(Html.fromHtml(media_object.story.get(app_context).body.get()));
 	}
 
 

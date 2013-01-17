@@ -53,6 +53,7 @@ public class OWStory extends Model implements OWMediaObjectInterface{
 	}
 	
 	public void updateWithJson(Context app_context, JSONObject json){
+ 
 		this.media_object.get(app_context).updateWithJson(app_context, json);
 		
 		try{
@@ -76,11 +77,11 @@ public class OWStory extends Model implements OWMediaObjectInterface{
 					this.setThumbnailUrl(app_context, json_user.getString(Constants.OW_THUMB_URL));
 					Log.i(TAG, "Story has no thumbnail, using user thumbnail instead");
 				}
-				this.save(app_context);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 		}
+		this.save(app_context);
 	}
 	
 	public static OWStory createOrUpdateOWStoryWithJson(Context app_context, JSONObject json_obj, OWFeed feed) throws JSONException{
