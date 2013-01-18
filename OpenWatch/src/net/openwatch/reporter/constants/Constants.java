@@ -61,8 +61,10 @@ public class Constants {
 	
 	// OpenWatch web service root url and endpoints
 	//public static final String OW_URL = "http://www.openwatch.net/api/"; // TODO: HTTPS
-	//public static final String OW_API_URL = "http://192.168.1.112:8000/api/";
-	//public static final String OW_URL = "http://192.168.1.112:8000/";
+	//public static final String OW_API_URL = "http://192.168.1.27:8000/api/";
+	//public static final String OW_URL = "http://192.168.1.27:8000/";
+	//public static final String OW_MEDIA_URL = "http://192.168.1.27:5000/";
+	public static final String OW_MEDIA_URL = "https://capture.openwatch.net/";
 	public static final String OW_API_URL = "https://alpha.openwatch.net/api/";
 	public static final String OW_URL = "https://alpha.openwatch.net/";
 	public static final String OW_VIEW = "v/";
@@ -130,8 +132,6 @@ public class Constants {
 	public static final String OW_BODY = "body";
 	
 	// OpenWatch media capture web service url and endpoints
-	//public static final String OW_MEDIA_URL = "http://192.168.1.112:5000/";
-	public static final String OW_MEDIA_URL = "http://capture.openwatch.net/";
 	public static final String OW_MEDIA_START = "start";
 	public static final String OW_MEDIA_END = "end";
 	public static final String OW_MEDIA_UPLOAD = "upload";

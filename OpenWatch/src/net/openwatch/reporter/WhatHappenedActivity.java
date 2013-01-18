@@ -1,29 +1,23 @@
 package net.openwatch.reporter;
 
-import java.util.Date;
-
 import org.json.JSONObject;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.http.OWServiceRequests;
 import net.openwatch.reporter.model.OWVideoRecording;
-import android.net.Uri;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
 
 public class WhatHappenedActivity extends SherlockFragmentActivity {
 	private static final String TAG = "WhatHappenedActivity";
@@ -42,11 +36,28 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 		}catch (Exception e){
 			Log.e(TAG, "could not load recording_id from intent");
 		}
+		fetchRecordingFromOW();
+		
+		Log.i(TAG, "sent recordingMeta request");
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.menu_submit:
+			showCompleteDialog();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	
+	private void fetchRecordingFromOW(){
 		final Context app_context = this.getApplicationContext();
 		OWServiceRequests.getRecordingMeta(app_context, recording_uuid, new JsonHttpResponseHandler(){
 			private static final String TAG = "OWServiceRequests";
 			@Override
     		public void onSuccess(JSONObject response){
+				Log.i(TAG, "getRecording response: " + response.toString());
 				if(response.has("recording")){
 					Log.i(TAG, "Got server recording response!");
 					try{
@@ -75,20 +86,19 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 			}
 			
 		});
-		Log.i(TAG, "sent recordingMeta request");
 	}
-	
-	public void submitButtonClick(View v){
-		showCompleteDialog();
-		//showShareDialog();
-	}
+
 	
 	/**
 	 * If a server_id was received, give option to share, else return to MainActivity
 	 */
 	private void showCompleteDialog(){
+		if(model_id == -1){
+			Log.e(TAG, "model_id not set. aborting showCompleteDialog");
+			return;
+		}
 		final OWVideoRecording recording = OWVideoRecording.objects(this.getApplicationContext(), OWVideoRecording.class).get(model_id);
-		if( recording.getServerId(getApplicationContext()) == 0){
+		if( recording.getServerId(getApplicationContext()) != null){
 			Log.i(TAG, "recording does not have a valid server_id. Cannot present share dialog");
 			Intent i = new Intent(WhatHappenedActivity.this, MainActivity.class);
 			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -139,7 +149,6 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 		super.onPause();
 	}
 	
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.

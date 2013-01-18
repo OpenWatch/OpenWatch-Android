@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="5dp"
     android:orientation="vertical"
     tools:context=".WhatHappenedActivity" >
 
@@ -11,24 +12,16 @@
         
         <TextView
             android:id="@+id/title"
+            android:fontFamily="sans-serif-light"
             android:layout_alignParentLeft="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/what_happened"
             android:textSize="30dp" />
 
-        <Button
-            android:id="@+id/next_Button"
-            android:layout_alignParentRight="true"
-            android:layout_toRightOf="@id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="submitButtonClick"
-            android:text="@string/submit" />
     </RelativeLayout>
 
     <FrameLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 

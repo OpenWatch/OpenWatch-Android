@@ -6,6 +6,7 @@ import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.constants.Constants.OWFeedType;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.orm.androrm.Filter;
 import com.orm.androrm.Model;
@@ -40,6 +41,15 @@ public class OWFeed extends Model{
 		new_feed.name.set(type.toString().toLowerCase(Locale.US));
 		new_feed.save(app_context);
 		return new_feed;
+	}
+	
+	public static OWFeedType getFeedTypeFromString(Context app_context, String feed_name){
+		for(OWFeedType type : OWFeedType.values()){
+			//Log.i("FeedTypeFromString", String.format("Checking if %s = %s",type.toString().toLowerCase(), feed_name));
+			if(type.toString().toLowerCase().compareTo(feed_name) == 0)
+				return type;
+		}
+		return null;
 	}
 
 }

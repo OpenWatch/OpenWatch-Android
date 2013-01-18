@@ -46,9 +46,10 @@ public class OWStory extends Model implements OWMediaObjectInterface{
 	@Override
 	public boolean save(Context context) {
 		// notify the ContentProvider that the dataset has changed
-		context.getContentResolver().notifyChange(OWContentProvider.getMediaObjectUri(getId()), null);
-		if(media_object.get() != null) // this is called once in <init> to get db id before medi_object created
+		if(media_object.get() != null){ // this is called once in <init> to get db id before medi_object created
 			setLastEdited(context, Constants.sdf.format(new Date()));
+			context.getContentResolver().notifyChange(OWContentProvider.getMediaObjectUri(media_object.get(context).getId()), null);
+		}
 		return super.save(context);
 	}
 	
@@ -182,17 +183,17 @@ public class OWStory extends Model implements OWMediaObjectInterface{
 	}
 
 	@Override
-	public int getViews(Context c) {
+	public Integer getViews(Context c) {
 		return this.media_object.get(c).getViews(c);
 	}
 
 	@Override
-	public int getActions(Context c) {
+	public Integer getActions(Context c) {
 		return this.media_object.get(c).getActions(c);
 	}
 
 	@Override
-	public int getServerId(Context c) {
+	public Integer getServerId(Context c) {
 		return this.media_object.get(c).getServerId(c);
 	}
 

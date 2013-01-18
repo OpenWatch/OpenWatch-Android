@@ -88,5 +88,6 @@
     <string name="stop_recording_dialog_stop">Stop</string>
     <string name="stop_recording_dialog_continue">Continue</string>
     <string name="title_activity_story_view">StoryViewActivity</string>
+    <string name="title_activity_web_browser">WebBrowserActivity</string>
 
 </resources>

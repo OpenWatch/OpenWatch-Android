@@ -46,7 +46,7 @@ public class FFChunkedAudioVideoEncoder {
 	
 	public interface ChunkedRecorderListener{
 		public int getRecordingDBID();
-		public void setRecordingID(String recording_id);
+		public void setRecordingUUID(String recording_id);
 		public void setContext(Context c);
 		public void encoderStarted(Date start_date);
 		public void encoderShifted(String finalized_file);
@@ -54,7 +54,7 @@ public class FFChunkedAudioVideoEncoder {
 	}
 	
 	private synchronized String getChunkFilename(int count){
-		return output_filename_base + "_" + String.valueOf(count) + FILE_EXT;
+		return output_filename_base + String.valueOf(count) + FILE_EXT;
 	}
 	
 	public synchronized void setRecorderListener(ChunkedRecorderListener listener){

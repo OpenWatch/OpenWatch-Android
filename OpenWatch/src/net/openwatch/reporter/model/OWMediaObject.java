@@ -1,8 +1,12 @@
 package net.openwatch.reporter.model;
 
 
+import java.util.Date;
+
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.Constants.OWFeedType;
 import net.openwatch.reporter.constants.DBConstants;
+import net.openwatch.reporter.contentprovider.OWContentProvider;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,6 +52,24 @@ public class OWMediaObject extends Model implements OWMediaObjectInterface{
 	
 	public OWMediaObject() {
 		super();
+	}
+	
+	@Override
+	public boolean save(Context context) {
+		// notify the ContentProvider that the dataset has changed
+		context.getContentResolver().notifyChange(OWContentProvider.getMediaObjectUri(getId()), null);
+		// notify all of this object's feed uris
+		OWFeedType feed_type = null;
+		for(OWFeed feed : feeds.get(context, this)){
+			feed_type = OWFeed.getFeedTypeFromString(context, feed.name.get());
+			Log.i(TAG, "feed_type: " + feed_type);
+			if(feed_type != null){
+				Log.i(TAG, "NotifyingChange on feed: " + feed_type.toString());
+				context.getContentResolver().notifyChange(OWContentProvider.getFeedUri(feed_type), null);
+			}
+		}
+		setLastEdited(context, Constants.sdf.format(new Date()));
+		return super.save(context);
 	}
 	
 	public boolean hasTag(Context context, String tag_name) {
@@ -199,19 +221,19 @@ public class OWMediaObject extends Model implements OWMediaObjectInterface{
 
 
 	@Override
-	public int getViews(Context c) {
+	public Integer getViews(Context c) {
 		return this.views.get();
 	}
 
 
 	@Override
-	public int getActions(Context c) {
+	public Integer getActions(Context c) {
 		return this.actions.get();
 	}
 
 
 	@Override
-	public int getServerId(Context c) {
+	public Integer getServerId(Context c) {
 		return this.server_id.get();
 	}
 
@@ -265,11 +287,11 @@ public class OWMediaObject extends Model implements OWMediaObjectInterface{
 		try {
 			if(getTitle(c) != null)
 				json_obj.put(Constants.OW_TITLE, getTitle(c));
-			if(getViews(c) != 0)
+			if(getViews(c) != null)
 				json_obj.put(Constants.OW_VIEWS, getViews(c));
-			if(getActions(c) != 0)
+			if(getActions(c) != null)
 				json_obj.put(Constants.OW_ACTIONS, getActions(c));
-			if(getServerId(c) != 0)
+			if(getServerId(c) != null)
 				json_obj.put(Constants.OW_SERVER_ID, getServerId(c));
 			if(getDescription(c) != null)
 				json_obj.put(Constants.OW_DESCRIPTION, getDescription(c));

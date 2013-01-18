@@ -13,6 +13,7 @@ import net.openwatch.reporter.model.OWMediaObject;
 import net.openwatch.reporter.model.OWVideoRecording;
 import net.openwatch.reporter.model.OWTag;
 import net.openwatch.reporter.view.TagPoolLayout;
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -78,7 +79,8 @@ public class RecordingInfoFragment extends SherlockFragment implements OWMediaOb
 		tags.setThreshold(1);
 
 		//getLoaderManager().initLoader(0, null, this);
-		setInfoFieldsEnabled(this.getArguments().getBoolean(Constants.IS_LOCAL_RECORDING));
+		if(getArguments() != null)
+			setInfoFieldsEnabled(this.getArguments().getBoolean(Constants.IS_LOCAL_RECORDING, true));
 		
         Log.i(TAG, "onCreateView. tag adapter size:" + String.valueOf(mAdapter.getCount()));
         return v;
@@ -188,23 +190,26 @@ public class RecordingInfoFragment extends SherlockFragment implements OWMediaOb
     	super.onPause();
     	if(media_obj == null)
     		return;
-    	
+    	//String rec_title = media_obj.getTitle(getActivity().getApplicationContext());
+    	//String title_input = title.getText().toString();
     	// Title may not be set to empty string
-    	if(media_obj.getTitle(getActivity().getApplicationContext()).compareTo(title.getText().toString()) != 0 && media_obj.getTitle(getActivity().getApplicationContext()).compareTo("") != 0){
+    	if(title.getText().toString().compareTo("") != 0){
     		doSave = true;
     		media_obj.setTitle(getActivity().getApplicationContext(), title.getText().toString());
     	}
     	// if recording has a description, make sure it has changed before saving
-    	if(media_obj.getDescription(getActivity().getApplicationContext()) != null && media_obj.getDescription(getActivity().getApplicationContext()).compareTo(description.getText().toString()) != 0){
-    		doSave = true;
-    		media_obj.setDescription(getActivity().getApplicationContext(), description.getText().toString());
+    	if(description.getText().toString().compareTo("") != 0){
+	    	if(media_obj.getDescription(getActivity().getApplicationContext()) != null && media_obj.getDescription(getActivity().getApplicationContext()).compareTo(description.getText().toString()) != 0){
+	    		doSave = true;
+	    		media_obj.setDescription(getActivity().getApplicationContext(), description.getText().toString());
+	    	}else if(media_obj.getDescription(getActivity().getApplicationContext()) == null ){
+	    		doSave = true;
+	    		media_obj.setDescription(getActivity().getApplicationContext(), description.getText().toString());
+	    	}
     	}
-    	// If recording does not have a description, make sure the EditText description is not blank
-    	else if(media_obj.getDescription(getActivity().getApplicationContext()) != null && "".compareTo(description.getText().toString()) != 0){
-    		doSave = true;
-    		media_obj.setDescription(getActivity().getApplicationContext(), description.getText().toString());
-    	}
+    	
     	if(doSave){
+    		media_obj.save(getActivity().getApplicationContext());
     		Log.i(TAG, "Saving recording. " + title.getText().toString() + " : " + description.getText().toString());
     		media_obj.video_recording.get(getActivity().getApplicationContext()).saveAndSync(getActivity().getApplicationContext());
     	}

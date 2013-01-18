@@ -134,13 +134,14 @@ public class OWMediaRequests {
 	 * @param recording_end
 	 * @param all_files
 	 */
-	public static void end(Context c, String upload_token, OWVideoRecording recording, String all_files){
+	public static void end(Context c, String upload_token, OWVideoRecording recording){
 		AsyncHttpClient client = HttpClient.setupHttpClient();
-		RequestParams params = initializeRequestParamsWithLocalRecording(c, recording);
-		params.put(Constants.OW_ALL_FILES, all_files);
+		//RequestParams params = initializeRequestParamsWithLocalRecording(c, recording);
+		//Log.i(TAG, "Sending all files: " + recording.local.get(c).segmentsToJSONArray(c).toString());
+		//params.put(Constants.OW_ALL_FILES, recording.local.get(c).segmentsToJSONArray(c).toString() );
 		String url = setupMediaURL(Constants.OW_MEDIA_END, upload_token, recording.uuid.get());
-		Log.i(TAG, "sending end signal to " + url);
-		client.post(url, params, new AsyncHttpResponseHandler(){
+		Log.i(TAG, "sending end signal to " + url + " request body: " + recording.local.get(c).toOWMediaServerJSON(c));
+		client.post(c, url, Utils.JSONObjectToStringEntity(recording.local.get(c).toOWMediaServerJSON(c)), "application/json", new AsyncHttpResponseHandler(){
 
     		@Override
     		public void onSuccess(String response){
@@ -254,6 +255,12 @@ public class OWMediaRequests {
 		return Constants.OW_MEDIA_URL + endpoint + "/" + public_upload_token + "/" + recording_id;
 	}
 	
+	/**
+	 * Deprecated. Use OWLocalVideoRecording.toOWMediaServerJSON
+	 * @param c
+	 * @param recording
+	 * @return
+	 */
 	private static RequestParams initializeRequestParamsWithLocalRecording(Context c, OWVideoRecording recording){
 		RequestParams params = new RequestParams();
 		if(recording.begin_lat.get() != 0){

@@ -52,18 +52,18 @@ public class OWVideoRecording extends Model implements OWMediaObjectInterface{
 		
 		save(c);
 		OWMediaObject media_object = new OWMediaObject();
-		media_object.video_recording.set(getId());
+		media_object.video_recording.set(this);
 		media_object.save(c);
 		this.media_object.set(media_object);
 		save(c);
 		
 		//TODO: Do not create local recording here
-		OWLocalVideoRecording local = new OWLocalVideoRecording();
-		local.recording_id.set(getId());
-		local.save(c);
+		//OWLocalVideoRecording local = new OWLocalVideoRecording();
+		//local.recording_id.set(getId());
+		//local.save(c);
 		
 		creation_time.set(Constants.sdf.format(new Date()));
-		this.local.set(local);
+		//this.local.set(local);
 		
 		save(c);
 	}
@@ -78,14 +78,6 @@ public class OWVideoRecording extends Model implements OWMediaObjectInterface{
 		this.save(c);
 	}
 	
-	public void initializeRecordingAsLocal(Context c, String title, String uuid,
-			double lat, double lon) {
-		this.media_object.get(c).setTitle(c, title);
-		this.uuid.set(uuid);
-		this.begin_lat.set(lat);
-		this.begin_lon.set(lon);
-		this.save(c);
-	}
 	
 	/**
 	 * Save, sync with OpenWatch.net, and notify content provider.
@@ -316,17 +308,17 @@ public class OWVideoRecording extends Model implements OWMediaObjectInterface{
 	}
 	
 	@Override
-	public int getViews(Context c) {
+	public Integer getViews(Context c) {
 		return media_object.get(c).getViews(c);
 	}
 
 	@Override
-	public int getActions(Context c) {
+	public Integer getActions(Context c) {
 		return media_object.get(c).getActions(c);
 	}
 
 	@Override
-	public int getServerId(Context c) {
+	public Integer getServerId(Context c) {
 		return media_object.get(c).getServerId(c);
 	}
 

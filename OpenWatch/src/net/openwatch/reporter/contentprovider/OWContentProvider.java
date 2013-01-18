@@ -150,10 +150,6 @@ public class OWContentProvider extends ContentProvider {
 				//adapter.close();
 				break;
 			case REMOTE_RECORDING_BY_FEED:
-				// get feed id from name
-				// select owrecording where 
-				// Temporarily return all recordings
-				// select __ from owrecording JOIN owfeed_owrecording on owfeed = FEED_PK;
 				int feed_id = -1;
 				Log.i(TAG, "get feed _id query:" + " SELECT " + DBConstants.ID + " from owfeed where NAME = \"" + uri.getLastPathSegment() + "\"");
 				Cursor feed_cursor = adapter.open().query("SELECT " + DBConstants.ID + "  from " + DBConstants.FEED_TABLENAME +" WHERE " + DBConstants.FEED_NAME+ "= \"" + uri.getLastPathSegment() + "\""); // empty
@@ -166,10 +162,6 @@ public class OWContentProvider extends ContentProvider {
 					return null;
 												
 				Log.i(TAG, String.format("fetching feed id: %d", feed_id));
-				//String query = select + " FROM " + DBConstants.RECORDINGS_TABLENAME + " JOIN " +  DBConstants.FEED_RECORDING_TABLENAME + " ON " + DBConstants.FEED_TABLENAME + "=" + String.valueOf(feed_id) + 
-				//String query = "SELECT owrecording._id, owrecording.title, owrecording.views, owrecording.actions, owrecording.thumbnail_url, owrecording.username, owstory._id, owstory.title, owstory.views, owstory.actions, owstory.thumbnail_url, owstory.username FROM owrecording JOIN owfeed_owrecording ON owfeed_owrecording.owfeed=1 JOIN owstory ON owfeed_owstory.owstory=1";
-				//String query = "SELECT owrecording._id, owrecording.title, owrecording.views, owrecording.actions, owrecording.thumbnail_url, owrecording.username, owstory._id, owstory.title, owstory.views, owstory.actions, owstory.thumbnail_url, owstory.username FROM owrecording, owstory";
-				//String query = "select * from " + DBConstants.RECORDINGS_TABLENAME;
 				String query = select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " JOIN " + DBConstants.FEED_MEDIA_OBJ_TABLENAME + " ON " + DBConstants.FEED_MEDIA_OBJ_TABLENAME+"."+DBConstants.MEDIA_OBJECT_TABLENAME + "=" + DBConstants.MEDIA_OBJECT_TABLENAME+"." + DBConstants.ID + " WHERE " + DBConstants.FEED_MEDIA_OBJ_TABLENAME + "." + DBConstants.FEED_TABLENAME + "=" + String.valueOf(feed_id);
 				Log.i(TAG, "Query: " + query);
 				result = adapter.open().query(query);

@@ -18,13 +18,13 @@ public interface OWMediaObjectInterface {
 	public void setLastEdited(Context c, String last_edited);
 	
 	public void setViews(Context c, int views);
-	public int getViews(Context c);
+	public Integer getViews(Context c);
 	
 	public void setActions(Context c, int actions);
-	public int getActions(Context c);
+	public Integer getActions(Context c);
 	
 	public void setServerId(Context c, int server_id);
-	public int getServerId(Context c);
+	public Integer getServerId(Context c);
 	
 	public void setDescription(Context c, String description);
 	public String getDescription(Context c);

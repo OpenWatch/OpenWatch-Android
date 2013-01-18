@@ -3,7 +3,6 @@ package net.openwatch.reporter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.TimeZone;
 import java.util.UUID;
 
 import org.json.JSONArray;
@@ -15,19 +14,17 @@ import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.file.FileUtils;
 import net.openwatch.reporter.http.OWMediaRequests;
 import net.openwatch.reporter.location.DeviceLocation;
-import net.openwatch.reporter.location.DeviceLocation.LocationResult;
 import net.openwatch.reporter.model.OWLocalVideoRecording;
+import net.openwatch.reporter.model.OWMediaObject;
 import net.openwatch.reporter.model.OWVideoRecording;
 import net.openwatch.reporter.recording.ChunkedAudioVideoSoftwareRecorder;
 import net.openwatch.reporter.recording.FFChunkedAudioVideoEncoder.ChunkedRecorderListener;
 
 import android.hardware.Camera;
-import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Activity;
+import android.os.PowerManager;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -41,18 +38,20 @@ import android.view.View.OnClickListener;
 public class RecorderActivity extends SherlockActivity implements
 		SurfaceHolder.Callback {
 
-	private static final String TAG = "RecorderActivity";
+	static final String TAG = "RecorderActivity";
 	
-	private SurfaceView camera_preview;
+	SurfaceView camera_preview;
 
-	private Camera mCamera;
+	Camera mCamera;
 
-	private ChunkedAudioVideoSoftwareRecorder av_recorder = new ChunkedAudioVideoSoftwareRecorder();
+	ChunkedAudioVideoSoftwareRecorder av_recorder = new ChunkedAudioVideoSoftwareRecorder();
 	
-	private boolean ready_to_record = false;
+	PowerManager.WakeLock wl;
+	
+	boolean ready_to_record = false;
 	
 	String output_filename;
-	String recording_id;
+	String mRecording_uuid;
 	String recording_start;
 	String recording_end;
 	
@@ -62,7 +61,7 @@ public class RecorderActivity extends SherlockActivity implements
 	ChunkedRecorderListener chunk_listener = new ChunkedRecorderListener(){
 		private static final String TAG = "ChunkedRecorderListener";
 		Context c; // for db transactions
-		String recording_id; // recording uuid for OW service
+		String recording_uuid; // recording uuid for OW service
 		int owrecording_id = -1; // database id for OWLocalRecording
 		ArrayList<String> all_files = null;
 		
@@ -71,13 +70,13 @@ public class RecorderActivity extends SherlockActivity implements
 			return owrecording_id;
 		}
 		@Override
-		public void setRecordingID(String recording_id) {
-			this.recording_id = recording_id;
+		public void setRecordingUUID(String recording_uuid) {
+			this.recording_uuid = recording_uuid;
 			
 		}
 				
 		public void setContext(Context c){
-			this.c = c;
+			this.c = c.getApplicationContext();
 		}
 		
 		@Override
@@ -96,28 +95,28 @@ public class RecorderActivity extends SherlockActivity implements
 				String hq_filename, ArrayList<String> all_files) {
 			this.all_files = all_files;
 			Log.i(TAG,"start-date: " + Constants.sdf.format(start_date) + " stop-date: " + Constants.sdf.format(stop_date));
+			Log.i(TAG, "sending all_files: " + new JSONArray(all_files).toString());
 			new MediaSignalTask().execute("end", Constants.sdf.format(start_date), Constants.sdf.format(stop_date), new JSONArray(all_files).toString());
 			new MediaSignalTask().execute("hq", hq_filename);
 		}
 		
 		class MediaSignalTask extends AsyncTask<String, Void, Void> {
 	        protected Void doInBackground(String... command) {
-	        	Log.i(TAG, "sendMediaCapture command: " + command[0] + " command length: " + command.length + " recording_id: " + recording_id);
+	        	Log.i(TAG, "sendMediaCapture command: " + command[0] + " command length: " + command.length + " recording_uuid: " + recording_uuid);
 	        	SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
 	            final String public_upload_token = profile.getString(Constants.PUB_TOKEN, "");
-	            if(public_upload_token.compareTo("") == 0 || recording_id == null)
+	            if(public_upload_token.compareTo("") == 0 || recording_uuid == null)
 	            	return null;
 
 	        	if(command[0].compareTo("start") == 0){
 	        		if(command.length == 2){
 	        			// make db entry
-	        			if(recording_id != null){
-		        			OWVideoRecording local = new OWVideoRecording(c.getApplicationContext());
-		    	        	local.initializeRecording(c.getApplicationContext(), command[1], recording_id, 0.0, 0.0);
+	        			if(recording_uuid != null){
+		        			OWLocalVideoRecording local = new OWLocalVideoRecording(c);
+		    	        	local.recording.get(c).initializeRecording(c.getApplicationContext(), command[1], recording_uuid, 0.0, 0.0);
 		    	        	Log.i(TAG, "initialize OWLocalRecording. id: " + String.valueOf(local.getId()));
 		    	        	local.save(c.getApplicationContext());
-		    	        	// make network request
-		    	        	owrecording_id = local.getId();
+		    	        	owrecording_id = local.recording.get(c).getId();
 		    	        	// poll for device location
 		    	        	RecorderActivity.this.runOnUiThread(new Runnable(){
 
@@ -128,7 +127,7 @@ public class RecorderActivity extends SherlockActivity implements
 		    	        		
 		    	        	});
 		    	        	
-		        			OWMediaRequests.start(public_upload_token, recording_id, command[1]);
+		        			OWMediaRequests.start(public_upload_token, recording_uuid, command[1]);
 	        			}
 	                }
 	        	} else if(command[0].compareTo("end") == 0){
@@ -137,8 +136,8 @@ public class RecorderActivity extends SherlockActivity implements
 	        				OWVideoRecording recording = (OWVideoRecording) OWVideoRecording.objects(c.getApplicationContext(), OWVideoRecording.class).get(owrecording_id);
 	        				//recording.local is null here...
 		        			String last_segment = all_files.get(all_files.size()-1);
-		        			String filename = last_segment.substring(last_segment.lastIndexOf(File.separator),last_segment.length());
-		        			String filepath = last_segment.substring(0,last_segment.lastIndexOf(File.separator));
+		        			String filename = last_segment.substring(last_segment.lastIndexOf(File.separator)+1,last_segment.length());
+		        			String filepath = last_segment.substring(0,last_segment.lastIndexOf(File.separator)+1);
 		        			OWLocalVideoRecording local = recording.local.get(c.getApplicationContext());
 		        			local.recording_end_time.set(command[2]);
 		        			local.addSegment(c.getApplicationContext(), filepath, filename);
@@ -154,7 +153,8 @@ public class RecorderActivity extends SherlockActivity implements
 								}
 		    	        		
 		    	        	});
-		        			OWMediaRequests.end(c.getApplicationContext(), public_upload_token, recording, command[3]);
+		        			OWMediaRequests.sendLQChunk(public_upload_token, recording_uuid, last_segment);
+		        			OWMediaRequests.end(c.getApplicationContext(), public_upload_token, recording);
 	        			}
 	        			
 	        		}
@@ -162,11 +162,11 @@ public class RecorderActivity extends SherlockActivity implements
 	        		if(command.length == 2){
 	        			if(owrecording_id != -1){
 		        			OWVideoRecording recording = (OWVideoRecording) OWVideoRecording.objects(c.getApplicationContext(), OWVideoRecording.class).get(owrecording_id);
-		        			String filename = command[1].substring(command[1].lastIndexOf(File.separator),command[1].length());
-		        			String filepath = command[1].substring(0,command[1].lastIndexOf(File.separator));
+		        			String filename = command[1].substring(command[1].lastIndexOf(File.separator)+1,command[1].length());
+		        			String filepath = command[1].substring(0,command[1].lastIndexOf(File.separator)+1);
 		        			recording.local.get(c.getApplicationContext()).addSegment(c.getApplicationContext(), filepath, filename);
 		        			Log.i(TAG, "owlocalrecording addsegment");
-		        			OWMediaRequests.sendLQChunk(public_upload_token, recording_id, command[1]);
+		        			OWMediaRequests.sendLQChunk(public_upload_token, recording_uuid, command[1]);
 	        			}
 	        			
 	        		}
@@ -177,7 +177,7 @@ public class RecorderActivity extends SherlockActivity implements
 	        			local.hq_filepath.set(command[1]);
 	        			local.save(c.getApplicationContext());
 	        			Log.i(TAG, "id: " + owrecording_id + " hq filepath set:" + command[1]);
-	        			OWMediaRequests.sendHQFile(public_upload_token, recording_id, command[1]);
+	        			OWMediaRequests.sendHQFile(public_upload_token, recording_uuid, command[1]);
 	        		}
 	        	}
 	        	return null;
@@ -226,14 +226,14 @@ public class RecorderActivity extends SherlockActivity implements
 				mCamera = getCameraInstance();
 				prepareOutputLocation();
 				chunk_listener.setContext(this);
-				chunk_listener.setRecordingID(recording_id);
+				chunk_listener.setRecordingUUID(mRecording_uuid);
 				av_recorder.setChunkedRecorderListener(chunk_listener);
+				ready_to_record = true;
 			} catch (Exception e) {
 				Log.e("Recorder init error", "Could not init Camera");
 				e.printStackTrace();
 			}
 		}
-		ready_to_record = true;
 	}
 
 	@Override
@@ -277,10 +277,10 @@ public class RecorderActivity extends SherlockActivity implements
 						Constants.ROOT_OUTPUT_DIR),
 				Constants.RECORDING_OUTPUT_DIR);
 		
-		recording_id = generateRecordingIdentifier();
+		mRecording_uuid = generateRecordingIdentifier();
 		
-		output_filename = FileUtils.getStorageDirectory(recording_dir, recording_id).getAbsolutePath();
-		output_filename += "/" + String.valueOf(new Date().getTime());
+		output_filename = FileUtils.getStorageDirectory(recording_dir, mRecording_uuid).getAbsolutePath();
+		output_filename += "/";
 	}
 	
 	
@@ -296,6 +296,10 @@ public class RecorderActivity extends SherlockActivity implements
 		try {
 			av_recorder.startRecording(mCamera, camera_preview, output_filename);
 			recording_start = String.valueOf(new Date().getTime() / 1000);
+			
+			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+			wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "OWRecording");
+			wl.acquire();
 			Log.d(TAG, "startRecording()");
 		} catch (Exception e) {
 			Log.e(TAG, "failed to start recording");
@@ -309,11 +313,21 @@ public class RecorderActivity extends SherlockActivity implements
 	 */
 	private void stopRecording(){
 		if (av_recorder.is_recording) {
+			if(wl != null)
+				wl.release();
 			av_recorder.stopRecording();
 			recording_end = String.valueOf(new Date().getTime() / 1000);
 			Intent i = new Intent(RecorderActivity.this, WhatHappenedActivity.class);
-			i.putExtra(Constants.INTERNAL_DB_ID, chunk_listener.getRecordingDBID());
-			i.putExtra(Constants.OW_REC_UUID, recording_id);
+			try{
+				i.putExtra(Constants.INTERNAL_DB_ID, OWVideoRecording.objects(getApplicationContext(), OWVideoRecording.class).get(chunk_listener.getRecordingDBID()).media_object.get(getApplicationContext()).getId());
+			}catch(NullPointerException e){
+				OWVideoRecording rec = OWVideoRecording.objects(getApplicationContext(), OWVideoRecording.class).get(chunk_listener.getRecordingDBID());
+				if(rec == null)
+					Log.e(TAG, "Error getting OWVideoRecording from chunk_listener db id");
+				else if(rec.media_object.get(getApplicationContext()) == null)
+					Log.e(TAG, "Error getting OWMediaObject from OWVideoRecording");
+			}
+			i.putExtra(Constants.OW_REC_UUID, mRecording_uuid);
 			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 			startActivity(i);
 			finish(); // ensure this activity removed from the stack
@@ -348,8 +362,5 @@ public class RecorderActivity extends SherlockActivity implements
 			}).show();
 		}
 	}
-	
-	
-	
 
 }

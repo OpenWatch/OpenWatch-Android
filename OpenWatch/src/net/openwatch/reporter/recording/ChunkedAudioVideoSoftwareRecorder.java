@@ -260,9 +260,7 @@ public class ChunkedAudioVideoSoftwareRecorder {
 		return parameters;
 	}
 	
-	// Interface describing callback listener
-	
-	
+
 	enum EncoderTaskType{
 		ENCODE_FRAME, SHIFT_ENCODER, FINALIZE_ENCODER;
 	}
