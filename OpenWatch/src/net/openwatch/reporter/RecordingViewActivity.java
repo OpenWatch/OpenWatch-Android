@@ -114,15 +114,16 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 			mTabHost.requestFocus();
 			mViewPager = (ViewPager) findViewById(R.id.pager);
 			mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
-					
-			mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_map))
-					.setIndicator(inflateCustomTab(getString(R.string.tab_map))), MapFragment.class,
-					null);
+			
 			Bundle fragBundle = new Bundle(1);
 			fragBundle.putBoolean(Constants.IS_LOCAL_RECORDING, is_local);
 			mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_info))
 					.setIndicator(inflateCustomTab(getString(R.string.tab_info))),
 					RecordingInfoFragment.class, fragBundle);
+					
+			mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_map))
+					.setIndicator(inflateCustomTab(getString(R.string.tab_map))), MapFragment.class,
+					null);
 	
 			if (savedInstanceState != null) {
 				mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
@@ -210,13 +211,13 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 	
 	public Fragment getMapFragment(){
 		if(attached_fragments.size() == 2)
-			return attached_fragments.get(0);
+			return attached_fragments.get(1);
 		return null;
 	}
 	
 	public Fragment getInfoFragment(){
 		if(attached_fragments.size() == 2)
-			return attached_fragments.get(1);
+			return attached_fragments.get(0);
 		return null;
 	}
 
