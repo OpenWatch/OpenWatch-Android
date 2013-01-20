@@ -185,6 +185,7 @@ public class OWVideoRecording extends Model implements OWMediaObjectInterface{
 	
 	/**
 	 * Update a recording with JSON formatted as the /api/recording/<uuid> response
+	 * Calls save
 	 * @param app_context
 	 * @param json
 	 */

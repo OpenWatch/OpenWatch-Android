@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Thanks! http://android.onyou.ch/2011/01/25/simple-custom-button-using-a-selector-xml-layout/ -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- disabled -->
+    <item android:state_enabled="false"><shape>
+
+            <gradient android:angle="270" android:endColor="#7d8b7e" android:startColor="#a3b5a4" />
+
+            <corners android:radius="8dp" />
+        </shape></item>
+
+    <!-- pressed -->
+    <!-- pressed -->
+    <item android:state_pressed="true"><shape>
+            <gradient android:angle="270" android:endColor="#1c8622" android:startColor="#28b52f" />
+
+            <corners android:radius="8dp" />
+        </shape></item>
+
+    <!-- focused -->
+    <item android:state_focused="true"><shape>
+            <gradient android:angle="270" android:endColor="#1c8622" android:startColor="#28b52f" />
+
+            <corners android:radius="8dp" />
+        </shape></item>
+
+    <!-- default -->
+    <item><shape>
+            <gradient android:angle="270" android:endColor="#4fde53" android:startColor="#59f95d" />
+
+            <corners android:radius="8dp" />
+        </shape></item>
+
+</selector>

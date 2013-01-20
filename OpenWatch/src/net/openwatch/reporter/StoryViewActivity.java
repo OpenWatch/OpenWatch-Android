@@ -20,6 +20,7 @@ import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class StoryViewActivity extends SherlockActivity implements OWMediaObjectBackedEntity{
@@ -80,6 +81,11 @@ public class StoryViewActivity extends SherlockActivity implements OWMediaObject
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+	@Override
+	public void onResume(){
+		super.onResume();
+	}
 
 	@Override
 	public void populateViews(OWMediaObject media_object, Context app_context) {
@@ -89,5 +95,8 @@ public class StoryViewActivity extends SherlockActivity implements OWMediaObject
 		((TextView) this.findViewById(R.id.date)).setText(media_object.getFirstPosted(app_context));
 		((TextView) this.findViewById(R.id.body)).setMovementMethod(LinkMovementMethod.getInstance());
 		((TextView) this.findViewById(R.id.body)).setText(Html.fromHtml(media_object.story.get(app_context).body.get()));
+		if(findViewById(R.id.body_scroll_view) != null){
+			((ScrollView)findViewById(R.id.body_scroll_view)).fullScroll(ScrollView.FOCUS_UP);
+		}
 	}
 }

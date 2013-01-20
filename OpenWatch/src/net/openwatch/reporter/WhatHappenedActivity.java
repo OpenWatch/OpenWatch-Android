@@ -9,6 +9,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.http.OWServiceRequests;
+import net.openwatch.reporter.model.OWMediaObject;
 import net.openwatch.reporter.model.OWVideoRecording;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
@@ -63,11 +64,12 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 					try{
 						JSONObject recording_json = response.getJSONObject("recording");
 						// response was successful
-						OWVideoRecording recording = OWVideoRecording.objects(app_context, OWVideoRecording.class).get(model_id);
+						OWVideoRecording recording = OWMediaObject.objects(app_context, OWMediaObject.class).get(model_id).video_recording.get(app_context);
 						recording.updateWithJson(app_context, recording_json);
 						Log.i(TAG, "recording updated with server meta response");
 						return;
 					} catch(Exception e){
+						Log.e(TAG, "Error processing getRecording response");
 						e.printStackTrace();
 					}
 				}
@@ -97,8 +99,8 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 			Log.e(TAG, "model_id not set. aborting showCompleteDialog");
 			return;
 		}
-		final OWVideoRecording recording = OWVideoRecording.objects(this.getApplicationContext(), OWVideoRecording.class).get(model_id);
-		if( recording.getServerId(getApplicationContext()) != null){
+		final OWVideoRecording recording = OWMediaObject.objects(getApplicationContext(), OWMediaObject.class).get(model_id).video_recording.get(getApplicationContext());
+		if( recording == null || recording.getServerId(getApplicationContext()) == null){
 			Log.i(TAG, "recording does not have a valid server_id. Cannot present share dialog");
 			Intent i = new Intent(WhatHappenedActivity.this, MainActivity.class);
 			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -142,6 +144,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 		i.setType("text/plain");
 		i.putExtra(Intent.EXTRA_TEXT, url);
 		startActivity(Intent.createChooser(i, getString(R.string.share_dialog_title)));
+		this.finish();
 	}
 	
 	@Override
