@@ -6,6 +6,8 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.orm.androrm.Filter;
 import com.orm.androrm.QuerySet;
 
+import com.github.ignition.core.widgets.RemoteImageView;
+
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.constants.Constants.OWFeedType;
@@ -34,8 +36,8 @@ public class RecordingInfoFragment extends SherlockFragment implements OWMediaOb
 	
 	private static final String TAG = "RecordingInfoFragment";
 	
-	protected EditText title;
-	protected EditText description;
+	protected TextView title;
+	protected TextView description;
 	protected AutoCompleteTextView tags;
 	protected OWMediaObject media_obj = null;
 	protected TagPoolLayout tagGroup;
@@ -43,6 +45,7 @@ public class RecordingInfoFragment extends SherlockFragment implements OWMediaOb
 	protected static boolean watch_tag_text = true;
 	protected String tag_query = ""; // autocomplete tag input
 	protected OWTagArrayAdapter mAdapter;
+	private boolean is_local = false;
 	
 	boolean doSave = false; // if recording is mutated during this fragments life, saveAndSync onPause
 		
@@ -58,12 +61,22 @@ public class RecordingInfoFragment extends SherlockFragment implements OWMediaOb
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 		
-		View v = inflater.inflate(R.layout.local_recording_info_view, container, false);
-		
+		View v;
+		if(getArguments() != null && this.getArguments().getBoolean(Constants.IS_LOCAL_RECORDING, false)){
+			v  = inflater.inflate(R.layout.local_recording_info_view, container, false);
+			is_local = true;
+		}else{
+			v = inflater.inflate(R.layout.remote_recording_info_view, container, false);
+			is_local = false;
+		}
+
 		tagGroup = ((TagPoolLayout) v.findViewById(R.id.tagGroup));
-		title = ((EditText)v.findViewById(R.id.editTitle));
-		description = ((EditText)v.findViewById(R.id.editDescription));
+		title = ((TextView)v.findViewById(R.id.editTitle));
+		description = ((TextView)v.findViewById(R.id.editDescription));
 		tags = ((AutoCompleteTextView)v.findViewById(R.id.editTags));
+		
+		if(!is_local)
+			setupViewsForRemoteRecording();
 		
 		media_obj = OWMediaObject.objects(getActivity().getApplicationContext(), OWMediaObject.class)
 				.get(this.getActivity().getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID));
@@ -78,10 +91,6 @@ public class RecordingInfoFragment extends SherlockFragment implements OWMediaOb
 		tags.setAdapter(mAdapter);
 		tags.setThreshold(1);
 
-		//getLoaderManager().initLoader(0, null, this);
-		if(getArguments() != null)
-			setInfoFieldsEnabled(this.getArguments().getBoolean(Constants.IS_LOCAL_RECORDING, true));
-		
         Log.i(TAG, "onCreateView. tag adapter size:" + String.valueOf(mAdapter.getCount()));
         return v;
     }
@@ -92,15 +101,8 @@ public class RecordingInfoFragment extends SherlockFragment implements OWMediaOb
 		Log.i(TAG, "onResume");
 		//populateViews(recording, getActivity().getApplicationContext());
 	}
-	
-	/**
-	 * This method prepares the fragment for read-only display
-	 * @param doEnable
-	 */
-	private void setInfoFieldsEnabled(boolean doEnable){
-		title.setEnabled(doEnable);
-		description.setEnabled(doEnable);
-		tags.setEnabled(doEnable);
+
+	private void setupViewsForRemoteRecording(){
 		tagGroup.setTagRemovalAllowed(false);
 	}
 	
@@ -125,6 +127,19 @@ public class RecordingInfoFragment extends SherlockFragment implements OWMediaOb
 	
 	public void populateViews(OWMediaObject media_obj, Context app_context){
 		try{
+			if(!is_local){
+				if(media_obj.getUser(app_context).thumbnail_url.get() != null){
+					RemoteImageView user_thumb = (RemoteImageView)this.getView().findViewById(R.id.user_thumbnail);
+					user_thumb.setImageUrl(media_obj.getUser(app_context).thumbnail_url.get());
+	        		user_thumb.loadImage();
+				}
+				if(media_obj.username.get() != null)
+					((TextView)getView().findViewById(R.id.userLabel)).setText(media_obj.username.get());
+				
+				Log.i("populateViews", String.format("Description: %s Actions: %d Views: %d", media_obj.getDescription(app_context), media_obj.getActions(app_context), media_obj.getViews(app_context)));
+				((TextView)getView().findViewById(R.id.action_count)).setText(String.valueOf(media_obj.getActions(app_context)));
+				((TextView)getView().findViewById(R.id.view_count)).setText(String.valueOf(media_obj.getViews(app_context)));
+			}
 			if(media_obj.getTitle(app_context) != null)
 				title.setText(media_obj.getTitle(app_context));
 			if(media_obj.getDescription(app_context) != null)

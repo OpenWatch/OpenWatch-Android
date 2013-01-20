@@ -29,14 +29,20 @@ public class OWLocalRecordingAdapter extends SimpleCursorAdapter {
         	view_cache.date = (TextView) view.findViewById(R.id.date);
             
         	view_cache.title_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_TITLE);   
-        	//view_cache.date_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_CREATION_TIME);   
+        	view_cache.date_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_FIRST_POSTED);   
         	view_cache.thumbnail_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_THUMB_URL);
         	view_cache._id_col = cursor.getColumnIndexOrThrow(DBConstants.ID);
             view.setTag(R.id.list_item_cache, view_cache);
         }
         
         view_cache.title.setText(cursor.getString(view_cache.title_col));
-        //view_cache.date.setText(cursor.getString(view_cache.date_col));
+        if(cursor.getString(view_cache.date_col) != null){
+        	view.findViewById(R.id.calendar_icon).setVisibility(View.VISIBLE);
+        	view_cache.date.setText(cursor.getString(view_cache.date_col));
+        }
+        else
+        	view.findViewById(R.id.calendar_icon).setVisibility(View.GONE);
+        
         if(!view_cache.thumbnail_set && cursor.getString(view_cache.thumbnail_col) != null && cursor.getString(view_cache.thumbnail_col).compareTo("") != 0){
         	view_cache.thumbnail.setImageUrl(cursor.getString(view_cache.thumbnail_col));
         	view_cache.thumbnail.loadImage();

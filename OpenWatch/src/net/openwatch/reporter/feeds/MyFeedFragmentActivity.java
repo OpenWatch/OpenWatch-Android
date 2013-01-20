@@ -159,7 +159,7 @@ public class MyFeedFragmentActivity extends FragmentActivity {
 		static final String[] PROJECTION = new String[] {
 			DBConstants.ID,
 			DBConstants.RECORDINGS_TABLE_TITLE,
-			//DBConstants.RECORDINGS_TABLE_CREATION_TIME,
+			DBConstants.RECORDINGS_TABLE_FIRST_POSTED,
 			DBConstants.RECORDINGS_TABLE_THUMB_URL
 
 	    };

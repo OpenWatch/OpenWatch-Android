@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:padding="5dp" >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -10,12 +11,14 @@
 
         <TextView
             android:id="@+id/titleLabel"
+            android:fontFamily="sans-serif-light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title" />
 
         <EditText
             android:id="@+id/editTitle"
+            android:fontFamily="sans-serif-condensed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -26,18 +29,21 @@
 
         <TextView
             android:id="@+id/descriptionLabel"
+            android:fontFamily="sans-serif-light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/description" />
 
         <EditText
             android:id="@+id/editDescription"
+            android:fontFamily="sans-serif-light"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10" />
 
         <TextView
             android:id="@+id/tagLabel"
+            android:fontFamily="sans-serif-light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/tags" />
@@ -46,6 +52,7 @@
             android:id="@+id/editTags"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-light"
             android:ems="10"
             android:hint="@string/tag_hint"
             android:imeActionId="1337"

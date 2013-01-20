@@ -6,43 +6,29 @@
     android:layout_height="100dp"
     android:layout_margin="3dp" >
 
-    <RelativeLayout
-        android:id="@+id/header"
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:gravity="center" >
+    <com.github.ignition.core.widgets.RemoteImageView
+        android:id="@+id/thumbnail"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="5dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/thumbnail_placeholder"
+        ignition:autoLoad="false" />
 
-        <com.github.ignition.core.widgets.RemoteImageView
-            android:id="@+id/thumbnail"
-            android:layout_width="100dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_margin="5dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/thumbnail_placeholder"
-            ignition:autoLoad="false" />
-
-        <!-- Multiline textview ellipsize is broken in Android -->
-
-        <TextView
-            android:id="@+id/title"
-            style="@style/Theme.openwatch.feedItemTitleText"
-            android:layout_toRightOf="@id/thumbnail" />
-    </RelativeLayout>
+    <!-- Multiline textview ellipsize is broken in Android -->
 
     <TextView
         android:id="@+id/action_count"
         style="@style/Theme.openwatch.feedItemOtherText"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/header"
         android:layout_marginBottom="5dp"
         android:layout_marginRight="5dp" />
 
     <ImageView
         android:id="@+id/action_icon"
         style="@style/Theme.openwatch.feedItemIcon"
-        android:layout_below="@id/header"
         android:layout_marginBottom="5dp"
         android:layout_marginRight="5dp"
         android:layout_toLeftOf="@id/action_count"
@@ -51,7 +37,7 @@
     <TextView
         android:id="@+id/view_count"
         style="@style/Theme.openwatch.feedItemOtherText"
-        android:layout_below="@id/header"
+        android:layout_alignParentBottom="true"
         android:layout_marginBottom="5dp"
         android:layout_marginRight="10dp"
         android:layout_toLeftOf="@id/action_icon" />
@@ -59,21 +45,36 @@
     <ImageView
         android:id="@+id/view_icon"
         style="@style/Theme.openwatch.feedItemIcon"
-        android:layout_below="@id/header"
         android:layout_marginBottom="5dp"
         android:layout_marginRight="5dp"
         android:layout_toLeftOf="@id/view_count"
         android:src="@drawable/eye" />
 
     <TextView
+        android:id="@+id/by"
+        style="@style/Theme.openwatch.feedItemOtherText"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@id/thumbnail"
+        android:text="@string/by"
+        android:textColor="@color/text_light" />
+
+    <TextView
         android:id="@+id/username"
         style="@style/Theme.openwatch.feedItemOtherText"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
+        android:layout_marginRight="20dp"
         android:layout_toLeftOf="@id/view_icon"
+        android:layout_toRightOf="@id/by"
         android:textColor="@color/text_light" />
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/Theme.openwatch.feedItemTitleText"
+        android:layout_above="@id/by"
+        android:layout_toRightOf="@id/thumbnail" />
 
 </RelativeLayout>

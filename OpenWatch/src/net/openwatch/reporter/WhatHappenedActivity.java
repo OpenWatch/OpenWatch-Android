@@ -100,7 +100,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 			return;
 		}
 		final OWVideoRecording recording = OWMediaObject.objects(getApplicationContext(), OWMediaObject.class).get(model_id).video_recording.get(getApplicationContext());
-		if( recording == null || recording.getServerId(getApplicationContext()) == null){
+		if( recording == null || recording.getServerId(getApplicationContext()) == 0){
 			Log.i(TAG, "recording does not have a valid server_id. Cannot present share dialog");
 			Intent i = new Intent(WhatHappenedActivity.this, MainActivity.class);
 			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

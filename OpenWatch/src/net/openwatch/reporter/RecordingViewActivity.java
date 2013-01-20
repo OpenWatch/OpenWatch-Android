@@ -12,6 +12,8 @@ import net.openwatch.reporter.model.OWVideoRecording;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
 import android.content.Context;
 import android.content.res.Configuration;
 import android.media.MediaPlayer;
@@ -23,8 +25,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.MediaController;
 import android.widget.TabHost;
@@ -51,9 +55,10 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 		super.onCreate(savedInstanceState);
 		if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
+		else
+			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		setContentView(R.layout.activity_local_recording_view);
-		
 		inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		String video_path = null;
 		try {
@@ -135,6 +140,27 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getSupportMenuInflater().inflate(R.menu.activity_local_recording_view, menu);
 		return true;
+	}
+	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu){
+		if(!is_local){
+			menu.removeItem(R.id.menu_save);
+		}
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			finish();
+			return true;
+		case R.id.menu_save:
+			finish();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	public void setVideoViewVisible(boolean visible) {
