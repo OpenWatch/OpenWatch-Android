@@ -34,6 +34,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 
 public class RecorderActivity extends SherlockActivity implements
 		SurfaceHolder.Callback {
@@ -205,6 +206,8 @@ public class RecorderActivity extends SherlockActivity implements
 		setContentView(R.layout.activity_recorder);
 		ready_to_record = false;
 		Log.i(TAG,"onCreate");
+		
+		this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 		camera_preview = (SurfaceView) findViewById(R.id.camera_surface_view);
 		camera_preview.getHolder().addCallback(this); // register the Activity
@@ -297,9 +300,9 @@ public class RecorderActivity extends SherlockActivity implements
 			av_recorder.startRecording(mCamera, camera_preview, output_filename);
 			recording_start = String.valueOf(new Date().getTime() / 1000);
 			
-			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-			wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "OWRecording");
-			wl.acquire();
+			//PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+			//wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "OWRecording");
+			//wl.acquire();
 			Log.d(TAG, "startRecording()");
 		} catch (Exception e) {
 			Log.e(TAG, "failed to start recording");
