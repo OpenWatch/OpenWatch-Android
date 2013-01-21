@@ -28,9 +28,11 @@ public class MapViewPager extends ViewPager {
 	
     public MapViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
-        if(FeedFragmentActivity.display_width != -1)
-        	maxX = FeedFragmentActivity.display_width - cutoff_threshold;
-        	//maxX = InputDevice.getMotionRange(MotionEvent.AXIS_X).getMax() - cutoff_threshold ;
+        // for custom behavior on right view side
+        //if(FeedFragmentActivity.display_width != -1)
+        //	maxX = FeedFragmentActivity.display_width - cutoff_threshold;
+        maxX = cutoff_threshold;	
+        //maxX = InputDevice.getMotionRange(MotionEvent.AXIS_X).getMax() - cutoff_threshold ;
         //InputDevice.getDevice(id)
         //Log.d("ViewPager-Maxwidth:",String.valueOf(this.getMeasuredWidth()));
     }
@@ -52,7 +54,7 @@ public class MapViewPager extends ViewPager {
 	            //Log.d("DOWN","X: " + String.valueOf(lastX) + " MaxX: " + String.valueOf(maxX));
 	            break;
 	        case MotionEvent.ACTION_MOVE:
-	            if(lastX < maxX){
+	            if(lastX > maxX){
 	            	//Log.i(TAG, "aborting pager scroll");
 	                return false;
 	            }
@@ -64,7 +66,7 @@ public class MapViewPager extends ViewPager {
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
     	if(positionOffset == 0){
-    		if(position == 0)
+    		if(position == 1)
     			onMap = true;
     		else
     			onMap = false;
