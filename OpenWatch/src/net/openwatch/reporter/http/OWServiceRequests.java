@@ -296,7 +296,7 @@ public class OWServiceRequests {
 		AsyncHttpClient client = HttpClient.setupHttpClient(app_context);
 		String url = Constants.OW_API_URL + Constants.OW_TAGS;
 		Log.i(TAG, "commencing getTags: " + url);
-		client.post(url, new JsonHttpResponseHandler(){
+		client.get(url, new JsonHttpResponseHandler(){
 
     		@Override
     		public void onSuccess(JSONObject response){
