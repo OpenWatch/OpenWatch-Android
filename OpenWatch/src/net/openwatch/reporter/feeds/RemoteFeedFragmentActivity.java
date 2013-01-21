@@ -66,6 +66,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             implements LoaderManager.LoaderCallbacks<Cursor> {
     	
     	static String TAG = "RemoteFeedFragment";
+    	static boolean didRefreshFeed = false;
     	
     	OWFeedType feed;
 
@@ -103,7 +104,10 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             getLoaderManager().initLoader(0, null, this);
             
             // Refresh the feed view
-            OWServiceRequests.getFeed(this.getActivity().getApplicationContext(), feed, 1);
+            if(!didRefreshFeed){
+            	OWServiceRequests.getFeed(this.getActivity().getApplicationContext(), feed, 1);
+            	didRefreshFeed = true;
+            }
 
         }
 
