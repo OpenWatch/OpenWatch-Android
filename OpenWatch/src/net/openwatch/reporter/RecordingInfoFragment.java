@@ -65,6 +65,9 @@ public class RecordingInfoFragment extends SherlockFragment implements OWMediaOb
 		if(getArguments() != null && this.getArguments().getBoolean(Constants.IS_LOCAL_RECORDING, false)){
 			v  = inflater.inflate(R.layout.local_recording_info_view, container, false);
 			is_local = true;
+		}else if(getArguments() == null){
+			v  = inflater.inflate(R.layout.local_recording_info_view, container, false);
+			is_local = true;
 		}else{
 			v = inflater.inflate(R.layout.remote_recording_info_view, container, false);
 			is_local = false;
