@@ -11,12 +11,15 @@ import com.github.ignition.core.widgets.RemoteImageView;
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.constants.Constants.OWFeedType;
+import net.openwatch.reporter.http.OWServiceRequests;
 import net.openwatch.reporter.model.OWMediaObject;
+import net.openwatch.reporter.model.OWUser;
 import net.openwatch.reporter.model.OWVideoRecording;
 import net.openwatch.reporter.model.OWTag;
 import net.openwatch.reporter.view.TagPoolLayout;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -337,6 +340,19 @@ public class RecordingInfoFragment extends SherlockFragment implements OWMediaOb
 		tagGroup.addTagPostLayout(tag);
 		recording.addTag(getActivity().getApplicationContext(), tag);
 		recording.save(getActivity().getApplicationContext());
+		if(is_local){
+			SharedPreferences profile = getActivity().getSharedPreferences(Constants.PROFILE_PREFS, 0);
+			int user_id = profile.getInt(DBConstants.USER_SERVER_ID, -1);
+			if(user_id != -1){
+				Filter filter = new Filter();
+				filter.is(DBConstants.USER_SERVER_ID, user_id);
+				QuerySet<OWUser> users = OWUser.objects(getActivity().getApplicationContext(), OWUser.class).filter(filter);
+				for(OWUser user : users){
+					OWServiceRequests.setTags(getActivity().getApplicationContext(), user.tags.get(getActivity().getApplicationContext(), user));
+					break;
+				}
+			}		
+		}
 		doSave = true;
 	}
 

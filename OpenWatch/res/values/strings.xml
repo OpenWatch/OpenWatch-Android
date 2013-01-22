@@ -20,6 +20,7 @@
     <string name="login_dialog_ok">Ok</string>
     <string name="login_dialog_no">No Thanks</string>
     <string name="login_dialog_signup">Sign up!</string>
+    <string name="logout">Sign out</string>
 
     <!-- login failed -->
     <string name="login_dialog_denied_title">Login Denied</string>
@@ -56,6 +57,7 @@
     <string name="feed_empty">No feed entries</string>
     <string name="title_activity_local_recording_view">LocalRecordingViewActivity</string>
     <string name="by">by</string>
+    <string name="login_for_local_recordings">You must be logged in to view your recordings</string>
 
     <!-- View Recording Activity -->
     <string name="tab_map">Map</string>

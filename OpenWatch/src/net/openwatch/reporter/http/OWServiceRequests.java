@@ -286,6 +286,43 @@ public class OWServiceRequests {
     	
     }
 	
+	public static void setTags(final Context app_context, QuerySet<OWTag> tags){
+		final String METHOD = "setTags";
+		JSONObject result = new JSONObject();
+		JSONArray tag_list = new JSONArray();
+		for(OWTag tag : tags){
+			tag_list.put(tag.toJson());
+		}
+		try {
+			result.put(Constants.OW_TAGS, tag_list);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		AsyncHttpClient client = HttpClient.setupHttpClient(app_context);
+		String url = Constants.OW_API_URL + Constants.OW_TAGS;
+		Log.i(TAG, "commencing " + METHOD + " : " + url + " json: " + result.toString());
+		client.post(app_context, url, Utils.JSONObjectToStringEntity(result), "application/json", new JsonHttpResponseHandler(){
+
+    		@Override
+    		public void onSuccess(JSONObject response){
+    			Log.i(TAG, METHOD + " success : " + response.toString());
+    		}
+    		
+    		@Override
+   	     	public void onFailure(Throwable e, String response) {
+    			Log.i(TAG, METHOD + " failure: " +  response);
+
+    		}
+    		
+    		@Override
+   	     	public void onFinish() {
+    			Log.i(TAG, METHOD + " finish: ");
+
+    		}
+		});
+	}
+	
 	/**
 	 * Merges server tag list with stored. Assume names are unchanging (treated as primary key)
 	 * @param app_context
@@ -336,7 +373,7 @@ public class OWServiceRequests {
     					tag.name.set(tag_json.getString("name")); 
 
 	    				tag.save(app_context);
-	    				//Log.i(TAG, METHOD + " saved tag: " + tag_json.getString("name") );
+	    				Log.i(TAG, METHOD + " saved tag: " + tag.name.get() + " featured: " + String.valueOf(tag.is_featured.get()) );
 	    				
 	    			}
 	    			

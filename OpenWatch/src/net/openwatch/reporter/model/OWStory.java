@@ -14,6 +14,7 @@ import android.database.Cursor;
 import android.util.Log;
 
 import com.orm.androrm.DatabaseAdapter;
+import com.orm.androrm.Filter;
 import com.orm.androrm.Model;
 import com.orm.androrm.QuerySet;
 import com.orm.androrm.field.CharField;

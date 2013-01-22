@@ -114,8 +114,12 @@ public class OWMediaObject extends Model implements OWMediaObjectInterface{
 				}
 				if(user == null){
 					user = new OWUser();
-					user.username.set(json_user.getString(Constants.OW_USERNAME));
-					user.server_id.set(json_user.getInt(Constants.OW_SERVER_ID));
+					if(json_user.has(Constants.OW_USERNAME))
+						user.username.set(json_user.getString(Constants.OW_USERNAME));
+					if(json_user.has(Constants.OW_SERVER_ID))
+						user.server_id.set(json_user.getInt(Constants.OW_SERVER_ID));
+					if(json_user.has(Constants.OW_THUMB_URL))
+						user.thumbnail_url.set(json_user.getString(Constants.OW_THUMB_URL));
 					user.save(app_context);
 				}
 				//this.username.set(user.username.get());

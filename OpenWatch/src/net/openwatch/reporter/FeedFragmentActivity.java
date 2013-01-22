@@ -47,6 +47,7 @@ import net.openwatch.reporter.feeds.RemoteFeedFragmentActivity;
  * flicks to move between the tabs.
  */
 public class FeedFragmentActivity extends SherlockFragmentActivity {
+
     TabHost mTabHost;
     ViewPager  mViewPager;
     TabsAdapter mTabsAdapter;

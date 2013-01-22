@@ -1,5 +1,9 @@
 package net.openwatch.reporter.model;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
 import android.content.Context;
 
@@ -31,6 +35,19 @@ public class OWTag extends Model{
 		// notify the ContentProvider that the dataset has changed
 		context.getContentResolver().notifyChange(OWContentProvider.getTagUri(this.getId()), null);
 		return super.save(context);
+	}
+	
+	public JSONObject toJson(){
+		JSONObject result = new JSONObject();
+		if(name.get() != null){
+			try {
+				result.put(Constants.OW_NAME, name.get());
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return result;
+		}
+		return null;
 	}
 
 }

@@ -17,6 +17,7 @@
 package net.openwatch.reporter.feeds;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -77,10 +78,6 @@ public class MyFeedFragmentActivity extends FragmentActivity {
         @Override public void onActivityCreated(Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
 
-            // Give some text to display if there is no data.  In a real
-            // application this would come from a resource.
-            setEmptyText(getString(R.string.loading_recordings));
-
             // We have a menu item to show in action bar.
             setHasOptionsMenu(true);
 
@@ -88,12 +85,17 @@ public class MyFeedFragmentActivity extends FragmentActivity {
             mAdapter = new OWLocalRecordingAdapter(getActivity(), null); 
             setListAdapter(mAdapter);
 
-            // Start out with a progress indicator.
-            setListShown(false);
-
-            // Prepare the loader.  Either re-connect with an existing one,
-            // or start a new one.
-            getLoaderManager().initLoader(0, null, this);
+            // perhaps do auth checking onStart
+            SharedPreferences profile = getActivity().getSharedPreferences(Constants.PROFILE_PREFS, 0);
+    		boolean authenticated = profile.getBoolean(Constants.AUTHENTICATED, false);
+    		if(authenticated){
+                setEmptyText(getString(R.string.loading_recordings));
+    			setListShown(false); // start with a progress indicator
+    			getLoaderManager().initLoader(0, null, this);
+    		}else{
+    			setEmptyText(getString(R.string.login_for_local_recordings));
+    		}
+            
         }
 
         @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

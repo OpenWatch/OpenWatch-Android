@@ -130,6 +130,7 @@ public class Constants {
 	public static final String OW_BLURB = "blurb";
 	public static final String OW_SLUG = "slug";
 	public static final String OW_BODY = "body";
+	public static final String OW_NAME = "name";
 	
 	// OpenWatch media capture web service url and endpoints
 	public static final String OW_MEDIA_START = "start";
