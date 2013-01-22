@@ -172,7 +172,7 @@ public class MyFeedFragmentActivity extends FragmentActivity {
 			Uri baseUri = OWContentProvider.LOCAL_RECORDING_URI;
 			String selection = null;
             String[] selectionArgs = null;
-            String order = null;
+            String order = DBConstants.RECORDINGS_TABLE_FIRST_POSTED + " DESC";
 			
 			return new CursorLoader(getActivity(), baseUri, PROJECTION, selection, selectionArgs, order);
 		}
