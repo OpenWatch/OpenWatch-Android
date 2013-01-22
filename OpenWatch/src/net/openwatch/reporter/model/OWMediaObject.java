@@ -56,6 +56,10 @@ public class OWMediaObject extends Model implements OWMediaObjectInterface{
 	
 	@Override
 	public boolean save(Context context) {
+		context = context.getApplicationContext();
+		setLastEdited(context, Constants.sdf.format(new Date()));
+		boolean super_save =  super.save(context);
+		
 		// notify the ContentProvider that the dataset has changed
 		context.getContentResolver().notifyChange(OWContentProvider.getMediaObjectUri(getId()), null);
 		// notify all of this object's feed uris
@@ -64,12 +68,11 @@ public class OWMediaObject extends Model implements OWMediaObjectInterface{
 			feed_type = OWFeed.getFeedTypeFromString(context, feed.name.get());
 			Log.i(TAG, "feed_type: " + feed_type);
 			if(feed_type != null){
-				Log.i(TAG, "NotifyingChange on feed: " + feed_type.toString());
+				Log.i(TAG, "NotifyingChange on feed: " + OWContentProvider.getFeedUri(feed_type).toString());
 				context.getContentResolver().notifyChange(OWContentProvider.getFeedUri(feed_type), null);
 			}
 		}
-		setLastEdited(context, Constants.sdf.format(new Date()));
-		return super.save(context);
+	    return super_save;
 	}
 	
 	public boolean hasTag(Context context, String tag_name) {

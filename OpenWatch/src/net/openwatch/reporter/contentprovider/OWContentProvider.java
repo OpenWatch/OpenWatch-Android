@@ -30,6 +30,8 @@ public class OWContentProvider extends ContentProvider {
      private static final int REMOTE_RECORDINGS = 3;
      private static final int REMOTE_RECORDING_ID = 4;
      private static final int REMOTE_RECORDING_BY_FEED = 8;
+     
+     private static final int MEDIA_OBJS_BY_USER = 9;
           
      private static final int TAGS = 5;
      private static final int TAG_ID = 6;
@@ -42,6 +44,9 @@ public class OWContentProvider extends ContentProvider {
      public static final Uri TAG_URI = AUTHORITY_URI.buildUpon().appendPath(DBConstants.TAG_TABLENAME).build();
      public static final Uri TAG_SEARCH_URI = TAG_URI.buildUpon().appendPath("search").build();
 	
+     public static Uri getUserRecordingsUri(int user_id){
+    	 return MEDIA_OBJECT_URI.buildUpon().appendEncodedPath("user").appendEncodedPath(String.valueOf(user_id)).build();
+     }
      public static Uri getLocalRecordingUri(int model_id){
     	 return LOCAL_RECORDING_URI.buildUpon().appendEncodedPath(String.valueOf(model_id)).build();
      }
@@ -49,7 +54,7 @@ public class OWContentProvider extends ContentProvider {
     	 return REMOTE_RECORDING_URI.buildUpon().appendEncodedPath(String.valueOf(model_id)).build();
      }
      public static Uri getFeedUri(OWFeedType feed_type){
-    	 return REMOTE_RECORDING_URI.buildUpon().appendEncodedPath(Constants.feedEndpointFromType(feed_type)).build();
+    	 return MEDIA_OBJECT_URI.buildUpon().appendEncodedPath(Constants.feedEndpointFromType(feed_type)).build();
      }
      public static Uri getMediaObjectUri(int model_id){
     	 return MEDIA_OBJECT_URI.buildUpon().appendEncodedPath(String.valueOf(model_id)).build();
@@ -66,8 +71,9 @@ public class OWContentProvider extends ContentProvider {
 	    mUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.LOCAL_RECORDINGS_TABLENAME, LOCAL_RECORDINGS);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.LOCAL_RECORDINGS_TABLENAME + "/#", LOCAL_RECORDING_ID);
-	    mUriMatcher.addURI(AUTHORITY, DBConstants.RECORDINGS_TABLENAME + "/*", REMOTE_RECORDING_BY_FEED);
+	    mUriMatcher.addURI(AUTHORITY, DBConstants.MEDIA_OBJECT_TABLENAME + "/*", REMOTE_RECORDING_BY_FEED);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.TAG_TABLENAME, TAGS);
+	    mUriMatcher.addURI(AUTHORITY, DBConstants.MEDIA_OBJECT_TABLENAME + "/user/#", MEDIA_OBJS_BY_USER);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.TAG_TABLENAME + "/#", TAG_ID);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.TAG_TABLENAME + "/search/*", TAG_SEARCH);
      }
@@ -140,6 +146,9 @@ public class OWContentProvider extends ContentProvider {
 		Log.i(TAG, adapter.getDatabaseName());
 		Log.i(TAG, uri.toString());
 		switch(uriType){
+			case MEDIA_OBJS_BY_USER:
+				result = adapter.open().query(select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " WHERE " + DBConstants.MEDIA_OBJECT_USER + " = " + uri.getLastPathSegment() + " ORDER BY " + sortby);
+				break;
 			case LOCAL_RECORDINGS:
 				Log.i(TAG, select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " WHERE " + DBConstants.MEDIA_OBJECT_LOCAL_VIDEO + " IS NOT NULL " + sortby);
 				result = adapter.open().query(select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " WHERE " + DBConstants.MEDIA_OBJECT_LOCAL_VIDEO + " IS NOT NULL " + " ORDER BY " + sortby);
@@ -190,8 +199,10 @@ public class OWContentProvider extends ContentProvider {
 		// adapter is not closed!
 		//adapter.close();
 		// Make sure that potential listeners are getting notified
-		if(result != null)
+		if(result != null){
+			Log.i(TAG, "set notificationUri: " + uri.toString());
 			result.setNotificationUri(getContext().getContentResolver(), uri);
+		}
 		return result;
 	}
 

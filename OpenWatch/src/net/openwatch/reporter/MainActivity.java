@@ -13,11 +13,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.View;
 
+import com.bugsense.trace.BugSenseHandler;
+
 public class MainActivity extends SherlockActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		BugSenseHandler.initAndStartSession(getApplicationContext(), SECRETS.BUGSENSE_API_KEY);
 		setContentView(R.layout.activity_main);
 	}
 	

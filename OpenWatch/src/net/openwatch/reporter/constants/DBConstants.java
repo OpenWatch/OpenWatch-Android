@@ -11,6 +11,7 @@ public class DBConstants {
 	// OWMediaObject table
 	public static final String MEDIA_OBJECT_TABLENAME = "owmediaobject";
 	public static final String MEDIA_OBJECT_STORY = "story";
+	public static final String MEDIA_OBJECT_USER = "user";
 	public static final String MEDIA_OBJECT_VIDEO = "video_recording";
 	public static final String MEDIA_OBJECT_LOCAL_VIDEO = "local_video_recording";
 	

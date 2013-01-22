@@ -85,7 +85,9 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 					public void onSuccess() {
 						if( OWMediaObject.objects(c, OWMediaObject.class).get(model_id).video_recording.get(c).video_url.get() != null ){
 							setupVideoView(R.id.videoview, OWMediaObject.objects(c, OWMediaObject.class).get(model_id).video_recording.get(c).video_url.get());
-							((OWMediaObjectBackedEntity) RecordingViewActivity.this.getMapFragment() ).populateViews(OWMediaObject.objects(c, OWMediaObject.class).get(model_id), c);
+							if(getMapFragment() != null)
+								((OWMediaObjectBackedEntity) RecordingViewActivity.this.getMapFragment() ).populateViews(OWMediaObject.objects(c, OWMediaObject.class).get(model_id), c);
+							if(getInfoFragment() != null)
 							((OWMediaObjectBackedEntity) RecordingViewActivity.this.getInfoFragment() ).populateViews(OWMediaObject.objects(c, OWMediaObject.class).get(model_id), c);
 						}
 					}

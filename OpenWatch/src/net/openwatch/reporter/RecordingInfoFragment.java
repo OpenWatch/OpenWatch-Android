@@ -83,6 +83,8 @@ public class RecordingInfoFragment extends SherlockFragment implements OWMediaOb
 		
 		if(!is_local)
 			setupViewsForRemoteRecording();
+		else
+			setupViewsForLocalRecording();
 		
 		media_obj = OWMediaObject.objects(getActivity().getApplicationContext(), OWMediaObject.class)
 				.get(this.getActivity().getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID));
@@ -110,6 +112,10 @@ public class RecordingInfoFragment extends SherlockFragment implements OWMediaOb
 
 	private void setupViewsForRemoteRecording(){
 		tagGroup.setTagRemovalAllowed(false);
+	}
+	
+	private void setupViewsForLocalRecording(){
+		tagGroup.setTagRemovalAllowed(true);
 	}
 	
 	@Override

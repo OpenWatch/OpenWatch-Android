@@ -66,7 +66,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             implements LoaderManager.LoaderCallbacks<Cursor> {
     	
     	static String TAG = "RemoteFeedFragment";
-    	static boolean didRefreshFeed = false;
+    	boolean didRefreshFeed = false;
     	
     	OWFeedType feed;
 
@@ -106,7 +106,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             // Refresh the feed view
             if(!didRefreshFeed){
             	OWServiceRequests.getFeed(this.getActivity().getApplicationContext(), feed, 1);
-            	didRefreshFeed = true;
+            	//didRefreshFeed = true;
             }
 
         }
@@ -162,6 +162,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 		@Override
 		public void onLoadFinished(Loader<Cursor> arg0, Cursor cursor) {
 			mAdapter.swapCursor(cursor);
+			Log.i(TAG, "onLoadFinished");
 			// The list should now be shown.
             if (isResumed()) {
                 setListShown(true);
@@ -199,7 +200,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 			String selection = null;
             String[] selectionArgs = null;
             String order = null;
-			
+			Log.i(TAG, "createLoader on uri: " + baseUri.toString());
 			return new CursorLoader(getActivity(), baseUri, PROJECTION, selection, selectionArgs, order);
 		}
     }
