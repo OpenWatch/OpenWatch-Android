@@ -8,8 +8,8 @@
         android:id="@+id/login_status"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/background"
         android:layout_gravity="center"
+        android:background="@drawable/background"
         android:gravity="center_horizontal"
         android:visibility="gone" >
 
@@ -46,58 +46,130 @@
         android:layout_height="match_parent"
         android:background="@drawable/background" >
 
-        <LinearLayout
-            style="@style/LoginFormContainer"
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:gravity="center"
             android:orientation="vertical" >
+
             <TextView
                 android:id="@+id/login_state_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
                 android:layout_marginBottom="16dp"
                 android:fontFamily="sans-serif-light"
+                android:gravity="center"
                 android:text="@string/message_account_stored"
-                android:visibility="gone"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:visibility="gone" />
 
-            <EditText
-                android:id="@+id/email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:hint="@string/prompt_email"
-                android:inputType="textEmailAddress"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textSize="20sp" />
+            <RelativeLayout
+                android:id="@+id/id_badge"
+                style="@style/LoginFormContainer"
+                android:layout_below="@id/login_state_message"
+                android:layout_marginBottom="0dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/id_card"
+                android:orientation="vertical" >
 
-            <EditText
-                android:id="@+id/password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:hint="@string/prompt_password"
-                android:imeActionId="@+id/login"
-                android:imeActionLabel="@string/action_sign_in_short"
-                android:imeOptions="actionUnspecified"
-                android:inputType="textPassword"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginBottom="5dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="@string/reporter"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/user_thumbnail"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@id/title"
+                    android:src="@drawable/thumbnail_placeholder" />
+                
+                <!-- http://stackoverflow.com/questions/2507898/how-to-pick-an-image-from-gallery-sd-card-for-my-app-in-android -->
+                
+                 <ImageView
+                    android:id="@+id/agency_logo"
+                    android:layout_width="100dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_below="@id/user_thumbnail"
+                    android:src="@drawable/openwatch" />
+
+                <EditText
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/title"
+                    android:layout_toRightOf="@id/agency_logo"
+                    android:fontFamily="sans-serif-condensed"
+                    android:gravity="center"
+                    android:hint="@string/prompt_email"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/email"
+                    android:layout_toRightOf="@id/agency_logo"
+                    android:fontFamily="sans-serif-condensed"
+                    android:gravity="center"
+                    android:hint="@string/prompt_password"
+                    android:imeActionId="@+id/login"
+                    android:imeActionLabel="@string/action_sign_in_short"
+                    android:imeOptions="actionUnspecified"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textSize="20sp" />
+
+            </RelativeLayout>
+            <!--
+      drop shadow TODO
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="8dip"
+                android:layout_marginTop="-5dp"
+                android:layout_alignLeft="@id/id_badge"
+                android:layout_alignRight="@id/id_badge"
+                android:layout_below="@id/id_badge"
+                android:background="@drawable/drop_shadow" />
+            -->
 
             <Button
                 android:id="@+id/sign_in_button"
-                android:background="@drawable/green_button_bg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/id_badge"
+                android:layout_centerHorizontal="true"
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
-                android:paddingTop="16dp"
+                android:background="@drawable/green_button_bg"
                 android:paddingBottom="16dp"
                 android:paddingLeft="32dp"
                 android:paddingRight="32dp"
+                android:paddingTop="16dp"
                 android:text="@string/action_sign_in_register" />
-        </LinearLayout>
+        </RelativeLayout>
     </ScrollView>
 
 </merge>

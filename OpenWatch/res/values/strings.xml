@@ -21,6 +21,7 @@
     <string name="login_dialog_no">No Thanks</string>
     <string name="login_dialog_signup">Sign up!</string>
     <string name="logout">Sign out</string>
+	<string name="reporter">REPORTER</string>
 
     <!-- login failed -->
     <string name="login_dialog_denied_title">Login Denied</string>

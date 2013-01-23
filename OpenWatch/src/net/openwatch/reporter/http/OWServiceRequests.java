@@ -378,11 +378,11 @@ public class OWServiceRequests {
 	    			}
 	    			
 	    			adapter.commitTransaction();
-	    			Log.i(TAG, "getTags success");
+	    			Log.i(TAG, "getTags success :" + response.toString());
 	    			if(cb != null)
 	    				cb.onSuccess();
 				} catch (JSONException e) {
-					Log.e(TAG, METHOD + " failed to parse JSON");
+					Log.e(TAG, METHOD + " failed to parse JSON: " + response);
 					e.printStackTrace();
 				}
 

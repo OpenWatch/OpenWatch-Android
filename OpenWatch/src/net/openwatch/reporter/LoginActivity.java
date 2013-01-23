@@ -145,6 +145,7 @@ public class LoginActivity extends SherlockActivity {
 		switch (item.getItemId()) {
 		case R.id.menu_logout:
 			logOut();
+			item.setVisible(false);
 			break;
 		}
 
