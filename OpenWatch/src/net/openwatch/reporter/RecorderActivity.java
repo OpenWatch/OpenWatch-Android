@@ -257,7 +257,7 @@ public class RecorderActivity extends SherlockActivity implements
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_stop:
-			stopRecording();
+			showStopRecordingDialog();
 			break;
 		}
 
