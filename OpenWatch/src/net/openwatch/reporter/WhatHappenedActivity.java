@@ -23,6 +23,7 @@ import android.util.Log;
 public class WhatHappenedActivity extends SherlockFragmentActivity {
 	private static final String TAG = "WhatHappenedActivity";
 	static int model_id = -1;
+	int recording_server_id = -1;
 	String recording_uuid;
 	
 
@@ -66,6 +67,8 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 						// response was successful
 						OWVideoRecording recording = OWMediaObject.objects(app_context, OWMediaObject.class).get(model_id).video_recording.get(app_context);
 						recording.updateWithJson(app_context, recording_json);
+						if(recording_json.has(Constants.OW_SERVER_ID) )
+							recording_server_id = recording_json.getInt(Constants.OW_SERVER_ID);
 						Log.i(TAG, "recording updated with server meta response");
 						return;
 					} catch(Exception e){
@@ -99,15 +102,16 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 			Log.e(TAG, "model_id not set. aborting showCompleteDialog");
 			return;
 		}
-		final OWVideoRecording recording = OWMediaObject.objects(getApplicationContext(), OWMediaObject.class).get(model_id).video_recording.get(getApplicationContext());
-		if( recording == null || recording.getServerId(getApplicationContext()) == 0){
+		//final OWVideoRecording recording = OWMediaObject.objects(getApplicationContext(), OWMediaObject.class).get(model_id).video_recording.get(getApplicationContext());
+		if( recording_server_id == -1){
 			Log.i(TAG, "recording does not have a valid server_id. Cannot present share dialog");
 			Intent i = new Intent(WhatHappenedActivity.this, MainActivity.class);
 			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 			startActivity(i);
+			this.finish();
 			return;
 		}
-		Log.i(TAG, "recording server_id: " + String.valueOf(recording.getServerId(getApplicationContext())));
+		Log.i(TAG, "recording server_id: " + String.valueOf(recording_server_id));
 			
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(getString(R.string.share_dialog_title))
@@ -130,21 +134,21 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 			public void onClick(DialogInterface dialog, int which) {
 				// Share
 				dialog.dismiss();
-				showShareDialog(recording);
+				showShareDialog(recording_server_id);
+				WhatHappenedActivity.this.finish();
 			}
 			
 		}).show();
 	}
 	
-	private void showShareDialog(OWVideoRecording recording){
-		String url = Constants.OW_URL +  Constants.OW_VIEW + recording.getServerId(getApplicationContext());
+	private void showShareDialog(int recording_server_id){
+		String url = Constants.OW_URL +  Constants.OW_VIEW + String.valueOf(recording_server_id);
 		Log.i(TAG, "model_id: " + String.valueOf(model_id) + " url: " + url);
 		
 		Intent i = new Intent(Intent.ACTION_SEND);
 		i.setType("text/plain");
 		i.putExtra(Intent.EXTRA_TEXT, url);
 		startActivity(Intent.createChooser(i, getString(R.string.share_dialog_title)));
-		this.finish();
 	}
 	
 	@Override

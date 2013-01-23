@@ -162,7 +162,6 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 		@Override
 		public void onLoadFinished(Loader<Cursor> arg0, Cursor cursor) {
 			mAdapter.swapCursor(cursor);
-			Log.i(TAG, "onLoadFinished");
 			// The list should now be shown.
             if (isResumed()) {
                 setListShown(true);
@@ -200,7 +199,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 			String selection = null;
             String[] selectionArgs = null;
             String order = null;
-			Log.i(TAG, "createLoader on uri: " + baseUri.toString());
+			Log.i("URI", "createLoader on uri: " + baseUri.toString());
 			return new CursorLoader(getActivity(), baseUri, PROJECTION, selection, selectionArgs, order);
 		}
     }
