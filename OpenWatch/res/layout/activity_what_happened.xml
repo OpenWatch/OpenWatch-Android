@@ -9,7 +9,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        
+        <!-- 
         <TextView
             android:id="@+id/title"
             android:fontFamily="sans-serif-light"
@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:text="@string/what_happened"
             android:textSize="30dp" />
-
+ -->
     </RelativeLayout>
 
     <FrameLayout

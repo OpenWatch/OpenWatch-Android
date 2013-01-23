@@ -47,7 +47,6 @@
         </activity>
         <activity
             android:name="net.openwatch.reporter.MainActivity"
-            android:label="@string/title_activity_main"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -58,16 +57,13 @@
         <activity
             android:name="net.openwatch.reporter.RecorderActivity"
             android:keepScreenOn="true"
-            android:label="@string/title_activity_recorder"
             android:screenOrientation="landscape" >
         </activity>
         <activity
-            android:name="net.openwatch.reporter.FeedFragmentActivity"
-            android:label="@string/title_activity_feed" >
+            android:name="net.openwatch.reporter.FeedFragmentActivity">
         </activity>
         <activity
             android:name="net.openwatch.reporter.RecordingViewActivity"
-            android:label="@string/title_activity_local_recording_view"
             android:windowSoftInputMode="stateHidden|adjustPan" >
         </activity>
 
@@ -77,8 +73,7 @@
         </meta-data>
 
         <activity
-            android:name="net.openwatch.reporter.WhatHappenedActivity"
-            android:label="@string/title_activity_what_happened" >
+            android:name="net.openwatch.reporter.WhatHappenedActivity">
         </activity>
         <activity
             android:name="net.openwatch.reporter.SettingsActivity"

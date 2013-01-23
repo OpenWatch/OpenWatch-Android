@@ -64,14 +64,18 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 		String video_path = null;
 		try {
 			model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
-			if( OWMediaObject.objects(this, OWMediaObject.class).get(model_id).local_video_recording.get(getApplicationContext()) != null ){
+			OWMediaObject media_obj = OWMediaObject.objects(this, OWMediaObject.class).get(model_id);
+
+			if(media_obj != null && media_obj.title.get() != null)
+				this.getSupportActionBar().setTitle(media_obj.title.get());
+			if( media_obj.local_video_recording.get(getApplicationContext()) != null ){
 				// This is a local recording, attempt to play HQ file
 				is_local = true;
-				video_path = OWMediaObject.objects(this, OWMediaObject.class).get(model_id).local_video_recording.get(getApplicationContext()).hq_filepath.get();
+				video_path = media_obj.local_video_recording.get(getApplicationContext()).hq_filepath.get();
 				
-			} else if( OWMediaObject.objects(this, OWMediaObject.class).get(model_id).video_recording.get(getApplicationContext()) != null && OWMediaObject.objects(this, OWMediaObject.class).get(model_id).video_recording.get(getApplicationContext()).video_url.get() != null){
+			} else if( media_obj.video_recording.get(getApplicationContext()) != null && media_obj.video_recording.get(getApplicationContext()).video_url.get() != null){
 				// remote recording, and video_url present
-				video_path = OWMediaObject.objects(this, OWMediaObject.class).get(model_id).video_recording.get(getApplicationContext()).video_url.get();
+				video_path = media_obj.video_recording.get(getApplicationContext()).video_url.get();
 			}
 			
 			fetchOWRecording(model_id);

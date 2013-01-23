@@ -64,7 +64,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.fragment_tabs_pager);
-        
+        this.getSupportActionBar().setDisplayShowTitleEnabled(false);
         mTabMap = new HashMap<OWFeedType, Integer>();
         
         getDisplayWidth();

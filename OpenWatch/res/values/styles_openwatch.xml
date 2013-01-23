@@ -45,6 +45,7 @@
         <item name="backgroundStacked">@drawable/ab_stacked_solid_openwatch</item>
         <item name="backgroundSplit">@drawable/ab_bottom_solid_openwatch</item>
         <item name="progressBarStyle">@style/openwatch_ProgressBar</item>
+        <!-- 
         <item name="titleTextStyle">@style/Theme.acluaz.NoTitleText</item>
         <item name="subtitleTextStyle">@style/Theme.openwatch.NoTitleText</item>
         <item name="titleTextStyle">@style/Theme.openwatch.NoTitleText</item>
@@ -53,6 +54,7 @@
         <item name="android:subtitleTextStyle">@style/Theme.openwatch.NoTitleText</item>
         <item name="android:titleTextStyle">@style/Theme.openwatch.NoTitleText</item>
         <item name="android:subtitleTextStyle">@style/Theme.openwatch.NoTitleText</item>
+         -->
         <item name="android:background">@drawable/ab_solid_openwatch</item>
         <item name="android:backgroundStacked">@drawable/ab_stacked_solid_openwatch</item>
         <item name="android:backgroundSplit">@drawable/ab_bottom_solid_openwatch</item>
@@ -184,6 +186,8 @@
         <item name="android:fontFamily">sans-serif-condensed</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
         <item name="android:ellipsize">marquee</item>
         <item name="android:textSize">20sp</item>
     </style>
@@ -193,8 +197,8 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textIsSelectable">true</item>
-        <item name="android:layout_marginTop">4dp</item>
-        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
         <item name="android:ellipsize">marquee</item>
         <item name="android:textSize">20sp</item>
     </style>

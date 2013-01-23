@@ -22,6 +22,7 @@ public class MainActivity extends SherlockActivity {
 		super.onCreate(savedInstanceState);
 		BugSenseHandler.initAndStartSession(getApplicationContext(), SECRETS.BUGSENSE_API_KEY);
 		setContentView(R.layout.activity_main);
+		this.getSupportActionBar().setDisplayShowTitleEnabled(false);
 	}
 	
 	@Override

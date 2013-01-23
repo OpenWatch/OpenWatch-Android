@@ -41,6 +41,7 @@ public class StoryViewActivity extends SherlockActivity implements OWMediaObject
 				populateViews(OWMediaObject.objects(this, OWMediaObject.class).get(model_id), getApplicationContext());
 			} else if(OWMediaObject.objects(this, OWMediaObject.class).get(model_id).title.get() != null){
 				((TextView)findViewById(R.id.title)).setText(OWMediaObject.objects(this, OWMediaObject.class).get(model_id).title.get());
+				this.getSupportActionBar().setTitle(OWMediaObject.objects(this, OWMediaObject.class).get(model_id).title.get());
 				final Context c = this.getApplicationContext();
 				int story_server_id = OWMediaObject.objects(this, OWMediaObject.class).get(model_id).getServerId(c);
 				OWServiceRequests.getStory(getApplicationContext(), story_server_id, new RequestCallback(){
@@ -89,6 +90,7 @@ public class StoryViewActivity extends SherlockActivity implements OWMediaObject
 
 	@Override
 	public void populateViews(OWMediaObject media_object, Context app_context) {
+		 this.getSupportActionBar().setTitle(media_object.getTitle(app_context));
 		((TextView) this.findViewById(R.id.title)).setText(media_object.getTitle(app_context));
 		((TextView) this.findViewById(R.id.blurb)).setText(media_object.story.get(app_context).blurb.get());
 		((TextView) this.findViewById(R.id.author)).setText(media_object.username.get());

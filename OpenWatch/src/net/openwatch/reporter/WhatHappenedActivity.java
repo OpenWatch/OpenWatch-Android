@@ -31,6 +31,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_what_happened);
+		this.getSupportActionBar().setTitle(getString(R.string.what_happened));
 		Log.i(TAG, "onCreate");
 		try{
 			model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);

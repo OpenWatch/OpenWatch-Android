@@ -63,7 +63,7 @@ public class LoginActivity extends SherlockActivity {
 		super.onCreate(icicle);
 
 		setContentView(R.layout.activity_login);
-
+		this.getSupportActionBar().setTitle(getString(R.string.sign_in));
 		// Set up the login form.
 		mEmail = getIntent().getStringExtra(Constants.EMAIL);
 		mEmailView = (EditText) findViewById(R.id.email);

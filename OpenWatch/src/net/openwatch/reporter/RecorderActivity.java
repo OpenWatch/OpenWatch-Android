@@ -212,6 +212,7 @@ public class RecorderActivity extends SherlockActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_recorder);
+		this.getSupportActionBar().setTitle(getString(R.string.recording));
 		ready_to_record = false;
 		Log.i(TAG,"onCreate");
 		

@@ -22,6 +22,7 @@
     <string name="login_dialog_signup">Sign up!</string>
     <string name="logout">Sign out</string>
 	<string name="reporter">REPORTER</string>
+	<string name="sign_in">Sign In!</string>
 
     <!-- login failed -->
     <string name="login_dialog_denied_title">Login Denied</string>
@@ -91,6 +92,8 @@
     <string name="stop_recording_dialog_message">Are you sure you want to stop recording?</string>
     <string name="stop_recording_dialog_stop">Stop</string>
     <string name="stop_recording_dialog_continue">Continue</string>
+    <string name="recording">Recording</string>
+    
     <string name="title_activity_story_view">StoryViewActivity</string>
     <string name="title_activity_web_browser">WebBrowserActivity</string>
 
