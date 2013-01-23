@@ -222,14 +222,6 @@ public class RecorderActivity extends SherlockActivity implements
 														// to be called when the
 														// SurfaceView is ready
 
-		camera_preview.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				showStopRecordingDialog();
-			}
-
-		}); // end onClickListener
 		
 		if(!av_recorder.is_recording){
 			try {
