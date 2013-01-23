@@ -124,7 +124,8 @@ public class RecorderActivity extends SherlockActivity implements
 		    	        	Log.i(TAG, "initialize OWLocalRecording. id: " + String.valueOf(local.getId()));
 		    	        	local.save(c.getApplicationContext());
 		    	        	owrecording_id = local.recording.get(c).getId();
-		    	        	owmediaobject_id = local.recording.get(c).media_object.get(c).server_id.get();
+		    	        	owmediaobject_id = local.recording.get(c).media_object.get(c).getId();
+		    	        	Log.i(TAG, "get mediaObjectId: " + local.recording.get(c).media_object.get(c).server_id.get());
 		    	        	// poll for device location
 		    	        	RecorderActivity.this.runOnUiThread(new Runnable(){
 
