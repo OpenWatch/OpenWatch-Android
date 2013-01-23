@@ -19,7 +19,7 @@
             android:text="@string/what_happened"
             android:textSize="30dp" />
  -->
-    </RelativeLayout>
+    
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -32,5 +32,14 @@
             android:layout_height="match_parent"
             class="net.openwatch.reporter.RecordingInfoFragment" />
     </FrameLayout>
+    
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/coffee_ring" />
+    
+    </RelativeLayout>
 
 </LinearLayout>

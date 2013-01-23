@@ -186,7 +186,8 @@ public class RecorderActivity extends SherlockActivity implements
 	        			local.hq_filepath.set(command[1]);
 	        			local.save(c.getApplicationContext());
 	        			Log.i(TAG, "id: " + owrecording_id + " hq filepath set:" + command[1]);
-	        			OWMediaRequests.sendHQFile(public_upload_token, recording_uuid, command[1]);
+	        			OWMediaRequests.sendHQFileChunked(public_upload_token, recording_uuid, command[1]);
+	        			//OWMediaRequests.sendHQFile(public_upload_token, recording_uuid, command[1]);
 	        		}
 	        	}
 	        	return null;

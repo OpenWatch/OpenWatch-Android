@@ -256,13 +256,20 @@ public class OWMediaRequests {
 		});
 	}
 	
-	public static void sendHQFileChunked(){
+	/**
+	 * Raw dog http post avoid reading entire file
+	 * into memory
+	 * @param upload_token
+	 * @param recording_id
+	 * @param filename
+	 */
+	public static void sendHQFileChunked(String upload_token, String recording_id, String filename){
 		HttpURLConnection connection = null;
 		DataOutputStream outputStream = null;
 		DataInputStream inputStream = null;
+		
+		String urlStr = setupMediaURL(Constants.OW_MEDIA_HQ_UPLOAD, upload_token, recording_id);
 
-		String pathToOurFile = "/data/file_to_send.mp3";
-		String urlServer = "http://192.168.1.1/handle_upload.php";
 		String lineEnd = "\r\n";
 		String twoHyphens = "--";
 		String boundary =  "*****";
@@ -273,9 +280,9 @@ public class OWMediaRequests {
 
 		try
 		{
-		FileInputStream fileInputStream = new FileInputStream(new File(pathToOurFile) );
+		FileInputStream fileInputStream = new FileInputStream(new File(filename) );
 
-		URL url = new URL(urlServer);
+		URL url = new URL(urlStr);
 		connection = (HttpURLConnection) url.openConnection();
 
 		// Allow Inputs & Outputs
@@ -291,7 +298,8 @@ public class OWMediaRequests {
 
 		outputStream = new DataOutputStream( connection.getOutputStream() );
 		outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-		outputStream.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + pathToOurFile +"\"" + lineEnd);
+		Log.i(TAG, "Content-Disposition: form-data; name=\"" + Constants.OW_FILE + "\";filename=\"" + filename.substring(filename.lastIndexOf(File.separator)) +"\"" + lineEnd);
+		outputStream.writeBytes("Content-Disposition: form-data; name=\"" + Constants.OW_FILE + "\";filename=\"" + filename.substring(filename.lastIndexOf(File.separator)) +"\"" + lineEnd);
 		outputStream.writeBytes(lineEnd);
 
 		bytesAvailable = fileInputStream.available();
@@ -315,7 +323,7 @@ public class OWMediaRequests {
 		// Responses from the server (code and message)
 		int serverResponseCode = connection.getResponseCode();
 		String serverResponseMessage = connection.getResponseMessage();
-
+		Log.i(TAG, String.format("HQ2 server responseCode: %d Message: %s", serverResponseCode, serverResponseMessage));
 		fileInputStream.close();
 		outputStream.flush();
 		outputStream.close();
