@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="5dp"
+   	android:background="@drawable/background"
     android:orientation="vertical"
     tools:context=".WhatHappenedActivity" >
 
@@ -23,7 +23,8 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+         android:layout_margin="5dp" >
 
         <fragment
             android:id="@+id/recording_info"

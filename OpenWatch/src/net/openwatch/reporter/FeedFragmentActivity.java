@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import net.openwatch.reporter.constants.Constants;
@@ -65,6 +66,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
 
         setContentView(R.layout.fragment_tabs_pager);
         this.getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mTabMap = new HashMap<OWFeedType, Integer>();
         
         getDisplayWidth();
@@ -113,6 +115,16 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         super.onSaveInstanceState(outState);
         outState.putString("tab", mTabHost.getCurrentTabTag());
     }
+    
+    @Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			finish();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 
     /**
      * This is a helper class that implements the management of tabs and all
