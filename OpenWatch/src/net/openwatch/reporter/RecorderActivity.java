@@ -9,6 +9,7 @@ import org.json.JSONArray;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.file.FileUtils;
@@ -64,11 +65,16 @@ public class RecorderActivity extends SherlockActivity implements
 		Context c; // for db transactions
 		String recording_uuid; // recording uuid for OW service
 		int owrecording_id = -1; // database id for OWLocalRecording
+		int owmediaobject_id = -1; // db id for OWMediaObject
 		ArrayList<String> all_files = null;
 		
 		@Override
 		public int getRecordingDBID(){
 			return owrecording_id;
+		}
+		@Override
+		public int getMediaObjectDBID(){
+			return owmediaobject_id;
 		}
 		@Override
 		public void setRecordingUUID(String recording_uuid) {
@@ -118,6 +124,7 @@ public class RecorderActivity extends SherlockActivity implements
 		    	        	Log.i(TAG, "initialize OWLocalRecording. id: " + String.valueOf(local.getId()));
 		    	        	local.save(c.getApplicationContext());
 		    	        	owrecording_id = local.recording.get(c).getId();
+		    	        	owmediaobject_id = local.recording.get(c).media_object.get(c).server_id.get();
 		    	        	// poll for device location
 		    	        	RecorderActivity.this.runOnUiThread(new Runnable(){
 
@@ -245,6 +252,17 @@ public class RecorderActivity extends SherlockActivity implements
 		getSupportMenuInflater().inflate(R.menu.activity_recorder, menu);
 		return true;
 	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.menu_stop:
+			stopRecording();
+			break;
+		}
+
+		return true;
+	}
 
 	/** A safe way to get an instance of the Camera object. */
 	public static Camera getCameraInstance() {
@@ -321,15 +339,12 @@ public class RecorderActivity extends SherlockActivity implements
 			av_recorder.stopRecording();
 			recording_end = String.valueOf(new Date().getTime() / 1000);
 			Intent i = new Intent(RecorderActivity.this, WhatHappenedActivity.class);
-			try{
-				i.putExtra(Constants.INTERNAL_DB_ID, OWVideoRecording.objects(getApplicationContext(), OWVideoRecording.class).get(chunk_listener.getRecordingDBID()).media_object.get(getApplicationContext()).getId());
-			}catch(NullPointerException e){
-				OWVideoRecording rec = OWVideoRecording.objects(getApplicationContext(), OWVideoRecording.class).get(chunk_listener.getRecordingDBID());
-				if(rec == null)
-					Log.e(TAG, "Error getting OWVideoRecording from chunk_listener db id");
-				else if(rec.media_object.get(getApplicationContext()) == null)
-					Log.e(TAG, "Error getting OWMediaObject from OWVideoRecording");
-			}
+			if(chunk_listener.getMediaObjectDBID() > 0){
+				i.putExtra(Constants.INTERNAL_DB_ID, chunk_listener.getMediaObjectDBID());
+				Log.i(TAG, "Bundling media_obj_id: " + String.valueOf(chunk_listener.getMediaObjectDBID()));
+			}else
+				Log.e(TAG, "Error getting mediaobject id from chunk_listener");
+
 			i.putExtra(Constants.OW_REC_UUID, mRecording_uuid);
 			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 			startActivity(i);
