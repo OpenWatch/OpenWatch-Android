@@ -6,6 +6,7 @@ import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.http.OWServiceRequests;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,16 +37,7 @@ public class OWUser extends Model{
 	
 	public OWUser(Context c){
 		super();
-		initializeNewUser(c);
 		save(c);
-	}
-	
-	public void initializeNewUser(Context c){
-		Filter filter = new Filter();
-		filter.is(DBConstants.TAB_TABLE_FEATURED, 1);
-		QuerySet<OWTag> featured_tags = OWTag.objects(c, OWTag.class).filter(filter);
-		Log.i(TAG, "Added new tags: " + String.valueOf(featured_tags.count()));
-		tags.addAll(featured_tags.toList());
 	}
 	
 	public JSONObject toJSON(){
@@ -64,10 +56,35 @@ public class OWUser extends Model{
 		return json_obj;
 	}
 	
-	public void addTag(Context c, OWTag tag){
+	public void updateWithJson(Context c, JSONObject json){
+		try {
+			if(json.has(DBConstants.USER_SERVER_ID))
+				server_id.set(json.getInt(DBConstants.USER_SERVER_ID));
+			if(json.has(Constants.OW_USERNAME))
+				username.set(json.getString(Constants.OW_USERNAME));
+			if(json.has(Constants.OW_TAGS)){
+				this.tags.reset();
+				JSONArray tag_array =  json.getJSONArray("tags");
+				Filter filter;
+				OWTag tag = null;
+				for(int x=0;x<tag_array.length();x++){
+					tag = OWTag.getOrCreateTagFromJson(c, tag_array.getJSONObject(x));
+					tag.save(c);
+					this.addTag(c, tag, false);
+				}
+			} // end tags update
+			this.save(c);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void addTag(Context c, OWTag tag, boolean syncWithOW){
 		this.tags.add(tag);
 		save(c);
-		OWServiceRequests.setTags(c, tags.get(c, this));
+		if(syncWithOW)
+			OWServiceRequests.setTags(c, tags.get(c, this));
 	}
 
 }

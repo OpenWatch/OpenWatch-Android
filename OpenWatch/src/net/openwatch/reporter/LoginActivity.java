@@ -615,11 +615,8 @@ public class LoginActivity extends SherlockActivity {
 											.getString(Constants.PRIV_TOKEN));
 					if (c != null) {
 						OWUser myself = new OWUser();
-						myself.initializeNewUser(c);
-						myself.server_id.set(server_response
-								.getInt(DBConstants.USER_SERVER_ID));
-						myself.save(c);
-						Log.i(TAG, "Created user in db");
+						myself.updateWithJson(c, server_response);
+						Log.i(TAG, "Created user in db with #tags: " + String.valueOf(myself.tags.get(c, myself).count()));
 					}
 				} else {
 					Log.i(TAG, "Set user not authenticated");

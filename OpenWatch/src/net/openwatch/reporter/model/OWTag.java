@@ -1,13 +1,18 @@
 package net.openwatch.reporter.model;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
 import android.content.Context;
+import android.util.Log;
 
+import com.orm.androrm.Filter;
 import com.orm.androrm.Model;
+import com.orm.androrm.QuerySet;
 import com.orm.androrm.field.BooleanField;
 import com.orm.androrm.field.CharField;
 import com.orm.androrm.field.IntegerField;
@@ -48,6 +53,31 @@ public class OWTag extends Model{
 			return result;
 		}
 		return null;
+	}
+	
+	public static OWTag getOrCreateTagFromJson(Context c, JSONObject json) throws JSONException{
+
+		Filter filter;
+		OWTag tag = null;
+
+		filter = new Filter();
+		filter.is(DBConstants.TAG_TABLE_SERVER_ID, json.getInt(Constants.OW_SERVER_ID));
+
+		QuerySet<OWTag> tags = OWTag.objects(c, OWTag.class).filter(filter);
+		for(OWTag existing_tag : tags){
+			tag = existing_tag;
+			break;
+		}
+		
+		if(tag == null)
+			tag= new OWTag();
+
+		if(json.has(Constants.OW_NAME))
+			tag.name.set(json.getString(Constants.OW_NAME));
+		if(json.has(Constants.OW_FEATURED))
+			tag.is_featured.set(json.getBoolean(Constants.OW_FEATURED));
+
+		return tag;
 	}
 
 }

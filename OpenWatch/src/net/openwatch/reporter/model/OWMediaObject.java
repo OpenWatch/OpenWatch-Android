@@ -135,21 +135,12 @@ public class OWMediaObject extends Model implements OWMediaObjectInterface{
 				this.resetTags(app_context);
 				JSONArray tag_array =  json.getJSONArray("tags");
 				Filter filter;
+				OWTag tag = null;
 				for(int x=0;x<tag_array.length();x++){
-					filter = new Filter();
-					filter.is("name", tag_array.getString(x).toString());
-					QuerySet<OWTag> tags = OWTag.objects(app_context, OWTag.class).filter(filter);
-					if(tags.count() > 0){ // add existing tag
-						for(OWTag tag : tags){
-							this.addTag(app_context, tag);
-							break;
-						}
-					} else{ // add a new tag
-						OWTag new_tag = new OWTag();
-						new_tag.name.set(tag_array.getString(x).toString());
-						new_tag.save(app_context);
-						this.addTag(app_context, new_tag);
-					}
+					
+					tag = OWTag.getOrCreateTagFromJson(app_context, tag_array.getJSONObject(x));
+					tag.save(app_context);
+					this.addTag(app_context, tag);
 				}
 			} // end tags update
 			this.save(app_context);
