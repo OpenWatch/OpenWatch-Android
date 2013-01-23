@@ -11,7 +11,7 @@
     <string name="saved_recordings_button_text">Saved</string>
     <string name="local_button_text">Local</string>
     <string name="settings_button_text">Settings</string>
-    <string name="watch_button_text">Watch</string>
+    <string name="featured_button_text">Featured</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_recorder">RecorderActivity</string>
 
@@ -23,6 +23,11 @@
     <string name="logout">Sign out</string>
 	<string name="reporter">REPORTER</string>
 	<string name="sign_in">Sign In!</string>
+	
+	<string name="take_choose_picture_title">Set your avatar</string>
+	<string name="take_choose_picture_prompt">How shall we get your fine picture?</string>
+	<string name="take_picture">Use camera</string>
+	<string name="choose_picture">Browse gallery</string>
 
     <!-- login failed -->
     <string name="login_dialog_denied_title">Login Denied</string>

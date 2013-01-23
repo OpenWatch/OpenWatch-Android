@@ -1,5 +1,7 @@
 package net.openwatch.reporter;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import org.apache.http.entity.StringEntity;
@@ -14,6 +16,7 @@ import com.loopj.android.http.*;
 
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
+import net.openwatch.reporter.file.FileUtils;
 import net.openwatch.reporter.http.OWServiceRequests;
 import net.openwatch.reporter.model.OWUser;
 import android.animation.Animator;
@@ -21,14 +24,19 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -36,6 +44,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.ImageView;
 
 /**
  * Activity which displays a login screen to the user, offering registration as
@@ -44,6 +53,8 @@ import android.widget.TextView;
 public class LoginActivity extends SherlockActivity {
 
 	private static final String TAG = "LoginActivity";
+	private static final int SELECT_PHOTO = 100;
+	private static final int TAKE_PHOTO = 101;
 
 	AsyncHttpClient http_client;
 
@@ -116,6 +127,58 @@ public class LoginActivity extends SherlockActivity {
 			}
 		}
 		setViewsAsNotAuthenticated();
+	}
+	
+	public void setUserAvatar(View v){
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(getString(R.string.take_choose_picture_title))
+		.setMessage(getString(R.string.take_choose_picture_prompt))
+		.setPositiveButton(getString(R.string.take_picture), new OnClickListener(){
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+				startActivityForResult(takePicture, TAKE_PHOTO);
+			}
+			
+		}).setNegativeButton(getString(R.string.choose_picture), new OnClickListener(){
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+				photoPickerIntent.setType("image/*");
+				startActivityForResult(photoPickerIntent, SELECT_PHOTO);   
+			}
+			
+		}).show();
+		 
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) { 
+	    super.onActivityResult(requestCode, resultCode, imageReturnedIntent); 
+	    
+	    switch(requestCode) { 
+	    case SELECT_PHOTO:
+	        if(resultCode == RESULT_OK){  
+	        	Uri selectedImage = imageReturnedIntent.getData();
+	            InputStream imageStream;
+	    		try {
+	    			Bitmap yourSelectedImage = FileUtils.decodeUri(getApplicationContext(), selectedImage, 100);
+	    			((ImageView)this.findViewById(R.id.user_thumbnail)).setImageBitmap(yourSelectedImage);
+	    			//TODO: Send thumbnail to server
+	    		} catch (FileNotFoundException e) {
+	    			e.printStackTrace();
+	    		}
+	            break;
+	        }
+	    case TAKE_PHOTO:
+	    	if(resultCode == RESULT_OK){
+	    		((ImageView)this.findViewById(R.id.user_thumbnail)).setImageBitmap((Bitmap)imageReturnedIntent.getExtras().get("data"));
+	            break;
+	    	}
+	    }
+	   
 	}
 
 	private void setViewsAsAuthenticated() {

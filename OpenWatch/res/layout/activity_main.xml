@@ -25,6 +25,7 @@
             android:onClick="recordButtonClick"
             android:text="@string/record_button_text"
             android:textColor="#000000"
+            android:textStyle="bold"
             android:textSize="30sp" />
     </RelativeLayout>
 
@@ -39,7 +40,7 @@
             style="@style/Theme.openwatch.DashButton"
             android:drawableTop="@drawable/watch_button"
             android:onClick="watchButtonClick"
-            android:text="@string/watch_button_text" />
+            android:text="@string/featured_button_text" />
 
         <Button
             android:id="@+id/button_local"

@@ -40,7 +40,7 @@
             style="@style/Theme.openwatch.DashButton.sw600dp"
             android:drawableTop="@drawable/watch_button"
             android:onClick="watchButtonClick"
-            android:text="@string/watch_button_text" />
+            android:text="@string/featured_button_text" />
 
         <Button
             android:id="@+id/button_local"
