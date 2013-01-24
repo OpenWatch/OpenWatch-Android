@@ -99,6 +99,8 @@
     <string name="stop_recording_dialog_continue">Continue</string>
     <string name="recording">Recording</string>
     
+    <!--  StoryViewActivity -->
+    <string name="share_story">Share Story</string>
     <string name="title_activity_story_view">StoryViewActivity</string>
     <string name="title_activity_web_browser">WebBrowserActivity</string>
 

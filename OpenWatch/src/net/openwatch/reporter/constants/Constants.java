@@ -16,7 +16,7 @@ import com.github.ignition.core.widgets.RemoteImageView;
  */
 public class Constants {
 	// For view tag
-	public static enum OWContentType { VIDEO, STORY };
+	public static enum CONTENT_TYPE { VIDEO, STORY };
 	public static final String OW_CONTENT_TYPE = "owcontent_type";
 	
 	// Date Formatter for OW server time
@@ -67,7 +67,8 @@ public class Constants {
 	//public static final String OW_MEDIA_URL = "https://capture.openwatch.net/";
 	//public static final String OW_API_URL = "https://alpha.openwatch.net/api/";
 	//public static final String OW_URL = "https://alpha.openwatch.net/";
-	public static final String OW_VIEW = "v/";
+	public static final String OW_STORY_VIEW = "s/";
+	public static final String OW_RECORDING_VIEW = "v/";
 	public static final String OW_LOGIN = "login_account";
 	public static final String OW_SIGNUP = "create_account";
 	public static final String OW_REGISTER = "register_app";
@@ -157,6 +158,15 @@ public class Constants {
 	public static final String OW_END_LON = "end_lon";
 	public static final String OW_LAT = "latitude";
 	public static final String OW_LON = "longitude";
+	
+	//Hit counts
+	public static enum HIT_TYPE { VIEW, CLICK };
+	public static final String OW_STATUS = "status";
+	public static final String OW_HIT_URL = "increase_hitcount";
+	public static final String OW_HIT_SERVER_ID = "serverID";
+	public static final String OW_HIT_MEDIA_TYPE = "media_type";
+	public static final String OW_HIT_TYPE = "hit_type";
+	public static final String OW_HITS = "hits";
 
 
 }

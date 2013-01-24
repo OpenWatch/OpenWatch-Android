@@ -1,10 +1,14 @@
 package net.openwatch.reporter;
 
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
+import net.openwatch.reporter.constants.Constants.HIT_TYPE;
 import net.openwatch.reporter.http.OWServiceRequests;
 import net.openwatch.reporter.http.OWServiceRequests.RequestCallback;
 import net.openwatch.reporter.model.OWMediaObject;
+import net.openwatch.reporter.model.OWStory;
 import net.openwatch.reporter.model.OWVideoRecording;
+import net.openwatch.reporter.share.Share;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
@@ -27,6 +31,7 @@ public class StoryViewActivity extends SherlockActivity implements OWMediaObject
 	private static final String TAG = "StoryViewActivity";
 	
 	static int model_id = -1;
+	int server_id = -1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +42,7 @@ public class StoryViewActivity extends SherlockActivity implements OWMediaObject
 		
 		try{
 			model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
+			server_id = OWMediaObject.objects(this, OWMediaObject.class).get(model_id).server_id.get();
 			if( OWMediaObject.objects(this, OWMediaObject.class).get(model_id).story.get(getApplicationContext()) != null && OWMediaObject.objects(this, OWMediaObject.class).get(model_id).story.get(getApplicationContext()).body.get() != null){
 				populateViews(OWMediaObject.objects(this, OWMediaObject.class).get(model_id), getApplicationContext());
 			} else if(OWMediaObject.objects(this, OWMediaObject.class).get(model_id).title.get() != null){
@@ -60,6 +66,7 @@ public class StoryViewActivity extends SherlockActivity implements OWMediaObject
 					
 				});
 			}
+			OWServiceRequests.increaseHitCount(getApplicationContext(), OWMediaObject.objects(this, OWMediaObject.class).get(model_id).server_id.get(), model_id, CONTENT_TYPE.STORY, HIT_TYPE.VIEW);
 		}catch(Exception e){
 			Log.e(TAG, "Error retrieving model");
 			e.printStackTrace();
@@ -79,6 +86,12 @@ public class StoryViewActivity extends SherlockActivity implements OWMediaObject
 		case android.R.id.home:
 			finish();
 			return true;
+		case R.id.menu_share:
+			if(server_id > 0){
+				Share.showShareDialog(this, getString(R.string.share_story), OWStory.getUrlFromId(server_id));
+				OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, CONTENT_TYPE.STORY, HIT_TYPE.CLICK);
+			}
+			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}

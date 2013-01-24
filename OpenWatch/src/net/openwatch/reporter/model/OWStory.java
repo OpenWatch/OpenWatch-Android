@@ -1,5 +1,6 @@
 package net.openwatch.reporter.model;
 
+import java.io.File;
 import java.util.Date;
 
 import net.openwatch.reporter.constants.Constants;
@@ -249,6 +250,10 @@ public class OWStory extends Model implements OWMediaObjectInterface{
 			e.printStackTrace();
 		}
 		return json_obj;
+	}
+	
+	public static String getUrlFromId(int server_id){
+		return Constants.OW_URL + Constants.OW_STORY_VIEW + File.separator + String.valueOf(server_id);	
 	}
 
 }

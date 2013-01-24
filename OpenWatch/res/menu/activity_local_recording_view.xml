@@ -5,5 +5,10 @@
         android:orderInCategory="100"
         android:showAsAction="always"
         android:icon="@drawable/checkmark"/>
+    
+    <item
+        android:id="@+id/menu_share"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_menu_share_holo_dark"/>
 
 </menu>

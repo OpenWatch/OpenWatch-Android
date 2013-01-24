@@ -14,6 +14,8 @@ import org.json.JSONObject;
 
 import net.openwatch.reporter.OWApplication;
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.Constants.HIT_TYPE;
+import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
 import net.openwatch.reporter.constants.Constants.OWFeedType;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
@@ -49,6 +51,51 @@ public class OWServiceRequests {
 		public void onFailure();
 
 		public void onSuccess();
+	}
+	
+	
+	public static void increaseHitCount(final Context app_context, int server_id, final int media_obj_id, final CONTENT_TYPE content_type, final HIT_TYPE hit_type){
+		final String METHOD = "increaseHitCount";
+		JsonHttpResponseHandler post_handler = new JsonHttpResponseHandler(){
+			@Override
+			public void onSuccess(JSONObject response) {
+				Log.i(TAG, METHOD + "success! " + response.toString());
+				try {
+					if (response.has(Constants.OW_STATUS) && response.getString(Constants.OW_STATUS).compareTo(Constants.OW_SUCCESS) ==0) {
+				
+						OWMediaObject obj = OWMediaObject.objects(app_context, OWMediaObject.class).get(media_obj_id);
+						if(response.has(Constants.OW_HITS)){
+							switch(hit_type){
+								case VIEW:
+									obj.setViews(app_context, response.getInt(Constants.OW_HITS));
+									break;
+								case CLICK:
+									obj.setActions(app_context, response.getInt(Constants.OW_HITS));
+									break;
+							}
+						}
+						obj.save(app_context);
+					}
+				} catch (JSONException e) {
+					Log.e(TAG, "Error processing hitcount response");
+					e.printStackTrace();
+				}
+			}
+		};
+		
+		JSONObject params = new JSONObject();
+		try {
+			params.put(Constants.OW_HIT_SERVER_ID, server_id);
+			params.put(Constants.OW_HIT_MEDIA_TYPE, content_type.toString().toLowerCase());
+			params.put(Constants.OW_HIT_TYPE, hit_type.toString().toLowerCase());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	
+		AsyncHttpClient http_client = HttpClient.setupHttpClient(app_context);
+		http_client.post(app_context, Constants.OW_API_URL + Constants.OW_HIT_URL, Utils.JSONObjectToStringEntity(params),
+				"application/json", post_handler);
+		
 	}
 
 	public static void getStory(final Context app_context, final int id,

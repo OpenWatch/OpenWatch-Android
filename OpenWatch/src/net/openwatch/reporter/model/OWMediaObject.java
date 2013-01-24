@@ -1,6 +1,7 @@
 package net.openwatch.reporter.model;
 
 
+import java.io.File;
 import java.util.Date;
 
 import net.openwatch.reporter.constants.Constants;

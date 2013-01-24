@@ -4,10 +4,14 @@ import java.util.ArrayList;
 
 import net.openwatch.reporter.FeedFragmentActivity.TabsAdapter;
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
+import net.openwatch.reporter.constants.Constants.HIT_TYPE;
 import net.openwatch.reporter.http.OWServiceRequests;
 import net.openwatch.reporter.http.OWServiceRequests.RequestCallback;
 import net.openwatch.reporter.model.OWMediaObject;
+import net.openwatch.reporter.model.OWStory;
 import net.openwatch.reporter.model.OWVideoRecording;
+import net.openwatch.reporter.share.Share;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -46,6 +50,7 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 	TabsAdapter mTabsAdapter;
 
 	public static int model_id = -1;
+	int server_id = -1;
 	boolean is_local = false;
 	boolean video_playing = false;
 	
@@ -65,7 +70,7 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 		try {
 			model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
 			OWMediaObject media_obj = OWMediaObject.objects(this, OWMediaObject.class).get(model_id);
-
+			server_id = media_obj.server_id.get();
 			if(media_obj != null && media_obj.title.get() != null)
 				this.getSupportActionBar().setTitle(media_obj.title.get());
 			if( media_obj.local_video_recording.get(getApplicationContext()) != null ){
@@ -147,6 +152,12 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 		case R.id.menu_save:
 			finish();
 			return true;
+		case R.id.menu_share:
+			if(server_id > 0){
+				Share.showShareDialog(this, getString(R.string.share_story), OWVideoRecording.getUrlFromId(server_id));
+				OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, CONTENT_TYPE.VIDEO, HIT_TYPE.CLICK);
+			}
+			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}

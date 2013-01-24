@@ -143,7 +143,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 	}
 	
 	private void showShareDialog(int recording_server_id){
-		String url = Constants.OW_URL +  Constants.OW_VIEW + String.valueOf(recording_server_id);
+		String url = Constants.OW_URL +  Constants.OW_RECORDING_VIEW + String.valueOf(recording_server_id);
 		Log.i(TAG, "model_id: " + String.valueOf(model_id) + " url: " + url);
 		
 		Intent i = new Intent(Intent.ACTION_SEND);

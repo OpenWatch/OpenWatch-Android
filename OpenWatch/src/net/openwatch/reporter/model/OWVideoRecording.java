@@ -1,5 +1,6 @@
 package net.openwatch.reporter.model;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -356,6 +357,10 @@ public class OWVideoRecording extends Model implements OWMediaObjectInterface{
 	@Override
 	public void setLastEdited(Context c, String last_edited) {
 		media_object.get(c).setLastEdited(c, last_edited);
+	}
+	
+	public static String getUrlFromId(int server_id){
+		return Constants.OW_URL + Constants.OW_RECORDING_VIEW + File.separator + String.valueOf(server_id);	
 	}
 
 }

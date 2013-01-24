@@ -35,7 +35,7 @@ import android.widget.ListView;
 import net.openwatch.reporter.RecordingViewActivity;
 import net.openwatch.reporter.R;
 import net.openwatch.reporter.StoryViewActivity;
-import net.openwatch.reporter.constants.Constants.OWContentType;
+import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
 import net.openwatch.reporter.constants.Constants.OWFeedType;
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
@@ -160,7 +160,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             Log.i("LoaderCustom", "Item clicked: " + id);
         	try{
         		Intent i = null;
-        		switch((OWContentType)v.getTag(R.id.list_item_model_type)){
+        		switch((CONTENT_TYPE)v.getTag(R.id.list_item_model_type)){
         		case VIDEO:
         			i = new Intent(this.getActivity(), RecordingViewActivity.class);
         			break;

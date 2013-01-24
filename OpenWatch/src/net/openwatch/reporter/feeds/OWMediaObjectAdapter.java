@@ -53,9 +53,9 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         view.setTag(R.id.list_item_model, cursor.getInt(view_cache._id_col));
         
         if(!cursor.isNull(cursor.getColumnIndex(DBConstants.MEDIA_OBJECT_VIDEO)))
-        	view.setTag(R.id.list_item_model_type, Constants.OWContentType.VIDEO);
+        	view.setTag(R.id.list_item_model_type, Constants.CONTENT_TYPE.VIDEO);
         if(!cursor.isNull(cursor.getColumnIndex(DBConstants.MEDIA_OBJECT_STORY)))
-        	view.setTag(R.id.list_item_model_type, Constants.OWContentType.STORY);
+        	view.setTag(R.id.list_item_model_type, Constants.CONTENT_TYPE.STORY);
 	}
 	
 	// Cache the views within a ListView row item 
