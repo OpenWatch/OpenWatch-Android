@@ -43,6 +43,8 @@ public class OWLocalRecordingAdapter extends SimpleCursorAdapter {
         }
         
         view_cache.title.setText(cursor.getString(view_cache.title_col));
+        view_cache.views.setText(cursor.getString(view_cache.views_col));
+        view_cache.actions.setText(cursor.getString(view_cache.actions_col));
         
         if(cursor.isNull(cursor.getColumnIndex(DBConstants.MEDIA_OBJECT_LOCAL_VIDEO))){
         	view_cache.status.setVisibility(View.GONE);
@@ -59,13 +61,14 @@ public class OWLocalRecordingAdapter extends SimpleCursorAdapter {
         	view.findViewById(R.id.calendar_icon).setVisibility(View.GONE);
         */
         
-        if(cursor.getString(view_cache.thumbnail_col) != null && cursor.getString(view_cache.thumbnail_col).compareTo("") != 0){
+        if(view_cache.last_seen_id != cursor.getInt(cursor.getColumnIndexOrThrow(DBConstants.ID)) && cursor.getString(view_cache.thumbnail_col) != null && cursor.getString(view_cache.thumbnail_col).compareTo("") != 0){
         	view_cache.thumbnail.setImageUrl(cursor.getString(view_cache.thumbnail_col));
         	view_cache.thumbnail.loadImage();
         }
         //Log.i("OWLocalRecordingAdapter", "got id: " + String.valueOf(cursor.getInt(view_cache._id_col)));
         view.setTag(R.id.list_item_model, cursor.getInt(view_cache._id_col));
-       
+        
+        view_cache.last_seen_id = cursor.getInt(cursor.getColumnIndexOrThrow(DBConstants.ID));
 	}
 	
 	// Cache the views within a ListView row item 
@@ -75,6 +78,8 @@ public class OWLocalRecordingAdapter extends SimpleCursorAdapter {
         TextView views;
         TextView actions;
         TextView status;
+        
+        int last_seen_id;
                         
         int title_col; 
         int thumbnail_col;

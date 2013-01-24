@@ -37,6 +37,7 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         	view_cache.actions_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_ACTIONS);
         	view_cache._id_col = cursor.getColumnIndexOrThrow(DBConstants.ID);
             view.setTag(R.id.list_item_cache, view_cache);
+            
         }
         
         view_cache.title.setText(cursor.getString(view_cache.title_col));
@@ -55,6 +56,8 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         	view.setTag(R.id.list_item_model_type, Constants.CONTENT_TYPE.VIDEO);
         if(!cursor.isNull(cursor.getColumnIndex(DBConstants.MEDIA_OBJECT_STORY)))
         	view.setTag(R.id.list_item_model_type, Constants.CONTENT_TYPE.STORY);
+	
+        view_cache.last_seen_id = cursor.getInt(cursor.getColumnIndexOrThrow(DBConstants.ID));
 	}
 	
 	// Cache the views within a ListView row item 
@@ -64,6 +67,8 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         RemoteImageView thumbnail;
         TextView views;
         TextView actions;
+        
+        int last_seen_id;
                 
         int title_col; 
         int thumbnail_col;

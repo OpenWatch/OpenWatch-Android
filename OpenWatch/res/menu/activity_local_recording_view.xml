@@ -10,5 +10,10 @@
         android:id="@+id/menu_share"
         android:showAsAction="always"
         android:icon="@drawable/ic_menu_share_holo_dark"/>
+    
+    <item
+        android:id="@+id/menu_delete"
+        android:showAsAction="always"
+        android:icon="@drawable/trash"/>
 
 </menu>

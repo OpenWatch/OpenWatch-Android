@@ -91,8 +91,8 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 			} else{
 				Log.e(TAG, "Recording has no local or remote video uri specified");
 			}
-			
-
+			if(server_id > 0)
+				OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, CONTENT_TYPE.VIDEO, HIT_TYPE.VIEW);
 			// Log.i(TAG, "got model_id : " + String.valueOf(model_id));
 		} catch (Exception e) {
 			Log.e(TAG, "Could not load Intent extras");
@@ -139,6 +139,7 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 	public boolean onPrepareOptionsMenu(Menu menu){
 		if(!is_local){
 			menu.removeItem(R.id.menu_save);
+			menu.removeItem(R.id.menu_delete);
 		}
 		return true;
 	}
@@ -157,6 +158,9 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 				Share.showShareDialog(this, getString(R.string.share_story), OWVideoRecording.getUrlFromId(server_id));
 				OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, CONTENT_TYPE.VIDEO, HIT_TYPE.CLICK);
 			}
+			break;
+		case R.id.menu_delete:
+			OWMediaObjectViewFunctions.showDeleteDialog(this, model_id);
 			break;
 		}
 		return super.onOptionsItemSelected(item);
