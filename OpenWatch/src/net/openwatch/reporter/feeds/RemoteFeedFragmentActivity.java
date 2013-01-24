@@ -104,7 +104,6 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             
             // Prepare the loader.  Either re-connect with an existing one,
             // or start a new one.
-            getLoaderManager().enableDebugLogging(true);
             getLoaderManager().initLoader(0, null, this);
             RequestCallback cb = new RequestCallback(){
 

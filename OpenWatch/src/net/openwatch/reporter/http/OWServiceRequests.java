@@ -247,10 +247,10 @@ public class OWServiceRequests {
 		};
 		
 		AsyncHttpClient http_client = HttpClient.setupHttpClient(app_context);
-		String endpoint = Constants.feedEndpointFromType(feed);
-
-		http_client.get(Constants.OW_API_URL + Constants.OW_FEED + File.separator + endpoint + File.separator + String.valueOf(page), get_handler);
-		Log.i(TAG, "getFeed: " + Constants.OW_API_URL + Constants.OW_FEED + File.separator + endpoint + File.separator + String.valueOf(page));
+		String endpoint = Constants.feedExternalEndpointFromType(feed, page);
+		
+		http_client.get(endpoint, get_handler);
+		Log.i(TAG, "getFeed: " + endpoint);
 	}
 
 	/**

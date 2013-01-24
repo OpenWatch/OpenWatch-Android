@@ -27,21 +27,20 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.SearchViewCompat;
 import android.support.v4.widget.SearchViewCompat.OnQueryTextListenerCompat;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import net.openwatch.reporter.RecordingViewActivity;
 import net.openwatch.reporter.R;
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
+import net.openwatch.reporter.constants.Constants.OWFeedType;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
+import net.openwatch.reporter.http.OWServiceRequests;
+import net.openwatch.reporter.http.OWServiceRequests.RequestCallback;
 
 /**
  * Demonstration of the implementation of a custom Loader.
@@ -74,6 +73,11 @@ public class MyFeedFragmentActivity extends FragmentActivity {
         String mCurFilter;
 
         OnQueryTextListenerCompat mOnQueryTextListenerCompat;
+        
+        final OWFeedType feed = Constants.OWFeedType.RECORDINGS;
+        int user_id = -1;
+        int page = 1;
+        boolean didRefreshFeed = false;
 
         @Override public void onActivityCreated(Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
@@ -84,14 +88,37 @@ public class MyFeedFragmentActivity extends FragmentActivity {
             // Initialize adapter without cursor. Let loader provide it when ready
             mAdapter = new OWLocalRecordingAdapter(getActivity(), null); 
             setListAdapter(mAdapter);
+            
+            RequestCallback cb = new RequestCallback(){
+
+				@Override
+				public void onFailure() {
+					
+				}
+
+				@Override
+				public void onSuccess() {
+					didRefreshFeed = true;
+					restartLoader();
+				}
+            	
+            };
+            
+            // Refresh the feed view
+            if(!didRefreshFeed){
+            	OWServiceRequests.getFeed(this.getActivity().getApplicationContext(), feed, page, cb);
+            }
 
             // perhaps do auth checking onStart
             SharedPreferences profile = getActivity().getSharedPreferences(Constants.PROFILE_PREFS, 0);
     		boolean authenticated = profile.getBoolean(Constants.AUTHENTICATED, false);
     		if(authenticated){
-                setEmptyText(getString(R.string.loading_recordings));
-    			setListShown(false); // start with a progress indicator
-    			getLoaderManager().initLoader(0, null, this);
+    			user_id = profile.getInt(DBConstants.USER_SERVER_ID, 0);
+    			if(user_id > 0){
+	                setEmptyText(getString(R.string.loading_recordings));
+	    			setListShown(false); // start with a progress indicator
+	    			getLoaderManager().initLoader(0, null, this);
+    			}
     		}else{
     			setEmptyText(getString(R.string.login_for_local_recordings));
     		}
@@ -165,19 +192,21 @@ public class MyFeedFragmentActivity extends FragmentActivity {
 		static final String[] PROJECTION = new String[] {
 			DBConstants.ID,
 			DBConstants.RECORDINGS_TABLE_TITLE,
-			DBConstants.RECORDINGS_TABLE_FIRST_POSTED,
-			DBConstants.RECORDINGS_TABLE_THUMB_URL
-
+			DBConstants.RECORDINGS_TABLE_LAST_EDITED,
+			DBConstants.RECORDINGS_TABLE_THUMB_URL,
+			DBConstants.RECORDINGS_TABLE_VIEWS,
+			DBConstants.RECORDINGS_TABLE_ACTIONS,
+			DBConstants.MEDIA_OBJECT_LOCAL_VIDEO
 	    };
 
 		@Override
 		public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
-			// TODO Auto-generated method stub
-			Uri baseUri = OWContentProvider.LOCAL_RECORDING_URI;
+			Uri baseUri = OWContentProvider.getFeedUri(feed);
 			String selection = null;
             String[] selectionArgs = null;
-            String order = DBConstants.RECORDINGS_TABLE_FIRST_POSTED + " DESC";
-			
+            String order = null;
+            //String order = DBConstants.RECORDINGS_TABLE_FIRST_POSTED + " DESC";
+            Log.i("URI"+feed.toString(), "createLoader on uri: " + baseUri.toString());
 			return new CursorLoader(getActivity(), baseUri, PROJECTION, selection, selectionArgs, order);
 		}
     }

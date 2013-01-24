@@ -1,5 +1,6 @@
 package net.openwatch.reporter.constants;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -73,6 +74,7 @@ public class Constants {
 	public static final String OW_SIGNUP = "create_account";
 	public static final String OW_REGISTER = "register_app";
 	public static final String OW_RECORDING = "recording";
+	public static final String OW_RECORDINGS = "recordings";
 	public static final String OW_STORY = "story";
 	public static final String OW_TAGS = "tags";
 	public static final String OW_UPDATE_META = "update_metadata";
@@ -84,10 +86,33 @@ public class Constants {
 	public static final String OW_FOLLOWING = "following";
 	// Feed types : Each is related to an API endpoint in OWServiceRequests getFeed
 	public static enum OWFeedType{
-		FEATURED, LOCAL, FOLLOWING
+		FEATURED, LOCAL, FOLLOWING, RECORDINGS
 	}
 	
-	public static String feedEndpointFromType(OWFeedType type){
+	/**
+	 * For user with external OWServiceRequests
+	 * @param type
+	 * @return
+	 */
+	public static String feedExternalEndpointFromType(OWFeedType type, int page){
+		String endpoint = "";
+		switch(type){
+		case RECORDINGS:
+			endpoint = Constants.OW_API_URL + Constants.OW_RECORDINGS;
+			break;
+		default:
+			endpoint = Constants.OW_API_URL + Constants.OW_FEED + File.separator + feedInternalEndpointFromType(type);
+			break;
+		}
+		return endpoint + File.separator + String.valueOf(page);
+	}
+	
+	/**
+	 * For user with the internal ContentProvider
+	 * @param type
+	 * @return
+	 */
+	public static String feedInternalEndpointFromType(OWFeedType type){
 		String endpoint = "";
 		switch(type){
 		case FEATURED:
@@ -98,6 +123,9 @@ public class Constants {
 			break;
 		case FOLLOWING:
 			endpoint = Constants.OW_FOLLOWING;
+			break;
+		case RECORDINGS:
+			endpoint = Constants.OW_RECORDINGS;
 			break;
 		}
 		return endpoint;

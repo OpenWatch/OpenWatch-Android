@@ -44,10 +44,9 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         view_cache.views.setText(cursor.getString(view_cache.views_col));
         view_cache.actions.setText(cursor.getString(view_cache.actions_col));
         
-        if(!view_cache.thumbnail_set && cursor.getString(view_cache.thumbnail_col) != null && cursor.getString(view_cache.thumbnail_col).compareTo("") != 0){
+        if(cursor.getString(view_cache.thumbnail_col) != null && cursor.getString(view_cache.thumbnail_col).compareTo("") != 0){
         	view_cache.thumbnail.setImageUrl(cursor.getString(view_cache.thumbnail_col));
         	view_cache.thumbnail.loadImage();
-        	view_cache.thumbnail_set = true;
         }
         
         view.setTag(R.id.list_item_model, cursor.getInt(view_cache._id_col));
@@ -65,9 +64,7 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         RemoteImageView thumbnail;
         TextView views;
         TextView actions;
-        
-        boolean thumbnail_set = false;
-        
+                
         int title_col; 
         int thumbnail_col;
         int username_col;

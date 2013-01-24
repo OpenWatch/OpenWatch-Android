@@ -65,7 +65,8 @@
     <string name="title_activity_local_recording_view">LocalRecordingViewActivity</string>
     <string name="by">by</string>
     <string name="login_for_local_recordings">You must be logged in to view your recordings</string>
-
+	<string name="on_device">ON DEVICE</string>
+	
     <!-- View Recording Activity -->
     <string name="tab_map">Map</string>
     <string name="tab_info">Info</string>

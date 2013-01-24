@@ -154,6 +154,16 @@
         <item name="android:textSize">18sp</item>
         <item name="android:singleLine">true</item>
     </style>
+    
+    <style name="Theme.openwatch.feedItemStatusText">
+        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginRight">5dp</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:singleLine">true</item>
+    </style>
 
     <style name="Theme.openwatch.feedItemIcon">
         <item name="android:layout_width">15dp</item>

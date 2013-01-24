@@ -29,7 +29,7 @@ public class OWContentProvider extends ContentProvider {
      
      private static final int REMOTE_RECORDINGS = 3;
      private static final int REMOTE_RECORDING_ID = 4;
-     private static final int REMOTE_RECORDING_BY_FEED = 8;
+     private static final int MEDIA_OBJS_BY_FEED = 8;
      
      private static final int MEDIA_OBJS_BY_USER = 9;
           
@@ -54,7 +54,7 @@ public class OWContentProvider extends ContentProvider {
     	 return REMOTE_RECORDING_URI.buildUpon().appendEncodedPath(String.valueOf(model_id)).build();
      }
      public static Uri getFeedUri(OWFeedType feed_type){
-    	 return MEDIA_OBJECT_URI.buildUpon().appendEncodedPath(Constants.feedEndpointFromType(feed_type)).build();
+    	 return MEDIA_OBJECT_URI.buildUpon().appendEncodedPath(Constants.feedInternalEndpointFromType(feed_type)).build();
      }
      public static Uri getMediaObjectUri(int model_id){
     	 return MEDIA_OBJECT_URI.buildUpon().appendEncodedPath(String.valueOf(model_id)).build();
@@ -71,7 +71,7 @@ public class OWContentProvider extends ContentProvider {
 	    mUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.LOCAL_RECORDINGS_TABLENAME, LOCAL_RECORDINGS);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.LOCAL_RECORDINGS_TABLENAME + "/#", LOCAL_RECORDING_ID);
-	    mUriMatcher.addURI(AUTHORITY, DBConstants.MEDIA_OBJECT_TABLENAME + "/*", REMOTE_RECORDING_BY_FEED);
+	    mUriMatcher.addURI(AUTHORITY, DBConstants.MEDIA_OBJECT_TABLENAME + "/*", MEDIA_OBJS_BY_FEED);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.TAG_TABLENAME, TAGS);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.MEDIA_OBJECT_TABLENAME + "/user/#", MEDIA_OBJS_BY_USER);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.TAG_TABLENAME + "/#", TAG_ID);
@@ -158,7 +158,7 @@ public class OWContentProvider extends ContentProvider {
 				result = adapter.open().query(select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " WHERE " + DBConstants.MEDIA_OBJECT_LOCAL_VIDEO + " IS NOT NULL AND " + DBConstants.ID + "=" +uri.getLastPathSegment());
 				//adapter.close();
 				break;
-			case REMOTE_RECORDING_BY_FEED:
+			case MEDIA_OBJS_BY_FEED:
 				Log.i("URI"+uri.getLastPathSegment(), "Query CP for Feed ");
 				int feed_id = -1;
 				//Log.i(TAG, "get feed _id query:" + " SELECT " + DBConstants.ID + " from owfeed where NAME = \"" + uri.getLastPathSegment() + "\"");
