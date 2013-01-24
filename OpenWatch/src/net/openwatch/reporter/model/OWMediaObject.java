@@ -63,6 +63,8 @@ public class OWMediaObject extends Model implements OWMediaObjectInterface{
 		// notify the ContentProvider that the dataset has changed
 		context.getContentResolver().notifyChange(OWContentProvider.getMediaObjectUri(getId()), null);
 		// notify all of this object's feed uris
+		/*
+		 * Don't do this here - Often OWMediaObjects are added in batch transactions so leave it to the request response handler
 		OWFeedType feed_type = null;
 		for(OWFeed feed : feeds.get(context, this)){
 			feed_type = OWFeed.getFeedTypeFromString(context, feed.name.get());
@@ -72,6 +74,7 @@ public class OWMediaObject extends Model implements OWMediaObjectInterface{
 				context.getContentResolver().notifyChange(OWContentProvider.getFeedUri(feed_type), null);
 			}
 		}
+		*/
 	    return super_save;
 	}
 	

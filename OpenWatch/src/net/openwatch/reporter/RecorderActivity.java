@@ -175,7 +175,8 @@ public class RecorderActivity extends SherlockActivity implements
 		        			String filepath = command[1].substring(0,command[1].lastIndexOf(File.separator)+1);
 		        			recording.local.get(c.getApplicationContext()).addSegment(c.getApplicationContext(), filepath, filename);
 		        			Log.i(TAG, "owlocalrecording addsegment");
-		        			OWMediaRequests.sendLQChunk(public_upload_token, recording_uuid, command[1]);
+		        			OWMediaRequests.safeSendLQFile(public_upload_token, recording_uuid, command[1]);
+		        			//OWMediaRequests.sendLQChunk(public_upload_token, recording_uuid, command[1]);
 	        			}
 	        			
 	        		}
@@ -186,7 +187,8 @@ public class RecorderActivity extends SherlockActivity implements
 	        			local.hq_filepath.set(command[1]);
 	        			local.save(c.getApplicationContext());
 	        			Log.i(TAG, "id: " + owrecording_id + " hq filepath set:" + command[1]);
-	        			OWMediaRequests.sendHQFileChunked(public_upload_token, recording_uuid, command[1]);
+	        			OWMediaRequests.safeSendHQFile(public_upload_token, recording_uuid, command[1]);
+	        			//OWMediaRequests.sendHQFileChunked(public_upload_token, recording_uuid, command[1]);
 	        			//OWMediaRequests.sendHQFile(public_upload_token, recording_uuid, command[1]);
 	        		}
 	        	}

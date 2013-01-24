@@ -159,23 +159,27 @@ public class OWContentProvider extends ContentProvider {
 				//adapter.close();
 				break;
 			case REMOTE_RECORDING_BY_FEED:
+				Log.i("URI"+uri.getLastPathSegment(), "Query CP for Feed ");
 				int feed_id = -1;
-				Log.i(TAG, "get feed _id query:" + " SELECT " + DBConstants.ID + " from owfeed where NAME = \"" + uri.getLastPathSegment() + "\"");
+				//Log.i(TAG, "get feed _id query:" + " SELECT " + DBConstants.ID + " from owfeed where NAME = \"" + uri.getLastPathSegment() + "\"");
 				Cursor feed_cursor = adapter.open().query("SELECT " + DBConstants.ID + "  from " + DBConstants.FEED_TABLENAME +" WHERE " + DBConstants.FEED_NAME+ "= \"" + uri.getLastPathSegment() + "\""); // empty
 				if(feed_cursor.moveToFirst()){
 					feed_id = feed_cursor.getInt(0);
 					Log.i(TAG, String.format("got feed_id: %d", feed_id));
 					feed_cursor.close();
 				}
-				else
+				else{
+					Log.i(TAG, "Could not find requested feed!");
 					return null;
-												
-				Log.i(TAG, String.format("fetching feed id: %d", feed_id));
+				}			
+				//Log.i(TAG, String.format("fetching feed id: %d", feed_id));
 				String query = select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " JOIN " + DBConstants.FEED_MEDIA_OBJ_TABLENAME + " ON " + DBConstants.FEED_MEDIA_OBJ_TABLENAME+"."+DBConstants.MEDIA_OBJECT_TABLENAME + "=" + DBConstants.MEDIA_OBJECT_TABLENAME+"." + DBConstants.ID + " WHERE " + DBConstants.FEED_MEDIA_OBJ_TABLENAME + "." + DBConstants.FEED_TABLENAME + "=" + String.valueOf(feed_id);
-				Log.i(TAG, "Query: " + query);
+				//Log.i(TAG, "Query: " + query);
 				result = adapter.open().query(query);
-				if(result.moveToFirst())
-					Log.i(TAG, "Got feed cursor: " + result.getColumnCount());
+				if(result == null)
+					Log.i(TAG, "Feed query was null!");
+				//if(result.moveToFirst())
+				//	Log.i(TAG, "Got feed cursor: " + result.getColumnCount());
 				break;
 			case REMOTE_RECORDINGS:
 				result = adapter.open().query(select + " FROM " + DBConstants.RECORDINGS_TABLENAME + " " + where + sortby);
@@ -200,7 +204,7 @@ public class OWContentProvider extends ContentProvider {
 		//adapter.close();
 		// Make sure that potential listeners are getting notified
 		if(result != null){
-			Log.i(TAG, "set notificationUri: " + uri.toString());
+			Log.i("URI" + uri.getLastPathSegment(), "set notificationUri: " + uri.toString());
 			result.setNotificationUri(getContext().getContentResolver(), uri);
 		}
 		return result;

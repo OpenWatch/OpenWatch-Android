@@ -80,14 +80,17 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
 
         inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         
+        
         mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_local_user_recordings)).setIndicator(inflateCustomTab(getString(R.string.tab_local_user_recordings))),
                 MyFeedFragmentActivity.LocalRecordingsListFragment.class, null);
-        
+     
         Bundle feedBundle = new Bundle(1);
+        
         feedBundle.putSerializable(Constants.OW_FEED, OWFeedType.FOLLOWING);
         mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_following)).setIndicator(inflateCustomTab(getString(R.string.tab_following))),
                 RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, feedBundle);
         mTabMap.put(OWFeedType.FOLLOWING, 1);
+        
         
         feedBundle = new Bundle(1);
         feedBundle.putSerializable(Constants.OW_FEED, OWFeedType.FEATURED);
@@ -95,11 +98,13 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
                 RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, feedBundle);
         mTabMap.put(OWFeedType.FEATURED, 2);
         
+        
         feedBundle = new Bundle(1);
         feedBundle.putSerializable(Constants.OW_FEED, OWFeedType.LOCAL);
         mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_local)).setIndicator(inflateCustomTab(getString(R.string.tab_local))),
                 RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, feedBundle);
         mTabMap.put(OWFeedType.LOCAL, 3);
+        
         // See if initiating intent specified a tab
         if(getIntent().getExtras() != null && getIntent().getExtras().containsKey(Constants.FEED_TYPE) )
         	mTitleIndicator.setCurrentItem(mTabMap.get(getIntent().getExtras().getSerializable(Constants.FEED_TYPE)));

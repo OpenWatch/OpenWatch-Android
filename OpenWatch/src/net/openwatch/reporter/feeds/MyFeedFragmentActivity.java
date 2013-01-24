@@ -134,6 +134,10 @@ public class MyFeedFragmentActivity extends FragmentActivity {
         	startActivity(i);
         	
         }
+        
+        private void restartLoader(){
+        	this.getLoaderManager().restartLoader(0, null, this);
+        }
 
         
 		@Override

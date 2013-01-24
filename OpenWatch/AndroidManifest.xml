@@ -72,7 +72,8 @@
             android:value="AIzaSyD78e1qxX4_dB6w74tmykGJRECO-ucNQNY" >
         </meta-data>
 
-        <activity android:name="net.openwatch.reporter.WhatHappenedActivity" >
+        <activity android:name="net.openwatch.reporter.WhatHappenedActivity"
+            android:windowSoftInputMode="stateHidden|adjustPan" >
         </activity>
         <activity
             android:name="net.openwatch.reporter.SettingsActivity"

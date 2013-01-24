@@ -41,6 +41,7 @@ import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
 import net.openwatch.reporter.http.OWServiceRequests;
+import net.openwatch.reporter.http.OWServiceRequests.RequestCallback;
 
 /**
  * Demonstration of the implementation of a custom Loader.
@@ -67,8 +68,10 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
     	
     	static String TAG = "RemoteFeedFragment";
     	boolean didRefreshFeed = false;
+    	int page = 1;
     	
     	OWFeedType feed;
+    	Uri this_uri; // TESTING
 
         // This is the Adapter being used to display the list's data.
         //AppListAdapter mAdapter;
@@ -101,14 +104,31 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             
             // Prepare the loader.  Either re-connect with an existing one,
             // or start a new one.
+            getLoaderManager().enableDebugLogging(true);
             getLoaderManager().initLoader(0, null, this);
-            
+            RequestCallback cb = new RequestCallback(){
+
+				@Override
+				public void onFailure() {
+					
+				}
+
+				@Override
+				public void onSuccess() {
+					didRefreshFeed = true;
+					restartLoader();
+				}
+            	
+            };
             // Refresh the feed view
             if(!didRefreshFeed){
-            	OWServiceRequests.getFeed(this.getActivity().getApplicationContext(), feed, 1);
-            	//didRefreshFeed = true;
+            	OWServiceRequests.getFeed(this.getActivity().getApplicationContext(), feed, page, cb);
             }
 
+        }
+        
+        private void restartLoader(){
+        	this.getLoaderManager().restartLoader(0, null, this);
         }
 
         @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -162,6 +182,10 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 		@Override
 		public void onLoadFinished(Loader<Cursor> arg0, Cursor cursor) {
 			mAdapter.swapCursor(cursor);
+			if(cursor == null || cursor.getCount() == 0)
+				Log.i("URI" + feed.toString(), "onLoadFinished empty cursor on uri " + this_uri.toString());
+			else
+				Log.i("URI" + feed.toString(), String.format("onLoadFinished %d rows on uri %s ",cursor.getCount(), this_uri.toString()));
 			// The list should now be shown.
             if (isResumed()) {
                 setListShown(true);
@@ -178,6 +202,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 		@Override
 		public void onLoaderReset(Loader<Cursor> arg0) {
 			// TODO Auto-generated method stub
+			Log.i("URI", "onLoaderReset on " + feed.toString());
 			mAdapter.swapCursor(null);
 		}
 		
@@ -196,10 +221,11 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 		@Override
 		public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
 			Uri baseUri = OWContentProvider.getFeedUri(feed);
+			this_uri = baseUri;
 			String selection = null;
             String[] selectionArgs = null;
             String order = null;
-			Log.i("URI", "createLoader on uri: " + baseUri.toString());
+			Log.i("URI"+feed.toString(), "createLoader on uri: " + baseUri.toString());
 			return new CursorLoader(getActivity(), baseUri, PROJECTION, selection, selectionArgs, order);
 		}
     }

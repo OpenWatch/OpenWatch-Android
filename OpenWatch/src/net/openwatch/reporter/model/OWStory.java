@@ -49,7 +49,7 @@ public class OWStory extends Model implements OWMediaObjectInterface{
 		// notify the ContentProvider that the dataset has changed
 		if(media_object.get() != null){ // this is called once in <init> to get db id before medi_object created
 			setLastEdited(context, Constants.sdf.format(new Date()));
-			context.getContentResolver().notifyChange(OWContentProvider.getMediaObjectUri(media_object.get(context).getId()), null);
+			//context.getContentResolver().notifyChange(OWContentProvider.getMediaObjectUri(media_object.get(context).getId()), null);
 		}
 		return super.save(context);
 	}
