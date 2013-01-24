@@ -65,7 +65,6 @@ public class OWUser extends Model{
 			if(json.has(Constants.OW_TAGS)){
 				this.tags.reset();
 				JSONArray tag_array =  json.getJSONArray("tags");
-				Filter filter;
 				OWTag tag = null;
 				for(int x=0;x<tag_array.length();x++){
 					tag = OWTag.getOrCreateTagFromJson(c, tag_array.getJSONObject(x));

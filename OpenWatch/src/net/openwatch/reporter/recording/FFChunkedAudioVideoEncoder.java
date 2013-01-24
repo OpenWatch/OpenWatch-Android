@@ -25,7 +25,7 @@ public class FFChunkedAudioVideoEncoder {
     }
 	
 	// Constants
-	private final String HQ_SUFFIX = "_HQ";
+	private final String HQ_SUFFIX = "HQ";
 	private final String FILE_EXT = ".mp4";
 	
 	// Recording-wide variables

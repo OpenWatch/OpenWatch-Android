@@ -429,30 +429,7 @@ public class OWServiceRequests {
 					OWTag tag = null;
 					for (int x = 0; x < array_json.length(); x++) {
 						tag_json = array_json.getJSONObject(x);
-						Filter filter = new Filter();
-						filter.is(DBConstants.TAG_TABLE_SERVER_ID,
-								tag_json.getString("id"));
-
-						tag = null;
-
-						if (tag_count != 0) {
-							// TODO: Override QuerySet.get to work on server_id
-							// field
-							QuerySet<OWTag> tags = OWTag.objects(app_context,
-									OWTag.class).filter(filter);
-							for (OWTag temp_tag : tags) {
-								tag = temp_tag;
-								break;
-							}
-						}
-						if (tag == null) {
-							// this is a new tag
-							tag = new OWTag();
-							tag.server_id.set(tag_json.getInt("id"));
-						}
-						tag.is_featured.set(tag_json.getBoolean("featured"));
-						tag.name.set(tag_json.getString("name"));
-
+						tag = OWTag.getOrCreateTagFromJson(app_context, tag_json);
 						tag.save(app_context);
 						Log.i(TAG,
 								METHOD + " saved tag: " + tag.name.get()

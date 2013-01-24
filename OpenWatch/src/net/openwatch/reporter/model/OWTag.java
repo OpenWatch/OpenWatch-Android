@@ -69,8 +69,10 @@ public class OWTag extends Model{
 			break;
 		}
 		
-		if(tag == null)
+		if(tag == null){
 			tag= new OWTag();
+			tag.server_id.set(json.getInt(Constants.OW_SERVER_ID));
+		}
 
 		if(json.has(Constants.OW_NAME))
 			tag.name.set(json.getString(Constants.OW_NAME));

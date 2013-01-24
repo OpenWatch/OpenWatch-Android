@@ -303,8 +303,7 @@ public class OWMediaRequests {
 
 		outputStream = new DataOutputStream( connection.getOutputStream() );
 		outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-		Log.i(TAG, "Content-Disposition: form-data; name=\"" + Constants.OW_FILE + "\";filename=\"" + filename.substring(filename.lastIndexOf(File.separator)) +"\"" + lineEnd);
-		outputStream.writeBytes("Content-Disposition: form-data; name=\"" + Constants.OW_FILE + "\";filename=\"" + filename.substring(filename.lastIndexOf(File.separator)) +"\"" + lineEnd);
+		outputStream.writeBytes("Content-Disposition: form-data; name=\"" + Constants.OW_FILE + "\";filename=\"" + filename.substring(filename.lastIndexOf(File.separator)+1) +"\"" + lineEnd);
 		outputStream.writeBytes(lineEnd);
 
 		bytesAvailable = fileInputStream.available();
