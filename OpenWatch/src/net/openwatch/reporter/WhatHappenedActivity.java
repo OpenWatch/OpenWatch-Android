@@ -136,7 +136,6 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 				// Share
 				dialog.dismiss();
 				showShareDialog(recording_server_id);
-				WhatHappenedActivity.this.finish();
 			}
 			
 		}).show();
@@ -149,6 +148,8 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 		Intent i = new Intent(Intent.ACTION_SEND);
 		i.setType("text/plain");
 		i.putExtra(Intent.EXTRA_TEXT, url);
+		i.setFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
+		WhatHappenedActivity.this.finish();
 		startActivity(Intent.createChooser(i, getString(R.string.share_dialog_title)));
 	}
 	

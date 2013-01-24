@@ -343,7 +343,7 @@ public class RecorderActivity extends SherlockActivity implements
 				Log.e(TAG, "Error getting mediaobject id from chunk_listener");
 
 			i.putExtra(Constants.OW_REC_UUID, mRecording_uuid);
-			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+			i.setFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
 			startActivity(i);
 			finish(); // ensure this activity removed from the stack
 		}
