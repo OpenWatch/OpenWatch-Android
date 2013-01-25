@@ -92,7 +92,7 @@ public class OWServiceRequests {
 			e.printStackTrace();
 		}
 	
-		AsyncHttpClient http_client = HttpClient.setupHttpClient(app_context);
+		AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
 		http_client.post(app_context, Constants.OW_API_URL + Constants.OW_HIT_URL, Utils.JSONObjectToStringEntity(params),
 				"application/json", post_handler);
 		
@@ -127,7 +127,7 @@ public class OWServiceRequests {
 			}
 		};
 
-		AsyncHttpClient http_client = HttpClient.setupHttpClient(app_context);
+		AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
 		http_client.get(Constants.OW_API_URL + Constants.OW_STORY
 				+ File.separator + String.valueOf(id), get_handler);
 		Log.i(TAG, METHOD + " : " + Constants.OW_API_URL + Constants.OW_STORY
@@ -165,7 +165,7 @@ public class OWServiceRequests {
 			}
 		};
 
-		AsyncHttpClient http_client = HttpClient.setupHttpClient(app_context);
+		AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
 		http_client.get(Constants.OW_API_URL + Constants.OW_RECORDING
 				+ File.separator + uuid, get_handler);
 		Log.i(TAG, METHOD + " : " + Constants.OW_API_URL
@@ -246,7 +246,7 @@ public class OWServiceRequests {
 			}
 		};
 		
-		AsyncHttpClient http_client = HttpClient.setupHttpClient(app_context);
+		AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
 		String endpoint = Constants.feedExternalEndpointFromType(feed, page);
 		
 		http_client.get(endpoint, get_handler);
@@ -375,7 +375,7 @@ public class OWServiceRequests {
 
 	public static void getRecordingMeta(Context app_context,
 			String recording_uuid, JsonHttpResponseHandler response_handler) {
-		AsyncHttpClient http_client = HttpClient.setupHttpClient(app_context);
+		AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
 		Log.i(TAG, "Commencing Get Recording Meta: " + Constants.OW_API_URL
 				+ Constants.OW_RECORDING);
 		http_client.get(Constants.OW_API_URL + Constants.OW_RECORDING + "/"
@@ -391,7 +391,7 @@ public class OWServiceRequests {
 	 */
 	public static void editRecording(Context app_context,
 			OWVideoRecording recording, JsonHttpResponseHandler response_handler) {
-		AsyncHttpClient http_client = HttpClient.setupHttpClient(app_context);
+		AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
 		Log.i(TAG,
 				"Commencing Edit Recording: "
 						+ recording.toJsonObject(app_context));
@@ -416,7 +416,7 @@ public class OWServiceRequests {
 			e.printStackTrace();
 		}
 
-		AsyncHttpClient client = HttpClient.setupHttpClient(app_context);
+		AsyncHttpClient client = HttpClient.setupAsyncHttpClient(app_context);
 		String url = Constants.OW_API_URL + Constants.OW_TAGS;
 		Log.i(TAG,
 				"commencing " + METHOD + " : " + url + " json: "
@@ -453,7 +453,7 @@ public class OWServiceRequests {
 	public static void getTags(final Context app_context,
 			final RequestCallback cb) {
 		final String METHOD = "getTags";
-		AsyncHttpClient client = HttpClient.setupHttpClient(app_context);
+		AsyncHttpClient client = HttpClient.setupAsyncHttpClient(app_context);
 		String url = Constants.OW_API_URL + Constants.OW_TAGS;
 		Log.i(TAG, "commencing getTags: " + url);
 		client.get(url, new JsonHttpResponseHandler() {
@@ -516,7 +516,7 @@ public class OWServiceRequests {
 	 */
 	public static void UserLogin(Context app_context, StringEntity post_body,
 			JsonHttpResponseHandler response_handler) {
-		AsyncHttpClient http_client = HttpClient.setupHttpClient(app_context);
+		AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
 		Log.i(TAG, "Commencing login to: " + Constants.OW_API_URL
 				+ Constants.OW_LOGIN);
 		http_client.post(app_context,
@@ -531,7 +531,7 @@ public class OWServiceRequests {
 	public static void UserSignup(Context app_context, StringEntity post_body,
 			JsonHttpResponseHandler response_handler) {
 
-		AsyncHttpClient http_client = HttpClient.setupHttpClient(app_context);
+		AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
 		Log.i(TAG, "Commencing signup to: " + Constants.OW_API_URL
 				+ Constants.OW_SIGNUP);
 		http_client.post(app_context, Constants.OW_API_URL
@@ -572,7 +572,7 @@ public class OWServiceRequests {
 		}
 
 		// Post public_upload_token, signup_type
-		AsyncHttpClient http_client = HttpClient.setupHttpClient(app_context);
+		AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
 		Log.i(TAG, "Commencing ap registration to: " + Constants.OW_API_URL
 				+ Constants.OW_REGISTER + " pub_token: " + public_upload_token
 				+ " version: " + app_version);

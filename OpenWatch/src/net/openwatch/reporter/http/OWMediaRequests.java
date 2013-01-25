@@ -23,6 +23,7 @@ import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.FileEntity;
+import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
@@ -61,7 +62,7 @@ public class OWMediaRequests {
 	 */
 	public static void start(String upload_token, String recording_id,
 			String recording_start) {
-		AsyncHttpClient client = HttpClient.setupHttpClient();
+		AsyncHttpClient client = HttpClient.setupAsyncHttpClient();
 		RequestParams params = new RequestParams();
 		params.put(Constants.OW_REC_START, recording_start);
 		String url = setupMediaURL(Constants.OW_MEDIA_START, upload_token,
@@ -115,7 +116,7 @@ public class OWMediaRequests {
 	 */
 	public static void sendLQChunk(String upload_token, String recording_id,
 			String filename) {
-		AsyncHttpClient client = HttpClient.setupHttpClient();
+		AsyncHttpClient client = HttpClient.setupAsyncHttpClient();
 		File file = new File(filename);
 		RequestParams params = new RequestParams();
 		try {
@@ -175,7 +176,7 @@ public class OWMediaRequests {
 	 */
 	public static void end(Context c, String upload_token,
 			OWVideoRecording recording) {
-		AsyncHttpClient client = HttpClient.setupHttpClient();
+		AsyncHttpClient client = HttpClient.setupAsyncHttpClient();
 		// RequestParams params = initializeRequestParamsWithLocalRecording(c,
 		// recording);
 		// Log.i(TAG, "Sending all files: " +
@@ -225,7 +226,7 @@ public class OWMediaRequests {
 
 	public static void updateMeta(Context c, String upload_token,
 			OWVideoRecording recording) {
-		AsyncHttpClient client = HttpClient.setupHttpClient();
+		AsyncHttpClient client = HttpClient.setupAsyncHttpClient();
 		RequestParams params = initializeRequestParamsWithLocalRecording(c,
 				recording);
 		Log.i(TAG, "updateMeta: " + params.toString());
@@ -258,7 +259,7 @@ public class OWMediaRequests {
 	 */
 	public static void sendHQFile(String upload_token, String recording_id,
 			String filename) {
-		AsyncHttpClient client = HttpClient.setupHttpClient();
+		AsyncHttpClient client = HttpClient.setupAsyncHttpClient();
 		File file = new File(filename);
 		RequestParams params = new RequestParams();
 		try {
@@ -340,7 +341,7 @@ public class OWMediaRequests {
 			@Override
 			public void run() {
 				try {
-					String response_string = urlHttpConnectionPost(c, filename, urlStr);
+					String response_string = ApacheFilePost(c, urlStr, filename);
 					Log.i(TAG, "urlHttpConnectionPost Response: " + response_string);
 					if(response_string != null && response_string.compareTo("error")!= 0){
 						JSONObject response = new JSONObject(response_string);
@@ -373,129 +374,46 @@ public class OWMediaRequests {
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				} catch (ClientProtocolException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 
 		}.run();
 	}
+	
+	/**
+	 * I love Apache!
+	 * @param url
+	 * @param filename
+	 * @return
+	 * @throws ParseException
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
+	public static String ApacheFilePost(Context c, String url, String filename) throws ParseException, ClientProtocolException, IOException{
+		final String TAG = "ApacheFilePost";
+		Log.i(TAG, "url " + url + " filename " + filename);
+		DefaultHttpClient client = HttpClient.setupDefaultHttpClient(c);
+		HttpPost        post   = new HttpPost( url );
+		MultipartEntity entity = new MultipartEntity( HttpMultipartMode.BROWSER_COMPATIBLE );
 
+		// For File parameters
+		FileBody fileBody = new FileBody(new File(filename));
+		entity.addPart( "upload", fileBody);
 
-	private static String urlHttpConnectionPost(Context c, String filename, String targetUrl) {
-		final String TAG = "urlHttpConnectionPost";
-		Log.i(TAG, "SEND " + filename + " -TO- " + targetUrl);
-	    String response = "error";
-	    Log.i("filename", filename);
-	    Log.i("url", targetUrl);
-	    HttpsURLConnection connection = null;
-	    DataOutputStream outputStream = null;
-	    // DataInputStream inputStream = null;
+		post.setEntity( entity );
 
-	    String pathToOurFile = filename;
-	    String urlServer = targetUrl;
-	    String lineEnd = "\r\n";
-	    String twoHyphens = "--";
-	    String boundary = "*****";
-
-	    int bytesRead, bytesAvailable, bufferSize;
-	    byte[] buffer;
-	    int maxBufferSize = 1 * 1024;
-	    try {
-	        FileInputStream fileInputStream = new FileInputStream(new File(
-	                pathToOurFile));
-
-	        connection = (HttpsURLConnection) HttpClient.setupHttpsUrlConnection(c, urlServer);
-
-	        // Allow Inputs & Outputs
-	        connection.setDoInput(true);
-	        connection.setDoOutput(true);
-	        connection.setUseCaches(false);
-	        connection.setChunkedStreamingMode(1024);
-	        // Enable POST method
-	        connection.setRequestMethod("POST");
-	        
-	        bytesAvailable = fileInputStream.available();
-
-	        connection.setRequestProperty("Connection", "Keep-Alive");
-	        connection.setRequestProperty("Content-Type",
-	                "multipart/form-data;boundary=" + boundary);
-	        //connection.setRequestProperty("Content-Length", String.valueOf(bytesAvailable)); // This still results in server response: Length Required
-
-	        outputStream = new DataOutputStream(connection.getOutputStream());
-	        outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-	        
-	       
-	        String connstr = null;
-	        connstr = "Content-Disposition: form-data; name=\"upload\";filename=\""
-	                + pathToOurFile.substring(pathToOurFile.lastIndexOf(File.separator)+1) + "\";" + lineEnd;
-	        //connstr +="Content-Length : " + bytesAvailable + ";" + lineEnd;
-	        Log.i(TAG, "Headers: " + connstr);
-
-	        outputStream.writeBytes(connstr);
-	        outputStream.writeBytes(lineEnd);
-
-	        bufferSize = Math.min(bytesAvailable, maxBufferSize);
-	        buffer = new byte[bufferSize];
-
-	        // Read file
-	        bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-	        Log.i("File length", bytesAvailable + "");
-	        try {
-	            while (bytesRead > 0) {
-	                try {
-	                    outputStream.write(buffer, 0, bufferSize);
-	                } catch (OutOfMemoryError e) {
-	                	Log.e(TAG, "outOfMemory!");
-	                    e.printStackTrace();
-	                    response = "outofmemoryerror";
-	                    fileInputStream.close();
-	                    return response;
-	                }
-	                bytesAvailable = fileInputStream.available();
-	                bufferSize = Math.min(bytesAvailable, maxBufferSize);
-	                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-	            }
-	        } catch (Exception e) {
-	        	Log.e(TAG, "Error while writing bytes to outputstream!");
-	            e.printStackTrace();
-	            response = "error";
-	            fileInputStream.close();
-	            return response;
-	        }
-	        outputStream.writeBytes(lineEnd);
-	        outputStream.writeBytes(twoHyphens + boundary + twoHyphens
-	                + lineEnd);
-
-	        // Responses from the server (code and message)
-	        int serverResponseCode = connection.getResponseCode();
-	        String serverResponseMessage = connection.getResponseMessage();
-	        Log.i(TAG, "Server Response Code " + serverResponseCode);
-	        Log.i(TAG, "Server Response Message "+ serverResponseMessage);
-
-	        if (serverResponseCode == 200) {
-	            response = "true";
-	        }
-
-	        String CDate = null;
-
-	        Log.i("Server Response Time", CDate + "");
-
-	        filename = CDate
-	                + filename.substring(filename.lastIndexOf("."),
-	                        filename.length());
-	        Log.i("File Name in Server : ", filename);
-
-	        fileInputStream.close();
-	        outputStream.flush();
-	        outputStream.close();
-	        outputStream = null;
-	        return serverResponseMessage;
-	    } catch (Exception ex) {
-	        // Exception handling
-	        response = "error";
-	        Log.e("Send file Exception", ex.getMessage() + "");
-	        ex.printStackTrace();
-	    }
-	    return null;
+		// Here we go!
+		String response = EntityUtils.toString( client.execute( post ).getEntity(), "UTF-8" );
+		Log.i(TAG, "response: " + response);
+		client.getConnectionManager().shutdown();
+		
+		return response;
 	}
 
 	private static String setupMediaURL(String endpoint,
