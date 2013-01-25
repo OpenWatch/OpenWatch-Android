@@ -61,7 +61,9 @@ public class OWTag extends Model{
 		OWTag tag = null;
 
 		filter = new Filter();
-		filter.is(DBConstants.TAG_TABLE_SERVER_ID, json.getInt(Constants.OW_SERVER_ID));
+		// If a user added a tag that hasn't yet been synced, it could be duplicated due to lack of server_id
+		filter.is(DBConstants.TAG_TABLE_NAME, json.getString(Constants.OW_NAME));
+		//filter.is(DBConstants.TAG_TABLE_SERVER_ID, json.getInt(Constants.OW_SERVER_ID));
 
 		QuerySet<OWTag> tags = OWTag.objects(c, OWTag.class).filter(filter);
 		for(OWTag existing_tag : tags){
@@ -71,9 +73,9 @@ public class OWTag extends Model{
 		
 		if(tag == null){
 			tag= new OWTag();
-			tag.server_id.set(json.getInt(Constants.OW_SERVER_ID));
 		}
-
+		if(json.has(Constants.OW_SERVER_ID))
+			tag.server_id.set(json.getInt(Constants.OW_SERVER_ID));
 		if(json.has(Constants.OW_NAME))
 			tag.name.set(json.getString(Constants.OW_NAME));
 		if(json.has(Constants.OW_FEATURED))
