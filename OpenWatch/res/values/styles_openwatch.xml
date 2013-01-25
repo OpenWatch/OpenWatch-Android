@@ -221,5 +221,26 @@
         <item name="android:textIsSelectable">true</item>
         <item name="android:textSize">18sp</item>
     </style>
+    
+    <style name="Theme.openwatch.welcomeTitleText">
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:ellipsize">marquee</item>
+		<item name="android:padding">2dp</item>
+		<item name="android:textSize">20sp</item>
+    </style>
+    
+        <style name="Theme.openwatch.welcomeBodyText">
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@android:color/white</item>
+		<item name="android:layout_marginTop">@dimen/welcome_paragraph_padding</item>
+		<item name="android:padding">8sp</item>
+		<item name="android:textSize">18sp</item>
+    </style>
 
 </resources>

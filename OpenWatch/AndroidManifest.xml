@@ -47,8 +47,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:logo="@drawable/openwatch_padded"
             android:name="net.openwatch.reporter.MainActivity"
+            android:logo="@drawable/openwatch_padded"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -73,7 +73,8 @@
             android:value="AIzaSyD78e1qxX4_dB6w74tmykGJRECO-ucNQNY" >
         </meta-data>
 
-        <activity android:name="net.openwatch.reporter.WhatHappenedActivity"
+        <activity
+            android:name="net.openwatch.reporter.WhatHappenedActivity"
             android:windowSoftInputMode="stateHidden|adjustPan" >
         </activity>
         <activity
@@ -91,6 +92,10 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="net.openwatch.reporter.FeedFragmentActivity" />
+        </activity>
+        <activity
+            android:name="net.openwatch.reporter.WelcomeActivity"
+            android:label="@string/title_activity_welcome" >
         </activity>
     </application>
 

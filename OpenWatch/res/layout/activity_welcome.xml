@@ -1,0 +1,74 @@
+<couk.jenxsol.parallaxscrollview.views.ParallaxScrollView xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scroll_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:parallexOffset=".3" >
+
+    <!-- Background -->
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:scaleType="centerCrop"
+        android:src="@drawable/egypt_rev" />
+
+    <!-- Foreground -->
+    <!-- You can place any of the items below as the foreground, but for most controll, add the scroll view yourself. -->
+
+    <couk.jenxsol.parallaxscrollview.views.ObservableScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <LinearLayout
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/welcome_paragraph_padding"
+            android:paddingTop="@dimen/welcome_paragraph_padding" >
+
+            <TextView
+                style="@style/Theme.openwatch.welcomeTitleText"
+                android:text="@string/thanks"
+                tools:ignore="NewApi" />
+
+            <TextView
+                style="@style/Theme.openwatch.welcomeBodyText"
+                android:text="@string/welcome_1"
+                tools:ignore="NewApi" />
+
+            <TextView
+                style="@style/Theme.openwatch.welcomeBodyText"
+                android:text="@string/welcome_2"
+                tools:ignore="NewApi" />
+
+            <TextView
+                style="@style/Theme.openwatch.welcomeBodyText"
+                android:text="@string/welcome_3"
+                tools:ignore="NewApi" />
+
+            <TextView
+                style="@style/Theme.openwatch.welcomeBodyText"
+                android:text="@string/welcome_4"
+                tools:ignore="NewApi" />
+            
+            <TextView
+                style="@style/Theme.openwatch.welcomeBodyText"
+                android:gravity="center"
+                android:text="@string/enjoy"
+                tools:ignore="NewApi" />
+ 
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/welcome_paragraph_padding"
+                android:background="@drawable/green_button_bg"
+                android:onClick="watchButtonClicked"
+                android:text="@string/start_watching"
+                />
+        </LinearLayout>
+    </couk.jenxsol.parallaxscrollview.views.ObservableScrollView>
+
+</couk.jenxsol.parallaxscrollview.views.ParallaxScrollView>

@@ -5,5 +5,8 @@
     <dimen name="alert_dialog_title_height">64dip</dimen>
     <!-- Dialog button bar height -->
     <dimen name="alert_dialog_button_bar_height">48dip</dimen>
+    
+    <!-- Welcome Activity -->
+    <dimen name="welcome_paragraph_padding">16dp</dimen>
 
 </resources>

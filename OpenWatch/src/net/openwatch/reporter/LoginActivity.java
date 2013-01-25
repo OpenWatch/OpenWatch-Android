@@ -422,7 +422,7 @@ public class LoginActivity extends SherlockActivity {
 						// Set authed preference
 						setUserAuthenticated(response);
 
-						returnToMainActivity(true);
+						toWelcomeActivity();
 						return;
 					} else {
 						AlertDialog.Builder dialog = new AlertDialog.Builder(
@@ -708,6 +708,14 @@ public class LoginActivity extends SherlockActivity {
 		if (didLogin)
 			i.putExtra(Constants.AUTHENTICATED, true);
 
+		startActivity(i);
+	}
+	
+	@SuppressLint("NewApi")
+	private void toWelcomeActivity(){
+		Intent i = new Intent(LoginActivity.this, WelcomeActivity.class);
+		i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+				| Intent.FLAG_ACTIVITY_CLEAR_TASK);
 		startActivity(i);
 	}
 

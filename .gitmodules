@@ -13,3 +13,6 @@
 [submodule "Android-ViewPagerIndicator"]
 	path = Android-ViewPagerIndicator
 	url = https://github.com/OnlyInAmerica/Android-ViewPagerIndicator
+[submodule "ParallaxScrollView"]
+	path = ParallaxScrollView
+	url = git@github.com:OnlyInAmerica/ParallaxScrollView.git

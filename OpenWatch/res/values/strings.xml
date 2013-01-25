@@ -21,13 +21,12 @@
     <string name="login_dialog_no">No Thanks</string>
     <string name="login_dialog_signup">Sign up!</string>
     <string name="logout">Sign out</string>
-	<string name="reporter">REPORTER</string>
-	<string name="sign_in">Sign In!</string>
-	
-	<string name="take_choose_picture_title">Set your avatar</string>
-	<string name="take_choose_picture_prompt">How shall we get your fine picture?</string>
-	<string name="take_picture">Use camera</string>
-	<string name="choose_picture">Browse gallery</string>
+    <string name="reporter">INVESTIGATOR</string>
+    <string name="sign_in">Sign In!</string>
+    <string name="take_choose_picture_title">Set your avatar</string>
+    <string name="take_choose_picture_prompt">How shall we get your fine picture?</string>
+    <string name="take_picture">Use camera</string>
+    <string name="choose_picture">Browse gallery</string>
 
     <!-- login failed -->
     <string name="login_dialog_denied_title">Login Denied</string>
@@ -65,8 +64,8 @@
     <string name="title_activity_local_recording_view">LocalRecordingViewActivity</string>
     <string name="by">by</string>
     <string name="login_for_local_recordings">You must be logged in to view your recordings</string>
-	<string name="on_device">ON DEVICE</string>
-	
+    <string name="on_device">ON DEVICE</string>
+
     <!-- View Recording Activity -->
     <string name="tab_map">Map</string>
     <string name="tab_info">Info</string>
@@ -99,10 +98,19 @@
     <string name="stop_recording_dialog_stop">Stop</string>
     <string name="stop_recording_dialog_continue">Continue</string>
     <string name="recording">Recording</string>
-    
-    <!--  StoryViewActivity -->
+
+    <!-- StoryViewActivity -->
     <string name="share_story">Share Story</string>
     <string name="title_activity_story_view">StoryViewActivity</string>
     <string name="title_activity_web_browser">WebBrowserActivity</string>
-
+    <string name="title_activity_welcome">Welcome, New Watcher!</string>
+    
+    <!--  WelcomeActivity -->
+    <string name="thanks">Thanks for installing OpenWatch!</string>
+    <string name="welcome_1">You should use OpenWatch whenever you are a witness to an interesting event, you are stopped by the police or other authority figures, or when you feel like you are being victimized by criminals or corporate predators.</string>
+	<string name="welcome_2">When you press the \'Record\' button, your camera immediately begins streaming video to our servers, which you can later watch online. After you stop recording, please describe your event and tag it so that other users can find it. Meanwhile, a high-quality version of your recording will be synced online.</string>
+	<string name="welcome_3">You can also use the \'Featured\' and \'Local\' icons to watch interesting and local content. When you see something that you want to investigate further, go to OpenWatch.net and start a deeper investigation.</string>
+	<string name="welcome_4">If you find any bugs or have any ideas for new features, please let us know so we can work on them right away.</string>
+	<string name="enjoy">Enjoy! \n\n <b>Team OpenWatch</b></string>
+	<string name="start_watching">Start Watching!</string>
 </resources>
