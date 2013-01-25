@@ -18,14 +18,17 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="Theme.openwatch" parent="@style/Theme.Sherlock.Light.DarkActionBar">
+	<style name="Theme.openwatch" parent="@style/Theme.Sherlock.Light">
         <item name="actionBarItemBackground">@drawable/selectable_background_openwatch</item>
         <item name="popupMenuStyle">@style/openwatch_PopupMenu</item>
         <item name="dropDownListViewStyle">@style/openwatch_DropDownListView</item>
         <item name="actionBarTabStyle">@style/openwatch_ActionBarTabStyle</item>
         <item name="actionDropDownStyle">@style/openwatch_DropDownNav</item>
         <item name="actionBarStyle">@style/openwatch_solid_ActionBar</item>
-
+        <item name="windowContentOverlay">@null</item>
+        
+        <item name="android:windowBackground">@drawable/background</item>
+   		<item name="android:windowContentOverlay">@null</item>
         <item name="android:actionBarItemBackground">@drawable/selectable_background_openwatch</item>
         <item name="android:popupMenuStyle">@style/openwatch_PopupMenu</item>
         <item name="android:dropDownListViewStyle">@style/openwatch_DropDownListView</item>
@@ -34,10 +37,7 @@
         <item name="android:actionBarStyle">@style/openwatch_solid_ActionBar</item>
         <item name="android:panelBackground">@drawable/menu_hardkey_panel_openwatch</item>
         
-                <!-- Light.DarkActionBar specific -->
-        <item name="actionBarWidgetTheme">@style/Theme.openwatch.widget</item>
-        <item name="android:actionBarWidgetTheme">@style/Theme.openwatch.widget</item>
-
+        
     </style>
 
     <style name="openwatch_solid_ActionBar" parent="@style/Widget.Sherlock.Light.ActionBar.Solid.Inverse">
@@ -61,7 +61,7 @@
         <item name="android:progressBarStyle">@style/openwatch_ProgressBar</item>
     </style>
 
-    <style name="openwatch_transparent_ActionBar" parent="@style/Widget.Sherlock.ActionBar">
+    <style name="openwatch_transparent_ActionBar" parent="@style/Widget.Sherlock.Light.ActionBar">
         <item name="background">@drawable/ab_transparent_openwatch</item>
         <item name="progressBarStyle">@style/openwatch_ProgressBar</item>
         
