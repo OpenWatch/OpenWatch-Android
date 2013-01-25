@@ -120,9 +120,9 @@ public class RecorderActivity extends SherlockActivity implements
 	        			// make db entry
 	        			if(recording_uuid != null){
 		        			OWLocalVideoRecording local = new OWLocalVideoRecording(c);
-		    	        	local.recording.get(c).initializeRecording(c.getApplicationContext(), command[1], recording_uuid, 0.0, 0.0);
+		    	        	local.recording.get(c).initializeRecording(c, command[1], recording_uuid, 0.0, 0.0);
 		    	        	Log.i(TAG, "initialize OWLocalRecording. id: " + String.valueOf(local.getId()));
-		    	        	local.save(c.getApplicationContext());
+		    	        	local.save(c);
 		    	        	owrecording_id = local.recording.get(c).getId();
 		    	        	owmediaobject_id = local.recording.get(c).media_object.get(c).getId();
 		    	        	Log.i(TAG, "get mediaObjectId: " + local.recording.get(c).media_object.get(c).server_id.get());
@@ -142,16 +142,16 @@ public class RecorderActivity extends SherlockActivity implements
 	        	} else if(command[0].compareTo("end") == 0){
 	        		if(command.length == 4){
 	        			if(all_files != null){
-	        				OWVideoRecording recording = (OWVideoRecording) OWVideoRecording.objects(c.getApplicationContext(), OWVideoRecording.class).get(owrecording_id);
+	        				OWVideoRecording recording = (OWVideoRecording) OWVideoRecording.objects(c, OWVideoRecording.class).get(owrecording_id);
 	        				//recording.local is null here...
 		        			String last_segment = all_files.get(all_files.size()-1);
 		        			String filename = last_segment.substring(last_segment.lastIndexOf(File.separator)+1,last_segment.length());
 		        			String filepath = last_segment.substring(0,last_segment.lastIndexOf(File.separator)+1);
-		        			OWLocalVideoRecording local = recording.local.get(c.getApplicationContext());
+		        			OWLocalVideoRecording local = recording.local.get(c);
 		        			local.recording_end_time.set(command[2]);
-		        			local.addSegment(c.getApplicationContext(), filepath, filename);
-		        			local.save(c.getApplicationContext());
-		        			recording.save(c.getApplicationContext());
+		        			local.addSegment(c, filepath, filename);
+		        			local.save(c);
+		        			recording.save(c);
 		        			Log.i(TAG, "owlocalrecording addsegment");
 		        			// poll for device location
 		        			RecorderActivity.this.runOnUiThread(new Runnable(){
@@ -163,31 +163,31 @@ public class RecorderActivity extends SherlockActivity implements
 		    	        		
 		    	        	});
 		        			OWMediaRequests.sendLQChunk(public_upload_token, recording_uuid, last_segment);
-		        			OWMediaRequests.end(c.getApplicationContext(), public_upload_token, recording);
+		        			OWMediaRequests.end(c, public_upload_token, recording);
 	        			}
 	        			
 	        		}
 	        	} else if(command[0].compareTo("chunk") == 0){
 	        		if(command.length == 2){
 	        			if(owrecording_id != -1){
-		        			OWVideoRecording recording = (OWVideoRecording) OWVideoRecording.objects(c.getApplicationContext(), OWVideoRecording.class).get(owrecording_id);
+		        			OWVideoRecording recording = (OWVideoRecording) OWVideoRecording.objects(c, OWVideoRecording.class).get(owrecording_id);
 		        			String filename = command[1].substring(command[1].lastIndexOf(File.separator)+1,command[1].length());
 		        			String filepath = command[1].substring(0,command[1].lastIndexOf(File.separator)+1);
-		        			recording.local.get(c.getApplicationContext()).addSegment(c.getApplicationContext(), filepath, filename);
+		        			int segment_id = recording.local.get(c).addSegment(c, filepath, filename);
 		        			Log.i(TAG, "owlocalrecording addsegment");
-		        			OWMediaRequests.safeSendLQFile(public_upload_token, recording_uuid, command[1]);
+		        			OWMediaRequests.safeSendLQFile(c, public_upload_token, recording_uuid, command[1], segment_id);
 		        			//OWMediaRequests.sendLQChunk(public_upload_token, recording_uuid, command[1]);
 	        			}
 	        			
 	        		}
 	        	} else if(command[0].compareTo("hq") == 0){
 	        		if(command.length == 2){
-	        			OWVideoRecording recording = (OWVideoRecording) OWVideoRecording.objects(c.getApplicationContext(), OWVideoRecording.class).get(owrecording_id);
-	        			OWLocalVideoRecording local = recording.local.get(c.getApplicationContext());
+	        			OWVideoRecording recording = (OWVideoRecording) OWVideoRecording.objects(c, OWVideoRecording.class).get(owrecording_id);
+	        			OWLocalVideoRecording local = recording.local.get(c);
 	        			local.hq_filepath.set(command[1]);
-	        			local.save(c.getApplicationContext());
+	        			local.save(c);
 	        			Log.i(TAG, "id: " + owrecording_id + " hq filepath set:" + command[1]);
-	        			OWMediaRequests.safeSendHQFile(public_upload_token, recording_uuid, command[1]);
+	        			OWMediaRequests.safeSendHQFile(c, public_upload_token, recording_uuid, command[1], local.getId());
 	        			//OWMediaRequests.sendHQFileChunked(public_upload_token, recording_uuid, command[1]);
 	        			//OWMediaRequests.sendHQFile(public_upload_token, recording_uuid, command[1]);
 	        		}

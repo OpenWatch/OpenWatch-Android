@@ -1,5 +1,6 @@
 package net.openwatch.reporter;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 
@@ -9,8 +10,10 @@ import net.openwatch.reporter.database.DatabaseManager;
 import net.openwatch.reporter.http.OWServiceRequests;
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.view.LayoutInflater;
 import android.view.View;
 
 import com.bugsense.trace.BugSenseHandler;
@@ -22,7 +25,13 @@ public class MainActivity extends SherlockActivity {
 		super.onCreate(savedInstanceState);
 		BugSenseHandler.initAndStartSession(getApplicationContext(), SECRETS.BUGSENSE_API_KEY);
 		setContentView(R.layout.activity_main);
-		this.getSupportActionBar().setDisplayShowTitleEnabled(false);
+		ActionBar ab = this.getSupportActionBar();
+		ab.setDisplayShowTitleEnabled(false);
+		ab.setDisplayShowCustomEnabled(true);
+		LayoutInflater inflator = (LayoutInflater) this
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflator.inflate(R.layout.main_activity_ab, null);
+        ab.setCustomView(v);
 	}
 	
 	@Override

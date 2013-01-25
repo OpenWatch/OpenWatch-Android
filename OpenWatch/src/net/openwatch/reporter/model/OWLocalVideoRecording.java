@@ -12,6 +12,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.orm.androrm.Model;
+import com.orm.androrm.QuerySet;
 import com.orm.androrm.field.BooleanField;
 import com.orm.androrm.field.CharField;
 import com.orm.androrm.field.ForeignKeyField;
@@ -52,13 +53,25 @@ public class OWLocalVideoRecording extends Model {
 		Log.i(TAG, String.format("New OWLocalVideoRecording. local_id: %d, recording_id: %d, media_obj_id: %d ", this.getId(), this.recording.get(c).getId(), this.recording.get(c).media_object.get(c).getId()) );
 	}
 
-	public void addSegment(Context c, String filepath, String filename) {
+	public int addSegment(Context c, String filepath, String filename) {
 		OWLocalVideoRecordingSegment segment = new OWLocalVideoRecordingSegment();
 		segment.filepath.set(filepath);
 		segment.filename.set(filename);
 		segment.local_recording.set(this);
 		segment.save(c);
 		this.segments.add(segment);
+		return this.getId();
+	}
+	
+	public boolean areSegmentsSynced(Context c){
+		QuerySet<OWLocalVideoRecordingSegment> segments = this.segments.get(c, this);
+		for(OWLocalVideoRecordingSegment segment : segments){
+			if(!segment.uploaded.get()){
+				Log.i(TAG, "Segment " + segment.getId() + " is not synced");
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	public JSONArray segmentsToJSONArray(Context c){

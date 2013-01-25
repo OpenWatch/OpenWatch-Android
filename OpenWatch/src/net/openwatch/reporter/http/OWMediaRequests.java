@@ -26,6 +26,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.model.OWLocalVideoRecording;
+import net.openwatch.reporter.model.OWLocalVideoRecordingSegment;
 import net.openwatch.reporter.model.OWVideoRecording;
 
 import android.content.Context;
@@ -269,12 +271,12 @@ public class OWMediaRequests {
 		});
 	}
 	
-	public static void safeSendHQFile(String upload_token, String recording_id, String filename){
-		safeSendFile(setupMediaURL(Constants.OW_MEDIA_HQ_UPLOAD, upload_token, recording_id), upload_token, recording_id, filename);
+	public static void safeSendHQFile(Context c, String upload_token, String recording_id, String filename, int model_id){
+		safeSendFile(c, setupMediaURL(Constants.OW_MEDIA_HQ_UPLOAD, upload_token, recording_id), upload_token, recording_id, filename, true, model_id);
 	}
 	
-	public static void safeSendLQFile(String upload_token, String recording_id, String filename){
-		safeSendFile(setupMediaURL(Constants.OW_MEDIA_UPLOAD, upload_token, recording_id), upload_token, recording_id, filename);
+	public static void safeSendLQFile(Context c, String upload_token, String recording_id, String filename, int segment_id){
+		safeSendFile(c, setupMediaURL(Constants.OW_MEDIA_UPLOAD, upload_token, recording_id), upload_token, recording_id, filename, false, segment_id);
 	}
 	
 	/**
@@ -284,17 +286,34 @@ public class OWMediaRequests {
 	 * @param recording_id
 	 * @param filename
 	 */
-	private static void safeSendFile(final String urlStr, String upload_token, String recording_id, final String filename){
+	private static void safeSendFile(final Context c, final String urlStr, String upload_token, String recording_id, final String filename, final boolean is_HQ, final int model_id){
 		new Thread(){
 			
 			@Override
 			public void run(){
 				try {
-					apacheFilePost(urlStr, filename);
+					JSONObject response = apacheFilePost(urlStr, filename);
+					if(response != null && response.has(Constants.OW_SUCCESS) && response.getString(Constants.OW_SUCCESS).compareTo("true")==0){
+						if(!is_HQ){
+							OWLocalVideoRecordingSegment segment = OWLocalVideoRecordingSegment.objects(c, OWLocalVideoRecordingSegment.class).get(model_id);
+							segment.uploaded.set(true);
+							segment.save(c);
+						}else{
+							OWLocalVideoRecording local = OWLocalVideoRecording.objects(c, OWLocalVideoRecording.class).get(model_id);
+							local.hq_synced.set(true);
+							if(local.areSegmentsSynced(c)){
+								local.lq_synced.set(true);
+							}
+							local.save(c);
+						}
+					}
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -303,10 +322,11 @@ public class OWMediaRequests {
 		}.run();
 	}
 	
-	private static void apacheFilePost(String url, String filename) throws ParseException, IOException {
+	private static JSONObject apacheFilePost(String url, String filename) throws ParseException, IOException {
 
 	    DefaultHttpClient httpclient = new DefaultHttpClient();
 	    HttpPost httppost = new HttpPost(url);
+	    JSONObject json_response = null;
 
 	    FileBody filebodyVideo = new FileBody(new File(filename));
 
@@ -322,7 +342,13 @@ public class OWMediaRequests {
 	    // DEBUG
 	    //System.out.println( response.getStatusLine( ) );
 	    if (resEntity != null) {
-	      Log.i("ApachePost", EntityUtils.toString( resEntity ) );
+	    	String response_string = EntityUtils.toString( resEntity );
+	      Log.i("ApachePost", response_string );
+	      try {
+			json_response = new JSONObject(response_string);
+	      } catch (JSONException e) {
+				e.printStackTrace();
+	      }
 	    } // end if
 
 	    if (resEntity != null) {
@@ -330,6 +356,7 @@ public class OWMediaRequests {
 	    } // end if
 
 	    httpclient.getConnectionManager( ).shutdown( );
+	    return json_response;
 	} // end of uploadVideo( )
 	
 	private static String setupMediaURL(String endpoint, String public_upload_token, String recording_id){

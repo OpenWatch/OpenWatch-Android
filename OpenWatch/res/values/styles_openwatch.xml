@@ -25,10 +25,11 @@
         <item name="actionBarTabStyle">@style/openwatch_ActionBarTabStyle</item>
         <item name="actionDropDownStyle">@style/openwatch_DropDownNav</item>
         <item name="actionBarStyle">@style/openwatch_solid_ActionBar</item>
-        <item name="windowContentOverlay">@null</item>
+        
+        <!-- <item name="windowContentOverlay">@null</item> -->
         
         <item name="android:windowBackground">@drawable/background</item>
-   		<item name="android:windowContentOverlay">@null</item>
+   		<!--  <item name="android:windowContentOverlay">@null</item> -->
         <item name="android:actionBarItemBackground">@drawable/selectable_background_openwatch</item>
         <item name="android:popupMenuStyle">@style/openwatch_PopupMenu</item>
         <item name="android:dropDownListViewStyle">@style/openwatch_DropDownListView</item>
@@ -41,7 +42,7 @@
     </style>
 
     <style name="openwatch_solid_ActionBar" parent="@style/Widget.Sherlock.Light.ActionBar.Solid.Inverse">
-        <item name="background">@drawable/openwatch_ab</item>
+        <item name="background">@drawable/openwatch_ab2</item>
         <item name="backgroundStacked">@drawable/ab_stacked_solid_openwatch</item>
         <item name="backgroundSplit">@drawable/ab_bottom_solid_openwatch</item>
         <item name="progressBarStyle">@style/openwatch_ProgressBar</item>
@@ -55,7 +56,7 @@
         <item name="android:titleTextStyle">@style/Theme.openwatch.TitleText</item>
         <item name="android:subtitleTextStyle">@style/Theme.openwatch.TitleText</item>
       
-        <item name="android:background">@drawable/openwatch_ab</item>
+        <item name="android:background">@drawable/openwatch_ab2</item>
         <item name="android:backgroundStacked">@drawable/ab_stacked_solid_openwatch</item>
         <item name="android:backgroundSplit">@drawable/ab_bottom_solid_openwatch</item>
         <item name="android:progressBarStyle">@style/openwatch_ProgressBar</item>
