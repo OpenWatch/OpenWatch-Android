@@ -41,21 +41,21 @@
     </style>
 
     <style name="openwatch_solid_ActionBar" parent="@style/Widget.Sherlock.Light.ActionBar.Solid.Inverse">
-        <item name="background">@drawable/ab_solid_openwatch</item>
+        <item name="background">@drawable/openwatch_ab</item>
         <item name="backgroundStacked">@drawable/ab_stacked_solid_openwatch</item>
         <item name="backgroundSplit">@drawable/ab_bottom_solid_openwatch</item>
         <item name="progressBarStyle">@style/openwatch_ProgressBar</item>
-        <!-- 
-        <item name="titleTextStyle">@style/Theme.acluaz.NoTitleText</item>
-        <item name="subtitleTextStyle">@style/Theme.openwatch.NoTitleText</item>
-        <item name="titleTextStyle">@style/Theme.openwatch.NoTitleText</item>
-        <item name="subtitleTextStyle">@style/Theme.openwatch.NoTitleText</item>
         
-        <item name="android:subtitleTextStyle">@style/Theme.openwatch.NoTitleText</item>
-        <item name="android:titleTextStyle">@style/Theme.openwatch.NoTitleText</item>
-        <item name="android:subtitleTextStyle">@style/Theme.openwatch.NoTitleText</item>
-         -->
-        <item name="android:background">@drawable/ab_solid_openwatch</item>
+        <item name="titleTextStyle">@style/Theme.acluaz.TitleText</item>
+        <item name="subtitleTextStyle">@style/Theme.openwatch.TitleText</item>
+        <item name="titleTextStyle">@style/Theme.openwatch.TitleText</item>
+        <item name="subtitleTextStyle">@style/Theme.openwatch.TitleText</item>
+        
+        <item name="android:subtitleTextStyle">@style/Theme.openwatch.TitleText</item>
+        <item name="android:titleTextStyle">@style/Theme.openwatch.TitleText</item>
+        <item name="android:subtitleTextStyle">@style/Theme.openwatch.TitleText</item>
+      
+        <item name="android:background">@drawable/openwatch_ab</item>
         <item name="android:backgroundStacked">@drawable/ab_stacked_solid_openwatch</item>
         <item name="android:backgroundSplit">@drawable/ab_bottom_solid_openwatch</item>
         <item name="android:progressBarStyle">@style/openwatch_ProgressBar</item>
@@ -109,9 +109,9 @@
         <item name="android:maxWidth">180dip</item>
     </style>
     
-    <style name="Theme.openwatch.NoTitleText">
-        <item name="android:textSize">0sp</item>
-        <item name="android:textColor">#00000000</item>
+    <style name="Theme.openwatch.TitleText">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">#000000</item>
     </style>
     
     <style name="Theme.openwatch.DashButton">

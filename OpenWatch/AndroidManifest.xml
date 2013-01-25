@@ -47,6 +47,7 @@
             </intent-filter>
         </activity>
         <activity
+            android:logo="@drawable/openwatch"
             android:name="net.openwatch.reporter.MainActivity"
             android:screenOrientation="portrait" >
             <intent-filter>
