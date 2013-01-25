@@ -7,5 +7,12 @@
 	<classpathentry kind="lib" path="libs/gson-2.2.2.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ignition-support"/>
 	<classpathentry kind="lib" path="libs/bugsense3.1.jar"/>
+	<classpathentry kind="lib" path="libs/httpclient-4.2.3.jar"/>
+	<classpathentry kind="lib" path="libs/commons-codec-1.6.jar"/>
+	<classpathentry kind="lib" path="libs/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="libs/fluent-hc-4.2.3.jar"/>
+	<classpathentry kind="lib" path="libs/httpclient-cache-4.2.3.jar"/>
+	<classpathentry kind="lib" path="libs/httpcore-4.2.2.jar"/>
+	<classpathentry kind="lib" path="libs/httpmime-4.2.3.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

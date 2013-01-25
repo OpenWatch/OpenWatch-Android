@@ -5,11 +5,23 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.ParseException;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.FileEntity;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,6 +29,7 @@ import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.model.OWVideoRecording;
 
 import android.content.Context;
+import android.net.http.AndroidHttpClient;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -271,72 +284,53 @@ public class OWMediaRequests {
 	 * @param recording_id
 	 * @param filename
 	 */
-	private static void safeSendFile(String urlStr, String upload_token, String recording_id, String filename){
-		HttpURLConnection connection = null;
-		DataOutputStream outputStream = null;
-		DataInputStream inputStream = null;
-		String lineEnd = "\r\n";
-		String twoHyphens = "--";
-		String boundary =  "*****";
-
-		int bytesRead, bytesAvailable, bufferSize;
-		byte[] buffer;
-		int maxBufferSize = 1*1024*1024;
-
-		try
-		{
-		FileInputStream fileInputStream = new FileInputStream(new File(filename) );
-
-		URL url = new URL(urlStr);
-		connection = (HttpURLConnection) url.openConnection();
-
-		// Allow Inputs & Outputs
-		connection.setDoInput(true);
-		connection.setDoOutput(true);
-		connection.setUseCaches(false);
-
-		// Enable POST method
-		connection.setRequestMethod("POST");
-
-		connection.setRequestProperty("Connection", "Keep-Alive");
-		connection.setRequestProperty("Content-Type", "multipart/form-data;boundary="+boundary);
-
-		outputStream = new DataOutputStream( connection.getOutputStream() );
-		outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-		outputStream.writeBytes("Content-Disposition: form-data; name=\"" + Constants.OW_FILE + "\";filename=\"" + filename.substring(filename.lastIndexOf(File.separator)+1) +"\"" + lineEnd);
-		outputStream.writeBytes(lineEnd);
-
-		bytesAvailable = fileInputStream.available();
-		bufferSize = Math.min(bytesAvailable, maxBufferSize);
-		buffer = new byte[bufferSize];
-
-		// Read file
-		bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-
-		while (bytesRead > 0){
-		    bufferSize = Math.min(bytesAvailable, maxBufferSize);
-		    byte byt[] = new byte[bufferSize];
-		    fileInputStream.read(byt);
-		    bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-		    outputStream.write(buffer, 0, bufferSize);
-		}
-
-		outputStream.writeBytes(lineEnd);
-		outputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
-
-		// Responses from the server (code and message)
-		int serverResponseCode = connection.getResponseCode();
-		String serverResponseMessage = connection.getResponseMessage();
-		Log.i(TAG, String.format("safeSendFile server responseCode: %d Message: %s", serverResponseCode, serverResponseMessage));
-		fileInputStream.close();
-		outputStream.flush();
-		outputStream.close();
-		}
-		catch (Exception ex)
-		{
-		//Exception handling
-		}
+	private static void safeSendFile(final String urlStr, String upload_token, String recording_id, final String filename){
+		new Thread(){
+			
+			@Override
+			public void run(){
+				try {
+					apacheFilePost(urlStr, filename);
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		}.run();
 	}
+	
+	private static void apacheFilePost(String url, String filename) throws ParseException, IOException {
+
+	    DefaultHttpClient httpclient = new DefaultHttpClient();
+	    HttpPost httppost = new HttpPost(url);
+
+	    FileBody filebodyVideo = new FileBody(new File(filename));
+
+	    MultipartEntity reqEntity = new MultipartEntity();
+	    reqEntity.addPart("upload", filebodyVideo);
+	    httppost.setEntity(reqEntity);
+
+	    // DEBUG
+	    //System.out.println( "executing request " + httppost.getRequestLine( ) );
+	    HttpResponse response = httpclient.execute( httppost );
+	    HttpEntity resEntity = response.getEntity( );
+	    Log.i("ApachePOST", url + " " + response.getStatusLine().toString());
+	    // DEBUG
+	    //System.out.println( response.getStatusLine( ) );
+	    if (resEntity != null) {
+	      Log.i("ApachePost", EntityUtils.toString( resEntity ) );
+	    } // end if
+
+	    if (resEntity != null) {
+	      resEntity.consumeContent( );
+	    } // end if
+
+	    httpclient.getConnectionManager( ).shutdown( );
+	} // end of uploadVideo( )
 	
 	private static String setupMediaURL(String endpoint, String public_upload_token, String recording_id){
 		return Constants.OW_MEDIA_URL + endpoint + "/" + public_upload_token + "/" + recording_id;

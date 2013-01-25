@@ -181,10 +181,12 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 		@Override
 		public void onLoadFinished(Loader<Cursor> arg0, Cursor cursor) {
 			mAdapter.swapCursor(cursor);
+			/*
 			if(cursor == null || cursor.getCount() == 0)
 				Log.i("URI" + feed.toString(), "onLoadFinished empty cursor on uri " + this_uri.toString());
 			else
 				Log.i("URI" + feed.toString(), String.format("onLoadFinished %d rows on uri %s ",cursor.getCount(), this_uri.toString()));
+			*/
 			// The list should now be shown.
             if (isResumed()) {
                 setListShown(true);
