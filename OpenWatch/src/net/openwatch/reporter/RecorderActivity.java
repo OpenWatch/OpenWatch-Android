@@ -101,10 +101,11 @@ public class RecorderActivity extends SherlockActivity implements
 		public void encoderStopped(Date start_date, Date stop_date,
 				String hq_filename, ArrayList<String> all_files) {
 			this.all_files = all_files;
-			Log.i(TAG,"start-date: " + Constants.sdf.format(start_date) + " stop-date: " + Constants.sdf.format(stop_date));
-			Log.i(TAG, "sending all_files: " + new JSONArray(all_files).toString());
+			//Log.i(TAG,"start-date: " + Constants.sdf.format(start_date) + " stop-date: " + Constants.sdf.format(stop_date));
+			//Log.i(TAG, "sending all_files: " + new JSONArray(all_files).toString());
 			new MediaSignalTask().execute("end", Constants.sdf.format(start_date), Constants.sdf.format(stop_date), new JSONArray(all_files).toString());
 			new MediaSignalTask().execute("hq", hq_filename);
+			Log.i(TAG, "fired end and hq mediaSignalTasks");
 		}
 		
 		class MediaSignalTask extends AsyncTask<String, Void, Void> {
@@ -149,7 +150,7 @@ public class RecorderActivity extends SherlockActivity implements
 		        			String filepath = last_segment.substring(0,last_segment.lastIndexOf(File.separator)+1);
 		        			OWLocalVideoRecording local = recording.local.get(c);
 		        			local.recording_end_time.set(command[2]);
-		        			local.addSegment(c, filepath, filename);
+		        			int segment_id = local.addSegment(c, filepath, filename);
 		        			local.save(c);
 		        			recording.save(c);
 		        			Log.i(TAG, "owlocalrecording addsegment");
@@ -162,7 +163,8 @@ public class RecorderActivity extends SherlockActivity implements
 								}
 		    	        		
 		    	        	});
-		        			OWMediaRequests.sendLQChunk(public_upload_token, recording_uuid, last_segment);
+		        			OWMediaRequests.safeSendLQFile(c, public_upload_token, recording_uuid, last_segment, segment_id);
+		        			//OWMediaRequests.sendLQChunk(public_upload_token, recording_uuid, last_segment);
 		        			OWMediaRequests.end(c, public_upload_token, recording);
 	        			}
 	        			

@@ -27,6 +27,7 @@ public class MainActivity extends SherlockActivity {
 		setContentView(R.layout.activity_main);
 		ActionBar ab = this.getSupportActionBar();
 		ab.setDisplayShowTitleEnabled(false);
+		ab.setDisplayShowHomeEnabled(false);
 		ab.setDisplayShowCustomEnabled(true);
 		LayoutInflater inflator = (LayoutInflater) this
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
