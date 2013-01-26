@@ -114,8 +114,10 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 
 				@Override
 				public void onSuccess() {
-					didRefreshFeed = true;
-					restartLoader();
+					if(RemoteRecordingsListFragment.this.isAdded()){
+						didRefreshFeed = true;
+						restartLoader();
+					}
 				}
             	
             };

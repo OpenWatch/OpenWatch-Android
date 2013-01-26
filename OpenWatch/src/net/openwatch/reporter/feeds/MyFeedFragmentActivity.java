@@ -39,6 +39,7 @@ import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.constants.Constants.OWFeedType;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
+import net.openwatch.reporter.feeds.RemoteFeedFragmentActivity.RemoteRecordingsListFragment;
 import net.openwatch.reporter.http.OWServiceRequests;
 import net.openwatch.reporter.http.OWServiceRequests.RequestCallback;
 
@@ -98,8 +99,10 @@ public class MyFeedFragmentActivity extends FragmentActivity {
 
 				@Override
 				public void onSuccess() {
-					didRefreshFeed = true;
-					restartLoader();
+					if(LocalRecordingsListFragment.this.isAdded()){
+						didRefreshFeed = true;
+						restartLoader();
+					}
 				}
             	
             };

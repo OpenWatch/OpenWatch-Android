@@ -9,7 +9,7 @@
     <VideoView
         android:id="@+id/videoview"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="250dp"
         android:layout_gravity="center" />
 
     <TabHost

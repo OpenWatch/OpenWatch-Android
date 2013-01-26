@@ -1,11 +1,13 @@
 package net.openwatch.reporter.view;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import net.openwatch.reporter.R;
 import net.openwatch.reporter.model.OWVideoRecording;
 import net.openwatch.reporter.model.OWTag;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.util.AttributeSet;
@@ -22,6 +24,7 @@ public class TagPoolLayout extends TableLayout {
 	
 	int PIX_BUFFER = 200;
 	LinkedList<View> view_buffer = new LinkedList<View>();
+	HashMap<String, Boolean> tags = new HashMap<String, Boolean>();
 	boolean delete_dummy = true;
 	boolean first_tag = true;
 	
@@ -44,7 +47,7 @@ public class TagPoolLayout extends TableLayout {
 		super(context);
 		this.recording = recording;
 	}
-	
+		
 	public void setRecording(OWVideoRecording recording){
 		this.recording = recording;
 	}
@@ -92,31 +95,36 @@ public class TagPoolLayout extends TableLayout {
 
 	
 	public void addTag(OWTag tag){
-		TextView new_tag = (TextView) initTagView(tag);
-		new_tag.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener(){
-
-			@Override
-			public void onGlobalLayout() {
-				drawTag();
-			}
+		if(!tags.containsKey(tag.name.get()) ){
+			TextView new_tag = (TextView) initTagView(tag);
+			new_tag.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener(){
+	
+				@Override
+				public void onGlobalLayout() {
+					drawTag();
+				}
+				
+			});
 			
-		});
-		
-		if(first_tag){
-			//Log.i(TAG, "adding first tag");
-			addTagToNewRow(new_tag);
-			first_tag = false;
-		} else{
-			//Log.i(TAG, "queueing subsequent tag");
-			view_buffer.add(new_tag);
+			if(first_tag){
+				//Log.i(TAG, "adding first tag");
+				addTagToNewRow(new_tag);
+				first_tag = false;
+			} else{
+				//Log.i(TAG, "queueing subsequent tag");
+				view_buffer.add(new_tag);
+			}
+			tags.put(tag.name.get(), true);
 		}
-		
 	}
 	
 	public void addTagPostLayout(OWTag tag){
-		TextView new_tag = (TextView) initTagView(tag);
-		view_buffer.add(new_tag);
-		drawTag();
+		if(!tags.containsKey(tag.name.get()) ){
+			TextView new_tag = (TextView) initTagView(tag);
+			view_buffer.add(new_tag);
+			drawTag();
+			tags.put(tag.name.get(), true);
+		}
 	}
 	
 	private View initTagView(final OWTag tag){
@@ -145,20 +153,16 @@ public class TagPoolLayout extends TableLayout {
 						dialog.dismiss();
 					}
 
-				
 				}).setNegativeButton(c.getString(R.string.remove_tag_dialog_cancel), new DialogInterface.OnClickListener() {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						dialog.dismiss();
 					}
-				}).show();
-				
-				
+				}).show();	
 			}
 			
 		});
-		
 		return new_tag;
 	}
 	

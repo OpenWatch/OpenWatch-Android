@@ -18,6 +18,8 @@
             android:id="@+id/button_record"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:fontFamily="sans-serif-light"
+            android:textStyle="bold"
             android:background="@android:color/transparent"
             android:drawablePadding="-10dp"
             android:drawableTop="@drawable/record_button"

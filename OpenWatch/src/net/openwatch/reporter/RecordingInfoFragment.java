@@ -195,8 +195,9 @@ public class RecordingInfoFragment extends SherlockFragment implements
 				title.setText(media_obj.getTitle(app_context));
 			if (media_obj.getDescription(app_context) != null)
 				description.setText(media_obj.getDescription(app_context));
-			if (media_obj.getTags(app_context) != null)
+			if (media_obj.getTags(app_context) != null){
 				populateTagPool(media_obj, app_context);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			Log.e(TAG, "Error retrieving recording");
@@ -332,10 +333,10 @@ public class RecordingInfoFragment extends SherlockFragment implements
 			public boolean onEditorAction(TextView view, int actionId,
 					KeyEvent event) {
 
-				String[] tag_name_array = view.getText().toString().split(",");
+				String[] tag_name_array = view.getText().toString().trim().split(",");
 
 				for (int x = 0; x < tag_name_array.length; x++) {
-					String tag_name = tag_name_array[x].trim();
+					String tag_name = tag_name_array[x];
 
 					if (!media_obj.hasTag(
 							getActivity().getApplicationContext(), tag_name)) {
@@ -394,7 +395,9 @@ public class RecordingInfoFragment extends SherlockFragment implements
 		tagGroup.addTagPostLayout(tag);
 		recording.addTag(getActivity().getApplicationContext(), tag);
 		recording.save(getActivity().getApplicationContext());
+		Log.i("TAGGIN", tag.name.get() + " added to media_obj " + recording.getId());
 		if (is_local) {
+			//Subscribe user to this new tag
 			SharedPreferences profile = getActivity().getSharedPreferences(
 					Constants.PROFILE_PREFS, 0);
 			int user_id = profile.getInt(DBConstants.USER_SERVER_ID, -1);

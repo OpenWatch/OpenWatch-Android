@@ -478,7 +478,8 @@ public class OWServiceRequests {
 						tag_json = array_json.getJSONObject(x);
 						tag = OWTag.getOrCreateTagFromJson(app_context, tag_json);
 						tag.save(app_context);
-						Log.i(TAG,
+						//Log.i(TAG,
+						Log.i("TAGGIN",
 								METHOD + " saved tag: " + tag.name.get()
 										+ " featured: "
 										+ String.valueOf(tag.is_featured.get()));

@@ -34,6 +34,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
+import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -48,6 +49,7 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 	TabHost mTabHost;
 	ViewPager mViewPager;
 	TabsAdapter mTabsAdapter;
+	VideoView video_view;
 
 	public static int model_id = -1;
 	int server_id = -1;
@@ -63,8 +65,19 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
 		else
 			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		
+	
 		setContentView(R.layout.activity_local_recording_view);
+		
+		video_view = (VideoView) findViewById(R.id.videoview);
+		video_view.setOnPreparedListener(new OnPreparedListener(){
+
+			@Override
+			public void onPrepared(MediaPlayer mp) {
+				video_view.setLayoutParams( new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+			}
+			
+		});
+		
 		inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		String video_path = null;
 		try {
