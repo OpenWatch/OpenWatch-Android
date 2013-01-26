@@ -49,7 +49,7 @@ public class RecordingInfoFragment extends SherlockFragment implements
 	protected static boolean watch_tag_text = true;
 	protected String tag_query = ""; // autocomplete tag input
 	protected OWTagArrayAdapter mAdapter;
-	private boolean is_local = false;
+	private boolean is_user_recording = false;
 	
 
 	boolean doSave = false; // if recording is mutated during this fragments
@@ -68,19 +68,19 @@ public class RecordingInfoFragment extends SherlockFragment implements
 
 		View v;
 		if (getArguments() != null
-				&& this.getArguments().getBoolean(Constants.IS_LOCAL_RECORDING,
+				&& this.getArguments().getBoolean(Constants.IS_USER_RECORDING,
 						false)) {
-			v = inflater.inflate(R.layout.local_recording_info_view, container,
+			v = inflater.inflate(R.layout.user_recording_info_view, container,
 					false);
-			is_local = true;
+			is_user_recording = true;
 		} else if (getArguments() == null) {
-			v = inflater.inflate(R.layout.local_recording_info_view, container,
+			v = inflater.inflate(R.layout.user_recording_info_view, container,
 					false);
-			is_local = true;
+			is_user_recording = true;
 		} else {
 			v = inflater.inflate(R.layout.remote_recording_info_view,
 					container, false);
-			is_local = false;
+			is_user_recording = false;
 		}
 
 		tagGroup = ((TagPoolLayout) v.findViewById(R.id.tagGroup));
@@ -88,10 +88,10 @@ public class RecordingInfoFragment extends SherlockFragment implements
 		description = ((TextView) v.findViewById(R.id.editDescription));
 		tags = ((AutoCompleteTextView) v.findViewById(R.id.editTags));
 
-		if (!is_local)
+		if (!is_user_recording)
 			setupViewsForRemoteRecording();
 		else
-			setupViewsForLocalRecording();
+			setupViewsForUserRecording();
 
 		int model_id = this.getActivity().getIntent().getExtras()
 				.getInt(Constants.INTERNAL_DB_ID);
@@ -136,7 +136,7 @@ public class RecordingInfoFragment extends SherlockFragment implements
 		tagGroup.setTagRemovalAllowed(false);
 	}
 
-	private void setupViewsForLocalRecording() {
+	private void setupViewsForUserRecording() {
 		tagGroup.setTagRemovalAllowed(true);
 	}
 
@@ -167,7 +167,7 @@ public class RecordingInfoFragment extends SherlockFragment implements
 
 	public void populateViews(OWMediaObject media_obj, Context app_context) {
 		try {
-			if (!is_local) {
+			if (!is_user_recording) {
 				if (media_obj.getUser(app_context).thumbnail_url.get() != null) {
 					RemoteImageView user_thumb = (RemoteImageView) this
 							.getView().findViewById(R.id.user_thumbnail);
@@ -396,7 +396,7 @@ public class RecordingInfoFragment extends SherlockFragment implements
 		recording.addTag(getActivity().getApplicationContext(), tag);
 		recording.save(getActivity().getApplicationContext());
 		Log.i("TAGGIN", tag.name.get() + " added to media_obj " + recording.getId());
-		if (is_local) {
+		if (is_user_recording) {
 			//Subscribe user to this new tag
 			SharedPreferences profile = getActivity().getSharedPreferences(
 					Constants.PROFILE_PREFS, 0);

@@ -44,6 +44,7 @@ public class Constants {
 	public static final String VIEW_TAG_MODEL = "model";		// key set on listview item holding corresponding model pk
 	public static final String INTERNAL_DB_ID = "id";
 	public static final String IS_LOCAL_RECORDING = "is_local";
+	public static final String IS_USER_RECORDING = "is_user_recording";
 	public static final String FEED_TYPE = "feed_type";
 	
 	// Email REGEX

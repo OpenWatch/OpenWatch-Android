@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import net.openwatch.reporter.FeedFragmentActivity.TabsAdapter;
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
 import net.openwatch.reporter.constants.Constants.HIT_TYPE;
 import net.openwatch.reporter.http.OWServiceRequests;
@@ -19,6 +20,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
@@ -56,6 +58,7 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 	public static int model_id = -1;
 	int server_id = -1;
 	boolean is_local = false;
+	boolean is_user_recording = false;
 	boolean video_playing = false;
 	
 	LayoutInflater inflater;
@@ -77,6 +80,14 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 		try {
 			model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
 			OWMediaObject media_obj = OWMediaObject.objects(this, OWMediaObject.class).get(model_id);
+			SharedPreferences prefs = this.getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
+			int user_id = prefs.getInt(DBConstants.USER_SERVER_ID, 0);
+			if(user_id != 0){
+				Log.i("UserRecCheck", "user_id " + user_id + "media_user_id: " + media_obj.user.get(getApplicationContext()).server_id.get());
+				if (media_obj.user.get(getApplicationContext()) != null && user_id == media_obj.user.get(getApplicationContext()).server_id.get()){
+					is_user_recording = true;
+				}
+			}
 			server_id = media_obj.server_id.get();
 			if(media_obj != null && media_obj.title.get() != null)
 				this.getSupportActionBar().setTitle(media_obj.title.get());
@@ -115,6 +126,7 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 			
 			Bundle fragBundle = new Bundle(1);
 			fragBundle.putBoolean(Constants.IS_LOCAL_RECORDING, is_local);
+			fragBundle.putBoolean(Constants.IS_USER_RECORDING, is_user_recording);
 			mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_info))
 					.setIndicator(inflateCustomTab(getString(R.string.tab_info))),
 					RecordingInfoFragment.class, fragBundle);
@@ -145,8 +157,11 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu){
 		if(!is_local){
-			menu.removeItem(R.id.menu_save);
 			menu.removeItem(R.id.menu_delete);
+			
+		}
+		if(!is_user_recording){
+			menu.removeItem(R.id.menu_save);
 		}
 		return true;
 	}
