@@ -60,15 +60,17 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 	boolean is_local = false;
 	boolean is_user_recording = false;
 	boolean video_playing = false;
+	boolean is_landscape = false;
 	
 	LayoutInflater inflater;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+		if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
-		else
+			is_landscape = true;
+		}else
 			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 	
 		setContentView(R.layout.activity_local_recording_view);
@@ -89,7 +91,7 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 				}
 			}
 			server_id = media_obj.server_id.get();
-			if(media_obj != null && media_obj.title.get() != null)
+			if(!is_landscape && media_obj != null && media_obj.title.get() != null)
 				this.getSupportActionBar().setTitle(media_obj.title.get());
 			if( media_obj.local_video_recording.get(getApplicationContext()) != null ){
 				// This is a local recording, attempt to play HQ file
