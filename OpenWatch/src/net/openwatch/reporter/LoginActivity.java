@@ -183,14 +183,16 @@ public class LoginActivity extends SherlockActivity {
 
 	private void setViewsAsAuthenticated() {
 		this.findViewById(R.id.login_state_message).setVisibility(View.VISIBLE);
-		this.findViewById(R.id.sign_in_button).setEnabled(false);
-		this.findViewById(R.id.password).setEnabled(false);
+		this.findViewById(R.id.sign_in_button).setVisibility(View.GONE);
+		mEmailView.setEnabled(false);
+		mPasswordView.setVisibility(View.GONE);
 	}
 
 	private void setViewsAsNotAuthenticated() {
 		this.findViewById(R.id.login_state_message).setVisibility(View.GONE);
-		this.findViewById(R.id.sign_in_button).setEnabled(true);
-		this.findViewById(R.id.password).setEnabled(true);
+		this.findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
+		mEmailView.setEnabled(true);
+		mPasswordView.setVisibility(View.VISIBLE);
 	}
 
 	@Override

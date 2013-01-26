@@ -36,6 +36,8 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.VideoView;
@@ -69,15 +71,7 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 		setContentView(R.layout.activity_local_recording_view);
 		
 		video_view = (VideoView) findViewById(R.id.videoview);
-		video_view.setOnPreparedListener(new OnPreparedListener(){
 
-			@Override
-			public void onPrepared(MediaPlayer mp) {
-				video_view.setLayoutParams( new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-			}
-			
-		});
-		
 		inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		String video_path = null;
 		try {
@@ -231,9 +225,12 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 					@Override
 					public void onVideoSizeChanged(MediaPlayer mp, int width,
 							int height) {
+						VideoView video_view = (VideoView) findViewById(R.id.videoview);
+						//video_view.setVisibility(View.VISIBLE);
+						(findViewById(R.id.progress_container)).setVisibility(View.GONE);
+						video_view.setLayoutParams( new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 						MediaController mc = new MediaController(
 								RecordingViewActivity.this);
-						VideoView video_view = (VideoView) findViewById(R.id.videoview);
 						video_view.setMediaController(mc);
 						mc.setAnchorView(video_view);
 						video_view.requestFocus();
