@@ -71,9 +71,9 @@ public class OWContentProvider extends ContentProvider {
 	    mUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.LOCAL_RECORDINGS_TABLENAME, LOCAL_RECORDINGS);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.LOCAL_RECORDINGS_TABLENAME + "/#", LOCAL_RECORDING_ID);
+	    mUriMatcher.addURI(AUTHORITY, DBConstants.MEDIA_OBJECT_TABLENAME + "/user/#", MEDIA_OBJS_BY_USER);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.MEDIA_OBJECT_TABLENAME + "/*", MEDIA_OBJS_BY_FEED);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.TAG_TABLENAME, TAGS);
-	    mUriMatcher.addURI(AUTHORITY, DBConstants.MEDIA_OBJECT_TABLENAME + "/user/#", MEDIA_OBJS_BY_USER);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.TAG_TABLENAME + "/#", TAG_ID);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.TAG_TABLENAME + "/search/*", TAG_SEARCH);
      }
@@ -147,7 +147,11 @@ public class OWContentProvider extends ContentProvider {
 		Log.i(TAG, uri.toString());
 		switch(uriType){
 			case MEDIA_OBJS_BY_USER:
-				result = adapter.open().query(select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " WHERE " + DBConstants.MEDIA_OBJECT_USER + " = " + uri.getLastPathSegment() + " ORDER BY " + sortby);
+				Log.i(TAG, "MediaObjs by user");
+				result = adapter.open().query(select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " WHERE " + DBConstants.MEDIA_OBJECT_USER + " = " + uri.getLastPathSegment());
+				if(result.moveToFirst()){
+					Log.i("UserRecCount", String.valueOf(result.getCount()));
+				}
 				break;
 			case LOCAL_RECORDINGS:
 				Log.i(TAG, select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " WHERE " + DBConstants.MEDIA_OBJECT_LOCAL_VIDEO + " IS NOT NULL " + sortby);

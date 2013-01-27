@@ -8,6 +8,8 @@ import com.actionbarsherlock.view.MenuItem;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.DBConstants;
+import net.openwatch.reporter.contentprovider.OWContentProvider;
 import net.openwatch.reporter.http.OWServiceRequests;
 import net.openwatch.reporter.model.OWMediaObject;
 import net.openwatch.reporter.model.OWVideoRecording;
@@ -16,6 +18,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.util.Log;
@@ -155,6 +158,10 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 	
 	@Override
 	public void onPause(){
+		SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, 0);
+		int user_id = profile.getInt(DBConstants.USER_SERVER_ID, 0);
+		if(user_id > 0)
+			getContentResolver().notifyChange(OWContentProvider.getUserRecordingsUri(user_id), null);
 		super.onPause();
 	}
 	

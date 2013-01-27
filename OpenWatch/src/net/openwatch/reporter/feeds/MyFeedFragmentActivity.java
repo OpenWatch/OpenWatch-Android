@@ -16,6 +16,9 @@
 
 package net.openwatch.reporter.feeds;
 
+import com.orm.androrm.Filter;
+import com.orm.androrm.QuerySet;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -45,6 +48,7 @@ import net.openwatch.reporter.feeds.RemoteFeedFragmentActivity.RemoteRecordingsL
 import net.openwatch.reporter.http.OWServiceRequests;
 import net.openwatch.reporter.http.OWServiceRequests.PaginatedRequestCallback;
 import net.openwatch.reporter.http.OWServiceRequests.RequestCallback;
+import net.openwatch.reporter.model.OWUser;
 
 /**
  * Demonstration of the implementation of a custom Loader.
@@ -79,7 +83,7 @@ public class MyFeedFragmentActivity extends FragmentActivity {
         OnQueryTextListenerCompat mOnQueryTextListenerCompat;
         
         final OWFeedType feed = Constants.OWFeedType.RECORDINGS;
-        int user_id = -1;
+        int internal_user_id = -1;
         int page = 0;
         boolean didRefreshFeed = false;
         boolean has_next_page = true;
@@ -147,8 +151,15 @@ public class MyFeedFragmentActivity extends FragmentActivity {
             SharedPreferences profile = getActivity().getSharedPreferences(Constants.PROFILE_PREFS, 0);
     		boolean authenticated = profile.getBoolean(Constants.AUTHENTICATED, false);
     		if(authenticated){
-    			user_id = profile.getInt(DBConstants.USER_SERVER_ID, 0);
-    			if(user_id > 0){
+    			int user_server_id = profile.getInt(DBConstants.USER_SERVER_ID, 0);
+    			Filter filter = new Filter();
+    			filter.is(DBConstants.USER_SERVER_ID, user_server_id);
+    			QuerySet<OWUser> users = OWUser.objects(getActivity().getApplicationContext(), OWUser.class).filter(filter);
+    			for(OWUser user : users){
+    				internal_user_id = user.getId();
+    				break;
+    			}
+    			if(internal_user_id > 0){
 	                setEmptyText(getString(R.string.loading_recordings));
 	    			setListShown(false); // start with a progress indicator
 	    			getLoaderManager().initLoader(0, null, this);
@@ -239,7 +250,8 @@ public class MyFeedFragmentActivity extends FragmentActivity {
 
 		@Override
 		public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
-			Uri baseUri = OWContentProvider.getFeedUri(feed);
+			//Uri baseUri = OWContentProvider.getFeedUri(feed);
+			Uri baseUri = OWContentProvider.getUserRecordingsUri(internal_user_id);
 			String selection = null;
             String[] selectionArgs = null;
             String order = null;
