@@ -31,6 +31,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
 import net.openwatch.reporter.RecordingViewActivity;
 import net.openwatch.reporter.R;
@@ -41,6 +43,7 @@ import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
 import net.openwatch.reporter.http.OWServiceRequests;
+import net.openwatch.reporter.http.OWServiceRequests.PaginatedRequestCallback;
 import net.openwatch.reporter.http.OWServiceRequests.RequestCallback;
 
 /**
@@ -68,7 +71,8 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
     	
     	static String TAG = "RemoteFeedFragment";
     	boolean didRefreshFeed = false;
-    	int page = 1;
+    	int page = 0;
+    	boolean has_next_page = false;
     	
     	OWFeedType feed;
     	Uri this_uri; // TESTING
@@ -81,6 +85,26 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
         String mCurFilter;
 
         OnQueryTextListenerCompat mOnQueryTextListenerCompat;
+        
+        PaginatedRequestCallback cb = new PaginatedRequestCallback(){
+
+			@Override
+			public void onSuccess(int page, int object_count, int total_pages) {
+				if(RemoteRecordingsListFragment.this.isAdded()){
+					RemoteRecordingsListFragment.this.page = page;
+					if(total_pages <= page)
+						RemoteRecordingsListFragment.this.has_next_page = false;
+					else
+						RemoteRecordingsListFragment.this.has_next_page = true;
+					didRefreshFeed = true;
+					restartLoader();
+				}
+			}
+
+			@Override
+			public void onFailure(int page) {}
+        	
+        };
 
         @Override public void onActivityCreated(Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
@@ -95,6 +119,29 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             // Initialize adapter without cursor. Let loader provide it when ready
             mAdapter = new OWMediaObjectAdapter(getActivity(), null); 
             setListAdapter(mAdapter);
+            
+            this.getListView().setOnScrollListener(new OnScrollListener(){
+
+				@Override
+				public void onScrollStateChanged(AbsListView view,
+						int scrollState) {}
+
+				@Override
+				public void onScroll(AbsListView view, int firstVisibleItem,
+						int visibleItemCount, int totalItemCount) {
+					
+					if(!RemoteRecordingsListFragment.this.has_next_page)
+						return;
+					
+					boolean loadMore = firstVisibleItem + visibleItemCount >= totalItemCount;
+
+				        if(loadMore) {
+				            RemoteRecordingsListFragment.this.fetchNextFeedPage();
+				        }
+
+				}
+            	
+            });
 
             // Start out with a progress indicator.
             setListShown(false);
@@ -104,28 +151,16 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             
             // Prepare the loader.  Either re-connect with an existing one,
             // or start a new one.
-            getLoaderManager().initLoader(0, null, this);
-            RequestCallback cb = new RequestCallback(){
-
-				@Override
-				public void onFailure() {
-					
-				}
-
-				@Override
-				public void onSuccess() {
-					if(RemoteRecordingsListFragment.this.isAdded()){
-						didRefreshFeed = true;
-						restartLoader();
-					}
-				}
-            	
-            };
+           
             // Refresh the feed view
             if(!didRefreshFeed){
-            	OWServiceRequests.getFeed(this.getActivity().getApplicationContext(), feed, page, cb);
+            	fetchNextFeedPage();
             }
 
+        }
+        
+        private void fetchNextFeedPage(){
+        	OWServiceRequests.getFeed(this.getActivity().getApplicationContext(), feed, page+1, cb);	
         }
         
         private void restartLoader(){

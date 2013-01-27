@@ -32,7 +32,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.ListView;
+import android.widget.AbsListView.OnScrollListener;
 import net.openwatch.reporter.RecordingViewActivity;
 import net.openwatch.reporter.R;
 import net.openwatch.reporter.constants.Constants;
@@ -41,6 +43,7 @@ import net.openwatch.reporter.constants.Constants.OWFeedType;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
 import net.openwatch.reporter.feeds.RemoteFeedFragmentActivity.RemoteRecordingsListFragment;
 import net.openwatch.reporter.http.OWServiceRequests;
+import net.openwatch.reporter.http.OWServiceRequests.PaginatedRequestCallback;
 import net.openwatch.reporter.http.OWServiceRequests.RequestCallback;
 
 /**
@@ -77,8 +80,30 @@ public class MyFeedFragmentActivity extends FragmentActivity {
         
         final OWFeedType feed = Constants.OWFeedType.RECORDINGS;
         int user_id = -1;
-        int page = 1;
+        int page = 0;
         boolean didRefreshFeed = false;
+        boolean has_next_page = true;
+        
+        PaginatedRequestCallback cb = new PaginatedRequestCallback(){
+        	
+			@Override
+			public void onSuccess(int page, int object_count,
+					int total_pages) {
+				if(LocalRecordingsListFragment.this.isAdded()){
+					LocalRecordingsListFragment.this.page = page;
+					if(total_pages <= page)
+						LocalRecordingsListFragment.this.has_next_page = false;
+					else
+						LocalRecordingsListFragment.this.has_next_page = true;
+					didRefreshFeed = true;
+					restartLoader();
+				}
+			}
+
+			@Override
+			public void onFailure(int page) {}
+        	
+        };
 
         @Override public void onActivityCreated(Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
@@ -89,27 +114,33 @@ public class MyFeedFragmentActivity extends FragmentActivity {
             // Initialize adapter without cursor. Let loader provide it when ready
             mAdapter = new OWLocalRecordingAdapter(getActivity(), null); 
             setListAdapter(mAdapter);
-            
-            RequestCallback cb = new RequestCallback(){
+
+            this.getListView().setOnScrollListener(new OnScrollListener(){
 
 				@Override
-				public void onFailure() {
+				public void onScrollStateChanged(AbsListView view,
+						int scrollState) {}
+
+				@Override
+				public void onScroll(AbsListView view, int firstVisibleItem,
+						int visibleItemCount, int totalItemCount) {
 					
-				}
+					if(!LocalRecordingsListFragment.this.has_next_page)
+						return;
+					
+					boolean loadMore = firstVisibleItem + visibleItemCount >= totalItemCount;
 
-				@Override
-				public void onSuccess() {
-					if(LocalRecordingsListFragment.this.isAdded()){
-						didRefreshFeed = true;
-						restartLoader();
-					}
+				        if(loadMore) {
+				            LocalRecordingsListFragment.this.fetchNextFeedPage();
+				        }
+
 				}
             	
-            };
+            });
             
             // Refresh the feed view
             if(!didRefreshFeed){
-            	OWServiceRequests.getFeed(this.getActivity().getApplicationContext(), feed, page, cb);
+            	fetchNextFeedPage();
             }
 
             // perhaps do auth checking onStart
@@ -126,6 +157,10 @@ public class MyFeedFragmentActivity extends FragmentActivity {
     			setEmptyText(getString(R.string.login_for_local_recordings));
     		}
             
+        }
+        
+        private void fetchNextFeedPage(){
+        	OWServiceRequests.getFeed(this.getActivity().getApplicationContext(), feed, page+1, cb);
         }
 
         @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

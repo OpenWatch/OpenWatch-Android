@@ -49,8 +49,12 @@ public class OWServiceRequests {
 
 	public interface RequestCallback {
 		public void onFailure();
-
 		public void onSuccess();
+	}
+	
+	public interface PaginatedRequestCallback{
+		public void onSuccess(int page, int object_count, int total_pages);
+		public void onFailure(int page);
 	}
 	
 	
@@ -179,7 +183,7 @@ public class OWServiceRequests {
 	 * @param feed
 	 *            The type of feed to return. See OWServiceRequests.OWFeed
 	 */
-	public static void getFeed(final Context app_context, final OWFeedType feed, int page, final RequestCallback cb){
+	public static void getFeed(final Context app_context, final OWFeedType feed, final int page, final PaginatedRequestCallback cb){
 		final String METHOD = "getFeed";
 		
 		JsonHttpResponseHandler get_handler = new JsonHttpResponseHandler(){
@@ -217,8 +221,27 @@ public class OWServiceRequests {
 									app_context.getContentResolver().notifyChange(OWContentProvider.getFeedUri(feed), null);   
 
 									
-									if(cb != null)
-										cb.onSuccess();
+									if(cb != null){
+										if(response.has("meta")){
+											int object_count = -1;
+											int page_count = -1;
+											int page_number = -1;
+											JSONObject meta = response.getJSONObject("meta");
+											if(meta.has("object_count"))
+												object_count = meta.getInt("object_count");
+											if(meta.has("page_count"))
+												page_count = meta.getInt("page_count");
+											if(meta.has("page_number")){
+												try{
+												page_number = Integer.parseInt(meta.getString("page_number"));
+												}catch(Exception e){};
+											}
+											
+											cb.onSuccess(page_number, object_count, page_count);
+										}
+										
+									}
+										
 								/*
 								} catch (JSONException e) {
 									// TODO Auto-generated catch block
@@ -240,7 +263,7 @@ public class OWServiceRequests {
 			@Override
 			public void onFailure(Throwable e, JSONObject errorResponse){
 				if(cb != null)
-					cb.onFailure();
+					cb.onFailure(page);
 				Log.i(TAG, METHOD + " failed: " + errorResponse.toString());
 				e.printStackTrace();
 			}

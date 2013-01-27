@@ -19,17 +19,21 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Point;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.media.MediaPlayer.OnVideoSizeChangedListener;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
@@ -64,6 +68,7 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 	
 	LayoutInflater inflater;
 
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -74,8 +79,21 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 	
 		setContentView(R.layout.activity_local_recording_view);
-		
 		video_view = (VideoView) findViewById(R.id.videoview);
+		if(!is_landscape){
+			//make a guess of the videoView height so when we fit it to the loaded video
+			// the swap isn't too jarring
+			Display display = getWindowManager().getDefaultDisplay();
+			int height;
+			if(Build.VERSION.SDK_INT >=11){
+				Point size = new Point();
+				display.getSize(size);
+				height = (int)(size.x * 3 / 4.0); // assuming 4:3 aspect
+			}else{
+				height = (int)(display.getWidth() * 3 / 4.0); 
+			}
+			video_view.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, height));
+		}
 
 		inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		String video_path = null;
