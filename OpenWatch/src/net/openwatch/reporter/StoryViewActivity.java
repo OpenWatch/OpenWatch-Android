@@ -27,6 +27,7 @@ import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ScrollView;
@@ -140,9 +141,17 @@ public class StoryViewActivity extends SherlockActivity implements OWMediaObject
 			e.printStackTrace();
 		}
 		((TextView) this.findViewById(R.id.body)).setMovementMethod(LinkMovementMethod.getInstance());
+		//((TextView) this.findViewById(R.id.body)).scrollTo(0, 0);
 		((TextView) this.findViewById(R.id.body)).setText(Html.fromHtml(media_object.story.get(app_context).body.get()));
-		if(findViewById(R.id.body_scroll_view) != null){
-			((ScrollView)findViewById(R.id.body_scroll_view)).pageScroll(ScrollView.FOCUS_UP);
-		}
+		
+		((TextView) this.findViewById(R.id.body)).getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener(){
+			
+			@Override
+			public void onGlobalLayout() {
+				if(findViewById(R.id.body_scroll_view) != null){
+					((ScrollView)findViewById(R.id.body_scroll_view)).scrollTo(0, 0);
+				}
+			}
+		});
 	}
 }
