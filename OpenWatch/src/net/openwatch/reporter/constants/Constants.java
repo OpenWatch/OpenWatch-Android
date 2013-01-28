@@ -21,10 +21,15 @@ public class Constants {
 	public static final String OW_CONTENT_TYPE = "owcontent_type";
 	
 	// Date Formatter for OW server time
-	public static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+	public static SimpleDateFormat utc_formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+	// Human readable
+	public static SimpleDateFormat user_datetime_formatter = new SimpleDateFormat("MMM dd, yyyy h:mm a", Locale.US);
+	public static SimpleDateFormat user_time_formatter = new SimpleDateFormat("h:mm a", Locale.US);
 	
 	static{
-		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+		utc_formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+		user_datetime_formatter.setTimeZone(TimeZone.getDefault());
+		user_time_formatter.setTimeZone(TimeZone.getDefault());
 	}
 
 	// SharedPreferences titles

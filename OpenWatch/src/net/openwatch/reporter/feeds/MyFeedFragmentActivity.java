@@ -219,6 +219,9 @@ public class MyFeedFragmentActivity extends FragmentActivity {
 		@Override
 		public void onLoadFinished(Loader<Cursor> arg0, Cursor cursor) {
 			mAdapter.swapCursor(cursor);
+			if(!isAdded())
+				return;
+			
 			// The list should now be shown.
             if (isResumed()) {
                 setListShown(true);
@@ -241,7 +244,7 @@ public class MyFeedFragmentActivity extends FragmentActivity {
 		static final String[] PROJECTION = new String[] {
 			DBConstants.ID,
 			DBConstants.RECORDINGS_TABLE_TITLE,
-			DBConstants.RECORDINGS_TABLE_LAST_EDITED,
+			DBConstants.RECORDINGS_TABLE_FIRST_POSTED,
 			DBConstants.RECORDINGS_TABLE_THUMB_URL,
 			DBConstants.RECORDINGS_TABLE_VIEWS,
 			DBConstants.RECORDINGS_TABLE_ACTIONS,
@@ -254,7 +257,7 @@ public class MyFeedFragmentActivity extends FragmentActivity {
 			Uri baseUri = OWContentProvider.getUserRecordingsUri(internal_user_id);
 			String selection = null;
             String[] selectionArgs = null;
-            String order = null;
+            String order = " ORDER BY " + DBConstants.RECORDINGS_TABLE_FIRST_POSTED + " DESC";
             //String order = DBConstants.RECORDINGS_TABLE_FIRST_POSTED + " DESC";
             Log.i("URI"+feed.toString(), "createLoader on uri: " + baseUri.toString());
 			return new CursorLoader(getActivity(), baseUri, PROJECTION, selection, selectionArgs, order);

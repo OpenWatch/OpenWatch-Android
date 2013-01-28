@@ -218,6 +218,8 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 		@Override
 		public void onLoadFinished(Loader<Cursor> arg0, Cursor cursor) {
 			mAdapter.swapCursor(cursor);
+			if(!isAdded())
+				return;
 			/*
 			if(cursor == null || cursor.getCount() == 0)
 				Log.i("URI" + feed.toString(), "onLoadFinished empty cursor on uri " + this_uri.toString());

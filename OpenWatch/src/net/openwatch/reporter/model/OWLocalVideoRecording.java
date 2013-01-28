@@ -43,7 +43,7 @@ public class OWLocalVideoRecording extends Model {
 		this.save(c);
 		
 		OWVideoRecording recording = new OWVideoRecording(c); // creates OWMediaObject
-		recording.creation_time.set(Constants.sdf.format(new Date()));
+		recording.creation_time.set(Constants.utc_formatter.format(new Date()));
 		recording.local.set(this.getId());
 		recording.media_object.get(c).local_video_recording.set(getId());
 		recording.media_object.get(c).save(c);
@@ -114,7 +114,7 @@ public class OWLocalVideoRecording extends Model {
 	@Override
 	public boolean save(Context context) {
 		if(recording.get(context) != null){
-			recording.get(context).media_object.get(context).setLastEdited(context, Constants.sdf.format(new Date()) );
+			recording.get(context).media_object.get(context).setLastEdited(context, Constants.utc_formatter.format(new Date()) );
 			context.getContentResolver().notifyChange(
 					OWContentProvider.getLocalRecordingUri(this.getId()), null);
 			context.getContentResolver().notifyChange(

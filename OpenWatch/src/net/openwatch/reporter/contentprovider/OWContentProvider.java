@@ -145,13 +145,13 @@ public class OWContentProvider extends ContentProvider {
 		DatabaseAdapter adapter = DatabaseAdapter.getInstance(getContext().getApplicationContext());
 		Log.i(TAG, adapter.getDatabaseName());
 		Log.i(TAG, uri.toString());
+		String query;
 		switch(uriType){
 			case MEDIA_OBJS_BY_USER:
 				Log.i(TAG, "MediaObjs by user");
-				result = adapter.open().query(select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " WHERE " + DBConstants.MEDIA_OBJECT_USER + " = " + uri.getLastPathSegment());
-				if(result.moveToFirst()){
-					Log.i("UserRecCount", String.valueOf(result.getCount()));
-				}
+				query = select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " WHERE " + DBConstants.MEDIA_OBJECT_USER + " = " + uri.getLastPathSegment() + sortby;
+				Log.i(TAG, query);
+				result = adapter.open().query(query);
 				break;
 			case LOCAL_RECORDINGS:
 				Log.i(TAG, select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " WHERE " + DBConstants.MEDIA_OBJECT_LOCAL_VIDEO + " IS NOT NULL " + sortby);
@@ -177,7 +177,7 @@ public class OWContentProvider extends ContentProvider {
 					return null;
 				}			
 				//Log.i(TAG, String.format("fetching feed id: %d", feed_id));
-				String query = select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " JOIN " + DBConstants.FEED_MEDIA_OBJ_TABLENAME + " ON " + DBConstants.FEED_MEDIA_OBJ_TABLENAME+"."+DBConstants.MEDIA_OBJECT_TABLENAME + "=" + DBConstants.MEDIA_OBJECT_TABLENAME+"." + DBConstants.ID + " WHERE " + DBConstants.FEED_MEDIA_OBJ_TABLENAME + "." + DBConstants.FEED_TABLENAME + "=" + String.valueOf(feed_id);
+				query = select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " JOIN " + DBConstants.FEED_MEDIA_OBJ_TABLENAME + " ON " + DBConstants.FEED_MEDIA_OBJ_TABLENAME+"."+DBConstants.MEDIA_OBJECT_TABLENAME + "=" + DBConstants.MEDIA_OBJECT_TABLENAME+"." + DBConstants.ID + " WHERE " + DBConstants.FEED_MEDIA_OBJ_TABLENAME + "." + DBConstants.FEED_TABLENAME + "=" + String.valueOf(feed_id);
 				//Log.i(TAG, "Query: " + query);
 				result = adapter.open().query(query);
 				if(result == null)

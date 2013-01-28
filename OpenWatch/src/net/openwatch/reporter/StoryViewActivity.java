@@ -1,5 +1,7 @@
 package net.openwatch.reporter;
 
+import java.text.ParseException;
+
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
 import net.openwatch.reporter.constants.Constants.HIT_TYPE;
@@ -16,12 +18,15 @@ import com.actionbarsherlock.view.MenuItem;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ScrollView;
@@ -39,6 +44,8 @@ public class StoryViewActivity extends SherlockActivity implements OWMediaObject
 		setContentView(R.layout.activity_story_view);
 		// Show the Up button in the action bar.
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		
+		setCustomFont();
 		
 		try{
 			model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
@@ -70,6 +77,24 @@ public class StoryViewActivity extends SherlockActivity implements OWMediaObject
 		}catch(Exception e){
 			Log.e(TAG, "Error retrieving model");
 			e.printStackTrace();
+		}
+	}
+	
+	private void setCustomFont(){
+		Typeface font = Typeface.createFromAsset(getAssets(), "Palatino.ttc");  
+		ViewGroup container = (ViewGroup) findViewById(R.id.story_container);
+		View this_view;
+		for (int x = 0; x < container.getChildCount(); x++) {
+			this_view = container.getChildAt(x);
+			if(this_view.getTag() != null){
+				if(this_view.getTag().toString().compareTo("custom_font") == 0){
+					((TextView)this_view).setTypeface(font, Typeface.NORMAL);
+				}else if(this_view.getTag().toString().compareTo("custom_font_bold") == 0){
+					((TextView)this_view).setTypeface(font, Typeface.BOLD);
+				}else if(this_view.getTag().toString().compareTo("custom_font_italic") == 0){
+					((TextView)this_view).setTypeface(font, Typeface.ITALIC);
+				}
+			}
 		}
 	}
 
@@ -107,11 +132,17 @@ public class StoryViewActivity extends SherlockActivity implements OWMediaObject
 		((TextView) this.findViewById(R.id.title)).setText(media_object.getTitle(app_context));
 		((TextView) this.findViewById(R.id.blurb)).setText(media_object.story.get(app_context).blurb.get());
 		((TextView) this.findViewById(R.id.author)).setText(media_object.username.get());
-		((TextView) this.findViewById(R.id.date)).setText(media_object.getFirstPosted(app_context));
+		try {
+			((TextView) this.findViewById(R.id.date)).setText(Constants.user_datetime_formatter.format(Constants.utc_formatter.parse(media_object.getFirstPosted(app_context))));
+		} catch (ParseException e) {
+			Log.e(TAG, "Error parsing date string");
+			((TextView) this.findViewById(R.id.date)).setText(media_object.getFirstPosted(app_context));
+			e.printStackTrace();
+		}
 		((TextView) this.findViewById(R.id.body)).setMovementMethod(LinkMovementMethod.getInstance());
 		((TextView) this.findViewById(R.id.body)).setText(Html.fromHtml(media_object.story.get(app_context).body.get()));
 		if(findViewById(R.id.body_scroll_view) != null){
-			((ScrollView)findViewById(R.id.body_scroll_view)).fullScroll(ScrollView.FOCUS_UP);
+			((ScrollView)findViewById(R.id.body_scroll_view)).pageScroll(ScrollView.FOCUS_UP);
 		}
 	}
 }

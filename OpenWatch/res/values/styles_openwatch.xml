@@ -182,7 +182,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:ellipsize">marquee</item>
-        <item name="android:textSize">24sp</item>
+        <item name="android:textSize">36sp</item>
     </style>
     
     <style name="Theme.openwatch.storyBlurbText">
@@ -208,7 +208,6 @@
         <item name="android:fontFamily">sans-serif-condensed</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textIsSelectable">true</item>
         <item name="android:layout_marginTop">8dp</item>
         <item name="android:layout_marginBottom">8dp</item>
         <item name="android:ellipsize">marquee</item>
@@ -221,7 +220,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textIsSelectable">true</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">20sp</item>
     </style>
     
     <style name="Theme.openwatch.welcomeTitleText">

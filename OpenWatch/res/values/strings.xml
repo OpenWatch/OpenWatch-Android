@@ -21,7 +21,7 @@
     <string name="login_dialog_no">No Thanks</string>
     <string name="login_dialog_signup">Sign up!</string>
     <string name="logout">Sign out</string>
-    <string name="reporter">PRESS PASS</string>
+    <string name="reporter"></string>
     <string name="sign_in">Sign In!</string>
     <string name="take_choose_picture_title">Set your avatar</string>
     <string name="take_choose_picture_prompt">How shall we get your fine picture?</string>

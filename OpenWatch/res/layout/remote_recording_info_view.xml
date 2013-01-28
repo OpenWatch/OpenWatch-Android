@@ -81,14 +81,8 @@
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/descriptionLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-light"
-            android:text="@string/description" />
-
-        <TextView
             android:id="@+id/editDescription"
+            android:textColor="@color/text_light" 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="18sp"
@@ -99,6 +93,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-light"
+            android:visibility="gone"
             android:text="@string/tags" />
 
         <AutoCompleteTextView

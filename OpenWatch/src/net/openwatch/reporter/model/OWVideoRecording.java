@@ -63,7 +63,7 @@ public class OWVideoRecording extends Model implements OWMediaObjectInterface{
 		//local.recording_id.set(getId());
 		//local.save(c);
 		
-		creation_time.set(Constants.sdf.format(new Date()));
+		creation_time.set(Constants.utc_formatter.format(new Date()));
 		//this.local.set(local);
 		
 		save(c);
@@ -244,7 +244,7 @@ public class OWVideoRecording extends Model implements OWMediaObjectInterface{
 		// notify the ContentProvider that the dataset has changed
 		context.getContentResolver().notifyChange(OWContentProvider.getRemoteRecordingUri(getId()), null);
 		if(media_object.get() != null) // this is called once in <init> to get db id before medi_object created
-			setLastEdited(context, Constants.sdf.format(new Date()));
+			setLastEdited(context, Constants.utc_formatter.format(new Date()));
 		return super.save(context);
 	}
 
@@ -360,7 +360,7 @@ public class OWVideoRecording extends Model implements OWMediaObjectInterface{
 	}
 	
 	public static String getUrlFromId(int server_id){
-		return Constants.OW_URL + Constants.OW_RECORDING_VIEW + File.separator + String.valueOf(server_id);	
+		return Constants.OW_URL + Constants.OW_RECORDING_VIEW + String.valueOf(server_id);	
 	}
 
 }

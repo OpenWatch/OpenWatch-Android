@@ -58,7 +58,7 @@ public class OWMediaObject extends Model implements OWMediaObjectInterface{
 	@Override
 	public boolean save(Context context) {
 		context = context.getApplicationContext();
-		setLastEdited(context, Constants.sdf.format(new Date()));
+		setLastEdited(context, Constants.utc_formatter.format(new Date()));
 		boolean super_save =  super.save(context);
 		
 		// notify the ContentProvider that the dataset has changed

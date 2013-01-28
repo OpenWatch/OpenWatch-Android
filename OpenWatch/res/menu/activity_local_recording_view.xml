@@ -9,7 +9,7 @@
     <item
         android:id="@+id/menu_share"
         android:showAsAction="always"
-        android:icon="@drawable/ic_menu_share_holo_dark"/>
+        android:icon="@drawable/ic_menu_share_holo_light"/>
     
     <item
         android:id="@+id/menu_delete"

@@ -299,9 +299,9 @@ public class OWServiceRequests {
 						OWVideoRecording recording = OWVideoRecording.objects(
 								app_context, OWVideoRecording.class).get(
 								model_id);
-						Date last_edited_remote = Constants.sdf
+						Date last_edited_remote = Constants.utc_formatter
 								.parse(recording_json.getString("last_edited"));
-						Date last_edited_local = Constants.sdf.parse(recording
+						Date last_edited_local = Constants.utc_formatter.parse(recording
 								.getLastEdited(app_context));
 						Log.i(TAG,
 								"Sync dates. Remote: "

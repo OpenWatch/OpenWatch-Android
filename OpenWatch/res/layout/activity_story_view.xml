@@ -8,9 +8,11 @@
         android:id="@+id/body_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="5dp" >
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp" >
 
         <RelativeLayout
+            android:id="@+id/story_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".StoryViewActivity" >
@@ -18,14 +20,24 @@
             <TextView
                 android:id="@+id/title"
                 style="@style/Theme.openwatch.storyTitleText"
-                android:layout_alignParentTop="true" />
+                android:layout_alignParentTop="true"
+                android:tag="custom_font_bold" />
 
             <TextView
                 android:id="@+id/blurb"
                 style="@style/Theme.openwatch.storyBlurbText"
-                android:layout_below="@id/title"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_below="@id/title"
+                android:tag="custom_font_italic" />
+
+            <TextView
+                android:id="@+id/date"
+                style="@style/Theme.openwatch.storyDateText"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/blurb"
+                android:layout_marginLeft="8dp"
+                android:tag="custom_font" />
 
             <TextView
                 android:id="@+id/author"
@@ -33,19 +45,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_below="@id/blurb" />
-
-            <TextView
-                android:id="@+id/date"
-                style="@style/Theme.openwatch.storyDateText"
-                android:layout_alignParentRight="true"
+        
+                android:layout_toLeftOf="@id/date"
                 android:layout_below="@id/blurb"
-                android:layout_toLeftOf="@id/author" />
+                android:tag="custom_font_bold" />
 
             <TextView
                 android:id="@+id/body"
                 style="@style/Theme.openwatch.storyBodyText"
-                android:layout_below="@id/author" />
+                android:layout_below="@id/author"
+                android:tag="custom_font" />
         </RelativeLayout>
     </ScrollView>
 

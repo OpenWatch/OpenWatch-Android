@@ -49,7 +49,7 @@ public class OWStory extends Model implements OWMediaObjectInterface{
 	public boolean save(Context context) {
 		// notify the ContentProvider that the dataset has changed
 		if(media_object.get() != null){ // this is called once in <init> to get db id before medi_object created
-			setLastEdited(context, Constants.sdf.format(new Date()));
+			setLastEdited(context, Constants.utc_formatter.format(new Date()));
 			//context.getContentResolver().notifyChange(OWContentProvider.getMediaObjectUri(media_object.get(context).getId()), null);
 		}
 		return super.save(context);
@@ -253,7 +253,7 @@ public class OWStory extends Model implements OWMediaObjectInterface{
 	}
 	
 	public static String getUrlFromId(int server_id){
-		return Constants.OW_URL + Constants.OW_STORY_VIEW + File.separator + String.valueOf(server_id);	
+		return Constants.OW_URL + Constants.OW_STORY_VIEW + String.valueOf(server_id);	
 	}
 
 }
