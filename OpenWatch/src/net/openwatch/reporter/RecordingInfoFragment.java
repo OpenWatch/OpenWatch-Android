@@ -284,7 +284,7 @@ public class RecordingInfoFragment extends SherlockFragment implements
 		}
 
 		if (doSave) {
-			media_obj.save(getActivity().getApplicationContext());
+			media_obj.save(getActivity().getApplicationContext(), true);
 			Log.i(TAG, "Saving recording. " + title.getText().toString()
 					+ " : " + description.getText().toString());
 			media_obj.video_recording

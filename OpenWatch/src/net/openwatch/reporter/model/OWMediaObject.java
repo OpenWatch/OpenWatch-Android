@@ -55,6 +55,26 @@ public class OWMediaObject extends Model implements OWMediaObjectInterface{
 		super();
 	}
 	
+	public boolean save(Context context, boolean doNotify){
+		boolean did_it = this.save(context);
+		if(doNotify){
+			OWFeedType feed_type = null;
+			for(OWFeed feed : feeds.get(context, this)){
+				feed_type = OWFeed.getFeedTypeFromString(context, feed.name.get());
+				Log.i(TAG, "feed_type: " + feed_type);
+				if(feed_type != null){
+					Log.i(TAG, "NotifyingChange on feed: " + OWContentProvider.getFeedUri(feed_type).toString());
+					context.getContentResolver().notifyChange(OWContentProvider.getFeedUri(feed_type), null);
+				}
+			}
+			if(this.user.get(context) != null)
+				Log.i(TAG, "notify url : " + OWContentProvider.getUserRecordingsUri(this.user.get(context).getId()));
+				context.getContentResolver().notifyChange(OWContentProvider.getUserRecordingsUri(this.user.get(context).getId()), null);
+		}
+		
+		return did_it;
+	}
+	
 	@Override
 	public boolean save(Context context) {
 		context = context.getApplicationContext();
