@@ -4,6 +4,10 @@
     <item name="list_item_cache" type="id"></item>
     <item name="list_item_model" type="id"></item>
     <item name="list_item_model_type" type="id"></item>
+    
+    <!-- FeedActivity feed / tag directory -->
+    <item name="feeds" type="id"></item>
+    <item name="tags" type="id"></item>
 
         
 </resources>

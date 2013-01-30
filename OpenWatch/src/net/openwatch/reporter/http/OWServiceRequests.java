@@ -258,15 +258,13 @@ public class OWServiceRequests {
 		
 		if(feed.equals(OWFeedType.LOCAL)){
 			http_client.post(app_context, endpoint, Utils.JSONObjectToStringEntity(params), "application/json", get_handler);
-			//http_client.get(endpoint, Utils.JSONObjectToStringEntity(params), get_handler);
-			//TODO: Try sending json in GET as RequestParams
 		}
 		else
 			http_client.get(endpoint, get_handler);
 		
 		Log.i(TAG, "getFeed: " + endpoint);
 	}
-	
+
 	/**
 	 * Parses a Feed, updating the database and notifying
 	 * the appropriate feed uris of changed content

@@ -104,6 +104,7 @@ public class Constants {
 	public static final String OW_RECORDINGS = "recordings";
 	public static final String OW_STORY = "story";
 	public static final String OW_TAGS = "tags";
+	public static final String OW_TAG = "tag";
 	public static final String OW_UPDATE_META = "update_metadata";
 	public static final String OW_FEED = "feed";
 	

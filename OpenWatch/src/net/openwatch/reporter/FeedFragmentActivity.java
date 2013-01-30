@@ -134,6 +134,18 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
 	}
     
     @Override
+	public boolean onPrepareOptionsMenu(Menu menu){
+    	
+    	MenuItem directory = menu.findItem(R.id.feed_directory);
+    	if(directory != null){
+    		// TODO: Prorgramatically populate menu with feeds and tags here
+    		//directory.getSubMenu().add(R.id.feeds, itemId, order, title)
+    	}
+    	
+    	return true;
+    }
+    
+    @Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:

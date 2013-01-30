@@ -2,28 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/feed_tag_selector"
+        android:id="@+id/feed_directory"
         android:showAsAction="always"
         android:title="Directory">
         <menu>
-            <item
-                android:id="@+id/submenu_item1"
-                android:title="Featured"/>
-            <item
-                android:id="@+id/submenu_item1"
-                android:title="Following"/>
-            <item
-                android:id="@+id/submenu_item1"
-                android:title="Local"/>
-            <item
-                android:id="@+id/submenu_item1"
-                android:title="Berkeley"/>
-            <item
-                android:id="@+id/submenu_item1"
-                android:title="Oakland"/>
-            <item
-                android:id="@+id/submenu_item1"
-                android:title="Civil Rights"/>
+
         </menu>
     </item>
 
