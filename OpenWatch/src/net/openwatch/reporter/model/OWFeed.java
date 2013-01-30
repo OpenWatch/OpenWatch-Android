@@ -51,5 +51,19 @@ public class OWFeed extends Model{
 		}
 		return null;
 	}
+	
+	public static OWFeed getFeedFromString(Context app_context, String feed_name){
+		Filter f = new Filter();
+		f.is(DBConstants.FEED_NAME, feed_name.trim().toLowerCase(Locale.US));
+		QuerySet<OWFeed> feedset = OWFeed.objects(app_context, OWFeed.class).filter(f);
+		for(OWFeed feed : feedset){
+			return feed;
+		}
+		// Existing feed does not exist
+		OWFeed new_feed = new OWFeed();
+		new_feed.name.set(feed_name.trim().toLowerCase(Locale.US));
+		new_feed.save(app_context);
+		return new_feed;
+	}
 
 }

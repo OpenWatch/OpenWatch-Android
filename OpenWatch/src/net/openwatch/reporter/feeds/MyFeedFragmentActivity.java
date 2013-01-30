@@ -82,7 +82,7 @@ public class MyFeedFragmentActivity extends FragmentActivity {
 
         OnQueryTextListenerCompat mOnQueryTextListenerCompat;
         
-        final OWFeedType feed = Constants.OWFeedType.RECORDINGS;
+        final String feed = Constants.OWFeedType.RECORDINGS.toString();
         int internal_user_id = -1;
         int page = 0;
         boolean didRefreshFeed = false;

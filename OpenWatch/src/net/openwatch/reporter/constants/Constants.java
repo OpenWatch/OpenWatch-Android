@@ -117,8 +117,8 @@ public class Constants {
 		FEATURED, LOCAL, FOLLOWING, RECORDINGS
 	}
 	
-	public static boolean isOWFeedTypeGeoSensitive(OWFeedType type){
-		if(type.equals(OWFeedType.LOCAL))
+	public static boolean isOWFeedTypeGeoSensitive(String feed_type){
+		if(feed_type.trim().toLowerCase().compareTo(OWFeedType.LOCAL.toString().toLowerCase()) == 0)
 			return true;
 		return false;
 	}
@@ -141,8 +141,20 @@ public class Constants {
 		return endpoint + File.separator + String.valueOf(page);
 	}
 	
+	public static String feedExternalEndpointFromString(String type, int page){
+		String endpoint = "";
+		if(type.compareTo(OWFeedType.RECORDINGS.toString().toLowerCase()) == 0){
+			endpoint = Constants.OW_API_URL + Constants.OW_RECORDINGS;
+		}else{
+			endpoint = Constants.OW_API_URL + Constants.OW_FEED + File.separator + type;
+		}
+		
+		return endpoint + File.separator + String.valueOf(page);
+	}
+	
 	/**
 	 * For user with the internal ContentProvider
+	 * To remove
 	 * @param type
 	 * @return
 	 */

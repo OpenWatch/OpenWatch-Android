@@ -53,8 +53,12 @@ public class OWContentProvider extends ContentProvider {
      public static Uri getRemoteRecordingUri(int model_id){
     	 return REMOTE_RECORDING_URI.buildUpon().appendEncodedPath(String.valueOf(model_id)).build();
      }
+     // to be removed
      public static Uri getFeedUri(OWFeedType feed_type){
     	 return MEDIA_OBJECT_URI.buildUpon().appendEncodedPath(Constants.feedInternalEndpointFromType(feed_type)).build();
+     }
+     public static Uri getFeedUri(String feed_name){
+    	 return MEDIA_OBJECT_URI.buildUpon().appendEncodedPath(feed_name.trim().toLowerCase()).build();
      }
      public static Uri getMediaObjectUri(int model_id){
     	 return MEDIA_OBJECT_URI.buildUpon().appendEncodedPath(String.valueOf(model_id)).build();

@@ -77,7 +77,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
     	int page = 0;
     	boolean has_next_page = false;
     	
-    	OWFeedType feed;
+    	String feed;
     	Location device_location;
     	Uri this_uri; // TESTING
 
@@ -150,7 +150,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             // Start out with a progress indicator.
             setListShown(false);
             
-            feed = (OWFeedType) this.getArguments().getSerializable(Constants.OW_FEED);
+            feed = this.getArguments().getString(Constants.OW_FEED);
             Log.i(TAG, "got feed name: " +  feed.toString() );
             
             // Prepare the loader.  Either re-connect with an existing one,

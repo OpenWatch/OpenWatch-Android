@@ -91,21 +91,21 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
      
         Bundle feedBundle = new Bundle(1);
         
-        feedBundle.putSerializable(Constants.OW_FEED, OWFeedType.FOLLOWING);
+        feedBundle.putString(Constants.OW_FEED, OWFeedType.FOLLOWING.toString());
         mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_following)).setIndicator(inflateCustomTab(getString(R.string.tab_following))),
                 RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, feedBundle);
         mTabMap.put(OWFeedType.FOLLOWING, 1);
         
         
         feedBundle = new Bundle(1);
-        feedBundle.putSerializable(Constants.OW_FEED, OWFeedType.FEATURED);
+        feedBundle.putString(Constants.OW_FEED, OWFeedType.FEATURED.toString());
         mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_featured)).setIndicator(inflateCustomTab(getString(R.string.tab_featured))),
                 RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, feedBundle);
         mTabMap.put(OWFeedType.FEATURED, 2);
         
         
         feedBundle = new Bundle(1);
-        feedBundle.putSerializable(Constants.OW_FEED, OWFeedType.LOCAL);
+        feedBundle.putString(Constants.OW_FEED, OWFeedType.LOCAL.toString());
         mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_local)).setIndicator(inflateCustomTab(getString(R.string.tab_local))),
                 RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, feedBundle);
         mTabMap.put(OWFeedType.LOCAL, 3);

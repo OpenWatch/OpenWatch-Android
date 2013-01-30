@@ -196,7 +196,7 @@ public class OWServiceRequests {
 	 * @param page
 	 * @param cb
 	 */
-	public static void getGeoFeed(final Context app_context, final Location gps_location, final OWFeedType feed, final int page, final PaginatedRequestCallback cb){
+	public static void getGeoFeed(final Context app_context, final Location gps_location, final String feed_name, final int page, final PaginatedRequestCallback cb){
 	
 		JSONObject root = new JSONObject();
 		JSONObject location = new JSONObject();
@@ -207,7 +207,7 @@ public class OWServiceRequests {
 			}
 
 			root.put("location", location);
-			getFeed(app_context, root, feed, page, cb);
+			getFeed(app_context, root, feed_name, page, cb);
 			Log.i(TAG, "got location, fetching geo feed");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -216,8 +216,8 @@ public class OWServiceRequests {
 		
 	}
 	
-	public static void getFeed(final Context app_context, final OWFeedType feed, final int page, final PaginatedRequestCallback cb){
-		getFeed(app_context, null, feed, page, cb);
+	public static void getFeed(final Context app_context, final String feed_name, final int page, final PaginatedRequestCallback cb){
+		getFeed(app_context, null, feed_name, page, cb);
 	}
 	
 
@@ -228,16 +228,17 @@ public class OWServiceRequests {
 	 * @param feed
 	 *            The type of feed to return. See OWServiceRequests.OWFeed
 	 */
-	private static void getFeed(final Context app_context, JSONObject params, final OWFeedType feed, final int page, final PaginatedRequestCallback cb){
+	private static void getFeed(final Context app_context, JSONObject params, final String ext_feed_name, final int page, final PaginatedRequestCallback cb){
 		final String METHOD = "getFeed";
+		final String feed_name = ext_feed_name.trim().toLowerCase();
 		
 		JsonHttpResponseHandler get_handler = new JsonHttpResponseHandler(){
 			@Override
     		public void onSuccess(JSONObject response){
 				if(response.has("objects")){
-					Log.i(TAG, String.format("got %s feed response: %s ",feed.toString(), response.toString()) );
+					Log.i(TAG, String.format("got %s feed response: %s ",feed_name, response.toString()) );
 					
-					ParseFeedTask parseTask = new ParseFeedTask(app_context, cb, feed);
+					ParseFeedTask parseTask = new ParseFeedTask(app_context, cb, feed_name, page);
 					parseTask.execute(response);
 					
 				}else
@@ -254,9 +255,9 @@ public class OWServiceRequests {
 		};
 		
 		AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
-		String endpoint = Constants.feedExternalEndpointFromType(feed, page);
+		String endpoint = Constants.feedExternalEndpointFromString(feed_name, page);
 		
-		if(feed.equals(OWFeedType.LOCAL)){
+		if(feed_name.compareTo(OWFeedType.LOCAL.toString().toLowerCase()) == 0){
 			http_client.post(app_context, endpoint, Utils.JSONObjectToStringEntity(params), "application/json", get_handler);
 		}
 		else
@@ -275,17 +276,20 @@ public class OWServiceRequests {
 		
 		PaginatedRequestCallback cb;
 		Context c;
-		OWFeedType feed;
+		String feed_name;
 		boolean success = false;
 		
 		int object_count = -1;
 		int page_count = -1;
 		int page_number = -1;
 		
-		public ParseFeedTask(Context c, PaginatedRequestCallback cb, OWFeedType feed){
+		int current_page = -1;
+		
+		public ParseFeedTask(Context c, PaginatedRequestCallback cb, String feed_name, int current_page){
 			this.cb = cb;
 			this.c = c;
-			this.feed = feed;
+			this.feed_name = feed_name;
+			this.current_page = current_page;
 		}
 		
 
@@ -296,21 +300,32 @@ public class OWServiceRequests {
 			
 			JSONObject response = params[0];
 			try{
+				//If we're fetching the first page, it 
+				//means we're rebuilding this feed
+				if(current_page == 1){
+					Filter filter = new Filter();
+					filter.is(DBConstants.FEED_NAME, feed_name);
+					QuerySet<OWFeed> feedset = OWFeed.objects(c, OWFeed.class).filter(filter);
+					for(OWFeed feed : feedset){
+						feed.delete(c);
+					}
+				}
+				// Now parse the new data and create the feed anew
 				JSONArray json_array = response.getJSONArray("objects");
 				JSONObject json_obj;
 				for(int x=0; x<json_array.length(); x++){
 					json_obj = json_array.getJSONObject(x);
 					if(json_obj.has("type")){
 						if(json_obj.getString("type").compareTo("video") == 0)
-							OWVideoRecording.createOrUpdateOWRecordingWithJson(c, json_obj, OWFeed.getFeedFromFeedType(c, feed));
+							OWVideoRecording.createOrUpdateOWRecordingWithJson(c, json_obj, OWFeed.getFeedFromString(c, feed_name));
 						else if(json_obj.getString("type").compareTo("story") == 0)
-							OWStory.createOrUpdateOWStoryWithJson(c, json_obj, OWFeed.getFeedFromFeedType(c, feed));
+							OWStory.createOrUpdateOWStoryWithJson(c, json_obj, OWFeed.getFeedFromString(c, feed_name));
 						// TODO: Investigation, audio, etc
 					}
 				}
 				adapter.commitTransaction();
-				Log.i("URI" + feed.toString(), "notify change on uri: " + OWContentProvider.getFeedUri(feed).toString());
-				c.getContentResolver().notifyChange(OWContentProvider.getFeedUri(feed), null);   
+				Log.i("URI" + feed_name, "notify change on uri: " + OWContentProvider.getFeedUri(feed_name).toString());
+				c.getContentResolver().notifyChange(OWContentProvider.getFeedUri(feed_name), null);   
 	
 				
 				if(cb != null){

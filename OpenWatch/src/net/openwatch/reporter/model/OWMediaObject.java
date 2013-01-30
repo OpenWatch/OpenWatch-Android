@@ -60,11 +60,11 @@ public class OWMediaObject extends Model implements OWMediaObjectInterface{
 		if(doNotify){
 			OWFeedType feed_type = null;
 			for(OWFeed feed : feeds.get(context, this)){
-				feed_type = OWFeed.getFeedTypeFromString(context, feed.name.get());
+				//feed_type = OWFeed.getFeedTypeFromString(context, feed.name.get());
 				//Log.i(TAG, "feed_type: " + feed_type);
-				if(feed_type != null){
-					Log.i(TAG, "NotifyingChange on feed: " + OWContentProvider.getFeedUri(feed_type).toString());
-					context.getContentResolver().notifyChange(OWContentProvider.getFeedUri(feed_type), null);
+				if(feed.name.get() != null && feed.name.get().compareTo("") !=0){
+					Log.i(TAG, "NotifyingChange on feed: " + OWContentProvider.getFeedUri(feed.name.get()).toString());
+					context.getContentResolver().notifyChange(OWContentProvider.getFeedUri(feed.name.get()), null);
 				}
 			}
 			if(this.user.get(context) != null)
