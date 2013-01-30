@@ -19,6 +19,8 @@ import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
 import net.openwatch.reporter.constants.Constants.OWFeedType;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
+import net.openwatch.reporter.location.DeviceLocation;
+import net.openwatch.reporter.location.DeviceLocation.GPSRequestCallback;
 import net.openwatch.reporter.model.OWFeed;
 import net.openwatch.reporter.model.OWMediaObject;
 import net.openwatch.reporter.model.OWVideoRecording;
@@ -28,6 +30,7 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
+import android.location.Location;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -175,6 +178,47 @@ public class OWServiceRequests {
 		Log.i(TAG, METHOD + " : " + Constants.OW_API_URL
 				+ Constants.OW_RECORDING + File.separator + uuid);
 	}
+	
+	/**
+	 * Gets the device's current location and posts it in OW standard format
+	 * along with a request for a feed.
+	 * 
+	 * OW standard location format:
+	 * {
+   	 *	'location': {
+     *  		'latitude':39.00345433,
+     *  		'longitude':-70.2440393
+   	 *	}
+`	 * }
+	 * @param app_context
+	 * @param feed
+	 * @param page
+	 * @param cb
+	 */
+	public static void getGeoFeed(final Context app_context, final Location gps_location, final OWFeedType feed, final int page, final PaginatedRequestCallback cb){
+	
+		JSONObject root = new JSONObject();
+		JSONObject location = new JSONObject();
+		try {
+			if(gps_location != null){
+				location.put("latitude", gps_location.getLatitude());
+				location.put("longitude", gps_location.getLongitude());
+			}
+
+			root.put("location", location);
+			getFeed(app_context, root, feed, page, cb);
+			Log.i(TAG, "got location, fetching geo feed");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public static void getFeed(final Context app_context, final OWFeedType feed, final int page, final PaginatedRequestCallback cb){
+		getFeed(app_context, null, feed, page, cb);
+	}
+	
 
 	/**
 	 * Parse an OpenWatch.net feed, saving its contents to the databasee
@@ -183,7 +227,7 @@ public class OWServiceRequests {
 	 * @param feed
 	 *            The type of feed to return. See OWServiceRequests.OWFeed
 	 */
-	public static void getFeed(final Context app_context, final OWFeedType feed, final int page, final PaginatedRequestCallback cb){
+	private static void getFeed(final Context app_context, JSONObject params, final OWFeedType feed, final int page, final PaginatedRequestCallback cb){
 		final String METHOD = "getFeed";
 		
 		JsonHttpResponseHandler get_handler = new JsonHttpResponseHandler(){
@@ -272,7 +316,14 @@ public class OWServiceRequests {
 		AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
 		String endpoint = Constants.feedExternalEndpointFromType(feed, page);
 		
-		http_client.get(endpoint, get_handler);
+		if(feed.equals(OWFeedType.LOCAL)){
+			http_client.post(app_context, endpoint, Utils.JSONObjectToStringEntity(params), "application/json", get_handler);
+			//http_client.get(endpoint, Utils.JSONObjectToStringEntity(params), get_handler);
+			//TODO: Try sending json in GET as RequestParams
+		}
+		else
+			http_client.get(endpoint, get_handler);
+		
 		Log.i(TAG, "getFeed: " + endpoint);
 	}
 

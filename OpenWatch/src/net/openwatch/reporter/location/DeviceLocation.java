@@ -4,6 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import net.openwatch.reporter.http.OWMediaRequests;
+import net.openwatch.reporter.http.OWServiceRequests.RequestCallback;
 import net.openwatch.reporter.model.OWLocalVideoRecording;
 import net.openwatch.reporter.model.OWVideoRecording;
 import android.content.Context;
@@ -25,6 +26,10 @@ public class DeviceLocation {
     private boolean waitForGpsFix;
     
     private static final float ACCURATE_LOCATION_THRESHOLD_METERS = 20;
+    
+    public interface GPSRequestCallback {
+		public void onSuccess(Location result);
+	}
     
     /**
      * 
@@ -175,4 +180,20 @@ public class DeviceLocation {
        // For end, wait for additional accuracy
        deviceLocation.getLocation(app_context, locationResult, !isStart);
 	}
+    
+    public static void getLocation(Context context, boolean waitForGpsFix, final GPSRequestCallback cb){
+    	DeviceLocation deviceLocation = new DeviceLocation();
+		
+    	LocationResult locationResult = new LocationResult(){
+            @Override
+            public void gotLocation(final Location location){
+            	if(cb != null){
+            		cb.onSuccess(location);
+            	}
+	        }
+        };
+        
+        deviceLocation.getLocation(context, locationResult, waitForGpsFix);
+
+    }
 }

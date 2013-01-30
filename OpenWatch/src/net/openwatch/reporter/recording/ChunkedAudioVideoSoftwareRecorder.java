@@ -24,7 +24,7 @@ import android.view.SurfaceView;
 
 public class ChunkedAudioVideoSoftwareRecorder {
 	
-	public static int encoding_service_task_count = 0;
+	//public static int encoding_service_task_count = 0;
 
 	private static final String TAG = "ChunkedVideoSoftwareRecorder";
 	public static Camera camera;
@@ -147,8 +147,8 @@ public class ChunkedAudioVideoSoftwareRecorder {
 				
 				encoding_task = new EncoderTask(ffencoder, video_frame_data, audio_samples);
 				encoding_service.submit(encoding_task);
-				encoding_service_task_count ++;
-				Log.i("Executor", encoding_service_task_count + " estimated jobs in queue");
+				//encoding_service_task_count ++;
+				//Log.i("Executor", encoding_service_task_count + " estimated jobs in queue");
 				/*
 				ffencoder.processAVData(video_frame_data,
 						video_frame_date.getTime(), audio_samples,
@@ -356,7 +356,7 @@ public class ChunkedAudioVideoSoftwareRecorder {
 					finalizeEncoder();
 					break;
 				}
-				ChunkedAudioVideoSoftwareRecorder.encoding_service_task_count -= 1;
+				//ChunkedAudioVideoSoftwareRecorder.encoding_service_task_count -= 1;
 				// prevent multiple execution of same task
 				is_initialized = false;
 			}

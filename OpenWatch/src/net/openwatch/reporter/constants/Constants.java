@@ -16,6 +16,34 @@ import com.github.ignition.core.widgets.RemoteImageView;
  *
  */
 public class Constants {
+	
+	// Set this flag to toggle between production 
+	// and development endpoint addresses
+	public static final boolean USE_DEV_ENDPOINTS = false;
+	
+	public static final String PROD_HOST = "https://alpha.openwatch.net/";
+	public static final String PROD_CAPTURE_HOST = "https://capture.openwatch.net/";
+	
+	public static final String DEV_HOST = "http://192.168.1.27:8000/";
+	public static final String DEV_CAPTURE_HOST = "http://192.168.1.27:5000/";
+	
+	// OpenWatch web service root url and endpoints
+	public static final String OW_MEDIA_URL;
+	public static final String OW_API_URL;
+	public static final String OW_URL;
+	
+	static {
+		if(USE_DEV_ENDPOINTS){
+			OW_MEDIA_URL = DEV_CAPTURE_HOST;
+			OW_URL = DEV_HOST;
+			OW_API_URL = DEV_HOST + "api/";
+		}else{
+			OW_MEDIA_URL = PROD_CAPTURE_HOST;
+			OW_URL = PROD_HOST;
+			OW_API_URL = PROD_HOST + "api/";
+		}
+	}
+	
 	// For view tag
 	public static enum CONTENT_TYPE { VIDEO, STORY };
 	public static final String OW_CONTENT_TYPE = "owcontent_type";
@@ -66,14 +94,7 @@ public class Constants {
 	// API Request timeout (ms)
 	public static final int TIMEOUT = 5000;
 	
-	// OpenWatch web service root url and endpoints
-	//public static final String OW_URL = "http://www.openwatch.net/api/"; // TODO: HTTPS
-	//public static final String OW_API_URL = "http://192.168.1.27:8000/api/";
-	//public static final String OW_URL = "http://192.168.1.27:8000/";
-	//public static final String OW_MEDIA_URL = "http://192.168.1.27:5000/";
-	public static final String OW_MEDIA_URL = "https://capture.openwatch.net/";
-	public static final String OW_API_URL = "https://alpha.openwatch.net/api/";
-	public static final String OW_URL = "https://alpha.openwatch.net/";
+	// openwatch.net api endpoints
 	public static final String OW_STORY_VIEW = "s/";
 	public static final String OW_RECORDING_VIEW = "v/";
 	public static final String OW_LOGIN = "login_account";
@@ -93,6 +114,12 @@ public class Constants {
 	// Feed types : Each is related to an API endpoint in OWServiceRequests getFeed
 	public static enum OWFeedType{
 		FEATURED, LOCAL, FOLLOWING, RECORDINGS
+	}
+	
+	public static boolean isOWFeedTypeGeoSensitive(OWFeedType type){
+		if(type.equals(OWFeedType.LOCAL))
+			return true;
+		return false;
 	}
 	
 	/**

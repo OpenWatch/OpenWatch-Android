@@ -61,7 +61,7 @@ public class OWMediaObject extends Model implements OWMediaObjectInterface{
 			OWFeedType feed_type = null;
 			for(OWFeed feed : feeds.get(context, this)){
 				feed_type = OWFeed.getFeedTypeFromString(context, feed.name.get());
-				Log.i(TAG, "feed_type: " + feed_type);
+				//Log.i(TAG, "feed_type: " + feed_type);
 				if(feed_type != null){
 					Log.i(TAG, "NotifyingChange on feed: " + OWContentProvider.getFeedUri(feed_type).toString());
 					context.getContentResolver().notifyChange(OWContentProvider.getFeedUri(feed_type), null);
@@ -69,7 +69,11 @@ public class OWMediaObject extends Model implements OWMediaObjectInterface{
 			}
 			if(this.user.get(context) != null)
 				Log.i(TAG, "notify url : " + OWContentProvider.getUserRecordingsUri(this.user.get(context).getId()));
-				context.getContentResolver().notifyChange(OWContentProvider.getUserRecordingsUri(this.user.get(context).getId()), null);
+				try{
+					context.getContentResolver().notifyChange(OWContentProvider.getUserRecordingsUri(this.user.get(context).getId()), null);
+				} catch(NullPointerException ne){
+					ne.printStackTrace();
+				}
 		}
 		
 		return did_it;

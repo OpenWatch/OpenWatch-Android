@@ -18,6 +18,7 @@ package net.openwatch.reporter.feeds;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.CursorLoader;
@@ -45,6 +46,8 @@ import net.openwatch.reporter.contentprovider.OWContentProvider;
 import net.openwatch.reporter.http.OWServiceRequests;
 import net.openwatch.reporter.http.OWServiceRequests.PaginatedRequestCallback;
 import net.openwatch.reporter.http.OWServiceRequests.RequestCallback;
+import net.openwatch.reporter.location.DeviceLocation;
+import net.openwatch.reporter.location.DeviceLocation.GPSRequestCallback;
 
 /**
  * Demonstration of the implementation of a custom Loader.
@@ -75,6 +78,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
     	boolean has_next_page = false;
     	
     	OWFeedType feed;
+    	Location device_location;
     	Uri this_uri; // TESTING
 
         // This is the Adapter being used to display the list's data.
@@ -154,13 +158,30 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
            
             // Refresh the feed view
             if(!didRefreshFeed){
-            	fetchNextFeedPage();
-            }
+	            // If our feed demands device location and we haven't cached it
+	            if(Constants.isOWFeedTypeGeoSensitive(feed) && device_location == null){
+	            	GPSRequestCallback gps_callback = new GPSRequestCallback(){
+	
+						@Override
+						public void onSuccess(Location result) {
+							device_location = result;
+							fetchNextFeedPage();
+						}
+	            		
+	            	};
+	            	DeviceLocation.getLocation(getActivity().getApplicationContext(), false, gps_callback);
+	            }else{
+	            	fetchNextFeedPage();
+	            }
+        	}
 
         }
         
         private void fetchNextFeedPage(){
-        	OWServiceRequests.getFeed(this.getActivity().getApplicationContext(), feed, page+1, cb);	
+        	if(Constants.isOWFeedTypeGeoSensitive(feed) && device_location != null)
+        		OWServiceRequests.getGeoFeed(this.getActivity().getApplicationContext(), device_location, feed, page+1, cb);	
+        	else
+        		OWServiceRequests.getFeed(this.getActivity().getApplicationContext(), feed, page+1, cb);	
         }
         
         private void restartLoader(){
