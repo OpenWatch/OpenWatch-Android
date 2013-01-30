@@ -267,8 +267,9 @@ public class OWServiceRequests {
 		if(feed_name.compareTo(OWFeedType.LOCAL.toString().toLowerCase()) == 0){
 			http_client.post(app_context, endpoint, Utils.JSONObjectToStringEntity(params), "application/json", get_handler);
 		}
-		else
+		else{
 			http_client.get(endpoint, get_handler);
+		}		
 		
 		Log.i(TAG, "getFeed: " + endpoint);
 	}
