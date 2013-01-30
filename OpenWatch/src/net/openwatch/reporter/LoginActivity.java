@@ -619,6 +619,7 @@ public class LoginActivity extends SherlockActivity {
 						OWUser myself = new OWUser();
 						myself.updateWithJson(c, server_response);
 						Log.i(TAG, "Created user in db with #tags: " + String.valueOf(myself.tags.get(c, myself).count()));
+						editor.putInt(Constants.INTERNAL_USER_ID, myself.getId());
 					}
 				} else {
 					Log.i(TAG, "Set user not authenticated");

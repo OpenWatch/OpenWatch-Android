@@ -212,7 +212,7 @@ public class OWContentProvider extends ContentProvider {
 		//adapter.close();
 		// Make sure that potential listeners are getting notified
 		if(result != null){
-			Log.i("URI" + uri.getLastPathSegment(), "set notificationUri: " + uri.toString());
+			Log.i("URI" + uri.getLastPathSegment(), " CP set notificationUri: " + uri.toString());
 			result.setNotificationUri(getContext().getContentResolver(), uri);
 		}
 		return result;

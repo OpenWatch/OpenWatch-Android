@@ -27,10 +27,12 @@ import net.openwatch.reporter.model.OWVideoRecording;
 import net.openwatch.reporter.model.OWTag;
 import net.openwatch.reporter.model.OWStory;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -236,9 +238,14 @@ public class OWServiceRequests {
 			@Override
     		public void onSuccess(JSONObject response){
 				if(response.has("objects")){
+					int internal_user_id = 0;
 					Log.i(TAG, String.format("got %s feed response: %s ",feed_name, response.toString()) );
+					if(feed_name.compareTo(OWFeedType.RECORDINGS.toString().toLowerCase()) == 0){
+						SharedPreferences profile = app_context.getSharedPreferences(Constants.PROFILE_PREFS, 0);
+				        internal_user_id = profile.getInt(Constants.INTERNAL_USER_ID, 0);
+					}
 					
-					ParseFeedTask parseTask = new ParseFeedTask(app_context, cb, feed_name, page);
+					ParseFeedTask parseTask = new ParseFeedTask(app_context, cb, feed_name, page, internal_user_id);
 					parseTask.execute(response);
 					
 				}else
@@ -282,14 +289,16 @@ public class OWServiceRequests {
 		int object_count = -1;
 		int page_count = -1;
 		int page_number = -1;
+		int user_id = -1;
 		
 		int current_page = -1;
 		
-		public ParseFeedTask(Context c, PaginatedRequestCallback cb, String feed_name, int current_page){
+		public ParseFeedTask(Context c, PaginatedRequestCallback cb, String feed_name, int current_page, int user_id){
 			this.cb = cb;
 			this.c = c;
 			this.feed_name = feed_name;
 			this.current_page = current_page;
+			this.user_id = user_id;
 		}
 		
 
@@ -324,8 +333,14 @@ public class OWServiceRequests {
 					}
 				}
 				adapter.commitTransaction();
-				Log.i("URI" + feed_name, "notify change on uri: " + OWContentProvider.getFeedUri(feed_name).toString());
-				c.getContentResolver().notifyChange(OWContentProvider.getFeedUri(feed_name), null);   
+				Uri baseUri;
+				if(feed_name.compareTo(OWFeedType.RECORDINGS.toString().toLowerCase()) == 0){
+					baseUri = OWContentProvider.getUserRecordingsUri(user_id);
+				}else{
+					baseUri = OWContentProvider.getFeedUri(feed_name);
+				}
+				Log.i("URI" + feed_name, "notify change on uri: " + baseUri.toString());
+				c.getContentResolver().notifyChange(baseUri, null);   
 	
 				
 				if(cb != null){

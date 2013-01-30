@@ -17,11 +17,13 @@ package net.openwatch.reporter;
  */
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,18 +35,25 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
+import java.util.Set;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.orm.androrm.QuerySet;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.constants.Constants.OWFeedType;
 import net.openwatch.reporter.feeds.MyFeedFragmentActivity;
 import net.openwatch.reporter.feeds.RemoteFeedFragmentActivity;
+import net.openwatch.reporter.model.OWFeed;
+import net.openwatch.reporter.model.OWTag;
+import net.openwatch.reporter.model.OWUser;
 
 /**
  * Demonstrates combining a TabHost with a ViewPager to implement a tab UI
@@ -58,11 +67,19 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     TabsAdapter mTabsAdapter;
     TitlePageIndicator mTitleIndicator;
     
-    HashMap<OWFeedType, Integer> mTabMap;
+    HashMap<String, Integer> mTabMap;
     
     LayoutInflater inflater;
     
     public static int display_width = -1;
+    
+    int internal_user_id = -1;
+    
+    HashMap<String, Integer> tag_id_map = new HashMap<String, Integer>();
+    HashMap<String, Integer> feed_id_map = new HashMap<String, Integer>();
+    int nextDirectoryMenuId = 1;
+    
+    boolean onCreateWon = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +89,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         this.getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
        
-        mTabMap = new HashMap<OWFeedType, Integer>();
+        mTabMap = new HashMap<String, Integer>();
         
         getDisplayWidth();
         mTabHost = (TabHost)findViewById(android.R.id.tabhost);
@@ -85,39 +102,93 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
 
         inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         
+        SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, 0);
+	    internal_user_id = profile.getInt(Constants.INTERNAL_USER_ID, 0);
         
-        mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_local_user_recordings)).setIndicator(inflateCustomTab(getString(R.string.tab_local_user_recordings))),
-                MyFeedFragmentActivity.LocalRecordingsListFragment.class, null);
-     
-        Bundle feedBundle = new Bundle(1);
+        setupFeedAndTagMaps();
         
-        feedBundle.putString(Constants.OW_FEED, OWFeedType.FOLLOWING.toString());
-        mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_following)).setIndicator(inflateCustomTab(getString(R.string.tab_following))),
-                RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, feedBundle);
-        mTabMap.put(OWFeedType.FOLLOWING, 1);
-        
-        
-        feedBundle = new Bundle(1);
-        feedBundle.putString(Constants.OW_FEED, OWFeedType.FEATURED.toString());
-        mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_featured)).setIndicator(inflateCustomTab(getString(R.string.tab_featured))),
-                RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, feedBundle);
-        mTabMap.put(OWFeedType.FEATURED, 2);
-        
-        
-        feedBundle = new Bundle(1);
-        feedBundle.putString(Constants.OW_FEED, OWFeedType.LOCAL.toString());
-        mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_local)).setIndicator(inflateCustomTab(getString(R.string.tab_local))),
-                RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, feedBundle);
-        mTabMap.put(OWFeedType.LOCAL, 3);
+        populateTabsFromMaps();
         
         // See if initiating intent specified a tab
         if(getIntent().getExtras() != null && getIntent().getExtras().containsKey(Constants.FEED_TYPE) )
-        	mTitleIndicator.setCurrentItem(mTabMap.get(getIntent().getExtras().getSerializable(Constants.FEED_TYPE)));
+        	mTitleIndicator.setCurrentItem(mTabMap.get(((OWFeedType)getIntent().getExtras().getSerializable(Constants.FEED_TYPE)).toString().toLowerCase(Locale.US) ));
         // Try to restore last tab state
         if (savedInstanceState != null) {
             mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
         }
+        
+        onCreateWon = true;
 
+    }
+    
+    private void populateTabsFromMaps(){
+    	int nextPagerViewId = 0;
+    	Bundle feedBundle;
+    	
+    	Set<String> feeds = feed_id_map.keySet();
+    	
+    	for(String feed_name : feeds){
+    		if(feed_name.compareTo(OWFeedType.RECORDINGS.toString().toLowerCase(Locale.US)) == 0){
+    			//TODO: Merge MyFeedFragmentActivity and RemoteFeedFragmentActivity
+    			mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_local_user_recordings)).setIndicator(inflateCustomTab(getString(R.string.tab_local_user_recordings))),
+    	                MyFeedFragmentActivity.LocalRecordingsListFragment.class, null);
+    			mTabMap.put(feed_name, nextPagerViewId);
+    		}else{
+    			feedBundle = new Bundle(1);
+    			feedBundle.putString(Constants.OW_FEED, feed_name);
+    	        mTabsAdapter.addTab(mTabHost.newTabSpec(feed_name).setIndicator(inflateCustomTab(feed_name)),
+    	                RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, feedBundle);
+    	        mTabMap.put(feed_name, nextPagerViewId);
+    		}
+    		nextPagerViewId ++;
+    	}
+    	
+    	Set<String> tags = tag_id_map.keySet();
+    	
+    	for(String tag_name : tags){
+    		feedBundle = new Bundle(1);
+			feedBundle.putString(Constants.OW_FEED, tag_name);
+	        mTabsAdapter.addTab(mTabHost.newTabSpec(tag_name).setIndicator(inflateCustomTab(tag_name)),
+	                RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, feedBundle);
+	        mTabMap.put(tag_name, nextPagerViewId);
+	        nextPagerViewId ++;
+    	}
+
+    }
+    
+    private void setupFeedAndTagMaps(){
+    	feed_id_map.clear();
+    	tag_id_map.clear();
+    	
+    	// Currently no way to poll server for list of feeds
+    	// so start with hard-coded feeds
+		OWFeedType[] feed_types = OWFeedType.values();
+		for(int x=0; x < feed_types.length;x++){
+			if(!feed_id_map.containsKey(feed_types[x].toString().toLowerCase(Locale.US))){
+    			feed_id_map.put(feed_types[x].toString().toLowerCase(Locale.US), nextDirectoryMenuId);
+    			nextDirectoryMenuId ++;
+			}
+		}
+		
+		// Once we start polling feeds from the server, we'll add them as well
+		QuerySet<OWFeed> feeds = OWFeed.objects(getApplicationContext(), OWFeed.class).all();
+		for(OWFeed feed : feeds){
+			if( !feed_id_map.containsKey(feed.name.get()) ){
+    			feed_id_map.put(feed.name.get(), nextDirectoryMenuId);
+    			nextDirectoryMenuId ++;
+			}
+		}
+	
+		
+		if(internal_user_id > 0){
+			QuerySet<OWTag> tags = OWUser.objects(getApplicationContext(), OWUser.class).get(internal_user_id).tags.get(getApplicationContext(), OWUser.objects(getApplicationContext(), OWUser.class).get(internal_user_id));
+			for(OWTag tag : tags){
+				if(!tag_id_map.containsKey(tag.name.get())){
+	    			tag_id_map.put(tag.name.get(), nextDirectoryMenuId);
+	    			nextDirectoryMenuId ++;
+				}
+			}
+		}
     }
 
     @Override
@@ -129,18 +200,64 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     @Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
+
+    	//feed_id_map.clear();
+    	//tag_id_map.clear();
 		getSupportMenuInflater().inflate(R.menu.fragment_tabs_pager, menu);
+		
+		MenuItem directory = menu.findItem(R.id.feed_directory);
+    	if(directory != null){
+    		
+    		Set<String> feeds = feed_id_map.keySet();
+    		
+    		for(String feed_name : feeds){
+    			directory.getSubMenu().add(R.id.feeds, feed_id_map.get(feed_name), Menu.NONE, feed_name);
+    		}
+    		
+    		Set<String> tags = tag_id_map.keySet();
+    		
+    		for(String tag_name : tags){
+    			directory.getSubMenu().add(R.id.tags, tag_id_map.get(tag_name), Menu.NONE, "#"+tag_name);
+    		}
+    		
+    		/*
+    		
+    		QuerySet<OWFeed> feeds = OWFeed.objects(getApplicationContext(), OWFeed.class).all();
+    		if(feeds.count() == 0){
+    			OWFeedType[] feed_types = OWFeedType.values();
+    			for(int x=0; x < feed_types.length;x++){
+    				if(!feed_id_map.containsKey(feed_types[x].toString().toLowerCase(Locale.US))){
+	    				directory.getSubMenu().add(R.id.tags, nextDirectoryMenuId, Menu.NONE, "#"+feed_types[x].toString().toLowerCase(Locale.US));
+	        			feed_id_map.put(feed_types[x].toString().toLowerCase(Locale.US), nextDirectoryMenuId);
+	        			nextDirectoryMenuId ++;
+    				}
+    			}
+    		}else{
+    			for(OWFeed feed : feeds){
+    				if( !feed_id_map.containsKey(feed.name.get()) ){
+	    				directory.getSubMenu().add(R.id.feeds, nextDirectoryMenuId, Menu.NONE, feed.name.get());
+	        			feed_id_map.put(feed.name.get(), nextDirectoryMenuId);
+	        			nextDirectoryMenuId ++;
+    				}
+        		}
+    		}
+    		QuerySet<OWTag> tags = OWUser.objects(getApplicationContext(), OWUser.class).get(internal_user_id).tags.get(getApplicationContext(), OWUser.objects(getApplicationContext(), OWUser.class).get(internal_user_id));
+    		for(OWTag tag : tags){
+    			if(!tag_id_map.containsKey(tag.name.get())){
+	    			directory.getSubMenu().add(R.id.tags, nextDirectoryMenuId, Menu.NONE, "#"+tag.name.get());
+	    			tag_id_map.put(tag.name.get(), nextDirectoryMenuId);
+	    			nextDirectoryMenuId ++;
+    			}
+    		}
+    		*/
+    	}
 		return true;
 	}
     
     @Override
 	public boolean onPrepareOptionsMenu(Menu menu){
     	
-    	MenuItem directory = menu.findItem(R.id.feed_directory);
-    	if(directory != null){
-    		// TODO: Prorgramatically populate menu with feeds and tags here
-    		//directory.getSubMenu().add(R.id.feeds, itemId, order, title)
-    	}
+    	
     	
     	return true;
     }
