@@ -45,7 +45,7 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         view_cache.views.setText(cursor.getString(view_cache.views_col));
         view_cache.actions.setText(cursor.getString(view_cache.actions_col));
         
-        if(cursor.getString(view_cache.thumbnail_col) != null && cursor.getString(view_cache.thumbnail_col).compareTo("") != 0){
+        if(view_cache.last_seen_id != cursor.getInt(cursor.getColumnIndexOrThrow(DBConstants.ID)) && cursor.getString(view_cache.thumbnail_col) != null && cursor.getString(view_cache.thumbnail_col).compareTo("") != 0){
         	view_cache.thumbnail.setImageUrl(cursor.getString(view_cache.thumbnail_col));
         	view_cache.thumbnail.loadImage();
         }

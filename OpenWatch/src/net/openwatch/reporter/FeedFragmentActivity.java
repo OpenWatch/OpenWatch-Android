@@ -26,6 +26,7 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
@@ -33,7 +34,10 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.TitlePageIndicator;
 
@@ -67,6 +71,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         setContentView(R.layout.fragment_tabs_pager);
         this.getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+       
         mTabMap = new HashMap<OWFeedType, Integer>();
         
         getDisplayWidth();
@@ -120,6 +125,13 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         super.onSaveInstanceState(outState);
         outState.putString("tab", mTabHost.getCurrentTabTag());
     }
+    
+    @Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getSupportMenuInflater().inflate(R.menu.fragment_tabs_pager, menu);
+		return true;
+	}
     
     @Override
 	public boolean onOptionsItemSelected(MenuItem item) {

@@ -31,6 +31,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -235,71 +236,10 @@ public class OWServiceRequests {
     		public void onSuccess(JSONObject response){
 				if(response.has("objects")){
 					Log.i(TAG, String.format("got %s feed response: %s ",feed.toString(), response.toString()) );
-					final JSONArray json_array;
-					try {
-						json_array = response.getJSONArray("objects");
-						/*
-						new Thread(new Runnable(){
-
-							@Override
-							public void run() {
-							
-								try {
-								*/
-									DatabaseAdapter adapter = DatabaseAdapter.getInstance(app_context);
-									adapter.beginTransaction();
-									
-									JSONObject json_obj;
-									for(int x=0; x<json_array.length(); x++){
-										json_obj = json_array.getJSONObject(x);
-										if(json_obj.has("type")){
-											if(json_obj.getString("type").compareTo("video") == 0)
-												OWVideoRecording.createOrUpdateOWRecordingWithJson(app_context, json_obj, OWFeed.getFeedFromFeedType(app_context, feed));
-											else if(json_obj.getString("type").compareTo("story") == 0)
-												OWStory.createOrUpdateOWStoryWithJson(app_context, json_obj, OWFeed.getFeedFromFeedType(app_context, feed));
-											// TODO: Story, audio, etc
-										}
-									}
-									adapter.commitTransaction();
-									Log.i("URI" + feed.toString(), "notify change on uri: " + OWContentProvider.getFeedUri(feed).toString());
-									app_context.getContentResolver().notifyChange(OWContentProvider.getFeedUri(feed), null);   
-
-									
-									if(cb != null){
-										if(response.has("meta")){
-											int object_count = -1;
-											int page_count = -1;
-											int page_number = -1;
-											JSONObject meta = response.getJSONObject("meta");
-											if(meta.has("object_count"))
-												object_count = meta.getInt("object_count");
-											if(meta.has("page_count"))
-												page_count = meta.getInt("page_count");
-											if(meta.has("page_number")){
-												try{
-												page_number = Integer.parseInt(meta.getString("page_number"));
-												}catch(Exception e){};
-											}
-											
-											cb.onSuccess(page_number, object_count, page_count);
-										}
-										
-									}
-										
-								/*
-								} catch (JSONException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-								
-							}
-							
-						}).start();
-						*/
-					} catch (JSONException e) {
-						Log.e(TAG, METHOD + " Error parsing recordings array from response");
-						e.printStackTrace();
-					}
+					
+					ParseFeedTask parseTask = new ParseFeedTask(app_context, cb, feed);
+					parseTask.execute(response);
+					
 				}else
 					Log.e(TAG, "Feed response format unexpected" + response.toString());
 			}
@@ -325,6 +265,89 @@ public class OWServiceRequests {
 			http_client.get(endpoint, get_handler);
 		
 		Log.i(TAG, "getFeed: " + endpoint);
+	}
+	
+	/**
+	 * Parses a Feed, updating the database and notifying
+	 * the appropriate feed uris of changed content
+	 * @author davidbrodsky
+	 *
+	 */
+	public static class ParseFeedTask extends AsyncTask<JSONObject, Void, Boolean> {
+		
+		PaginatedRequestCallback cb;
+		Context c;
+		OWFeedType feed;
+		boolean success = false;
+		
+		int object_count = -1;
+		int page_count = -1;
+		int page_number = -1;
+		
+		public ParseFeedTask(Context c, PaginatedRequestCallback cb, OWFeedType feed){
+			this.cb = cb;
+			this.c = c;
+			this.feed = feed;
+		}
+		
+
+		@Override
+		protected Boolean doInBackground(JSONObject... params) {
+			DatabaseAdapter adapter = DatabaseAdapter.getInstance(c);
+			adapter.beginTransaction();
+			
+			JSONObject response = params[0];
+			try{
+				JSONArray json_array = response.getJSONArray("objects");
+				JSONObject json_obj;
+				for(int x=0; x<json_array.length(); x++){
+					json_obj = json_array.getJSONObject(x);
+					if(json_obj.has("type")){
+						if(json_obj.getString("type").compareTo("video") == 0)
+							OWVideoRecording.createOrUpdateOWRecordingWithJson(c, json_obj, OWFeed.getFeedFromFeedType(c, feed));
+						else if(json_obj.getString("type").compareTo("story") == 0)
+							OWStory.createOrUpdateOWStoryWithJson(c, json_obj, OWFeed.getFeedFromFeedType(c, feed));
+						// TODO: Investigation, audio, etc
+					}
+				}
+				adapter.commitTransaction();
+				Log.i("URI" + feed.toString(), "notify change on uri: " + OWContentProvider.getFeedUri(feed).toString());
+				c.getContentResolver().notifyChange(OWContentProvider.getFeedUri(feed), null);   
+	
+				
+				if(cb != null){
+					if(response.has("meta")){
+						JSONObject meta = response.getJSONObject("meta");
+						if(meta.has("object_count"))
+							object_count = meta.getInt("object_count");
+						if(meta.has("page_count"))
+							page_count = meta.getInt("page_count");
+						if(meta.has("page_number")){
+							try{
+							page_number = Integer.parseInt(meta.getString("page_number"));
+							}catch(Exception e){};
+						}
+						
+						
+					}
+					
+				}
+				success = true;
+			}catch(JSONException e){
+				Log.e(TAG, "Error parsing feed response");
+				e.printStackTrace();
+			}
+			
+			return null;
+		}
+		
+		@Override
+	    protected void onPostExecute(Boolean result) {
+	        super.onPostExecute(result);
+	        if(success)
+	        	cb.onSuccess(page_number, object_count, page_count);
+	    }
+		
 	}
 
 	/**
