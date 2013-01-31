@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/feed_directory"
+        android:id="@+id/tab_directory"
         android:showAsAction="always"
         android:title="Directory">
         <menu>

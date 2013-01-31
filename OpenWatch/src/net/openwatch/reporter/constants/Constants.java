@@ -2,6 +2,7 @@ package net.openwatch.reporter.constants;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
@@ -118,6 +119,14 @@ public class Constants {
 		FEATURED, LOCAL, FOLLOWING, RECORDINGS
 	}
 	
+	private static ArrayList<String> OW_FEEDS = new ArrayList<String>();
+	static{
+		OWFeedType[] feed_types = OWFeedType.values();
+		for(int x=0; x< feed_types.length; x++){
+			OW_FEEDS.add(feed_types[x].toString().toLowerCase());
+		}
+	}
+	
 	public static boolean isOWFeedTypeGeoSensitive(String feed_type){
 		if(feed_type.trim().toLowerCase().compareTo(OWFeedType.LOCAL.toString().toLowerCase()) == 0)
 			return true;
@@ -125,12 +134,14 @@ public class Constants {
 	}
 	
 	/**
+	 * To be removed
 	 * For user with external OWServiceRequests
 	 * @param type
 	 * @return
 	 */
 	public static String feedExternalEndpointFromType(OWFeedType type, int page){
 		String endpoint = "";
+		
 		switch(type){
 		case RECORDINGS:
 			endpoint = Constants.OW_API_URL + Constants.OW_RECORDINGS;
@@ -146,6 +157,8 @@ public class Constants {
 		String endpoint = "";
 		if(type.compareTo(OWFeedType.RECORDINGS.toString().toLowerCase()) == 0){
 			endpoint = Constants.OW_API_URL + Constants.OW_RECORDINGS;
+		}else if(!OW_FEEDS.contains(type) ){
+			endpoint = Constants.OW_API_URL + Constants.OW_TAG + File.separator + type;
 		}else{
 			endpoint = Constants.OW_API_URL + Constants.OW_FEED + File.separator + type;
 		}
