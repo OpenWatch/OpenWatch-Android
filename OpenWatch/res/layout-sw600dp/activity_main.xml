@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="@android:color/transparent"
-            android:drawablePadding="-10dp"
+            android:drawablePadding="10dp"
             android:drawableTop="@drawable/record_button"
             android:onClick="recordButtonClick"
             android:text="@string/record_button_text"

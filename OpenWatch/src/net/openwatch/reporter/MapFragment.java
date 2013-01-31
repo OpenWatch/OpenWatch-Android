@@ -101,6 +101,7 @@ public class MapFragment extends SupportMapFragment implements OWMediaObjectBack
         settings.setMyLocationButtonEnabled(false);
 
         getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(mStartLocation, 10));
+        getMap().clear();
         getMap().addMarker(
                 new MarkerOptions().position(mStartLocation)
                         .icon(BitmapDescriptorFactory
