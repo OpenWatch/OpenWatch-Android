@@ -11,15 +11,15 @@
         android:layout_height="0dp"
         android:layout_margin="0dp"
         android:layout_weight=".35"
-        android:clickable="true"
-        android:gravity="center" >
+        android:gravity="center_horizontal"
+        android:clickable="true" >
 
         <Button
             android:id="@+id/button_record"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
             android:fontFamily="sans-serif-light"
             android:textStyle="bold"
             android:background="@android:color/transparent"
