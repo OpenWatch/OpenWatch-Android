@@ -153,7 +153,7 @@ public class OWContentProvider extends ContentProvider {
 		switch(uriType){
 			case MEDIA_OBJS_BY_USER:
 				Log.i(TAG, "MediaObjs by user");
-				query = select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " WHERE " + DBConstants.MEDIA_OBJECT_USER + " = " + uri.getLastPathSegment() + sortby;
+				query = select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " WHERE " + DBConstants.MEDIA_OBJECT_USER + " = " + uri.getLastPathSegment() + " AND " + DBConstants.MEDIA_OBJECT_VIDEO + " IS NOT NULL " + sortby;
 				Log.i(TAG, query);
 				result = adapter.open().query(query);
 				break;
