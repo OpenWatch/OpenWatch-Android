@@ -28,6 +28,7 @@
         android:name="net.openwatch.reporter.OWApplication"
         android:debuggable="true"
         android:icon="@drawable/ic_launcher"
+        android:logo="@drawable/ic_ab_icon"
         android:label="@string/app_name"
         android:theme="@style/Theme.openwatch" >
         <provider
