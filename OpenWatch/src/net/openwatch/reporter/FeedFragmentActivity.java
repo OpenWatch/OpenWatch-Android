@@ -69,7 +69,6 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     TitlePageIndicator mTitleIndicator;
     
     HashMap<String, Integer> mTitleToTabId = new HashMap<String, Integer>();
-    HashMap<Integer, String> mTabToTitle = new HashMap<Integer, String>();
     
     LayoutInflater inflater;
     
@@ -78,7 +77,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     int internal_user_id = -1;
     
     ArrayList<String> tags = new ArrayList<String>();
-    ArrayList<String> feeds = new ArrayList<String>();
+    ArrayList<String> feeds = new ArrayList<String>(); // tags and feeds are lowercase
     int nextDirectoryMenuId = 1;
     
     boolean onCreateWon = false;
@@ -133,14 +132,12 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     			mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_local_user_recordings)).setIndicator(inflateCustomTab(getString(R.string.tab_local_user_recordings))),
     	                MyFeedFragmentActivity.LocalRecordingsListFragment.class, null);
     			mTitleToTabId.put(feed, nextPagerViewId);
-    			mTabToTitle.put(nextPagerViewId, feed);
     		}else{
     			feedBundle = new Bundle(1);
     			feedBundle.putString(Constants.OW_FEED, feed);
     	        mTabsAdapter.addTab(mTabHost.newTabSpec(capitalizeFirstChar(feed)).setIndicator(inflateCustomTab(capitalizeFirstChar(feed))),
     	                RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, feedBundle);
     	        mTitleToTabId.put(feed, nextPagerViewId);
-    	        mTabToTitle.put(nextPagerViewId, feed);
     		}
     		nextPagerViewId ++;
     	}
@@ -151,7 +148,6 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
 	        mTabsAdapter.addTab(mTabHost.newTabSpec("#"+tag).setIndicator(inflateCustomTab("#"+tag)),
 	                RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, feedBundle);
 	        mTitleToTabId.put(tag, nextPagerViewId);
-	        mTabToTitle.put(nextPagerViewId, tag);
 	        nextPagerViewId ++;
     	}
 
@@ -169,6 +165,8 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     			feeds.add(feed_types[x].toString().toLowerCase());
 			}
 		}
+		Collections.sort(feeds);
+		Collections.reverse(feeds);
 		
 		// Once we start polling feeds from the server, we'll add them as well
 		// Will have to resolve the issue where tags are added as feeds
@@ -217,7 +215,11 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     	if(directory != null){
     		    		
     		for(String feed_name : feeds){
-    			directory.getSubMenu().add(R.id.feeds, mTitleToTabId.get(feed_name), Menu.NONE, feed_name);
+    			if(feed_name.compareTo(OWFeedType.RECORDINGS.toString().toLowerCase(Locale.US)) == 0){
+    				directory.getSubMenu().add(R.id.feeds, mTitleToTabId.get(feed_name), Menu.NONE, getString(R.string.tab_local_user_recordings));
+    			}else{
+    				directory.getSubMenu().add(R.id.feeds, mTitleToTabId.get(feed_name), Menu.NONE, capitalizeFirstChar(feed_name));
+    			}
     		}
     		    		
     		for(String tag_name : tags){
