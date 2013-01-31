@@ -187,11 +187,11 @@
     
     <style name="Theme.openwatch.storyBlurbText">
         <item name="android:fontFamily">sans-serif-light</item>
-        <item name="android:textStyle">italic</item>
+        <item name="android:textStyle">bolditalic</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:ellipsize">marquee</item>
-        <item name="android:textSize">22sp</item>
+        <item name="android:textSize">24sp</item>
     </style>
     
     <style name="Theme.openwatch.storyAuthorText">
@@ -216,11 +216,12 @@
     
     <style name="Theme.openwatch.storyBodyText">
         <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
         <item name="android:textStyle">normal</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textIsSelectable">true</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">22sp</item>
     </style>
     
     <style name="Theme.openwatch.welcomeTitleText">

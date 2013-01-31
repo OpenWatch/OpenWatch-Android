@@ -52,6 +52,7 @@ public class Constants {
 	// Date Formatter for OW server time
 	public static SimpleDateFormat utc_formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 	// Human readable
+	public static SimpleDateFormat user_date_formatter = new SimpleDateFormat("MMM dd, yyyy", Locale.US);
 	public static SimpleDateFormat user_datetime_formatter = new SimpleDateFormat("MMM dd, yyyy h:mm a", Locale.US);
 	public static SimpleDateFormat user_time_formatter = new SimpleDateFormat("h:mm a", Locale.US);
 	
@@ -59,6 +60,7 @@ public class Constants {
 		utc_formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 		user_datetime_formatter.setTimeZone(TimeZone.getDefault());
 		user_time_formatter.setTimeZone(TimeZone.getDefault());
+		user_date_formatter.setTimeZone(TimeZone.getDefault());
 	}
 
 	// SharedPreferences titles
