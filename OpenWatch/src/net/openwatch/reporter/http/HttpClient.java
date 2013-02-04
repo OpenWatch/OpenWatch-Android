@@ -20,12 +20,16 @@ import javax.net.ssl.TrustManagerFactory;
 
 import net.openwatch.reporter.R;
 import net.openwatch.reporter.SECRETS;
+import net.openwatch.reporter.constants.Constants;
 
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.Build;
 import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -33,6 +37,8 @@ import com.loopj.android.http.PersistentCookieStore;
 
 public class HttpClient {
 	private static final String TAG = "HttpClient";
+	
+	private static String USER_AGENT = null;
 
 	/**
 	 * Returns a new AsyncHttpClient initialized with a PersistentCookieStore
@@ -49,6 +55,21 @@ public class HttpClient {
 		// List cookies = cookie_store.getCookies();
 		// Log.i(TAG, "Setting cookie store. size: " +
 		// cookie_store.getCookies().size());
+		if(USER_AGENT == null){
+			USER_AGENT = Constants.USER_AGENT;
+			try {
+				PackageInfo pInfo = c.getPackageManager().getPackageInfo(
+						c.getPackageName(), 0);
+				USER_AGENT += pInfo.versionName;
+			} catch (NameNotFoundException e) {
+				Log.e(TAG, "Unable to read PackageName in RegisterApp");
+				e.printStackTrace();
+				USER_AGENT += "unknown";
+			}
+			
+			USER_AGENT += " (Android API " + Build.VERSION.SDK_INT + ")";
+		}
+		http_client.setUserAgent(USER_AGENT);
 		http_client.setSSLSocketFactory(createApacheOWSSLSocketFactory(c));
 		return http_client;
 	}

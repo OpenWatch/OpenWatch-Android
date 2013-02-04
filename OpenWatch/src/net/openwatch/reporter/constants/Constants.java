@@ -62,6 +62,12 @@ public class Constants {
 		user_time_formatter.setTimeZone(TimeZone.getDefault());
 		user_date_formatter.setTimeZone(TimeZone.getDefault());
 	}
+	
+	public static final String USER_AGENT = "OpenWatch ";
+	
+	static{
+		
+	}
 
 	// SharedPreferences titles
 	public static final String PROFILE_PREFS = "Profile";

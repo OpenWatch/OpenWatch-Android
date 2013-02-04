@@ -127,6 +127,13 @@ public class LoginActivity extends SherlockActivity {
 			}
 		}
 		setViewsAsNotAuthenticated();
+		
+		// If the user has never provided an email:
+		if(!profile.contains(Constants.EMAIL) && !profile.getBoolean(Constants.AUTHENTICATED, false)){
+			((TextView) findViewById(R.id.login_state_message)).setText(getString(R.string.create_account_prompt));
+			this.findViewById(R.id.login_state_message).setVisibility(View.VISIBLE);
+		}
+		
 	}
 	
 	public void setUserAvatar(View v){
@@ -182,6 +189,7 @@ public class LoginActivity extends SherlockActivity {
 	}
 
 	private void setViewsAsAuthenticated() {
+		((TextView) this.findViewById(R.id.login_state_message)).setText(getString(R.string.message_account_stored));
 		this.findViewById(R.id.login_state_message).setVisibility(View.VISIBLE);
 		this.findViewById(R.id.sign_in_button).setVisibility(View.GONE);
 		mEmailView.setEnabled(false);

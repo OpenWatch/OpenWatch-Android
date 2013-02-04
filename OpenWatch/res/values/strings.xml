@@ -27,6 +27,9 @@
     <string name="take_choose_picture_prompt">How shall we get your fine picture?</string>
     <string name="take_picture">Use camera</string>
     <string name="choose_picture">Browse gallery</string>
+    
+    <!--  Account creation prompt -->
+    <string name="create_account_prompt">Before we get started take a moment to create an OpenWatch account. It only takes a second, and allows you to start broadcasting immediately.</string>
 
     <!-- login failed -->
     <string name="login_dialog_denied_title">Login Denied</string>
