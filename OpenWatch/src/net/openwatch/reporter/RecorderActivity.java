@@ -137,7 +137,7 @@ public class RecorderActivity extends SherlockActivity implements
 		    	        		
 		    	        	});
 		    	        	
-		        			OWMediaRequests.start(public_upload_token, recording_uuid, command[1]);
+		        			OWMediaRequests.start(c, public_upload_token, recording_uuid, command[1]);
 	        			}
 	                }
 	        	} else if(command[0].compareTo("end") == 0){

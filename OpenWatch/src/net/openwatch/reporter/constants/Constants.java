@@ -63,7 +63,7 @@ public class Constants {
 		user_date_formatter.setTimeZone(TimeZone.getDefault());
 	}
 	
-	public static final String USER_AGENT = "OpenWatch ";
+	public static final String USER_AGENT_BASE = "OpenWatch/";
 	
 	static{
 		

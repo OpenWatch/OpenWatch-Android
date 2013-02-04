@@ -38,7 +38,7 @@ import com.loopj.android.http.PersistentCookieStore;
 public class HttpClient {
 	private static final String TAG = "HttpClient";
 	
-	private static String USER_AGENT = null;
+	public static String USER_AGENT = null;
 
 	/**
 	 * Returns a new AsyncHttpClient initialized with a PersistentCookieStore
@@ -56,7 +56,7 @@ public class HttpClient {
 		// Log.i(TAG, "Setting cookie store. size: " +
 		// cookie_store.getCookies().size());
 		if(USER_AGENT == null){
-			USER_AGENT = Constants.USER_AGENT;
+			USER_AGENT = Constants.USER_AGENT_BASE;
 			try {
 				PackageInfo pInfo = c.getPackageManager().getPackageInfo(
 						c.getPackageName(), 0);
@@ -66,8 +66,7 @@ public class HttpClient {
 				e.printStackTrace();
 				USER_AGENT += "unknown";
 			}
-			
-			USER_AGENT += " (Android API " + Build.VERSION.SDK_INT + ")";
+			USER_AGENT += " (Android API " + Build.VERSION.RELEASE + ")";
 		}
 		http_client.setUserAgent(USER_AGENT);
 		http_client.setSSLSocketFactory(createApacheOWSSLSocketFactory(c));
@@ -75,7 +74,8 @@ public class HttpClient {
 	}
 
 	// For non ssl, no-cookie store use
-	public static AsyncHttpClient setupAsyncHttpClient() {
+	
+	private static AsyncHttpClient setupAsyncHttpClient() {
 		return new AsyncHttpClient();
 	}
 	
