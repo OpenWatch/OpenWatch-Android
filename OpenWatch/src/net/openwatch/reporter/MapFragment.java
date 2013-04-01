@@ -38,12 +38,6 @@ public class MapFragment extends SupportMapFragment implements OWMediaObjectBack
     }
 
     @Override
-    public GoogleMap getMap() {
-        // TODO Auto-generated method stub
-        return super.getMap();
-    }
-
-    @Override
     public void onCreate(Bundle arg0) {
         // TODO Auto-generated method stub
         super.onCreate(arg0);
