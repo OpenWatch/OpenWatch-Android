@@ -80,7 +80,7 @@ To run the software you'll need a device running Android 2.2+ with a camera and 
 
 ### Google Maps API v2
 
-The new Google Maps API v2 requires you to piss yourself off registering each apk signing key you use (debug, production) with the [)Google API Console(https://code.google.com/apis/console]). 
+The new Google Maps API v2 requires you to piss yourself off registering each apk signing key you use (debug, production) with the [Google API Console](https://code.google.com/apis/console). 
 
 On OSX:
 

@@ -7,8 +7,6 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
-import com.github.ignition.core.widgets.RemoteImageView;
-
 /**
  * A class containing values that are not user-facing and so
  * are not intended for translation.
@@ -22,7 +20,7 @@ public class Constants {
 	// and development endpoint addresses
 	public static final boolean USE_DEV_ENDPOINTS = false;
 	
-	public static final String PROD_HOST = "https://alpha.openwatch.net/";
+	public static final String PROD_HOST = "https://staging.openwatch.net/";
 	public static final String PROD_CAPTURE_HOST = "https://capture.openwatch.net/";
 	
 	public static final String DEV_HOST = "http://192.168.1.27:8000/";

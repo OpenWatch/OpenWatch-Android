@@ -3,10 +3,9 @@ package net.openwatch.reporter;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.orm.androrm.Filter;
 import com.orm.androrm.QuerySet;
-
-import com.github.ignition.core.widgets.RemoteImageView;
 
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
@@ -32,6 +31,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.AutoCompleteTextView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -169,12 +169,11 @@ public class RecordingInfoFragment extends SherlockFragment implements
 		try {
 			if (!is_user_recording) {
 				if (media_obj.getUser(app_context).thumbnail_url.get() != null) {
-					RemoteImageView user_thumb = (RemoteImageView) this
+					ImageView user_thumb = (ImageView) this
 							.getView().findViewById(R.id.user_thumbnail);
-					user_thumb
-							.setImageUrl(media_obj.getUser(app_context).thumbnail_url
-									.get());
-					user_thumb.loadImage();
+					
+					ImageLoader.getInstance().displayImage(media_obj.getUser(app_context).thumbnail_url
+							.get(), user_thumb);
 				}
 				if (media_obj.username.get() != null)
 					((TextView) getView().findViewById(R.id.userLabel))

@@ -1,6 +1,6 @@
 package net.openwatch.reporter.feeds;
 
-import com.github.ignition.core.widgets.RemoteImageView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import net.openwatch.reporter.R;
 import net.openwatch.reporter.constants.Constants;
@@ -9,6 +9,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class OWMediaObjectAdapter extends SimpleCursorAdapter {
@@ -26,7 +27,7 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         	view_cache = new ViewCache();
         	view_cache.title = (TextView) view.findViewById(R.id.title);
         	view_cache.username = (TextView) view.findViewById(R.id.username);
-        	view_cache.thumbnail = (RemoteImageView) view.findViewById(R.id.thumbnail);
+        	view_cache.thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
         	view_cache.views = (TextView) view.findViewById(R.id.view_count);
         	view_cache.actions = (TextView) view.findViewById(R.id.action_count);
             
@@ -46,8 +47,7 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         view_cache.actions.setText(cursor.getString(view_cache.actions_col));
         
         if(view_cache.last_seen_id != cursor.getInt(cursor.getColumnIndexOrThrow(DBConstants.ID)) && cursor.getString(view_cache.thumbnail_col) != null && cursor.getString(view_cache.thumbnail_col).compareTo("") != 0){
-        	view_cache.thumbnail.setImageUrl(cursor.getString(view_cache.thumbnail_col));
-        	view_cache.thumbnail.loadImage();
+        	ImageLoader.getInstance().displayImage(cursor.getString(view_cache.thumbnail_col), view_cache.thumbnail);
         }
         
         view.setTag(R.id.list_item_model, cursor.getInt(view_cache._id_col));
@@ -64,7 +64,7 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
     static class ViewCache {
         TextView title;
         TextView username;
-        RemoteImageView thumbnail;
+        ImageView thumbnail;
         TextView views;
         TextView actions;
         

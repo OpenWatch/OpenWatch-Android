@@ -7,12 +7,12 @@
 [submodule "ActionBarSherlock"]
 	path = ActionBarSherlock
 	url = https://github.com/OnlyInAmerica/ActionBarSherlock
-[submodule "ignition"]
-	path = ignition
-	url = git@github.com:kaeppler/ignition.git
 [submodule "Android-ViewPagerIndicator"]
 	path = Android-ViewPagerIndicator
 	url = https://github.com/OnlyInAmerica/Android-ViewPagerIndicator
 [submodule "ParallaxScrollView"]
 	path = ParallaxScrollView
 	url = git@github.com:OnlyInAmerica/ParallaxScrollView.git
+[submodule "Android-Universal-Image-Loader"]
+	path = Android-Universal-Image-Loader
+	url = https://github.com/nostra13/Android-Universal-Image-Loader.git
