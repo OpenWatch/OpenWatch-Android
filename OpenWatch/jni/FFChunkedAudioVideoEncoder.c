@@ -429,8 +429,8 @@ static void write_video_frame(AVFormatContext *oc, AVStream *st)
             LOGI("VIDEO_FRAME_GAP_S: %f TIME_BASE: %f PTS %"  PRId64, video_gap, time_base, (int)(video_gap / time_base));
 
             int proposed_pts = (int)(video_gap / time_base);
-            if(last_pts != -1 && proposed_pts == last_pts){
-            	proposed_pts ++;
+            if(last_pts != -1 && proposed_pts <= last_pts){
+            	proposed_pts = last_pts +1;
             }
             pkt.pts = proposed_pts;
             last_pts = proposed_pts;
