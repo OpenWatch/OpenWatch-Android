@@ -1,2 +1,2 @@
-set solib-search-path /Users/davidbrodsky/Documents/android/OpenWatch-Android/OpenWatch/obj/local/armeabi
-directory /Applications/android-ndk-r8b/platforms/android-14/arch-arm/usr/include /Users/davidbrodsky/Documents/android/OpenWatch-Android/OpenWatch/jni/ffmpeg /Applications/android-ndk-r8b/sources/cxx-stl/system
+set solib-search-path /Users/davidbrodsky/Code/android/OpenWatch-Android/OpenWatch/obj/local/armeabi
+directory /Applications/android-ndk-r8e/platforms/android-14/arch-arm/usr/include /Users/davidbrodsky/Code/android/OpenWatch-Android/OpenWatch/jni/ffmpeg /Applications/android-ndk-r8e/sources/cxx-stl/system

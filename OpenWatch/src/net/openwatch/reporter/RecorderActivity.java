@@ -98,13 +98,12 @@ public class RecorderActivity extends SherlockActivity implements
 		}
 
 		@Override
-		public void encoderStopped(Date start_date, Date stop_date,
-				String hq_filename, ArrayList<String> all_files) {
+		public void encoderStopped(Date start_date, Date stop_date, ArrayList<String> all_files) {
 			this.all_files = all_files;
 			//Log.i(TAG,"start-date: " + Constants.sdf.format(start_date) + " stop-date: " + Constants.sdf.format(stop_date));
 			//Log.i(TAG, "sending all_files: " + new JSONArray(all_files).toString());
 			new MediaSignalTask().execute("end", Constants.utc_formatter.format(start_date), Constants.utc_formatter.format(stop_date), new JSONArray(all_files).toString());
-			new MediaSignalTask().execute("hq", hq_filename);
+			//new MediaSignalTask().execute("hq", hq_filename);
 			Log.i(TAG, "fired end and hq mediaSignalTasks");
 		}
 		

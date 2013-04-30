@@ -51,7 +51,7 @@ public class FFChunkedAudioVideoEncoder {
 		public void setContext(Context c);
 		public void encoderStarted(Date start_date);
 		public void encoderShifted(String finalized_file);
-		public void encoderStopped(Date start_date, Date stop_date, String hq_filename, ArrayList<String> all_files);
+		public void encoderStopped(Date start_date, Date stop_date, ArrayList<String> all_files);
 	}
 	
 	private synchronized String getChunkFilename(int count){
@@ -70,8 +70,8 @@ public class FFChunkedAudioVideoEncoder {
 		output_filename_hq = output_filename_base + HQ_SUFFIX + FILE_EXT;
 		current_filename = getChunkFilename(chunk);
 		buffered_filename = getChunkFilename(chunk+1);
-		int num_samples = internalInitializeEncoder(output_filename_hq, current_filename, buffered_filename, width, height, fps);
-		
+		//int num_samples = internalInitializeEncoder(output_filename_hq, current_filename, buffered_filename, width, height, fps);
+		int num_samples = internalInitializeEncoder(current_filename, buffered_filename, width, height, fps);
 		Log.i(TAG,"initializeEncoder");
 		return num_samples;
 	}
@@ -101,7 +101,7 @@ public class FFChunkedAudioVideoEncoder {
 		Log.i(TAG, "post finalizeEncoder");
 		if(listener != null){
 			Log.i(TAG, "calling listener.encoderStopped");
-			listener.encoderStopped(start, end, output_filename_hq, all_files);
+			listener.encoderStopped(start, end, all_files);
 		} else
 			Log.e(TAG, "listener is null on finalize");
 		
@@ -120,7 +120,7 @@ public class FFChunkedAudioVideoEncoder {
 		}
 	}
 	
-	private native int internalInitializeEncoder(String filename_hq, String filename_lq1, String filename_lq2, int width, int height, int fps);
+	private native int internalInitializeEncoder(String filename_lq1, String filename_lq2, int width, int height, int fps);
 	private native void shiftEncoders(String new_filename);
 	private native void processAVData(byte[] video_frame, long timestamp, short[] audio_data, int audio_length);
 	private native void finalizeEncoder(int is_final); // 0: false, !0: true
