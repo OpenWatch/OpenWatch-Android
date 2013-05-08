@@ -45,7 +45,7 @@ AVCodecContext* initializeAVCodecContext(AVCodecContext *c);
 
 // TESTING
 //int64_t last_video_frame_pts;
-int DEVICE_FRAME_RATE = 25;  // allow variable frame_rate based on device capabilities
+int DEVICE_FRAME_RATE = 15;  // allow variable frame_rate based on device capabilities
 int safe_to_encode = 1; // Ensure no collisions when writing audio / video from separate threads
 long first_video_frame_timestamp;
 long last_video_frame_timestamp;
@@ -111,7 +111,7 @@ static AVStream *add_audio_stream(AVFormatContext *oc, enum CodecID codec_id)
 
     /* put sample parameters */
     c->sample_fmt = codec_audio_sample_fmt;
-    c->bit_rate = 192000;
+    c->bit_rate = 64000;
     c->sample_rate = 44100;
     c->channels = 1;
 
@@ -199,7 +199,7 @@ static void write_audio_frame(AVFormatContext *oc, AVStream *st)
 
 	pkt.stream_index = st->index;
 
-	LOGI("AUDIO_PTS: %" PRId64 " AUDIO_DTS %" PRId64 " duration %d" ,pkt.pts, pkt.dts,pkt.duration); // int64_t. in AVStream->time_base units
+	//LOGI("AUDIO_PTS: %" PRId64 " AUDIO_DTS %" PRId64 " duration %d" ,pkt.pts, pkt.dts,pkt.duration); // int64_t. in AVStream->time_base units
 
 	/* Write the compressed frame to the media file. */
 	if (av_interleaved_write_frame(oc, &pkt) != 0) {
@@ -268,16 +268,12 @@ static AVStream *add_video_stream(AVFormatContext *oc, enum CodecID codec_id)
     c->time_base.num = 1;
     c->gop_size = 12; /* emit one intra frame every twelve frames at most */
     c->pix_fmt = STREAM_PIX_FMT;
-    if (c->codec_id == CODEC_ID_MPEG2VIDEO) {
-        /* just for testing, we also add B frames */
-        c->max_b_frames = 2;
+
+    if (codec_id == CODEC_ID_H264) {
+    	av_opt_set(c->priv_data, "preset", "ultrafast", 0);
+    	av_opt_set_double(c->priv_data, "crf", 24, 0);
     }
-    if (c->codec_id == CODEC_ID_MPEG1VIDEO){
-        /* Needed to avoid using macroblocks in which some coeffs overflow.
-           This does not happen with normal video, it just happens here as
-           the motion of the chroma plane does not match the luma plane. */
-        c->mb_decision=2;
-    }
+
     // some formats want stream headers to be separate
     if(oc->oformat->flags & AVFMT_GLOBALHEADER)
         c->flags |= CODEC_FLAG_GLOBAL_HEADER;
@@ -426,7 +422,7 @@ static void write_video_frame(AVFormatContext *oc, AVStream *st)
             double video_gap = (current_video_frame_timestamp - first_video_frame_timestamp) / ((double) 1000); // seconds
             double time_base = ((double) st->time_base.num) / (st->time_base.den);
             // %ld - long,  %d - int, %f double/float
-            LOGI("VIDEO_FRAME_GAP_S: %f TIME_BASE: %f PTS %"  PRId64, video_gap, time_base, (int)(video_gap / time_base));
+            //LOGI("VIDEO_FRAME_GAP_S: %f TIME_BASE: %f PTS %"  PRId64, video_gap, time_base, (int)(video_gap / time_base));
 
             int proposed_pts = (int)(video_gap / time_base);
             if(last_pts != -1 && proposed_pts <= last_pts){
@@ -436,12 +432,12 @@ static void write_video_frame(AVFormatContext *oc, AVStream *st)
             last_pts = proposed_pts;
             //video_frame_count++;
 
-            LOGI("VIDEO_PTS: %" PRId64 " DTS: %" PRId64 " duration %d", pkt.pts, pkt.dts, pkt.duration);
+            //LOGI("VIDEO_PTS: %" PRId64 " DTS: %" PRId64 " duration %d", pkt.pts, pkt.dts, pkt.duration);
             //last_video_frame_pts = pkt.pts;
 
             /* write the compressed frame in the media file */
             ret = av_interleaved_write_frame(oc, &pkt);
-            LOGI("Wrote interleaved frame");
+            //LOGI("Wrote interleaved frame");
         } else {
             ret = 0;
         }
@@ -513,82 +509,9 @@ void Java_net_openwatch_reporter_recording_FFChunkedAudioVideoEncoder_shiftEncod
 	safe_to_encode = 1;
 }
 
-void encodeVideoFrame(jbyteArray *native_video_frame_data, jlong this_video_frame_timestamp){
-	if(safe_to_encode != 1)
-			LOGI("COLLISION!-V");
-	while(safe_to_encode != 1) // temp hack
-		continue;
-
-	safe_to_encode = 0;
-
-	LOGI("ENCODE-VIDEO-0");
-
-	// If this is the first frame, set current and last frame ts
-	// equal to the current frame. Else the new last ts = old current ts
-	if(video_frame_count == 0){
-		last_video_frame_timestamp = (long) this_video_frame_timestamp;
-		first_video_frame_timestamp = last_video_frame_timestamp;
-	}else{
-		last_video_frame_timestamp = current_video_frame_timestamp;
-	}
-
-	current_video_frame_timestamp = (long) this_video_frame_timestamp;
-
-
-	// write video_frame_data to AVFrame
-	if(video_st){
-		c = video_st->codec; // don't need to do this each frame?
-
-		for(y=0;y<c->height;y++) {
-			for(x=0;x<c->width;x++) {
-				picture->data[0][y * picture->linesize[0] + x] = (int)native_video_frame_data[0];
-				native_video_frame_data++;
-			}
-		}
-
-		/* Cb and Cr */
-		for(y=0;y<c->height/2;y++) {
-			for(x=0;x<c->width/2;x++) {
-				picture->data[2][y * picture->linesize[2] + x] = (int)native_video_frame_data[0];
-				picture->data[1][y * picture->linesize[1] + x] = (int)native_video_frame_data[1];
-				native_video_frame_data+=2;
-			}
-		}
-	}
-
-	/* compute current audio and video time */
-	if (audio_st)
-		audio_pts = (double)audio_st->pts.val * audio_st->time_base.num / audio_st->time_base.den;
-	else
-		audio_pts = 0.0;
-
-	if (video_st)
-		video_pts = (double)video_st->pts.val * video_st->time_base.num / video_st->time_base.den;
-	else
-		video_pts = 0.0;
-
-	if(video_pts && audio_pts)
-		LOGI("video_pts: %" PRId64 " audio_pts: %" PRId64,video_pts,audio_pts); // stream.pts -> AVFrac ->val -> int64_t
-	else
-		LOGI("video_pts or audio_pts missing");
-
-	if (!audio_st && !video_st){
-		LOGE("No audio OR video stream :(");
-			return;
-	}
-
-	LOGI("pre write video frame");
-	/* write interleaved video frames */
-	write_video_frame(oc, video_st);
-	//write_audio_frame(oc, audio_st);
-
-
-	LOGI("ENCODE-VIDEO-1");
-	safe_to_encode = 1;
-}
 
 void Java_net_openwatch_reporter_recording_FFChunkedAudioVideoEncoder_processAVData(JNIEnv * env, jobject this, jbyteArray video_frame_data, jlong this_video_frame_timestamp, jshortArray audio_data, jint audio_length){
-	LOGI("processAVData");
+	//LOGI("processAVData");
 
 	// VIDEO
 	jbyte *native_video_frame_data = (*env)->GetByteArrayElements(env, video_frame_data, NULL);
@@ -605,11 +528,8 @@ void Java_net_openwatch_reporter_recording_FFChunkedAudioVideoEncoder_processAVD
 		// If this is the first frame, set current and last frame ts
 		// equal to the current frame. Else the new last ts = old current ts
 		if(video_frame_count == 0){
-				last_video_frame_timestamp = (long) this_video_frame_timestamp;
-				first_video_frame_timestamp = last_video_frame_timestamp;
-			}else{
-				last_video_frame_timestamp = current_video_frame_timestamp;
-			}
+				first_video_frame_timestamp = (long) this_video_frame_timestamp;
+		}
 
 		current_video_frame_timestamp = (long) this_video_frame_timestamp;
 
@@ -656,17 +576,17 @@ void Java_net_openwatch_reporter_recording_FFChunkedAudioVideoEncoder_processAVD
 				return;
 		}
 
-		LOGI("pre write video frame");
+		//LOGI("pre write video frame");
 		/* write interleaved video frames */
 		write_video_frame(oc, video_st);
 		//write_audio_frame(oc, audio_st);
 
 
-		LOGI("ENCODE-VIDEO-1");
+		//LOGI("ENCODE-VIDEO-1");
 		safe_to_encode = 1;
 	(*env)->ReleaseByteArrayElements(env, video_frame_data, native_video_frame_data, 0);
 
-	LOGI("encodeVideoFrame complete");
+	//LOGI("encodeVideoFrame complete");
 
 	// AUDIO
 	if(audio_data == NULL)
@@ -711,46 +631,8 @@ void Java_net_openwatch_reporter_recording_FFChunkedAudioVideoEncoder_processAVD
 		safe_to_encode = 1;
 	(*env)->ReleaseShortArrayElements(env, audio_data, native_audio_frame_data, 0);
 
-	LOGI("encodeAudioFrame complete");
+	//LOGI("encodeAudioFrame complete");
 
-}
-
-void encodeAudioFrames(jshortArray * native_audio_frame_data, jint audio_length){
-	if(safe_to_encode != 1)
-		LOGI("COLLISION!-A");
-	while(safe_to_encode != 1) // temp hack
-			continue;
-	safe_to_encode = 0;
-	//LOGI("ENCODE-AUDIO-0");
-
-	if((int)audio_length % audio_input_frame_size != 0){
-		LOGE("Audio length: %d, audio_input_frame_size %d", (int)audio_length, audio_input_frame_size);
-		exit(1);
-	}
-
-	int num_frames = (int) audio_length / audio_input_frame_size;
-
-	if(audio_st){
-		int x = 0;
-		for(x=0;x<num_frames;x++){ // for each audio frame
-			int audio_sample_count = 0;
-			//LOG("Audio frame size: %d", audio_input_frame_size);
-			for(y=0;y<audio_input_frame_size;y++){ // copy each sample
-				samples[y] = (int)(native_audio_frame_data[0]);
-				native_audio_frame_data++;
-				audio_sample_count++;
-			}
-			write_audio_frame(oc, audio_st);
-		}
-		//LOGI("Audio sample count: %d", audio_sample_count);
-
-		/* write interleaved video frames */
-
-		//LOGI("Write audio frame!");
-	}
-
-	//LOGI("ENCODE-AUDIO-1");
-	safe_to_encode = 1;
 }
 
 void Java_net_openwatch_reporter_recording_FFChunkedAudioVideoEncoder_finalizeEncoder(JNIEnv * env, jobject this, jint is_final){

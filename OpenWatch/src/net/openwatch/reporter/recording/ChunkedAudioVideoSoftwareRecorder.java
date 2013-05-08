@@ -39,7 +39,7 @@ public class ChunkedAudioVideoSoftwareRecorder {
 	private final String file_ext = ".mp4";
 	private final int output_width = 320;
 	private final int output_height = 240;
-	private final int fps = 24;
+	private final int fps = 15;
 
 	private int chunk_frame_count = 0; // frames recorded in current chunk
 	private int chunk_frame_max = fps * 5; // chunk every this many frames
