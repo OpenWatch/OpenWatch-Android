@@ -1,24 +1,35 @@
 package net.openwatch.reporter;
 
+import java.io.File;
+
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
 import net.openwatch.reporter.constants.Constants.OWFeedType;
 import net.openwatch.reporter.database.DatabaseManager;
+import net.openwatch.reporter.file.FileUtils;
 import net.openwatch.reporter.http.OWServiceRequests;
+import net.openwatch.reporter.model.OWPhoto;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import com.bugsense.trace.BugSenseHandler;
 
 public class MainActivity extends SherlockActivity {
+	
+	private static int camera_action_code = 444;
+	private static int owphoto_id = -1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +52,31 @@ public class MainActivity extends SherlockActivity {
 		checkUserStatus();
 	}
 
-	public void recordButtonClick(View v) {
+
+	public void camcorderButtonClick(View v) {
+		Intent i = new Intent(this, RecorderActivity.class);
+		startActivity(i);
+	}
+	
+	public void cameraButtonClick(View v) {
+		String uuid = OWUtils.generateRecordingIdentifier();
+		File photo_location = FileUtils.prepareOutputLocation(getApplicationContext(), MEDIA_TYPE.PHOTO, uuid ,"photo", ".jpg");
+		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		takePictureIntent.putExtra("uuid", uuid);
+		Log.i("takePicture", "location " + photo_location.getAbsolutePath() + " exists: " + String.valueOf(photo_location.exists()));
+		takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo_location));
+		
+		OWPhoto photo = new OWPhoto();
+		photo.filepath.set(photo_location.getAbsolutePath());
+		photo.directory.set(photo_location.getParentFile().getAbsolutePath());
+		photo.uuid.set(uuid);
+		photo.save(getApplicationContext());
+		owphoto_id = photo.getId();
+		Log.i("MainActivity-cameraButtonClick", "get owphoto_id: " + String.valueOf(owphoto_id));
+	    startActivityForResult(takePictureIntent, camera_action_code);
+	}
+	
+	public void microphoneButtonClick(View v) {
 		Intent i = new Intent(this, RecorderActivity.class);
 		startActivity(i);
 	}
@@ -97,7 +132,7 @@ public class MainActivity extends SherlockActivity {
 		if(authenticated && db_initialized && !((OWApplication) this.getApplicationContext()).per_launch_sync){
 			// TODO: Attempt to login with stored credentials if we
 			// check this application state
-			OWServiceRequests.onLaunchSync(this.getApplicationContext()); // get list of tags, etc
+			//OWServiceRequests.onLaunchSync(this.getApplicationContext()); // get list of tags, etc
 		}
 		if(!authenticated && !this.getIntent().hasExtra(Constants.AUTHENTICATED)){
 			Intent i = new Intent(this, LoginActivity.class	);
@@ -105,6 +140,20 @@ public class MainActivity extends SherlockActivity {
 			String email = profile.getString(Constants.EMAIL, null);
 			if(email != null)
 				i.putExtra(Constants.EMAIL, email);
+			startActivity(i);
+		}
+		
+	}
+	
+	@Override
+	protected void onActivityResult (int requestCode, int resultCode, Intent data){
+		Log.i("MainActivity-onActivityResult","got it");
+		if(data == null)
+			Log.i("MainActivity-onActivityResult", "data null");
+		if(requestCode == camera_action_code && resultCode == RESULT_OK){
+			Intent i = new Intent(this, PictureReviewActivity.class);
+			i.putExtra("owphoto_id", owphoto_id);
+			Log.i("MainActivity-onActivityResult", "bundling owphoto_id: " + String.valueOf(owphoto_id));
 			startActivity(i);
 		}
 		

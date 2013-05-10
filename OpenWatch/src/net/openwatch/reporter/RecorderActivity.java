@@ -294,7 +294,7 @@ public class RecorderActivity extends SherlockActivity implements
 		File recording_dir = FileUtils.getStorageDirectory(
 				FileUtils.getRootStorageDirectory(RecorderActivity.this,
 						Constants.ROOT_OUTPUT_DIR),
-				Constants.RECORDING_OUTPUT_DIR);
+				Constants.VIDEO_OUTPUT_DIR);
 		
 		mRecording_uuid = generateRecordingIdentifier();
 		

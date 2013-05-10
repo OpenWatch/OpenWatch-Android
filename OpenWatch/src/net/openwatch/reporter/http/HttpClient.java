@@ -69,7 +69,10 @@ public class HttpClient {
 			USER_AGENT += " (Android API " + Build.VERSION.RELEASE + ")";
 		}
 		http_client.setUserAgent(USER_AGENT);
-		http_client.setSSLSocketFactory(createApacheOWSSLSocketFactory(c));
+		// Pin SSL cert if not hitting dev endpoint
+		if(!Constants.USE_DEV_ENDPOINTS){
+			http_client.setSSLSocketFactory(createApacheOWSSLSocketFactory(c));
+		}
 		return http_client;
 	}
 
@@ -81,11 +84,16 @@ public class HttpClient {
 	
 	public static DefaultHttpClient setupDefaultHttpClient(Context c){
 		DefaultHttpClient http_client = new DefaultHttpClient();
+		PersistentCookieStore cookie_store = new PersistentCookieStore(c);
+		http_client.setCookieStore(cookie_store);
 		SSLSocketFactory socketFactory;
 		try {
-			socketFactory = new SSLSocketFactory(loadOWKeyStore(c));
-			Scheme sch = new Scheme("https", socketFactory, 443);
-	        http_client.getConnectionManager().getSchemeRegistry().register(sch);
+			// Pin SSL cert if not hitting dev endpoint
+			if(!Constants.USE_DEV_ENDPOINTS){
+				socketFactory = new SSLSocketFactory(loadOWKeyStore(c));
+				Scheme sch = new Scheme("https", socketFactory, 443);
+		        http_client.getConnectionManager().getSchemeRegistry().register(sch);
+			}
 	        return http_client;
 		} catch (KeyManagementException e) {
 			// TODO Auto-generated catch block

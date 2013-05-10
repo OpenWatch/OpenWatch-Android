@@ -269,16 +269,7 @@ public class OWMediaRequests {
 		}.run();
 	}
 	
-	/**
-	 * I love Apache!
-	 * @param url
-	 * @param filename
-	 * @return
-	 * @throws ParseException
-	 * @throws ClientProtocolException
-	 * @throws IOException
-	 */
-	public static String ApacheFilePost(Context c, String url, String filename) throws ParseException, ClientProtocolException, IOException{
+	public static String ApacheFilePost(Context c, String url, String filename, String post_key) throws ParseException, ClientProtocolException, IOException{
 		final String TAG = "ApacheFilePost";
 		Log.i(TAG, "url " + url + " filename " + filename);
 		DefaultHttpClient client = HttpClient.setupDefaultHttpClient(c);
@@ -291,7 +282,7 @@ public class OWMediaRequests {
 
 		// For File parameters
 		FileBody fileBody = new FileBody(new File(filename));
-		entity.addPart( "upload", fileBody);
+		entity.addPart(post_key, fileBody);
 
 		post.setEntity( entity );
 
@@ -301,6 +292,19 @@ public class OWMediaRequests {
 		client.getConnectionManager().shutdown();
 		
 		return response;
+	}
+	
+	/**
+	 * I love Apache!
+	 * @param url
+	 * @param filename
+	 * @return
+	 * @throws ParseException
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
+	public static String ApacheFilePost(Context c, String url, String filename) throws ParseException, ClientProtocolException, IOException{
+		return ApacheFilePost(c, url, filename, "upload");
 	}
 
 	private static String setupMediaURL(String endpoint,

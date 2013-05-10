@@ -10,64 +10,116 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="0dp"
-        android:layout_weight=".35"
-        android:gravity="center_horizontal"
-        android:clickable="true" >
+        android:layout_weight=".45"
+        android:clickable="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="20dp" >
 
         <Button
-            android:id="@+id/button_record"
+            android:id="@+id/button_camcorder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:fontFamily="sans-serif-light"
-            android:textStyle="bold"
             android:background="@android:color/transparent"
+            android:drawableLeft="@drawable/camcorder_small"
             android:drawablePadding="10dp"
-            android:drawableTop="@drawable/record_button"
-            android:onClick="recordButtonClick"
-            android:text="@string/record_button_text"
+            android:fontFamily="sans-serif-light"
+            android:onClick="camcorderButtonClick"
+            android:text="Broadcast Video"
             android:textColor="#000000"
-            android:textSize="30sp" />
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/button_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/button_camcorder"
+            android:layout_below="@id/button_camcorder"
+            android:layout_marginTop="15dp"
+            android:background="@android:color/transparent"
+            android:drawableLeft="@drawable/camera_small"
+            android:drawablePadding="10dp"
+            android:fontFamily="sans-serif-light"
+            android:onClick="cameraButtonClick"
+            android:text="Take Photo"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/button_microphone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/button_camcorder"
+            android:layout_below="@id/button_camera"
+            android:layout_marginTop="15dp"
+            android:background="@android:color/transparent"
+            android:drawableLeft="@drawable/microphone_small"
+            android:drawablePadding="10dp"
+            android:fontFamily="sans-serif-light"
+            android:onClick="microphoneButtonClick"
+            android:text="Record Audio"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight=".65"
+        android:layout_weight=".55"
         android:gravity="center" >
 
         <Button
-            android:id="@+id/button_watch"
-            style="@style/Theme.openwatch.DashButton"
-            android:drawableTop="@drawable/watch_button"
-            android:onClick="watchButtonClick"
-            android:text="@string/featured_button_text" />
-
-        <Button
-            android:id="@+id/button_local"
-            style="@style/Theme.openwatch.DashButton"
-            android:layout_toRightOf="@id/button_watch"
-            android:drawableTop="@drawable/local_button"
-            android:onClick="localButtonClick"
-            android:text="@string/local_button_text" />
+            android:id="@+id/button_featured"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@android:color/transparent"
+            android:drawableLeft="@drawable/watch_button"
+            android:drawablePadding="10dp"
+            android:fontFamily="sans-serif-light"
+            android:onClick="featuredButtonClick"
+            android:text="Top Investigations"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/button_saved"
-            style="@style/Theme.openwatch.DashButton"
-            android:layout_below="@id/button_watch"
-            android:drawableTop="@drawable/saved_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/button_featured"
+            android:layout_below="@id/button_featured"
+            android:layout_marginTop="15dp"
+            android:background="@android:color/transparent"
+            android:drawableLeft="@drawable/saved_button"
+            android:drawablePadding="10dp"
+            android:fontFamily="sans-serif-light"
             android:onClick="savedButtonClick"
-            android:text="@string/saved_recordings_button_text" />
+            android:text="Your Media"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/button_settings"
-            style="@style/Theme.openwatch.DashButton"
-            android:layout_below="@id/button_local"
-            android:layout_toRightOf="@id/button_saved"
-            android:drawableTop="@drawable/settings_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/button_featured"
+            android:layout_below="@id/button_saved"
+            android:layout_marginTop="15dp"
+            android:background="@android:color/transparent"
+            android:drawableLeft="@drawable/settings_button"
+            android:drawablePadding="10dp"
+            android:fontFamily="sans-serif-light"
             android:onClick="settingsButtonClick"
-            android:text="@string/settings_button_text" />
+            android:text="Your Media"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
     </RelativeLayout>
 
 </LinearLayout>

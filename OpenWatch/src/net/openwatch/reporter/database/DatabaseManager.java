@@ -10,6 +10,7 @@ import net.openwatch.reporter.model.OWFeed;
 import net.openwatch.reporter.model.OWLocalVideoRecording;
 import net.openwatch.reporter.model.OWLocalVideoRecordingSegment;
 import net.openwatch.reporter.model.OWMediaObject;
+import net.openwatch.reporter.model.OWPhoto;
 import net.openwatch.reporter.model.OWVideoRecording;
 import net.openwatch.reporter.model.OWTag;
 import net.openwatch.reporter.model.OWStory;
@@ -69,6 +70,7 @@ public class DatabaseManager {
 		models.add(OWFeed.class);
 		models.add(OWStory.class);
 		models.add(OWMediaObject.class);
+		models.add(OWPhoto.class);
 		
 		pointToDB();
 		DatabaseAdapter adapter = DatabaseAdapter.getInstance(app_context);

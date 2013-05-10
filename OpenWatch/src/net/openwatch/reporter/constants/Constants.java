@@ -3,7 +3,9 @@ package net.openwatch.reporter.constants;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
@@ -23,8 +25,8 @@ public class Constants {
 	public static final String PROD_HOST = "https://staging.openwatch.net/";
 	public static final String PROD_CAPTURE_HOST = "https://capture.openwatch.net/";
 	
-	public static final String DEV_HOST = "http://192.168.1.27:8000/";
-	public static final String DEV_CAPTURE_HOST = "http://192.168.1.27:5000/";
+	public static final String DEV_HOST = "http://10.0.1.26:8000/";
+	public static final String DEV_CAPTURE_HOST = "http://10.0.1.26:5000/";
 	
 	// OpenWatch web service root url and endpoints
 	public static final String OW_MEDIA_URL;
@@ -45,6 +47,9 @@ public class Constants {
 	
 	// For view tag
 	public static enum CONTENT_TYPE { VIDEO, STORY };
+	// for fileUtils and OWServiceRequests
+	public static enum MEDIA_TYPE { VIDEO, PHOTO, AUDIO };
+	public static HashMap<MEDIA_TYPE, String> API_ENDPOINT_BY_MEDIA_TYPE = new HashMap<MEDIA_TYPE, String>() {{put(MEDIA_TYPE.VIDEO, "v"); put(MEDIA_TYPE.PHOTO, "p"); put(MEDIA_TYPE.AUDIO, "a"); }};
 	public static final String OW_CONTENT_TYPE = "owcontent_type";
 	
 	// Date Formatter for OW server time
@@ -72,7 +77,9 @@ public class Constants {
 	
 	// External storage 
 	public static final String ROOT_OUTPUT_DIR = "OpenWatch";
-	public static final String RECORDING_OUTPUT_DIR = "recordings";
+	public static final String VIDEO_OUTPUT_DIR = "video";
+	public static final String PHOTO_OUTPUT_DIR = "photo";
+	public static final String AUDIO_OUTPUT_DIR = "audio";
 	
 	// User profile keys. Used for SharedPreferences and Intent Extras
 	public static final String EMAIL = "email";

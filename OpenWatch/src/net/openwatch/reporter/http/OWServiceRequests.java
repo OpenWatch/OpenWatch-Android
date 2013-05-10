@@ -1,12 +1,15 @@
 package net.openwatch.reporter.http;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.apache.http.ParseException;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,6 +19,7 @@ import net.openwatch.reporter.OWApplication;
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.Constants.HIT_TYPE;
 import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
+import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
 import net.openwatch.reporter.constants.Constants.OWFeedType;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
@@ -23,6 +27,8 @@ import net.openwatch.reporter.location.DeviceLocation;
 import net.openwatch.reporter.location.DeviceLocation.GPSRequestCallback;
 import net.openwatch.reporter.model.OWFeed;
 import net.openwatch.reporter.model.OWMediaObject;
+import net.openwatch.reporter.model.OWMobileGeneratedObject;
+import net.openwatch.reporter.model.OWPhoto;
 import net.openwatch.reporter.model.OWVideoRecording;
 import net.openwatch.reporter.model.OWTag;
 import net.openwatch.reporter.model.OWStory;
@@ -41,6 +47,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.orm.androrm.DatabaseAdapter;
 import com.orm.androrm.Filter;
+import com.orm.androrm.Model;
 import com.orm.androrm.QuerySet;
 
 /**
@@ -380,6 +387,95 @@ public class OWServiceRequests {
 	        	cb.onSuccess(page_number, object_count, page_count);
 	    }
 		
+	}
+	/*
+	public static void syncOWMobileGeneratedObject(final Context app_context, OWMobileGeneratedObject object ){
+		JsonHttpResponseHandler get_handler = new JsonHttpResponseHandler() {
+			@Override
+			public void onSuccess(JSONObject response) {
+				Log.i(TAG, "getMeta response: " + response.toString());
+				
+			}
+
+			@Override
+			public void onFailure(Throwable e, String response) {
+				Log.i(TAG, "syncRecording fail: " + response);
+				e.printStackTrace();
+			}
+
+			@Override
+			public void onFinish() {
+				Log.i(TAG, "syncRecording finish");
+			}
+
+		};
+		
+	}*/
+	
+	public static void createOWMobileGeneratedObject(final Context app_context, final OWMobileGeneratedObject object){
+		JsonHttpResponseHandler post_handler = new JsonHttpResponseHandler() {
+			@Override
+			public void onSuccess(JSONObject response) {
+				Log.i(TAG, "getObject response: " + response.toString());
+				try {
+					if(response.has("success") && response.getBoolean("success")){
+						Log.i(TAG, "create object success!");
+						object.updateWithJson(app_context, response.getJSONObject("object"));
+						sendOWMobileGeneratedObjectMedia(app_context, object);
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+
+			@Override
+			public void onFailure(Throwable e, String response) {
+				Log.i(TAG, "getObject fail: " + response);
+				e.printStackTrace();
+			}
+
+			@Override
+			public void onFinish() {
+				Log.i(TAG, "getObject finish");
+			}
+
+		};
+		
+		AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
+		Log.i(TAG, "Commencing Create OWMGObject " + Constants.OW_API_URL
+				+ Constants.OW_RECORDING);
+		//Log.i(TAG, object.getType().toString());
+		//Log.i(TAG, object.toJsonObject(app_context).toString());
+		//Log.i(TAG, Utils.JSONObjectToStringEntity(object.toJsonObject(app_context)).toString());
+		http_client.post(app_context, endpointForMediaType(object.getType()) , Utils
+				.JSONObjectToStringEntity(object.toJsonObject(app_context)), "application/json", post_handler);
+	}
+	
+	public static void sendOWMobileGeneratedObjectMedia(final Context app_context, final OWMobileGeneratedObject object){
+		new Thread(){
+			public void run(){
+				String file_response;
+				try {
+					file_response = OWMediaRequests.ApacheFilePost(app_context, endpointForMediaType(object.getType()) + object.getUUID(app_context)+"/", object.getMediaFilepath(app_context), "file_data");
+					Log.i(TAG, "binary media sent! response: " + file_response);
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ClientProtocolException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+		}.start();
+
+	}
+	
+	private static String endpointForMediaType(MEDIA_TYPE type){
+		return Constants.OW_API_URL + Constants.API_ENDPOINT_BY_MEDIA_TYPE.get(type) + "/";
 	}
 
 	/**

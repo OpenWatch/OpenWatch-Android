@@ -2,6 +2,12 @@ package net.openwatch.reporter.file;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import net.openwatch.reporter.OWUtils;
+import net.openwatch.reporter.PictureReviewActivity;
+import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -109,5 +115,42 @@ public class FileUtils {
         return BitmapFactory.decodeStream(c.getContentResolver().openInputStream(selectedImage), null, o2);
 
     }
+	
+	/**
+	 * Prepare an output directory or file for writing
+	 * @param c
+	 * @param type
+	 * @param filename
+	 * @return
+	 */
+	public static File prepareOutputLocation(Context c, MEDIA_TYPE type, String uuid, String filename, String extension){
+		String media_dir = "";
+		switch(type){
+		case VIDEO:
+			media_dir = Constants.VIDEO_OUTPUT_DIR;
+		case AUDIO:
+			media_dir = Constants.AUDIO_OUTPUT_DIR;
+		case PHOTO:
+			media_dir = Constants.PHOTO_OUTPUT_DIR;
+		}
+		File output = FileUtils.getStorageDirectory(
+				FileUtils.getRootStorageDirectory(c,
+						Constants.ROOT_OUTPUT_DIR),
+				media_dir);
+		
+		
+		output = FileUtils.getStorageDirectory(output, uuid);
+		try {
+			if(filename != null){
+				output = File.createTempFile(filename, extension, output);
+			}
+			Log.i("prepareOutputLocation", output.getAbsolutePath());
+			return output;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
 
 }

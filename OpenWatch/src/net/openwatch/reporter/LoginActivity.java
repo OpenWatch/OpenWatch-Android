@@ -636,8 +636,8 @@ public class LoginActivity extends SherlockActivity {
 				editor.putString(Constants.EMAIL, mEmail); // save email even if
 															// login
 															// unsuccessful
-
 				editor.commit();
+				OWApplication.user_data = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE).getAll();
 			} catch (JSONException e) {
 				Log.e(TAG,
 						"SavePreferenceTask: Error reading JSONObject response: "
