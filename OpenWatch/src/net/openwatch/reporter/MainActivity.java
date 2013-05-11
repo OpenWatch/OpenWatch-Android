@@ -100,7 +100,7 @@ public class MainActivity extends SherlockActivity {
 	
 	public void savedButtonClick(View v){
 		Intent i = new Intent(this, FeedFragmentActivity.class);
-		i.putExtra(Constants.FEED_TYPE, OWFeedType.RECORDINGS);
+		i.putExtra(Constants.FEED_TYPE, OWFeedType.USER);
 		startActivity(i);
 	}
 

@@ -247,7 +247,7 @@ public class OWServiceRequests {
 				if(response.has("objects")){
 					int internal_user_id = 0;
 					Log.i(TAG, String.format("got %s feed response: %s ",feed_name, response.toString()) );
-					if(feed_name.compareTo(OWFeedType.RECORDINGS.toString().toLowerCase()) == 0){
+					if(feed_name.compareTo(OWFeedType.USER.toString().toLowerCase()) == 0){
 						SharedPreferences profile = app_context.getSharedPreferences(Constants.PROFILE_PREFS, 0);
 				        internal_user_id = profile.getInt(Constants.INTERNAL_USER_ID, 0);
 					}
@@ -340,12 +340,14 @@ public class OWServiceRequests {
 							OWVideoRecording.createOrUpdateOWRecordingWithJson(c, json_obj, OWFeed.getFeedFromString(c, feed_name));
 						else if(json_obj.getString("type").compareTo("story") == 0)
 							OWStory.createOrUpdateOWStoryWithJson(c, json_obj, OWFeed.getFeedFromString(c, feed_name));
+						else if(json_obj.getString("type").compareTo("photo") == 0)
+							OWPhoto.createOrUpdateOWPhotoWithJson(c, json_obj, OWFeed.getFeedFromString(c, feed_name));
 						// TODO: Investigation, audio, etc
 					}
 				}
 				adapter.commitTransaction();
 				Uri baseUri;
-				if(feed_name.compareTo(OWFeedType.RECORDINGS.toString().toLowerCase()) == 0){
+				if(feed_name.compareTo(OWFeedType.USER.toString().toLowerCase()) == 0){
 					baseUri = OWContentProvider.getUserRecordingsUri(user_id);
 				}else{
 					baseUri = OWContentProvider.getFeedUri(feed_name);

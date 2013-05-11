@@ -76,7 +76,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     
     int internal_user_id = -1;
     
-    ArrayList<String> tags = new ArrayList<String>();
+    //ArrayList<String> tags = new ArrayList<String>();
     ArrayList<String> feeds = new ArrayList<String>(); // tags and feeds are lowercase
     int nextDirectoryMenuId = 1;
     
@@ -127,7 +127,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     	Bundle feedBundle;
     	    		
     	for(String feed : feeds){
-    		if(feed.compareTo(OWFeedType.RECORDINGS.toString().toLowerCase(Locale.US)) == 0){
+    		if(feed.compareTo(OWFeedType.USER.toString().toLowerCase(Locale.US)) == 0){
     			//TODO: Merge MyFeedFragmentActivity and RemoteFeedFragmentActivity
     			mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_local_user_recordings)).setIndicator(inflateCustomTab(getString(R.string.tab_local_user_recordings))),
     	                MyFeedFragmentActivity.LocalRecordingsListFragment.class, null);
@@ -141,7 +141,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     		}
     		nextPagerViewId ++;
     	}
-    	    	
+    	   /* 	
     	for(String tag : tags){
     		feedBundle = new Bundle(1);
 			feedBundle.putString(Constants.OW_FEED, tag);
@@ -150,12 +150,12 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
 	        mTitleToTabId.put(tag, nextPagerViewId);
 	        nextPagerViewId ++;
     	}
-
+    	    */
     }
     
     private void setupFeedAndTagMaps(){
     	feeds.clear();
-    	tags.clear();
+    	//tags.clear();
     	
     	// Currently no way to poll server for list of feeds
     	// so start with hard-coded feeds
@@ -180,7 +180,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
 			}
 		}
 		*/
-		
+		/*
 		if(internal_user_id > 0){
 			QuerySet<OWTag> tag_set = OWUser.objects(getApplicationContext(), OWUser.class).get(internal_user_id).tags.get(getApplicationContext(), OWUser.objects(getApplicationContext(), OWUser.class).get(internal_user_id));
 			for(OWTag tag : tag_set){
@@ -190,6 +190,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
 			}
 			Collections.sort(tags);
 		}
+		*/
     }
     
     private String capitalizeFirstChar(String in){
@@ -215,16 +216,17 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     	if(directory != null){
     		    		
     		for(String feed_name : feeds){
-    			if(feed_name.compareTo(OWFeedType.RECORDINGS.toString().toLowerCase(Locale.US)) == 0){
+    			if(feed_name.compareTo(OWFeedType.USER.toString().toLowerCase(Locale.US)) == 0){
     				directory.getSubMenu().add(R.id.feeds, mTitleToTabId.get(feed_name), Menu.NONE, getString(R.string.tab_local_user_recordings));
     			}else{
     				directory.getSubMenu().add(R.id.feeds, mTitleToTabId.get(feed_name), Menu.NONE, capitalizeFirstChar(feed_name));
     			}
     		}
-    		    		
+    		   /* 		
     		for(String tag_name : tags){
     			directory.getSubMenu().add(R.id.tags, mTitleToTabId.get(tag_name), Menu.NONE, "#"+tag_name);
     		}
+    		*/
     		
     	}
 		return true;

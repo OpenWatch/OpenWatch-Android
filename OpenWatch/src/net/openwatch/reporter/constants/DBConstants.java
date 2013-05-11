@@ -13,6 +13,8 @@ public class DBConstants {
 	public static final String MEDIA_OBJECT_STORY = "story";
 	public static final String MEDIA_OBJECT_USER = "user";
 	public static final String MEDIA_OBJECT_VIDEO = "video_recording";
+	public static final String MEDIA_OBJECT_AUDIO = "audio";
+	public static final String MEDIA_OBJECT_PHOTO = "photo";
 	public static final String MEDIA_OBJECT_LOCAL_VIDEO = "local_video_recording";
 	
 	// Local Video Recordings Table
@@ -66,4 +68,7 @@ public class DBConstants {
 	
 	// Story - Feed Relation Table
 	public static final String FEED_STORY_TABLENAME = "owfeed_owstory";
+	
+	// Photo table
+	public static final String PHOTO_TABLENAME = "owphoto";
 }

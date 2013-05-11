@@ -55,7 +55,7 @@
     <string name="title_activity_feed">FeedActivity</string>
 
     <!-- Feed Activity -->
-    <string name="tab_local_user_recordings">Your Recordings</string>
+    <string name="tab_local_user_recordings">Your Contributions</string>
     <string name="tab_local">Local</string>
     <string name="tab_following">Following</string>
     <string name="tab_featured">Featured</string>

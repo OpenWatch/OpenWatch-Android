@@ -1,7 +1,6 @@
 package net.openwatch.reporter.model;
 
 
-import java.io.File;
 import java.util.Date;
 
 import net.openwatch.reporter.constants.Constants;
@@ -43,6 +42,10 @@ public class OWMediaObject extends Model implements OWMediaObjectInterface{
 	public ManyToManyField<OWMediaObject, OWFeed> feeds = new ManyToManyField<OWMediaObject, OWFeed> (OWMediaObject.class, OWFeed.class);
 	
 	public ManyToManyField<OWMediaObject, OWTag> tags = new ManyToManyField<OWMediaObject, OWTag> (OWMediaObject.class, OWTag.class);
+	
+	public ForeignKeyField<OWPhoto> photo = new ForeignKeyField<OWPhoto>(OWPhoto.class);
+	
+	public ForeignKeyField<OWAudio> audio = new ForeignKeyField<OWAudio>(OWAudio.class);
 	
 	public ForeignKeyField<OWVideoRecording> video_recording = new ForeignKeyField<OWVideoRecording>(OWVideoRecording.class);
 	

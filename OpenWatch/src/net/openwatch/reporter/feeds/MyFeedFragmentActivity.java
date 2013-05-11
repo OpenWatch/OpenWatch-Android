@@ -38,6 +38,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.AbsListView.OnScrollListener;
+import net.openwatch.reporter.OWApplication;
 import net.openwatch.reporter.RecordingViewActivity;
 import net.openwatch.reporter.R;
 import net.openwatch.reporter.constants.Constants;
@@ -82,7 +83,7 @@ public class MyFeedFragmentActivity extends FragmentActivity {
 
         OnQueryTextListenerCompat mOnQueryTextListenerCompat;
         
-        final String feed = Constants.OWFeedType.RECORDINGS.toString();
+        final String feed = Constants.OWFeedType.USER.toString();
         int internal_user_id = -1;
         int page = 0;
         boolean didRefreshFeed = false;
@@ -148,10 +149,15 @@ public class MyFeedFragmentActivity extends FragmentActivity {
             }
 
             // perhaps do auth checking onStart
+            
+            //boolean authenticated = false;
+            //if( OWApplication.user_data != null && OWApplication.user_data.containsKey(Constants.AUTHENTICATED))
+            //		authenticated = true;
             SharedPreferences profile = getActivity().getSharedPreferences(Constants.PROFILE_PREFS, 0);
     		boolean authenticated = profile.getBoolean(Constants.AUTHENTICATED, false);
     		if(authenticated){
     			int user_server_id = profile.getInt(DBConstants.USER_SERVER_ID, 0);
+    			//int user_server_id = (Integer) OWApplication.user_data.get(DBConstants.USER_SERVER_ID);
     			Filter filter = new Filter();
     			filter.is(DBConstants.USER_SERVER_ID, user_server_id);
     			QuerySet<OWUser> users = OWUser.objects(getActivity().getApplicationContext(), OWUser.class).filter(filter);

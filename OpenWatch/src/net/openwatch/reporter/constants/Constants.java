@@ -129,7 +129,7 @@ public class Constants {
 	public static final String OW_FOLLOWING = "following";
 	// Feed types : Each is related to an API endpoint in OWServiceRequests getFeed
 	public static enum OWFeedType{
-		FEATURED, LOCAL, FOLLOWING, RECORDINGS
+		FEATURED, LOCAL, FOLLOWING, USER
 	}
 	
 	private static ArrayList<String> OW_FEEDS = new ArrayList<String>();
@@ -153,10 +153,11 @@ public class Constants {
 	 * @return
 	 */
 	public static String feedExternalEndpointFromType(OWFeedType type, int page){
+		/*
 		String endpoint = "";
-		
+
 		switch(type){
-		case RECORDINGS:
+		case USER:
 			endpoint = Constants.OW_API_URL + Constants.OW_RECORDINGS;
 			break;
 		default:
@@ -164,19 +165,19 @@ public class Constants {
 			break;
 		}
 		return endpoint + File.separator + String.valueOf(page);
+		*/
+		return feedExternalEndpointFromString(type.toString().toLowerCase(), page);
 	}
 	
 	public static String feedExternalEndpointFromString(String type, int page){
 		String endpoint = "";
-		if(type.compareTo(OWFeedType.RECORDINGS.toString().toLowerCase()) == 0){
-			endpoint = Constants.OW_API_URL + Constants.OW_RECORDINGS;
-		}else if(!OW_FEEDS.contains(type) ){
-			endpoint = Constants.OW_API_URL + Constants.OW_TAG + File.separator + type;
+		if(!OW_FEEDS.contains(type) ){
+			endpoint = Constants.OW_API_URL + Constants.OW_TAG + File.separator + "?type="+ type + "&page=" + String.valueOf(page);
 		}else{
-			endpoint = Constants.OW_API_URL + Constants.OW_FEED + File.separator + type;
+			endpoint = Constants.OW_API_URL + Constants.OW_FEED + File.separator + "?type="+ type + "&page=" + String.valueOf(page);
 		}
 		
-		return endpoint + File.separator + String.valueOf(page);
+		return endpoint;
 	}
 	
 	/**
@@ -197,7 +198,7 @@ public class Constants {
 		case FOLLOWING:
 			endpoint = Constants.OW_FOLLOWING;
 			break;
-		case RECORDINGS:
+		case USER:
 			endpoint = Constants.OW_RECORDINGS;
 			break;
 		}

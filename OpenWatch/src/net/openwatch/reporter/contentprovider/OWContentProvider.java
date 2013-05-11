@@ -153,7 +153,7 @@ public class OWContentProvider extends ContentProvider {
 		switch(uriType){
 			case MEDIA_OBJS_BY_USER:
 				Log.i(TAG, "MediaObjs by user");
-				query = select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " WHERE " + DBConstants.MEDIA_OBJECT_USER + " = " + uri.getLastPathSegment() + " AND " + DBConstants.MEDIA_OBJECT_VIDEO + " IS NOT NULL " + sortby;
+				query = select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " WHERE " + DBConstants.MEDIA_OBJECT_USER + " = " + uri.getLastPathSegment() + " AND (" + DBConstants.MEDIA_OBJECT_VIDEO + " IS NOT NULL" + " OR " + DBConstants.MEDIA_OBJECT_AUDIO + " IS NOT NULL OR " + DBConstants.MEDIA_OBJECT_PHOTO + " IS NOT NULL ) " + sortby;
 				Log.i(TAG, query);
 				result = adapter.open().query(query);
 				break;
@@ -212,6 +212,7 @@ public class OWContentProvider extends ContentProvider {
 		//adapter.close();
 		// Make sure that potential listeners are getting notified
 		if(result != null){
+			Log.i(TAG, String.valueOf(result.getCount()));
 			Log.i("URI" + uri.getLastPathSegment(), " CP set notificationUri: " + uri.toString());
 			result.setNotificationUri(getContext().getContentResolver(), uri);
 		}

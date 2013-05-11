@@ -1,5 +1,7 @@
 package net.openwatch.reporter.model;
 
+import java.util.Date;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,35 +12,45 @@ import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
 import android.content.Context;
+import android.database.Cursor;
 import android.util.Log;
 
+import com.orm.androrm.DatabaseAdapter;
 import com.orm.androrm.Model;
 import com.orm.androrm.QuerySet;
 import com.orm.androrm.field.BooleanField;
 import com.orm.androrm.field.CharField;
 import com.orm.androrm.field.DoubleField;
+import com.orm.androrm.field.ForeignKeyField;
 import com.orm.androrm.field.IntegerField;
 
-public class OWPhoto extends Model implements OWMobileGeneratedObject{
-	private static final String TAG = "OWMobileGeneratedObject";
-	// New model format. Forget relation to OWMediaObject. It's sloppy
+public class OWPhoto extends Model implements OWMobileGeneratedObject, OWMediaObjectInterface{
+	private static final String TAG = "OWPhoto";
 	
-	public CharField title = new CharField();
 	public CharField uuid = new CharField();
-	public BooleanField is_featured = new BooleanField();
-	public IntegerField server_id = new IntegerField();
-	public CharField first_posted = new CharField();
 	public CharField directory = new CharField();
 	public CharField filepath = new CharField();
 	public BooleanField synced = new BooleanField();
 	public DoubleField lat = new DoubleField();
 	public DoubleField lon = new DoubleField();
 	
-	public CharField thumbnail_url = new CharField();
 	public CharField media_url = new CharField();
+	
+	public ForeignKeyField<OWMediaObject> media_object = new ForeignKeyField<OWMediaObject> ( OWMediaObject.class );
 		
 	public OWPhoto(){
 		super();
+	}
+	
+	public OWPhoto(Context c){
+		super();
+		
+		save(c);
+		OWMediaObject media_object = new OWMediaObject();
+		media_object.photo.set(this);
+		media_object.save(c);
+		this.media_object.set(media_object);
+		save(c);
 	}
 	
 	@Override
@@ -47,28 +59,7 @@ public class OWPhoto extends Model implements OWMobileGeneratedObject{
 		context.getContentResolver().notifyChange(OWContentProvider.getTagUri(this.getId()), null);
 		return super.save(context);
 	}
-
-
-	@Override
-	public String getTitle(Context c) {
-		return this.title.get();
-	}
-
-	@Override
-	public void setTitle(Context c, String title) {
-		this.title.set(title);
-	}
-
-	@Override
-	public String getFirstPosted(Context c) {
-		return this.first_posted.get();
-	}
-
-	@Override
-	public void setFirstPosted(Context c, String first_posted) {
-		this.first_posted.set(first_posted);
-	}
-
+	
 	@Override
 	public String getUUID(Context c) {
 		return this.uuid.get();
@@ -111,7 +102,7 @@ public class OWPhoto extends Model implements OWMobileGeneratedObject{
 
 	@Override
 	public void updateWithJson(Context c, JSONObject json) {
-		
+		media_object.get(c).updateWithJson(c, json);
 		try {
 			if(json.has(Constants.OW_TITLE))
 				this.setTitle(c, json.getString(Constants.OW_TITLE));
@@ -124,7 +115,7 @@ public class OWPhoto extends Model implements OWMobileGeneratedObject{
 			if(json.has(Constants.OW_FIRST_POSTED))
 				this.setFirstPosted(c, json.getString(Constants.OW_FIRST_POSTED));
 			if(json.has(Constants.OW_THUMB_URL))
-				this.thumbnail_url.set(json.getString(Constants.OW_THUMB_URL));
+				this.setThumbnailUrl(c, json.getString(Constants.OW_THUMB_URL));
 			if(json.has("media_url"))
 				this.media_url.set(json.getString("media_url"));
 			this.save(c);
@@ -180,5 +171,156 @@ public class OWPhoto extends Model implements OWMobileGeneratedObject{
 	public MEDIA_TYPE getType() {
 		return Constants.MEDIA_TYPE.PHOTO;
 	}
+	
+	public static OWPhoto createOrUpdateOWPhotoWithJson(Context app_context, JSONObject json_obj, OWFeed feed) throws JSONException{
+		OWPhoto photo = createOrUpdateOWPhotoWithJson(app_context, json_obj);
+		// add recording to feed if not null
+		if(feed != null){
+			Log.i(TAG, String.format("Adding audio %s to feed %s", photo.uuid.get(), feed.name.get()));
+			photo.addToFeed(app_context, feed);
+			photo.save(app_context);
+			//Log.i(TAG, String.format("Feed %s now has %d items", feed.name.get(), feed.video_recordings.get(app_context, feed).count()) );
+		}
+		
+		return photo;
+	}
+	
+
+	public static OWPhoto createOrUpdateOWPhotoWithJson(Context app_context, JSONObject json_obj) throws JSONException{
+		//Log.i(TAG, "Evaluating json recording: " + json_obj.toString());
+		OWPhoto existing_photo = null;
+		
+		DatabaseAdapter dba = DatabaseAdapter.getInstance(app_context);
+		String query_string = String.format("SELECT %s FROM %s WHERE %s = \"%s\"", DBConstants.ID, DBConstants.PHOTO_TABLENAME, DBConstants.RECORDINGS_TABLE_UUID, json_obj.getString(Constants.OW_UUID));
+		Log.i(TAG, "searching for existing audio: " + query_string);
+		Cursor result = dba.open().query(query_string);
+		if(result != null && result.moveToFirst()){
+			int photo_id = result.getInt(0);
+			if(photo_id != 0)
+				existing_photo = OWPhoto.objects(app_context, OWPhoto.class).get(photo_id);
+			if(existing_photo != null)
+				Log.i(TAG, "found existing audio for id: " + String.valueOf( json_obj.getString(Constants.OW_SERVER_ID)));
+		}
+		
+		if(existing_photo == null){
+			Log.i(TAG, "creating new audio");
+			existing_photo = new OWPhoto(app_context);
+		}
+		
+		existing_photo.updateWithJson(app_context, json_obj);
+
+		return existing_photo;
+	}
+	@Override
+	public QuerySet<OWTag> getTags(Context c) {
+		return media_object.get(c).getTags(c); 
+	}
+	
+	@Override
+	public Integer getViews(Context c) {
+		return media_object.get(c).getViews(c);
+	}
+
+	@Override
+	public Integer getActions(Context c) {
+		return media_object.get(c).getActions(c);
+	}
+
+	@Override
+	public Integer getServerId(Context c) {
+		return media_object.get(c).getServerId(c);
+	}
+
+	@Override
+	public String getThumbnailUrl(Context c) {
+		return media_object.get(c).getThumbnailUrl(c);
+	}
+
+	@Override
+	public OWUser getUser(Context c) {
+		return media_object.get(c).getUser(c);
+	}
+
+	@Override
+	public void addToFeed(Context c, OWFeed feed) {
+		media_object.get(c).addToFeed(c, feed);
+	}
+
+	@Override
+	public String getFirstPosted(Context c) {
+		return media_object.get(c).getFirstPosted(c);
+	}
+
+	@Override
+	public void setFirstPosted(Context c, String first_posted) {
+		media_object.get(c).setFirstPosted(c, first_posted);
+	}
+
+	@Override
+	public String getLastEdited(Context c) {
+		return media_object.get(c).getLastEdited(c);
+	}
+
+	@Override
+	public void setLastEdited(Context c, String last_edited) {
+		media_object.get(c).setLastEdited(c, last_edited);
+	}
+
+	@Override
+	public void setViews(Context c, int views) {
+		media_object.get(c).setViews(c, views);
+	}
+
+	@Override
+	public void setActions(Context c, int actions) {
+		media_object.get(c).setActions(c, actions);
+	}
+
+	@Override
+	public void setServerId(Context c, int server_id) {
+		media_object.get(c).setServerId(c, server_id);
+	}
+
+	@Override
+	public void setDescription(Context c, String description) {
+		media_object.get(c).setDescription(c, description);
+	}
+
+	@Override
+	public void setThumbnailUrl(Context c, String url) {
+		media_object.get(c).setThumbnailUrl(c, url);
+	}
+
+	@Override
+	public void setUser(Context c, OWUser user) {
+		media_object.get(c).setUser(c, user);
+	}
+
+	@Override
+	public void resetTags(Context c) {
+		media_object.get(c).resetTags(c);
+	}
+
+	@Override
+	public void addTag(Context c, OWTag tag) {
+		media_object.get(c).addTag(c, tag);
+	}
+
+	@Override
+	public String getTitle(Context c) {
+		return media_object.get(c).getTitle(c);
+	}
+
+	@Override
+	public String getDescription(Context c) {
+		return media_object.get(c).description.get();
+	}
+
+	@Override
+	public void setTitle(Context c, String title) {
+		media_object.get(c).setTitle(c, title);
+	}
+
+
 
 }

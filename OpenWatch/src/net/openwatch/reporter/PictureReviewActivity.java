@@ -125,7 +125,7 @@ public class PictureReviewActivity extends Activity {
 	
 	private void syncPhoto(){
 		OWPhoto photo = OWPhoto.objects(getApplicationContext(), OWPhoto.class).get(owphoto_id);
-		photo.title.set(photoEditText.getText().toString());
+		photo.setTitle(getApplicationContext(), photoEditText.getText().toString());
 		photo.save(getApplicationContext());
 		OWServiceRequests.createOWMobileGeneratedObject(getApplicationContext(), photo);
 		didAttemptSync = true;
