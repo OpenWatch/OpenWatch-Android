@@ -9,7 +9,7 @@ public class DBConstants {
 	public static final String DB_NAME = "OpenWatchDB";
 	
 	// OWMediaObject table
-	public static final String MEDIA_OBJECT_TABLENAME = "owmediaobject";
+	public static final String MEDIA_OBJECT_TABLENAME = "owserverobject";
 	public static final String MEDIA_OBJECT_STORY = "story";
 	public static final String MEDIA_OBJECT_USER = "user";
 	public static final String MEDIA_OBJECT_VIDEO = "video_recording";
@@ -60,7 +60,7 @@ public class DBConstants {
 	public static final String FEED_NAME = "name";
 	
 	// OWMediaObject - Feed Relation table
-	public static final String FEED_MEDIA_OBJ_TABLENAME = "owfeed_owmediaobject";
+	public static final String FEED_MEDIA_OBJ_TABLENAME = "owfeed_owserverobject";
 
 	// Story table
 	public static final String STORY_TABLENAME = "owstory";

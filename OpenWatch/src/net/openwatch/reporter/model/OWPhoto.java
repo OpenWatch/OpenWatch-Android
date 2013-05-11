@@ -24,7 +24,7 @@ import com.orm.androrm.field.DoubleField;
 import com.orm.androrm.field.ForeignKeyField;
 import com.orm.androrm.field.IntegerField;
 
-public class OWPhoto extends Model implements OWMobileGeneratedObject, OWMediaObjectInterface{
+public class OWPhoto extends Model implements OWMediaObject{
 	private static final String TAG = "OWPhoto";
 	
 	public CharField uuid = new CharField();
@@ -36,7 +36,7 @@ public class OWPhoto extends Model implements OWMobileGeneratedObject, OWMediaOb
 	
 	public CharField media_url = new CharField();
 	
-	public ForeignKeyField<OWMediaObject> media_object = new ForeignKeyField<OWMediaObject> ( OWMediaObject.class );
+	public ForeignKeyField<OWServerObject> media_object = new ForeignKeyField<OWServerObject> ( OWServerObject.class );
 		
 	public OWPhoto(){
 		super();
@@ -46,7 +46,7 @@ public class OWPhoto extends Model implements OWMobileGeneratedObject, OWMediaOb
 		super();
 		
 		save(c);
-		OWMediaObject media_object = new OWMediaObject();
+		OWServerObject media_object = new OWServerObject();
 		media_object.photo.set(this);
 		media_object.save(c);
 		this.media_object.set(media_object);
@@ -149,7 +149,8 @@ public class OWPhoto extends Model implements OWMobileGeneratedObject, OWMediaOb
 		}
 		return json_obj;
 	}
-
+	
+/*
 	@Override
 	public int getUserServerId() {
 		if(OWApplication.user_data == null)
@@ -166,7 +167,7 @@ public class OWPhoto extends Model implements OWMobileGeneratedObject, OWMediaOb
 			OWApplication.user_data.put(DBConstants.USER_SERVER_ID, user_server_id);
 
 	}
-
+*/
 	@Override
 	public MEDIA_TYPE getType() {
 		return Constants.MEDIA_TYPE.PHOTO;

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Date;
 
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
 
@@ -21,7 +22,7 @@ import com.orm.androrm.QuerySet;
 import com.orm.androrm.field.CharField;
 import com.orm.androrm.field.ForeignKeyField;
 
-public class OWStory extends Model implements OWMediaObjectInterface{
+public class OWStory extends Model implements OWMediaObject{
 	private static final String TAG = "OWStory";
 	
 	public CharField blurb = new CharField();
@@ -29,7 +30,7 @@ public class OWStory extends Model implements OWMediaObjectInterface{
 	public CharField body = new CharField();
 	
 	
-	public ForeignKeyField<OWMediaObject> media_object = new ForeignKeyField<OWMediaObject> ( OWMediaObject.class );
+	public ForeignKeyField<OWServerObject> media_object = new ForeignKeyField<OWServerObject> ( OWServerObject.class );
 	
 	public OWStory() {
 		super();
@@ -38,7 +39,7 @@ public class OWStory extends Model implements OWMediaObjectInterface{
 	public OWStory(Context c){
 		super();
 		this.save(c);
-		OWMediaObject media_object = new OWMediaObject();
+		OWServerObject media_object = new OWServerObject();
 		media_object.story.set(getId());
 		media_object.save(c);
 		this.media_object.set(media_object);
@@ -109,7 +110,7 @@ public class OWStory extends Model implements OWMediaObjectInterface{
 		if(result != null && result.moveToFirst()){
 			int media_obj_id = result.getInt(0);
 			if(media_obj_id != 0){
-				existing_story = OWMediaObject.objects(app_context, OWMediaObject.class).get(media_obj_id).story.get(app_context);
+				existing_story = OWServerObject.objects(app_context, OWServerObject.class).get(media_obj_id).story.get(app_context);
 			}
 			if(existing_story != null)
 				Log.i(TAG, "found existing story for id: " + String.valueOf( json_obj.getString(Constants.OW_SERVER_ID)));
@@ -254,6 +255,60 @@ public class OWStory extends Model implements OWMediaObjectInterface{
 	
 	public static String getUrlFromId(int server_id){
 		return Constants.OW_URL + Constants.OW_STORY_VIEW + String.valueOf(server_id);	
+	}
+
+	@Override
+	public String getUUID(Context c) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setUUID(Context c, String uuid) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setLat(Context c, double lat) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public double getLat(Context c) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setLon(Context c, double lon) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public double getLon(Context c) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public MEDIA_TYPE getType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setMediaFilepath(Context c, String filepath) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getMediaFilepath(Context c) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

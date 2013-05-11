@@ -7,7 +7,7 @@ import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
 import net.openwatch.reporter.constants.Constants.HIT_TYPE;
 import net.openwatch.reporter.http.OWServiceRequests;
 import net.openwatch.reporter.http.OWServiceRequests.RequestCallback;
-import net.openwatch.reporter.model.OWMediaObject;
+import net.openwatch.reporter.model.OWServerObject;
 import net.openwatch.reporter.model.OWStory;
 import net.openwatch.reporter.model.OWVideoRecording;
 import net.openwatch.reporter.share.Share;
@@ -50,14 +50,14 @@ public class StoryViewActivity extends SherlockActivity implements OWMediaObject
 		
 		try{
 			model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
-			server_id = OWMediaObject.objects(this, OWMediaObject.class).get(model_id).server_id.get();
-			if( OWMediaObject.objects(this, OWMediaObject.class).get(model_id).story.get(getApplicationContext()) != null && OWMediaObject.objects(this, OWMediaObject.class).get(model_id).story.get(getApplicationContext()).body.get() != null){
-				populateViews(OWMediaObject.objects(this, OWMediaObject.class).get(model_id), getApplicationContext());
-			} else if(OWMediaObject.objects(this, OWMediaObject.class).get(model_id).title.get() != null){
-				((TextView)findViewById(R.id.title)).setText(OWMediaObject.objects(this, OWMediaObject.class).get(model_id).title.get());
-				this.getSupportActionBar().setTitle(OWMediaObject.objects(this, OWMediaObject.class).get(model_id).title.get());
+			server_id = OWServerObject.objects(this, OWServerObject.class).get(model_id).server_id.get();
+			if( OWServerObject.objects(this, OWServerObject.class).get(model_id).story.get(getApplicationContext()) != null && OWServerObject.objects(this, OWServerObject.class).get(model_id).story.get(getApplicationContext()).body.get() != null){
+				populateViews(OWServerObject.objects(this, OWServerObject.class).get(model_id), getApplicationContext());
+			} else if(OWServerObject.objects(this, OWServerObject.class).get(model_id).title.get() != null){
+				((TextView)findViewById(R.id.title)).setText(OWServerObject.objects(this, OWServerObject.class).get(model_id).title.get());
+				this.getSupportActionBar().setTitle(OWServerObject.objects(this, OWServerObject.class).get(model_id).title.get());
 				final Context c = this.getApplicationContext();
-				int story_server_id = OWMediaObject.objects(this, OWMediaObject.class).get(model_id).getServerId(c);
+				int story_server_id = OWServerObject.objects(this, OWServerObject.class).get(model_id).getServerId(c);
 				OWServiceRequests.getStory(getApplicationContext(), story_server_id, new RequestCallback(){
 
 					@Override
@@ -67,14 +67,14 @@ public class StoryViewActivity extends SherlockActivity implements OWMediaObject
 
 					@Override
 					public void onSuccess() {
-						if( OWMediaObject.objects(c, OWMediaObject.class).get(model_id).story.get(getApplicationContext()).body.get() != null ){
-							StoryViewActivity.this.populateViews(OWMediaObject.objects(c, OWMediaObject.class).get(model_id), c);
+						if( OWServerObject.objects(c, OWServerObject.class).get(model_id).story.get(getApplicationContext()).body.get() != null ){
+							StoryViewActivity.this.populateViews(OWServerObject.objects(c, OWServerObject.class).get(model_id), c);
 						}
 					}
 					
 				});
 			}
-			OWServiceRequests.increaseHitCount(getApplicationContext(), OWMediaObject.objects(this, OWMediaObject.class).get(model_id).server_id.get(), model_id, CONTENT_TYPE.STORY, HIT_TYPE.VIEW);
+			OWServiceRequests.increaseHitCount(getApplicationContext(), OWServerObject.objects(this, OWServerObject.class).get(model_id).server_id.get(), model_id, CONTENT_TYPE.STORY, HIT_TYPE.VIEW);
 		}catch(Exception e){
 			Log.e(TAG, "Error retrieving model");
 			e.printStackTrace();
@@ -128,7 +128,7 @@ public class StoryViewActivity extends SherlockActivity implements OWMediaObject
 	}
 
 	@Override
-	public void populateViews(OWMediaObject media_object, Context app_context) {
+	public void populateViews(OWServerObject media_object, Context app_context) {
 		 this.getSupportActionBar().setTitle(media_object.getTitle(app_context));
 		((TextView) this.findViewById(R.id.title)).setText(media_object.getTitle(app_context));
 		((TextView) this.findViewById(R.id.blurb)).setText(media_object.story.get(app_context).blurb.get());

@@ -11,7 +11,7 @@ import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
 import net.openwatch.reporter.http.OWServiceRequests;
-import net.openwatch.reporter.model.OWMediaObject;
+import net.openwatch.reporter.model.OWServerObject;
 import net.openwatch.reporter.model.OWVideoRecording;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
@@ -59,7 +59,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 	
 	private void fetchRecordingFromOW(){
 		final Context app_context = this.getApplicationContext();
-		OWServiceRequests.getRecordingMeta(app_context, recording_uuid, new JsonHttpResponseHandler(){
+		OWServiceRequests.getOWMediaObjectMeta(app_context, OWServerObject.objects(app_context, OWServerObject.class).get(model_id).video_recording.get(app_context), new JsonHttpResponseHandler(){
 			private static final String TAG = "OWServiceRequests";
 			@Override
     		public void onSuccess(JSONObject response){
@@ -69,7 +69,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 					try{
 						JSONObject recording_json = response.getJSONObject("recording");
 						// response was successful
-						OWVideoRecording recording = OWMediaObject.objects(app_context, OWMediaObject.class).get(model_id).video_recording.get(app_context);
+						OWVideoRecording recording = OWServerObject.objects(app_context, OWServerObject.class).get(model_id).video_recording.get(app_context);
 						recording.updateWithJson(app_context, recording_json);
 						if(recording_json.has(Constants.OW_SERVER_ID) )
 							recording_server_id = recording_json.getInt(Constants.OW_SERVER_ID);

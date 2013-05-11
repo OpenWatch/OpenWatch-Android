@@ -9,7 +9,7 @@ import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
 import net.openwatch.reporter.constants.Constants.HIT_TYPE;
 import net.openwatch.reporter.http.OWServiceRequests;
 import net.openwatch.reporter.http.OWServiceRequests.RequestCallback;
-import net.openwatch.reporter.model.OWMediaObject;
+import net.openwatch.reporter.model.OWServerObject;
 import net.openwatch.reporter.model.OWStory;
 import net.openwatch.reporter.model.OWVideoRecording;
 import net.openwatch.reporter.share.Share;
@@ -99,7 +99,7 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 		String video_path = null;
 		try {
 			model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
-			OWMediaObject media_obj = OWMediaObject.objects(this, OWMediaObject.class).get(model_id);
+			OWServerObject media_obj = OWServerObject.objects(this, OWServerObject.class).get(model_id);
 			SharedPreferences prefs = this.getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
 			int user_id = prefs.getInt(DBConstants.USER_SERVER_ID, 0);
 			if(user_id != 0){
@@ -149,7 +149,7 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 			fragBundle.putBoolean(Constants.IS_USER_RECORDING, is_user_recording);
 			mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_info))
 					.setIndicator(inflateCustomTab(getString(R.string.tab_info))),
-					RecordingInfoFragment.class, fragBundle);
+					OWMobileGeneratedObjectInfoFragment.class, fragBundle);
 					
 			mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_map))
 					.setIndicator(inflateCustomTab(getString(R.string.tab_map))), MapFragment.class,
@@ -220,18 +220,18 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 
 			@Override
 			public void onSuccess() {
-				if( OWMediaObject.objects(c, OWMediaObject.class).get(model_id).video_recording.get(c).video_url.get() != null ){
+				if( OWServerObject.objects(c, OWServerObject.class).get(model_id).video_recording.get(c).video_url.get() != null ){
 					if(!video_playing)
-						setupVideoView(R.id.videoview, OWMediaObject.objects(c, OWMediaObject.class).get(model_id).video_recording.get(c).video_url.get());
+						setupVideoView(R.id.videoview, OWServerObject.objects(c, OWServerObject.class).get(model_id).video_recording.get(c).video_url.get());
 					if(getMapFragment() != null)
-						((OWMediaObjectBackedEntity) RecordingViewActivity.this.getMapFragment() ).populateViews(OWMediaObject.objects(c, OWMediaObject.class).get(model_id), c);
+						((OWMediaObjectBackedEntity) RecordingViewActivity.this.getMapFragment() ).populateViews(OWServerObject.objects(c, OWServerObject.class).get(model_id), c);
 					if(getInfoFragment() != null)
-					((OWMediaObjectBackedEntity) RecordingViewActivity.this.getInfoFragment() ).populateViews(OWMediaObject.objects(c, OWMediaObject.class).get(model_id), c);
+					((OWMediaObjectBackedEntity) RecordingViewActivity.this.getInfoFragment() ).populateViews(OWServerObject.objects(c, OWServerObject.class).get(model_id), c);
 				}
 			}
 			
 		};
-		OWServiceRequests.getRecording(c, OWMediaObject.objects(this, OWMediaObject.class).get(model_id).video_recording.get(c).uuid.get(), cb);
+		OWServiceRequests.getRecording(c, OWServerObject.objects(this, OWServerObject.class).get(model_id).video_recording.get(c).uuid.get(), cb);
 	}
 
 	public void setVideoViewVisible(boolean visible) {

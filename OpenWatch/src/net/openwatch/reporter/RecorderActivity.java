@@ -16,7 +16,7 @@ import net.openwatch.reporter.file.FileUtils;
 import net.openwatch.reporter.http.OWMediaRequests;
 import net.openwatch.reporter.location.DeviceLocation;
 import net.openwatch.reporter.model.OWLocalVideoRecording;
-import net.openwatch.reporter.model.OWMediaObject;
+import net.openwatch.reporter.model.OWServerObject;
 import net.openwatch.reporter.model.OWVideoRecording;
 import net.openwatch.reporter.recording.ChunkedAudioVideoSoftwareRecorder;
 import net.openwatch.reporter.recording.FFChunkedAudioVideoEncoder.ChunkedRecorderListener;

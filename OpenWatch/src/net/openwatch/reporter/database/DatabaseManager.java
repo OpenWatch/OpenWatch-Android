@@ -10,7 +10,7 @@ import net.openwatch.reporter.model.OWAudio;
 import net.openwatch.reporter.model.OWFeed;
 import net.openwatch.reporter.model.OWLocalVideoRecording;
 import net.openwatch.reporter.model.OWLocalVideoRecordingSegment;
-import net.openwatch.reporter.model.OWMediaObject;
+import net.openwatch.reporter.model.OWServerObject;
 import net.openwatch.reporter.model.OWPhoto;
 import net.openwatch.reporter.model.OWVideoRecording;
 import net.openwatch.reporter.model.OWTag;
@@ -70,7 +70,7 @@ public class DatabaseManager {
 		models.add(OWUser.class);
 		models.add(OWFeed.class);
 		models.add(OWStory.class);
-		models.add(OWMediaObject.class);
+		models.add(OWServerObject.class);
 		models.add(OWPhoto.class);
 		models.add(OWAudio.class);
 		

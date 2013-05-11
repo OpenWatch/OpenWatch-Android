@@ -1,6 +1,6 @@
 package net.openwatch.reporter;
 
-import net.openwatch.reporter.model.OWMediaObject;
+import net.openwatch.reporter.model.OWServerObject;
 import net.openwatch.reporter.model.OWVideoRecording;
 import android.content.Context;
 import android.os.Bundle;
@@ -108,7 +108,7 @@ public class MapFragment extends SupportMapFragment implements OWMediaObjectBack
     }
 
 	@Override
-	public void populateViews(OWMediaObject media_object, Context app_context) {
+	public void populateViews(OWServerObject media_object, Context app_context) {
 		mapRecording(media_object.video_recording.get(app_context));
 	}
 

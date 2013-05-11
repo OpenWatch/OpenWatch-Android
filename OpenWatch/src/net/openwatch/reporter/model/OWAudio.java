@@ -20,24 +20,19 @@ import com.orm.androrm.field.DoubleField;
 import com.orm.androrm.field.ForeignKeyField;
 import com.orm.androrm.field.IntegerField;
 
-public class OWAudio extends Model implements OWMobileGeneratedObject{
+public class OWAudio extends Model implements OWMediaObject{
 	private static final String TAG = "OWMobileGeneratedObject";
 	
-	public CharField title = new CharField();
 	public CharField uuid = new CharField();
-	public BooleanField is_featured = new BooleanField();
-	public IntegerField server_id = new IntegerField();
-	public CharField first_posted = new CharField();
 	public CharField directory = new CharField();
 	public CharField filepath = new CharField();
 	public BooleanField synced = new BooleanField();
 	public DoubleField lat = new DoubleField();
 	public DoubleField lon = new DoubleField();
 	
-	public CharField thumbnail_url = new CharField();
 	public CharField media_url = new CharField();
 	
-	public ForeignKeyField<OWMediaObject> media_object = new ForeignKeyField<OWMediaObject> ( OWMediaObject.class );
+	public ForeignKeyField<OWServerObject> media_object = new ForeignKeyField<OWServerObject> ( OWServerObject.class );
 		
 	public OWAudio(){
 		super();
@@ -48,27 +43,6 @@ public class OWAudio extends Model implements OWMobileGeneratedObject{
 		// notify the ContentProvider that the dataset has changed
 		context.getContentResolver().notifyChange(OWContentProvider.getTagUri(this.getId()), null);
 		return super.save(context);
-	}
-
-
-	@Override
-	public String getTitle(Context c) {
-		return this.title.get();
-	}
-
-	@Override
-	public void setTitle(Context c, String title) {
-		this.title.set(title);
-	}
-
-	@Override
-	public String getFirstPosted(Context c) {
-		return this.first_posted.get();
-	}
-
-	@Override
-	public void setFirstPosted(Context c, String first_posted) {
-		this.first_posted.set(first_posted);
 	}
 
 	@Override
@@ -126,7 +100,7 @@ public class OWAudio extends Model implements OWMobileGeneratedObject{
 			if(json.has(Constants.OW_FIRST_POSTED))
 				this.setFirstPosted(c, json.getString(Constants.OW_FIRST_POSTED));
 			if(json.has(Constants.OW_THUMB_URL))
-				this.thumbnail_url.set(json.getString(Constants.OW_THUMB_URL));
+				this.setThumbnailUrl(c, json.getString(Constants.OW_THUMB_URL));
 			if(json.has("media_url"))
 				this.media_url.set(json.getString("media_url"));
 			this.save(c);
@@ -160,7 +134,7 @@ public class OWAudio extends Model implements OWMobileGeneratedObject{
 		}
 		return json_obj;
 	}
-
+	/*
 	@Override
 	public int getUserServerId() {
 		if(OWApplication.user_data == null)
@@ -176,11 +150,121 @@ public class OWAudio extends Model implements OWMobileGeneratedObject{
 		else
 			OWApplication.user_data.put(DBConstants.USER_SERVER_ID, user_server_id);
 
-	}
+	} */
 
 	@Override
 	public MEDIA_TYPE getType() {
 		return Constants.MEDIA_TYPE.AUDIO;
+	}
+
+	@Override
+	public void setTitle(Context c, String title) {
+		media_object.get(c).setTitle(c, title);
+	}
+
+	@Override
+	public void setViews(Context c, int views) {
+		media_object.get(c).setViews(c, views);
+	}
+
+	@Override
+	public void setActions(Context c, int actions) {
+		media_object.get(c).setActions(c, actions);
+	}
+
+	@Override
+	public void setServerId(Context c, int server_id) {
+		media_object.get(c).setServerId(c, server_id);
+	}
+
+	@Override
+	public void setDescription(Context c, String description) {
+		media_object.get(c).setDescription(c, description);
+	}
+
+	@Override
+	public void setThumbnailUrl(Context c, String url) {
+		media_object.get(c).setThumbnailUrl(c, url);
+	}
+
+	@Override
+	public void setUser(Context c, OWUser user) {
+		media_object.get(c).setUser(c, user);
+	}
+
+	@Override
+	public void resetTags(Context c) {
+		media_object.get(c).resetTags(c);
+	}
+
+	@Override
+	public void addTag(Context c, OWTag tag) {
+		media_object.get(c).addTag(c, tag);
+	}
+
+	@Override
+	public String getTitle(Context c) {
+		return media_object.get(c).getTitle(c);
+	}
+
+	@Override
+	public String getDescription(Context c) {
+		return media_object.get(c).description.get();
+	}
+
+	@Override
+	public QuerySet<OWTag> getTags(Context c) {
+		return media_object.get(c).getTags(c); 
+	}
+	
+	@Override
+	public Integer getViews(Context c) {
+		return media_object.get(c).getViews(c);
+	}
+
+	@Override
+	public Integer getActions(Context c) {
+		return media_object.get(c).getActions(c);
+	}
+
+	@Override
+	public Integer getServerId(Context c) {
+		return media_object.get(c).getServerId(c);
+	}
+
+	@Override
+	public String getThumbnailUrl(Context c) {
+		return media_object.get(c).getThumbnailUrl(c);
+	}
+
+	@Override
+	public OWUser getUser(Context c) {
+		return media_object.get(c).getUser(c);
+	}
+
+	@Override
+	public void addToFeed(Context c, OWFeed feed) {
+		media_object.get(c).addToFeed(c, feed);
+	}
+
+	@Override
+	public String getFirstPosted(Context c) {
+		return media_object.get(c).getFirstPosted(c);
+	}
+
+	@Override
+	public void setFirstPosted(Context c, String first_posted) {
+		media_object.get(c).setFirstPosted(c, first_posted);
+	}
+
+	@Override
+	public String getLastEdited(Context c) {
+		return media_object.get(c).getLastEdited(c);
+	}
+
+	@Override
+	public void setLastEdited(Context c, String last_edited) {
+		media_object.get(c).setLastEdited(c, last_edited);
 	}
 
 }

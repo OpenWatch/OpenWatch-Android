@@ -66,7 +66,7 @@ public class MainActivity extends SherlockActivity {
 		Log.i("takePicture", "location " + photo_location.getAbsolutePath() + " exists: " + String.valueOf(photo_location.exists()));
 		takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo_location));
 		
-		OWPhoto photo = new OWPhoto();
+		OWPhoto photo = new OWPhoto(getApplicationContext());
 		photo.filepath.set(photo_location.getAbsolutePath());
 		photo.directory.set(photo_location.getParentFile().getAbsolutePath());
 		photo.uuid.set(uuid);

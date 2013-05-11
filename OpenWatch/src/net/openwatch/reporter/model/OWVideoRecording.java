@@ -19,12 +19,13 @@ import com.orm.androrm.field.CharField;
 import com.orm.androrm.field.DoubleField;
 import com.orm.androrm.field.ForeignKeyField;
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
 import net.openwatch.reporter.http.OWServiceRequests;
 
 
-public class OWVideoRecording extends Model implements OWMediaObjectInterface{
+public class OWVideoRecording extends Model implements OWMediaObject{
 	private static final String TAG = "OWRecording";
 
 	// Specific to OWRecording
@@ -36,7 +37,7 @@ public class OWVideoRecording extends Model implements OWMediaObjectInterface{
 	public DoubleField end_lat = new DoubleField();
 	public DoubleField end_lon = new DoubleField();
 	
-	public ForeignKeyField<OWMediaObject> media_object = new ForeignKeyField<OWMediaObject> ( OWMediaObject.class );
+	public ForeignKeyField<OWServerObject> media_object = new ForeignKeyField<OWServerObject> ( OWServerObject.class );
 
 	// For internal use
 	public ForeignKeyField<OWLocalVideoRecording> local = new ForeignKeyField<OWLocalVideoRecording>(OWLocalVideoRecording.class);
@@ -49,7 +50,7 @@ public class OWVideoRecording extends Model implements OWMediaObjectInterface{
 		super();
 		
 		save(c);
-		OWMediaObject media_object = new OWMediaObject();
+		OWServerObject media_object = new OWServerObject();
 		media_object.video_recording.set(this);
 		media_object.save(c);
 		this.media_object.set(media_object);
@@ -86,7 +87,7 @@ public class OWVideoRecording extends Model implements OWMediaObjectInterface{
 	public void saveAndSync(Context context){
 		// notify the ContentProvider that the dataset has changed
 		save(context);
-		OWServiceRequests.syncRecording(context, this);
+		OWServiceRequests.syncOWMediaObject(context, this);
 		return;
 	}
 	
@@ -188,6 +189,12 @@ public class OWVideoRecording extends Model implements OWMediaObjectInterface{
 	 * @param json
 	 */
 	public void updateWithJson(Context app_context, JSONObject json){
+		if(app_context == null)
+			Log.i(TAG, "app_context is null!");
+		if(json == null)
+			Log.i(TAG, "json is null");
+		if(media_object.get(app_context) == null)
+			Log.i(TAG, "media_object is null");
 		media_object.get(app_context).updateWithJson(app_context, json);
 		try {
 			if(json.has(Constants.OW_CREATION_TIME))
@@ -358,6 +365,52 @@ public class OWVideoRecording extends Model implements OWMediaObjectInterface{
 	
 	public static String getUrlFromId(int server_id){
 		return Constants.OW_URL + Constants.OW_RECORDING_VIEW + String.valueOf(server_id);	
+	}
+
+	@Override
+	public String getUUID(Context c) {
+		return uuid.get();
+	}
+
+	@Override
+	public void setUUID(Context c, String uuid) {
+		this.uuid.set(uuid);
+	}
+
+	@Override
+	public void setLat(Context c, double lat) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public double getLat(Context c) {
+		return this.end_lat.get();
+	}
+
+	@Override
+	public void setLon(Context c, double lon) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public double getLon(Context c) {
+		return this.end_lon.get();
+	}
+
+	@Override
+	public MEDIA_TYPE getType() {
+		return MEDIA_TYPE.VIDEO;
+	}
+
+	@Override
+	public void setMediaFilepath(Context c, String filepath) {
+		this.local.get(c).hq_filepath.set(filepath);
+	}
+
+	@Override
+	public String getMediaFilepath(Context c) {
+		return this.local.get(c).hq_filepath.get();
 	}
 
 }
