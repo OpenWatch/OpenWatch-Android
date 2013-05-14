@@ -1,3 +1,4 @@
+
 package net.openwatch.reporter.model;
 
 
@@ -8,6 +9,7 @@ import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
 import net.openwatch.reporter.constants.Constants.OWFeedType;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
+import net.openwatch.reporter.http.OWServiceRequests;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -406,6 +408,11 @@ public class OWServerObject extends Model implements OWMediaObject{
 	public String getMediaFilepath(Context c) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public void saveAndSync(Context c){
+		this.save(c);
+		OWServiceRequests.syncOWMediaObject(c, this);
 	}
 
 }

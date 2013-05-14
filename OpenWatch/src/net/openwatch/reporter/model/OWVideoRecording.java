@@ -84,13 +84,14 @@ public class OWVideoRecording extends Model implements OWMediaObject{
 	 * @param context
 	 * @return
 	 */
+	/*
 	public void saveAndSync(Context context){
 		// notify the ContentProvider that the dataset has changed
 		save(context);
 		OWServiceRequests.syncOWMediaObject(context, this);
 		return;
 	}
-	
+	*/
 	
 	/**
 	 * Creates recordings with basic information provided in an OpenWatch feed response
