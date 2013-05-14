@@ -8,6 +8,7 @@ import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.model.OWAudio;
 import net.openwatch.reporter.model.OWFeed;
+import net.openwatch.reporter.model.OWInvestigation;
 import net.openwatch.reporter.model.OWLocalVideoRecording;
 import net.openwatch.reporter.model.OWLocalVideoRecordingSegment;
 import net.openwatch.reporter.model.OWServerObject;
@@ -73,6 +74,7 @@ public class DatabaseManager {
 		models.add(OWServerObject.class);
 		models.add(OWPhoto.class);
 		models.add(OWAudio.class);
+		models.add(OWInvestigation.class);
 		
 		pointToDB();
 		DatabaseAdapter adapter = DatabaseAdapter.getInstance(app_context);

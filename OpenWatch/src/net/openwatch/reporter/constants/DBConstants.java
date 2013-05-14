@@ -71,4 +71,10 @@ public class DBConstants {
 	
 	// Photo table
 	public static final String PHOTO_TABLENAME = "owphoto";
+	
+	// Audio table
+	public static final String AUDIO_TABLENAME = "owaudio";
+	
+	// Investigation table
+	public static final String INVESTIGATION_TABLENAME = "owinvestigation";
 }

@@ -1,24 +1,23 @@
 package net.openwatch.reporter.model;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import net.openwatch.reporter.OWApplication;
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
 import android.content.Context;
+import android.database.Cursor;
 import android.util.Log;
 
+import com.orm.androrm.DatabaseAdapter;
 import com.orm.androrm.Model;
 import com.orm.androrm.QuerySet;
 import com.orm.androrm.field.BooleanField;
 import com.orm.androrm.field.CharField;
 import com.orm.androrm.field.DoubleField;
 import com.orm.androrm.field.ForeignKeyField;
-import com.orm.androrm.field.IntegerField;
 
 public class OWAudio extends Model implements OWMediaObject{
 	private static final String TAG = "OWMobileGeneratedObject";
@@ -38,11 +37,61 @@ public class OWAudio extends Model implements OWMediaObject{
 		super();
 	}
 	
+	public OWAudio(Context c){
+		super();
+		save(c);
+		OWServerObject media_object = new OWServerObject();
+		media_object.audio.set(this);
+		media_object.save(c);
+		this.media_object.set(media_object);
+		save(c);
+	}
+	
 	@Override
 	public boolean save(Context context) {
 		// notify the ContentProvider that the dataset has changed
 		context.getContentResolver().notifyChange(OWContentProvider.getTagUri(this.getId()), null);
 		return super.save(context);
+	}
+	
+	public static OWAudio createOrUpdateOWAudioWithJson(Context app_context, JSONObject json_obj, OWFeed feed) throws JSONException{
+		OWAudio audio = createOrUpdateOWAudioWithJson(app_context, json_obj);
+		// add recording to feed if not null
+		if(feed != null){
+			Log.i(TAG, String.format("Adding audio %s to feed %s", audio.uuid.get(), feed.name.get()));
+			audio.addToFeed(app_context, feed);
+			audio.save(app_context);
+			//Log.i(TAG, String.format("Feed %s now has %d items", feed.name.get(), feed.video_recordings.get(app_context, feed).count()) );
+		}
+		
+		return audio;
+	}
+	
+
+	public static OWAudio createOrUpdateOWAudioWithJson(Context app_context, JSONObject json_obj) throws JSONException{
+		//Log.i(TAG, "Evaluating json recording: " + json_obj.toString());
+		OWAudio existing_audio = null;
+		
+		DatabaseAdapter dba = DatabaseAdapter.getInstance(app_context);
+		String query_string = String.format("SELECT %s FROM %s WHERE ( %s = \"%s\" AND %s IS NOT NULL)", DBConstants.ID, DBConstants.MEDIA_OBJECT_TABLENAME, DBConstants.STORY_SERVER_ID, json_obj.getString(Constants.OW_SERVER_ID), "audio");
+		Log.i(TAG, "searching for existing audio: " + query_string);
+		Cursor result = dba.open().query(query_string);
+		if(result != null && result.moveToFirst()){
+			int audio_id = result.getInt(0);
+			if(audio_id != 0)
+				existing_audio = OWServerObject.objects(app_context, OWServerObject.class).get(audio_id).audio.get(app_context);
+			if(existing_audio != null)
+				Log.i(TAG, "found existing audio for id: " + String.valueOf( json_obj.getString(Constants.OW_SERVER_ID)));
+		}
+		
+		if(existing_audio == null){
+			Log.i(TAG, "creating new audio");
+			existing_audio = new OWAudio(app_context);
+		}
+		
+		existing_audio.updateWithJson(app_context, json_obj);
+
+		return existing_audio;
 	}
 
 	@Override

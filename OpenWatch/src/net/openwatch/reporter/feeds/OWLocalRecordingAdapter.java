@@ -64,6 +64,8 @@ public class OWLocalRecordingAdapter extends SimpleCursorAdapter {
         
         if(view_cache.last_seen_id != cursor.getInt(cursor.getColumnIndexOrThrow(DBConstants.ID)) && cursor.getString(view_cache.thumbnail_col) != null && cursor.getString(view_cache.thumbnail_col).compareTo("") != 0){
         	ImageLoader.getInstance().displayImage(cursor.getString(view_cache.thumbnail_col), view_cache.thumbnail);
+        }else if(cursor.getString(view_cache.thumbnail_col) == null || cursor.getString(view_cache.thumbnail_col).compareTo("") == 0){
+        	view_cache.thumbnail.setImageResource(R.drawable.thumbnail_placeholder);
         }
         //Log.i("OWLocalRecordingAdapter", "got id: " + String.valueOf(cursor.getInt(view_cache._id_col)));
         view.setTag(R.id.list_item_model, cursor.getInt(view_cache._id_col));

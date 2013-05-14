@@ -192,7 +192,7 @@ public class OWPhoto extends Model implements OWMediaObject{
 		OWPhoto existing_photo = null;
 		
 		DatabaseAdapter dba = DatabaseAdapter.getInstance(app_context);
-		String query_string = String.format("SELECT %s FROM %s WHERE %s = \"%s\"", DBConstants.ID, DBConstants.PHOTO_TABLENAME, DBConstants.RECORDINGS_TABLE_UUID, json_obj.getString(Constants.OW_UUID));
+		String query_string = String.format("SELECT %s FROM %s WHERE ( %s = \"%s\" AND %s IS NOT NULL)", DBConstants.ID, DBConstants.MEDIA_OBJECT_TABLENAME, DBConstants.STORY_SERVER_ID, json_obj.getString(Constants.OW_SERVER_ID), "photo");
 		Log.i(TAG, "searching for existing audio: " + query_string);
 		Cursor result = dba.open().query(query_string);
 		if(result != null && result.moveToFirst()){
@@ -212,6 +212,7 @@ public class OWPhoto extends Model implements OWMediaObject{
 
 		return existing_photo;
 	}
+	
 	@Override
 	public QuerySet<OWTag> getTags(Context c) {
 		return media_object.get(c).getTags(c); 

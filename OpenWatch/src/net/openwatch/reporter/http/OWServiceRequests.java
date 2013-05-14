@@ -25,7 +25,9 @@ import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
 import net.openwatch.reporter.location.DeviceLocation;
 import net.openwatch.reporter.location.DeviceLocation.GPSRequestCallback;
+import net.openwatch.reporter.model.OWAudio;
 import net.openwatch.reporter.model.OWFeed;
+import net.openwatch.reporter.model.OWInvestigation;
 import net.openwatch.reporter.model.OWMediaObject;
 import net.openwatch.reporter.model.OWServerObject;
 import net.openwatch.reporter.model.OWPhoto;
@@ -342,7 +344,11 @@ public class OWServiceRequests {
 							OWStory.createOrUpdateOWStoryWithJson(c, json_obj, OWFeed.getFeedFromString(c, feed_name));
 						else if(json_obj.getString("type").compareTo("photo") == 0)
 							OWPhoto.createOrUpdateOWPhotoWithJson(c, json_obj, OWFeed.getFeedFromString(c, feed_name));
-						// TODO: Investigation, audio, etc
+						else if(json_obj.getString("type").compareTo("audio") == 0)
+							OWAudio.createOrUpdateOWAudioWithJson(c, json_obj, OWFeed.getFeedFromString(c, feed_name));
+						else if(json_obj.getString("type").compareTo("investigation") == 0)
+							OWInvestigation.createOrUpdateOWInvestigationWithJson(c, json_obj, OWFeed.getFeedFromString(c, feed_name));
+						
 					}
 				}
 				adapter.commitTransaction();
@@ -375,7 +381,8 @@ public class OWServiceRequests {
 				}
 				success = true;
 			}catch(JSONException e){
-				Log.e(TAG, "Error parsing feed response");
+				adapter.rollbackTransaction();
+				Log.e(TAG, "Error parsing " + feed_name + " feed response");
 				e.printStackTrace();
 			}
 			
@@ -604,8 +611,7 @@ public class OWServiceRequests {
 
 	public static void getOWMediaObjectMeta(Context app_context, OWMediaObject object, JsonHttpResponseHandler response_handler) {
 		AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
-		Log.i(TAG, "Commencing Get Recording Meta: " + Constants.OW_API_URL
-				+ Constants.OW_RECORDING);
+		Log.i(TAG, "Commencing Get Recording Meta: " + instanceEndpointForOWMediaObject(app_context, object));
 		http_client.get(instanceEndpointForOWMediaObject(app_context, object), response_handler);
 	}
 

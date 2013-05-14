@@ -52,6 +52,8 @@ public class OWServerObject extends Model implements OWMediaObject{
 	
 	public ForeignKeyField<OWVideoRecording> video_recording = new ForeignKeyField<OWVideoRecording>(OWVideoRecording.class);
 	
+	public ForeignKeyField<OWInvestigation> investigation = new ForeignKeyField<OWInvestigation>(OWInvestigation.class);
+	
 	public ForeignKeyField<OWLocalVideoRecording> local_video_recording = new ForeignKeyField<OWLocalVideoRecording>(OWLocalVideoRecording.class);
 	
 	public ForeignKeyField<OWStory> story = new ForeignKeyField<OWStory>(OWStory.class);
@@ -137,6 +139,10 @@ public class OWServerObject extends Model implements OWMediaObject{
 			
 			if(json.has(Constants.OW_THUMB_URL) && json.getString(Constants.OW_THUMB_URL).compareTo(Constants.OW_NO_VALUE)!= 0)
 				this.setThumbnailUrl(app_context, json.getString(Constants.OW_THUMB_URL));
+			
+			//investigations are weird
+			if(json.has("logo"))
+				this.setThumbnailUrl(app_context, json.getString("logo"));
 			
 			if(json.has(Constants.OW_USER)){
 				JSONObject json_user = null;
@@ -353,7 +359,15 @@ public class OWServerObject extends Model implements OWMediaObject{
 
 	@Override
 	public String getUUID(Context c) {
-		// TODO Auto-generated method stub
+		MEDIA_TYPE type = getType(c);
+		switch(type){
+		case VIDEO:
+			return this.video_recording.get(c).getUUID(c);
+		case AUDIO:
+			return this.audio.get(c).getUUID(c);
+		case PHOTO:
+			return this.photo.get(c).getUUID(c);
+		}
 		return null;
 	}
 
@@ -395,6 +409,7 @@ public class OWServerObject extends Model implements OWMediaObject{
 			return MEDIA_TYPE.AUDIO;
 		else if(this.photo.get(c) != null)
 			return MEDIA_TYPE.PHOTO;
+		Log.e(TAG, "Unable to determine type for OWServerObject " + String.valueOf(this.getId()));
 		return null;
 	}
 
