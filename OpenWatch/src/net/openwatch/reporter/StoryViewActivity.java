@@ -3,13 +3,11 @@ package net.openwatch.reporter;
 import java.text.ParseException;
 
 import net.openwatch.reporter.constants.Constants;
-import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
 import net.openwatch.reporter.constants.Constants.HIT_TYPE;
 import net.openwatch.reporter.http.OWServiceRequests;
 import net.openwatch.reporter.http.OWServiceRequests.RequestCallback;
 import net.openwatch.reporter.model.OWServerObject;
 import net.openwatch.reporter.model.OWStory;
-import net.openwatch.reporter.model.OWVideoRecording;
 import net.openwatch.reporter.share.Share;
 
 import com.actionbarsherlock.app.SherlockActivity;
@@ -17,19 +15,14 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ScrollView;
 import android.widget.TextView;
 

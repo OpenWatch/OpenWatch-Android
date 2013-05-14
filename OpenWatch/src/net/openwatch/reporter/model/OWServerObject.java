@@ -433,7 +433,7 @@ public class OWServerObject extends Model implements OWMediaObject{
 
 	@Override
 	public CONTENT_TYPE getContentType(Context c) {
-		if(getMediaType(c) == null)
+		if(getMediaType(c) != null)
 			return CONTENT_TYPE.MEDIA_OBJECT;
 		else if(this.investigation.get(c) != null)
 			return CONTENT_TYPE.INVESTIGATION;

@@ -137,7 +137,7 @@ public class OWAudio extends Model implements OWMediaObject{
 
 	@Override
 	public void updateWithJson(Context c, JSONObject json) {
-		
+		media_object.get(c).updateWithJson(c, json);
 		try {
 			if(json.has(Constants.OW_TITLE))
 				this.setTitle(c, json.getString(Constants.OW_TITLE));
