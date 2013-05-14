@@ -428,7 +428,7 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
 	
 	public void saveAndSync(Context c){
 		this.save(c);
-		OWServiceRequests.syncOWMediaObject(c, this);
+		OWServiceRequests.syncOWServerObject(c, this);
 	}
 
 	@Override
@@ -440,6 +440,18 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
 		else if(this.story.get(c) != null)
 			return CONTENT_TYPE.STORY;
 		Log.e(TAG, "Unable to determine CONTENT_TYPE for OWServerObject " + String.valueOf(this.getId()));
+		return null;
+	}
+	
+	public Object getChildObject(Context c){
+		if(this.investigation.get(c) != null)
+			return this.investigation.get(c);
+		else if(this.photo.get(c) != null)
+			return this.photo.get(c);
+		else if(this.audio.get(c) != null)
+			return this.audio.get(c);
+		else if(this.video_recording.get(c) != null)
+			return this.video_recording.get(c);
 		return null;
 	}
 

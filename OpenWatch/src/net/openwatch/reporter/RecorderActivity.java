@@ -45,12 +45,18 @@ public class RecorderActivity extends SherlockActivity implements
 	SurfaceView camera_preview;
 
 	Camera mCamera;
-
-	ChunkedAudioVideoSoftwareRecorder av_recorder = new ChunkedAudioVideoSoftwareRecorder();
 	
 	PowerManager.WakeLock wl;
 	
+	Context c;
+	
 	boolean ready_to_record = false;
+	boolean is_recording = false;
+	
+	// VideoRecording data
+	int media_object_id = 0;
+	int owrecording_id = 0;
+	String recording_uuid = "";
 	
 	String output_filename;
 	String mRecording_uuid;
@@ -60,6 +66,7 @@ public class RecorderActivity extends SherlockActivity implements
 	/*
 	 * ChunkedRecorderListener is set on FFChunkedAudioVideoEncoder 
 	 */
+	/*
 	ChunkedRecorderListener chunk_listener = new ChunkedRecorderListener(){
 		private static final String TAG = "ChunkedRecorderListener";
 		Context c; // for db transactions
@@ -107,108 +114,85 @@ public class RecorderActivity extends SherlockActivity implements
 			Log.i(TAG, "fired end and hq mediaSignalTasks");
 		}
 		
-		class MediaSignalTask extends AsyncTask<String, Void, Void> {
-	        protected Void doInBackground(String... command) {
-	        	Log.i(TAG, "sendMediaCapture command: " + command[0] + " command length: " + command.length + " recording_uuid: " + recording_uuid);
-	        	SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
-	            final String public_upload_token = profile.getString(Constants.PUB_TOKEN, "");
-	            if(public_upload_token.compareTo("") == 0 || recording_uuid == null)
-	            	return null;
+		
+	*/
+	
+	class MediaSignalTask extends AsyncTask<String, Void, Void> {
+        protected Void doInBackground(String... command) {
+        	Log.i(TAG, "sendMediaCapture command: " + command[0] + " command length: " + command.length + " recording_uuid: " + recording_uuid);
+        	SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
+            final String public_upload_token = profile.getString(Constants.PUB_TOKEN, "");
+            if(public_upload_token.compareTo("") == 0 || recording_uuid == null)
+            	return null;
 
-	        	if(command[0].compareTo("start") == 0){
-	        		if(command.length == 2){
-	        			// make db entry
-	        			if(recording_uuid != null){
-		        			OWLocalVideoRecording local = new OWLocalVideoRecording(c);
-		    	        	local.recording.get(c).initializeRecording(c, command[1], recording_uuid, 0.0, 0.0);
-		    	        	Log.i(TAG, "initialize OWLocalRecording. id: " + String.valueOf(local.getId()));
-		    	        	local.save(c);
-		    	        	owrecording_id = local.recording.get(c).getId();
-		    	        	owmediaobject_id = local.recording.get(c).media_object.get(c).getId();
-		    	        	Log.i(TAG, "get mediaObjectId: " + local.recording.get(c).media_object.get(c).server_id.get());
-		    	        	// poll for device location
-		    	        	RecorderActivity.this.runOnUiThread(new Runnable(){
+        	if(command[0].compareTo("start") == 0){
+        		if(command.length == 2){
+        			// make db entry
+        			if(recording_uuid != null){
+	        			OWLocalVideoRecording local = new OWLocalVideoRecording(c);
+	    	        	local.recording.get(c).initializeRecording(c, command[1], recording_uuid, 0.0, 0.0);
+	    	        	Log.i(TAG, "initialize OWLocalRecording. id: " + String.valueOf(local.getId()));
+	    	        	local.save(c);
+	    	        	owrecording_id = local.recording.get(c).getId();
+	    	        	media_object_id = local.recording.get(c).media_object.get(c).getId();
+	    	        	Log.i(TAG, "get mediaObjectId: " + local.recording.get(c).media_object.get(c).server_id.get());
+	    	        	// poll for device location
+	    	        	RecorderActivity.this.runOnUiThread(new Runnable(){
 
-								@Override
-								public void run() {
-									DeviceLocation.setRecordingLocation(c, public_upload_token, owrecording_id, true);
-								}
-		    	        		
-		    	        	});
-		    	        	
-		        			OWMediaRequests.start(c, public_upload_token, recording_uuid, command[1]);
-	        			}
-	                }
-	        	} else if(command[0].compareTo("end") == 0){
-	        		if(command.length == 4){
-	        			if(all_files != null){
-	        				OWVideoRecording recording = (OWVideoRecording) OWVideoRecording.objects(c, OWVideoRecording.class).get(owrecording_id);
-	        				//recording.local is null here...
-		        			String last_segment = all_files.get(all_files.size()-1);
-		        			String filename = last_segment.substring(last_segment.lastIndexOf(File.separator)+1,last_segment.length());
-		        			String filepath = last_segment.substring(0,last_segment.lastIndexOf(File.separator)+1);
-		        			OWLocalVideoRecording local = recording.local.get(c);
-		        			local.recording_end_time.set(command[2]);
-		        			int segment_id = local.addSegment(c, filepath, filename);
-		        			local.save(c);
-		        			recording.save(c);
-		        			Log.i(TAG, "owlocalrecording addsegment");
-		        			// poll for device location
-		        			RecorderActivity.this.runOnUiThread(new Runnable(){
+							@Override
+							public void run() {
+								DeviceLocation.setRecordingLocation(c, public_upload_token, owrecording_id, true);
+							}
+	    	        		
+	    	        	});
+	    	        	
+	        			OWMediaRequests.start(c, public_upload_token, recording_uuid, command[1]);
+        			}
+                }
+        	} else if(command[0].compareTo("end") == 0){
+        		if(command.length == 4){
+    				OWVideoRecording recording = (OWVideoRecording) OWVideoRecording.objects(c, OWVideoRecording.class).get(owrecording_id);
+        			OWLocalVideoRecording local = recording.local.get(c);
+        			local.recording_end_time.set(command[2]);
+        			local.save(c);
+        			Log.i(TAG, "owlocalrecording addsegment");
+        			// poll for device location
+        			RecorderActivity.this.runOnUiThread(new Runnable(){
 
-								@Override
-								public void run() {
-									DeviceLocation.setRecordingLocation(c, public_upload_token, owrecording_id, false);
-								}
-		    	        		
-		    	        	});
-		        			OWMediaRequests.safeSendLQFile(c, public_upload_token, recording_uuid, last_segment, segment_id);
-		        			//OWMediaRequests.sendLQChunk(public_upload_token, recording_uuid, last_segment);
-		        			OWMediaRequests.end(c, public_upload_token, recording);
-	        			}
-	        			
-	        		}
-	        	} else if(command[0].compareTo("chunk") == 0){
-	        		if(command.length == 2){
-	        			if(owrecording_id != -1){
-		        			OWVideoRecording recording = (OWVideoRecording) OWVideoRecording.objects(c, OWVideoRecording.class).get(owrecording_id);
-		        			String filename = command[1].substring(command[1].lastIndexOf(File.separator)+1,command[1].length());
-		        			String filepath = command[1].substring(0,command[1].lastIndexOf(File.separator)+1);
-		        			int segment_id = recording.local.get(c).addSegment(c, filepath, filename);
-		        			Log.i(TAG, "owlocalrecording addsegment");
-		        			OWMediaRequests.safeSendLQFile(c, public_upload_token, recording_uuid, command[1], segment_id);
-		        			//OWMediaRequests.sendLQChunk(public_upload_token, recording_uuid, command[1]);
-	        			}
-	        			
-	        		}
-	        	} else if(command[0].compareTo("hq") == 0){
-	        		if(command.length == 2){
-	        			OWVideoRecording recording = (OWVideoRecording) OWVideoRecording.objects(c, OWVideoRecording.class).get(owrecording_id);
-	        			OWLocalVideoRecording local = recording.local.get(c);
-	        			local.hq_filepath.set(command[1]);
-	        			local.save(c);
-	        			Log.i(TAG, "id: " + owrecording_id + " hq filepath set:" + command[1]);
-	        			OWMediaRequests.safeSendHQFile(c, public_upload_token, recording_uuid, command[1], local.getId());
-	        			//OWMediaRequests.sendHQFileChunked(public_upload_token, recording_uuid, command[1]);
-	        			//OWMediaRequests.sendHQFile(public_upload_token, recording_uuid, command[1]);
-	        		}
-	        	}
-	        	return null;
-	        }
+						@Override
+						public void run() {
+							DeviceLocation.setRecordingLocation(c, public_upload_token, owrecording_id, false);
+						}
+    	        		
+    	        	});
+        			//OWMediaRequests.safeSendLQFile(c, public_upload_token, recording_uuid, last_segment, segment_id);
+        			OWMediaRequests.end(c, public_upload_token, recording);
+        			
+        		}
+        	} else if(command[0].compareTo("hq") == 0){
+        		if(command.length == 2){
+        			OWVideoRecording recording = (OWVideoRecording) OWVideoRecording.objects(c, OWVideoRecording.class).get(owrecording_id);
+        			OWLocalVideoRecording local = recording.local.get(c);
+        			local.hq_filepath.set(command[1]);
+        			local.save(c);
+        			Log.i(TAG, "id: " + owrecording_id + " hq filepath set:" + command[1]);
+        			OWMediaRequests.safeSendHQFile(c, public_upload_token, recording_uuid, command[1], local.getId());
+        			//OWMediaRequests.sendHQFileChunked(public_upload_token, recording_uuid, command[1]);
+        			//OWMediaRequests.sendHQFile(public_upload_token, recording_uuid, command[1]);
+        		}
+        	}
+        	return null;
+        }
 
-	        protected Void onPostExecute() {
-	        	return null;
-	        }
-	    }
-	};
+        protected Void onPostExecute() {
+        	return null;
+        }
+};
 	
 	@Override
 	protected void onDestroy(){
 		super.onDestroy();
 		Log.i(TAG, "on Destroy. isFinishing: " + String.valueOf(this.isFinishing()));
-		if(!this.isFinishing() && av_recorder.is_recording){
-			stopRecording(); // if the activity is being closed to save memory, finalize the recording
-		}
 		
 	}
 
@@ -226,16 +210,13 @@ public class RecorderActivity extends SherlockActivity implements
 		camera_preview.getHolder().addCallback(this); // register the Activity
 														// to be called when the
 														// SurfaceView is ready
-
+		c = this;
 		
-		if(!av_recorder.is_recording){
+		if(!is_recording){
 			try {
 				// Create an instance of Camera
 				mCamera = getCameraInstance();
 				prepareOutputLocation();
-				chunk_listener.setContext(this);
-				chunk_listener.setRecordingUUID(mRecording_uuid);
-				av_recorder.setChunkedRecorderListener(chunk_listener);
 				ready_to_record = true;
 			} catch (Exception e) {
 				Log.e("Recorder init error", "Could not init Camera");
@@ -282,7 +263,7 @@ public class RecorderActivity extends SherlockActivity implements
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		if(!av_recorder.is_recording && ready_to_record)
+		if(!is_recording && ready_to_record)
 			startRecording();
 	}
 
@@ -313,7 +294,7 @@ public class RecorderActivity extends SherlockActivity implements
 	 */
 	private void startRecording(){
 		try {
-			av_recorder.startRecording(mCamera, camera_preview, output_filename);
+			//av_recorder.startRecording(mCamera, camera_preview, output_filename);
 			recording_start = String.valueOf(new Date().getTime() / 1000);
 			
 			//PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -331,15 +312,15 @@ public class RecorderActivity extends SherlockActivity implements
 	 * returns the focus to MainActivity, clearing the back stack
 	 */
 	private void stopRecording(){
-		if (av_recorder.is_recording) {
+		if (is_recording) {
 			if(wl != null)
 				wl.release();
-			av_recorder.stopRecording();
+			stopRecording();
 			recording_end = String.valueOf(new Date().getTime() / 1000);
 			Intent i = new Intent(RecorderActivity.this, WhatHappenedActivity.class);
-			if(chunk_listener.getMediaObjectDBID() > 0){
-				i.putExtra(Constants.INTERNAL_DB_ID, chunk_listener.getMediaObjectDBID());
-				Log.i(TAG, "Bundling media_obj_id: " + String.valueOf(chunk_listener.getMediaObjectDBID()));
+			if(media_object_id > 0){
+				i.putExtra(Constants.INTERNAL_DB_ID,media_object_id);
+				Log.i(TAG, "Bundling media_obj_id: " + String.valueOf(media_object_id));
 			}else
 				Log.e(TAG, "Error getting mediaobject id from chunk_listener");
 
@@ -356,7 +337,7 @@ public class RecorderActivity extends SherlockActivity implements
 	}
 	
 	private void showStopRecordingDialog(){
-		if(av_recorder.is_recording){
+		if(is_recording){
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(getString(R.string.stop_recording_dialog_title))
 			.setMessage(getString(R.string.stop_recording_dialog_message))
