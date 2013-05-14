@@ -2,6 +2,10 @@ package net.openwatch.reporter;
 
 import java.util.UUID;
 
+import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.model.OWServerObject;
+
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.widget.ImageView;
@@ -35,6 +39,17 @@ public class OWUtils {
 	  
 	    Bitmap bitmap = BitmapFactory.decodeFile(image_path, bmOptions);
 	    target.setImageBitmap(bitmap);
+	}
+	
+	public static String urlForOWServerObject(OWServerObject obj, Context c){
+		String url = Constants.OW_URL;
+		if(obj.getMediaType(c) != null)
+			url += Constants.API_ENDPOINT_BY_MEDIA_TYPE.get(obj.getMediaType(c));
+		else if(obj.getContentType(c) != null)
+			url += Constants.API_ENDPOINT_BY_CONTENT_TYPE.get(obj.getContentType(c));
+		
+		url += "/" + String.valueOf(obj.getServerId(c)) + "/";
+		return url;
 	}
 
 }

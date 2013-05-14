@@ -1,12 +1,14 @@
 package net.openwatch.reporter;
 
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
 import net.openwatch.reporter.http.OWServiceRequests;
 import net.openwatch.reporter.model.OWPhoto;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -18,7 +20,7 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.provider.MediaStore;
 
-public class OWPhotoReviewActivity extends Activity {
+public class OWPhotoReviewActivity extends SherlockActivity {
 	
 	private ImageView previewImageView;
 	private int owphoto_id = -1;
@@ -73,7 +75,7 @@ public class OWPhotoReviewActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.picture_review, menu);
+		getSupportMenuInflater().inflate(R.menu.picture_review, menu);
 		return true;
 	}
 

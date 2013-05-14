@@ -161,7 +161,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getSupportMenuInflater().inflate(R.menu.activity_local_recording_view, menu);
+		getSupportMenuInflater().inflate(R.menu.server_object, menu);
 		return true;
 	}
 	

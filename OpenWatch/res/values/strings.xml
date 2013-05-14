@@ -101,6 +101,9 @@
     <string name="stop_recording_dialog_stop">Stop</string>
     <string name="stop_recording_dialog_continue">Continue</string>
     <string name="recording">Recording</string>
+    
+    <!-- OWInvestigationViewActivity -->
+    <string name="share_investigation">Share Investigation</string>
 
     <!-- StoryViewActivity -->
     <string name="share_story">Share Story</string>

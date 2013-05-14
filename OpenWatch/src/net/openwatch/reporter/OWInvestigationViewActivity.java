@@ -3,24 +3,32 @@ package net.openwatch.reporter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
+import net.openwatch.reporter.constants.Constants.HIT_TYPE;
 import net.openwatch.reporter.http.OWServiceRequests;
 import net.openwatch.reporter.model.OWServerObject;
+import net.openwatch.reporter.model.OWVideoRecording;
+import net.openwatch.reporter.share.Share;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
+import android.support.v4.app.NavUtils;
 import android.util.Log;
-import android.view.Menu;
 import android.webkit.WebView;
 
-public class OWInvestigationViewActivity extends Activity implements OWMediaObjectBackedEntity {
+public class OWInvestigationViewActivity extends SherlockActivity implements OWMediaObjectBackedEntity {
 	private static final String TAG = "OWInvestigationViewActivity";
 	
 	private WebView web_view;
 	private int model_id;
-
+	private int server_id;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -30,13 +38,15 @@ public class OWInvestigationViewActivity extends Activity implements OWMediaObje
 		
 		model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
 		OWServerObject object = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
+		server_id = object.getServerId(getApplicationContext());
+		this.getSupportActionBar().setTitle(object.title.get());
 		populateViews(object, getApplicationContext());
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.owinvestigation_view, menu);
+		getSupportMenuInflater().inflate(R.menu.server_object, menu);
 		return true;
 	}
 
@@ -68,6 +78,30 @@ public class OWInvestigationViewActivity extends Activity implements OWMediaObje
 
 			}
 		});
+	}
+	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu){
+		menu.removeItem(R.id.menu_delete);
+		menu.removeItem(R.id.menu_save);
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			NavUtils.navigateUpFromSameTask(this);
+			return true;
+		case R.id.menu_share:
+			if(server_id > 0){
+				OWServerObject object = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
+				Share.showShareDialog(this, getString(R.string.share_investigation), OWUtils.urlForOWServerObject(object, getApplicationContext()));
+				OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, CONTENT_TYPE.INVESTIGATION, null, HIT_TYPE.CLICK);
+			}
+			break;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 }
