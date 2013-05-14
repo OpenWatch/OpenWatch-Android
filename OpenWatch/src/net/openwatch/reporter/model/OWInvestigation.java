@@ -3,6 +3,7 @@ package net.openwatch.reporter.model;
 import java.util.Date;
 
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
 import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
 import net.openwatch.reporter.constants.DBConstants;
 import org.json.JSONException;
@@ -284,7 +285,7 @@ public class OWInvestigation extends Model implements OWMediaObject{
 	}
 
 	@Override
-	public MEDIA_TYPE getType(Context c) {
+	public MEDIA_TYPE getMediaType(Context c) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -299,6 +300,11 @@ public class OWInvestigation extends Model implements OWMediaObject{
 	public String getMediaFilepath(Context c) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public CONTENT_TYPE getContentType(Context c) {
+		return CONTENT_TYPE.INVESTIGATION;
 	}
 
 }

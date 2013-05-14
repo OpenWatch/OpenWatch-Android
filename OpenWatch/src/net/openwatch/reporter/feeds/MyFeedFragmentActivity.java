@@ -38,17 +38,13 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.AbsListView.OnScrollListener;
-import net.openwatch.reporter.OWApplication;
 import net.openwatch.reporter.OWMediaObjectViewActivity;
 import net.openwatch.reporter.R;
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
-import net.openwatch.reporter.constants.Constants.OWFeedType;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
-import net.openwatch.reporter.feeds.RemoteFeedFragmentActivity.RemoteRecordingsListFragment;
 import net.openwatch.reporter.http.OWServiceRequests;
 import net.openwatch.reporter.http.OWServiceRequests.PaginatedRequestCallback;
-import net.openwatch.reporter.http.OWServiceRequests.RequestCallback;
 import net.openwatch.reporter.model.OWUser;
 
 /**

@@ -19,6 +19,7 @@ import com.orm.androrm.field.CharField;
 import com.orm.androrm.field.DoubleField;
 import com.orm.androrm.field.ForeignKeyField;
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
 import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
@@ -400,7 +401,7 @@ public class OWVideoRecording extends Model implements OWMediaObject{
 	}
 
 	@Override
-	public MEDIA_TYPE getType(Context c) {
+	public MEDIA_TYPE getMediaType(Context c) {
 		return MEDIA_TYPE.VIDEO;
 	}
 
@@ -412,6 +413,11 @@ public class OWVideoRecording extends Model implements OWMediaObject{
 	@Override
 	public String getMediaFilepath(Context c) {
 		return this.local.get(c).hq_filepath.get();
+	}
+
+	@Override
+	public CONTENT_TYPE getContentType(Context c) {
+		return CONTENT_TYPE.MEDIA_OBJECT;
 	}
 
 }

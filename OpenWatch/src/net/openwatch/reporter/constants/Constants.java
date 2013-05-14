@@ -46,7 +46,7 @@ public class Constants {
 	}
 	
 	// For view tag
-	public static enum CONTENT_TYPE { VIDEO, STORY };
+	public static enum CONTENT_TYPE { MEDIA_OBJECT, STORY, INVESTIGATION };
 	// for fileUtils and OWServiceRequests
 	public static enum MEDIA_TYPE { VIDEO, PHOTO, AUDIO };
 	public static HashMap<MEDIA_TYPE, String> API_ENDPOINT_BY_MEDIA_TYPE = new HashMap<MEDIA_TYPE, String>() {{put(MEDIA_TYPE.VIDEO, "v"); put(MEDIA_TYPE.PHOTO, "p"); put(MEDIA_TYPE.AUDIO, "a"); }};

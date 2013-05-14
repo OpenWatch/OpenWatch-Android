@@ -1,5 +1,6 @@
 package net.openwatch.reporter.model;
 
+import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
 import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
 
 import org.json.JSONObject;
@@ -46,7 +47,8 @@ public interface OWMediaObject {
 	public void setLon(Context c, double lon);
 	public double getLon(Context c);
 	
-	public MEDIA_TYPE getType(Context c);
+	public MEDIA_TYPE getMediaType(Context c);
+	public CONTENT_TYPE getContentType(Context c);
 	
 	public void setMediaFilepath(Context c, String filepath);
 	public String getMediaFilepath(Context c);

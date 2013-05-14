@@ -48,6 +48,7 @@ import net.openwatch.reporter.http.OWServiceRequests.PaginatedRequestCallback;
 import net.openwatch.reporter.http.OWServiceRequests.RequestCallback;
 import net.openwatch.reporter.location.DeviceLocation;
 import net.openwatch.reporter.location.DeviceLocation.GPSRequestCallback;
+import net.openwatch.reporter.model.OWServerObject;
 
 /**
  * Demonstration of the implementation of a custom Loader.
@@ -216,15 +217,23 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
         @Override public void onListItemClick(ListView l, View v, int position, long id) {
             Log.i("LoaderCustom", "Item clicked: " + id);
         	try{
+        		int media_object_server_id = (Integer)v.getTag(R.id.list_item_model);
+        		OWServerObject server_object = OWServerObject.objects(getActivity().getApplicationContext(), OWServerObject.class).get(media_object_server_id);
+        		
         		Intent i = null;
-        		switch((CONTENT_TYPE)v.getTag(R.id.list_item_model_type)){
-        		case VIDEO:
-        			i = new Intent(this.getActivity(), OWMediaObjectViewActivity.class);
-        			break;
+        		switch(server_object.getContentType(getActivity().getApplicationContext())){
         		case STORY:
         			i = new Intent(this.getActivity(), StoryViewActivity.class);
         			break;
+        		case INVESTIGATION:
+        			//TODO: InvestigationViewActivity
+        			//i = new Intent(this.getActivity(), InvestigationViewActivity.class);
+        			break;
+        		case MEDIA_OBJECT:
+        			i = new Intent(this.getActivity(), OWMediaObjectViewActivity.class);
+        			break;
         		}
+        		
         		i.putExtra(Constants.INTERNAL_DB_ID, (Integer)v.getTag(R.id.list_item_model));
         		if(i != null)
         			startActivity(i);

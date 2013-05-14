@@ -5,6 +5,7 @@ package net.openwatch.reporter.model;
 import java.util.Date;
 
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
 import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
 import net.openwatch.reporter.constants.Constants.OWFeedType;
 import net.openwatch.reporter.constants.DBConstants;
@@ -359,7 +360,7 @@ public class OWServerObject extends Model implements OWMediaObject{
 
 	@Override
 	public String getUUID(Context c) {
-		MEDIA_TYPE type = getType(c);
+		MEDIA_TYPE type = getMediaType(c);
 		switch(type){
 		case VIDEO:
 			return this.video_recording.get(c).getUUID(c);
@@ -402,7 +403,7 @@ public class OWServerObject extends Model implements OWMediaObject{
 	}
 
 	@Override
-	public MEDIA_TYPE getType(Context c) {
+	public MEDIA_TYPE getMediaType(Context c) {
 		if(this.video_recording.get(c) != null)
 			return MEDIA_TYPE.VIDEO;
 		else if(this.audio.get(c) != null)
@@ -428,6 +429,18 @@ public class OWServerObject extends Model implements OWMediaObject{
 	public void saveAndSync(Context c){
 		this.save(c);
 		OWServiceRequests.syncOWMediaObject(c, this);
+	}
+
+	@Override
+	public CONTENT_TYPE getContentType(Context c) {
+		if(getMediaType(c) == null)
+			return CONTENT_TYPE.MEDIA_OBJECT;
+		else if(this.investigation.get(c) != null)
+			return CONTENT_TYPE.INVESTIGATION;
+		else if(this.story.get(c) != null)
+			return CONTENT_TYPE.STORY;
+		Log.e(TAG, "Unable to determine CONTENT_TYPE for OWServerObject " + String.valueOf(this.getId()));
+		return null;
 	}
 
 }

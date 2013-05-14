@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import net.openwatch.reporter.FeedFragmentActivity.TabsAdapter;
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
 import net.openwatch.reporter.constants.Constants.HIT_TYPE;
@@ -67,6 +68,9 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 	boolean is_landscape = false;
 	boolean media_view_inflated = false;
 	
+	CONTENT_TYPE content_type;
+	MEDIA_TYPE media_type;
+	
 	LayoutInflater inflater;
 
 	@SuppressLint("NewApi")
@@ -90,6 +94,8 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 		try {
 			model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
 			OWServerObject media_obj = OWServerObject.objects(this, OWServerObject.class).get(model_id);
+			content_type = media_obj.getContentType(getApplicationContext());
+			media_type = media_obj.getMediaType(getApplicationContext());
 			server_id = media_obj.server_id.get();
 			setupMediaViewForOWServerObject(media_obj);
 			SharedPreferences prefs = this.getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
@@ -115,7 +121,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 			}
 			*/
 			if(server_id > 0)
-				OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, CONTENT_TYPE.VIDEO, HIT_TYPE.VIEW);
+				OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, media_obj.getContentType(getApplicationContext()), media_obj.getMediaType(getApplicationContext()), HIT_TYPE.VIEW);
 			// Log.i(TAG, "got model_id : " + String.valueOf(model_id));
 		} catch (Exception e) {
 			Log.e(TAG, "Could not load Intent extras");
@@ -183,7 +189,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 		case R.id.menu_share:
 			if(server_id > 0){
 				Share.showShareDialog(this, getString(R.string.share_story), OWVideoRecording.getUrlFromId(server_id));
-				OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, CONTENT_TYPE.VIDEO, HIT_TYPE.CLICK);
+				OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, content_type, media_type, HIT_TYPE.CLICK);
 			}
 			break;
 		case R.id.menu_delete:
@@ -303,7 +309,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 	
 	public void setupMediaViewForOWServerObject(OWServerObject object){
 		String media_path = "";
-		switch(object.getType(getApplicationContext())){
+		switch(object.getMediaType(getApplicationContext())){
 		case VIDEO:
 			if( object.local_video_recording.get(getApplicationContext()) != null ){
 				// This is a local recording, attempt to play HQ file

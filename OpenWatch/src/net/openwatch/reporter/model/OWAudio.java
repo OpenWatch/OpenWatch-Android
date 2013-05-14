@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
 import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
@@ -202,7 +203,7 @@ public class OWAudio extends Model implements OWMediaObject{
 	} */
 
 	@Override
-	public MEDIA_TYPE getType(Context c) {
+	public MEDIA_TYPE getMediaType(Context c) {
 		return Constants.MEDIA_TYPE.AUDIO;
 	}
 
@@ -314,6 +315,11 @@ public class OWAudio extends Model implements OWMediaObject{
 	@Override
 	public void setLastEdited(Context c, String last_edited) {
 		media_object.get(c).setLastEdited(c, last_edited);
+	}
+
+	@Override
+	public CONTENT_TYPE getContentType(Context c) {
+		return CONTENT_TYPE.MEDIA_OBJECT;
 	}
 
 }

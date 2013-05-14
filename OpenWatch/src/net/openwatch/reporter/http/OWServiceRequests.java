@@ -73,7 +73,7 @@ public class OWServiceRequests {
 	}
 	
 	
-	public static void increaseHitCount(final Context app_context, int server_id, final int media_obj_id, final CONTENT_TYPE content_type, final HIT_TYPE hit_type){
+	public static void increaseHitCount(final Context app_context, int server_id, final int media_obj_id, final CONTENT_TYPE content_type, final MEDIA_TYPE media_type, final HIT_TYPE hit_type){
 		final String METHOD = "increaseHitCount";
 		JsonHttpResponseHandler post_handler = new JsonHttpResponseHandler(){
 			@Override
@@ -105,7 +105,10 @@ public class OWServiceRequests {
 		JSONObject params = new JSONObject();
 		try {
 			params.put(Constants.OW_HIT_SERVER_ID, server_id);
-			params.put(Constants.OW_HIT_MEDIA_TYPE, content_type.toString().toLowerCase());
+			if(content_type == CONTENT_TYPE.MEDIA_OBJECT)
+				params.put(Constants.OW_HIT_MEDIA_TYPE, media_type.toString().toLowerCase());
+			else
+				params.put(Constants.OW_HIT_MEDIA_TYPE, content_type.toString().toLowerCase());
 			params.put(Constants.OW_HIT_TYPE, hit_type.toString().toLowerCase());
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -456,7 +459,7 @@ public class OWServiceRequests {
 		//Log.i(TAG, object.getType().toString());
 		//Log.i(TAG, object.toJsonObject(app_context).toString());
 		//Log.i(TAG, Utils.JSONObjectToStringEntity(object.toJsonObject(app_context)).toString());
-		http_client.post(app_context, endpointForMediaType(object.getType(app_context)) , Utils
+		http_client.post(app_context, endpointForMediaType(object.getMediaType(app_context)) , Utils
 				.JSONObjectToStringEntity(object.toJsonObject(app_context)), "application/json", post_handler);
 	}
 	
@@ -484,7 +487,7 @@ public class OWServiceRequests {
 	}
 	
 	private static String instanceEndpointForOWMediaObject(Context c, OWMediaObject object){
-		return Constants.OW_API_URL + Constants.API_ENDPOINT_BY_MEDIA_TYPE.get(object.getType(c)) + "/" + object.getUUID(c) +"/";
+		return Constants.OW_API_URL + Constants.API_ENDPOINT_BY_MEDIA_TYPE.get(object.getMediaType(c)) + "/" + object.getUUID(c) +"/";
 	}
 	
 	private static String endpointForMediaType(MEDIA_TYPE type){

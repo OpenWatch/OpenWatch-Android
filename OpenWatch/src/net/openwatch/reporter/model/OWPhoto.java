@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import net.openwatch.reporter.OWApplication;
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
 import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
@@ -169,7 +170,7 @@ public class OWPhoto extends Model implements OWMediaObject{
 	}
 */
 	@Override
-	public MEDIA_TYPE getType(Context c) {
+	public MEDIA_TYPE getMediaType(Context c) {
 		return Constants.MEDIA_TYPE.PHOTO;
 	}
 	
@@ -321,6 +322,11 @@ public class OWPhoto extends Model implements OWMediaObject{
 	@Override
 	public void setTitle(Context c, String title) {
 		media_object.get(c).setTitle(c, title);
+	}
+
+	@Override
+	public CONTENT_TYPE getContentType(Context c) {
+		return CONTENT_TYPE.MEDIA_OBJECT;
 	}
 
 
