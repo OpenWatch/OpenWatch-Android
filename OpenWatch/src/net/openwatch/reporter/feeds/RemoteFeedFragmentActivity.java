@@ -35,7 +35,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
-import net.openwatch.reporter.RecordingViewActivity;
+import net.openwatch.reporter.OWMediaObjectViewActivity;
 import net.openwatch.reporter.R;
 import net.openwatch.reporter.StoryViewActivity;
 import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
@@ -219,7 +219,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
         		Intent i = null;
         		switch((CONTENT_TYPE)v.getTag(R.id.list_item_model_type)){
         		case VIDEO:
-        			i = new Intent(this.getActivity(), RecordingViewActivity.class);
+        			i = new Intent(this.getActivity(), OWMediaObjectViewActivity.class);
         			break;
         		case STORY:
         			i = new Intent(this.getActivity(), StoryViewActivity.class);

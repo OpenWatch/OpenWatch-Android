@@ -386,8 +386,13 @@ public class OWServerObject extends Model implements OWMediaObject{
 	}
 
 	@Override
-	public MEDIA_TYPE getType() {
-		// TODO Auto-generated method stub
+	public MEDIA_TYPE getType(Context c) {
+		if(this.video_recording.get(c) != null)
+			return MEDIA_TYPE.VIDEO;
+		else if(this.audio.get(c) != null)
+			return MEDIA_TYPE.AUDIO;
+		else if(this.photo.get(c) != null)
+			return MEDIA_TYPE.PHOTO;
 		return null;
 	}
 

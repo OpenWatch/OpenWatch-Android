@@ -26,10 +26,10 @@
          android:layout_margin="5dp" >
 
         <fragment
-            android:id="@+id/recording_info"
+            android:id="@+id/media_object_info"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            class="net.openwatch.reporter.OWMobileGeneratedObjectInfoFragment" />
+            class="net.openwatch.reporter.OWMediaObjectInfoFragment" />
     </FrameLayout>
     
     <ImageView

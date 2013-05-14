@@ -46,7 +46,7 @@ public interface OWMediaObject {
 	public void setLon(Context c, double lon);
 	public double getLon(Context c);
 	
-	public MEDIA_TYPE getType();
+	public MEDIA_TYPE getType(Context c);
 	
 	public void setMediaFilepath(Context c, String filepath);
 	public String getMediaFilepath(Context c);

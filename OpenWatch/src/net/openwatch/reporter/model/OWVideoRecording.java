@@ -399,7 +399,7 @@ public class OWVideoRecording extends Model implements OWMediaObject{
 	}
 
 	@Override
-	public MEDIA_TYPE getType() {
+	public MEDIA_TYPE getType(Context c) {
 		return MEDIA_TYPE.VIDEO;
 	}
 

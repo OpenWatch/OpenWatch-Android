@@ -4,22 +4,32 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:orientation="vertical"
-    tools:context=".RecordingViewActivity" >
-
+    tools:context=".OWMediaObjectViewActivity" >
+    
+    <!--  Filled with an appropriate View
+    	  depending on the OWMediaObject type -->
+    <ViewStub
+        android:id="@+id/media_object_media_view_stub"
+        android:inflatedId="@+id/media_object_media_view"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center" />
+<!-- 
     <VideoView
         android:id="@+id/videoview"
         android:layout_width="fill_parent"
         android:layout_height="250dp"
         android:layout_gravity="center"
         android:visibility="visible" />
+ -->
 
     <LinearLayout
         android:id="@+id/progress_container"
         android:layout_width="match_parent"
         android:layout_height="250dp"
+        android:gravity="center"
         android:orientation="vertical"
-        android:visibility="gone"
-        android:gravity="center" >
+        android:visibility="gone" >
 
         <ProgressBar
             android:id="@+id/progress"

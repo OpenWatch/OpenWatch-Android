@@ -50,38 +50,14 @@ public class PictureReviewActivity extends Activity {
 	    //Bundle extras = intent.getExtras();
 	    if(intent.hasExtra(MediaStore.EXTRA_OUTPUT)){
 	    	Log.i("loadScaledPic", "got extra_output from intent");
-	    	loadScaledPicture(intent.getStringExtra(MediaStore.EXTRA_OUTPUT), previewImageView);
+	    	OWUtils.loadScaledPicture(intent.getStringExtra(MediaStore.EXTRA_OUTPUT), previewImageView);
 	    }else if(intent.hasExtra("owphoto_id")){
 	    	Log.i("loadScaledPic", "got output from intent");
 	    	owphoto_id = intent.getIntExtra("owphoto_id", -1);
 	    	Log.i("PictureReview-loadScaled", "get owphoto_id: " + String.valueOf(owphoto_id));
 	    	OWPhoto photo = OWPhoto.objects(getApplicationContext(), OWPhoto.class).get(owphoto_id);
-	    	loadScaledPicture(photo.filepath.get(), previewImageView);
+	    	OWUtils.loadScaledPicture(photo.filepath.get(), previewImageView);
 	    }
-	}
-	
-	private void loadScaledPicture(String image_path, ImageView target) {
-	    // Get the dimensions of the View
-	    int targetW = target.getWidth();
-	    int targetH = target.getHeight();
-	  
-	    // Get the dimensions of the bitmap
-	    BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-	    bmOptions.inJustDecodeBounds = true;
-	    BitmapFactory.decodeFile(image_path, bmOptions);
-	    int photoW = bmOptions.outWidth;
-	    int photoH = bmOptions.outHeight;
-	  
-	    // Determine how much to scale down the image
-	    int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-	  
-	    // Decode the image file into a Bitmap sized to fill the View
-	    bmOptions.inJustDecodeBounds = false;
-	    bmOptions.inSampleSize = scaleFactor;
-	    bmOptions.inPurgeable = true;
-	  
-	    Bitmap bitmap = BitmapFactory.decodeFile(image_path, bmOptions);
-	    target.setImageBitmap(bitmap);
 	}
 
 	/**

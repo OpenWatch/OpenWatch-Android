@@ -6,7 +6,7 @@
     android:gravity="center"
     android:orientation="vertical"
     android:background="@android:color/black"
-    tools:context=".RecordingViewActivity" >
+    tools:context=".OWMediaObjectViewActivity" >
 
     <VideoView
         android:id="@+id/videoview"

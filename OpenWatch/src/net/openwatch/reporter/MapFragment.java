@@ -58,9 +58,9 @@ public class MapFragment extends SupportMapFragment implements OWMediaObjectBack
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        if(RecordingViewActivity.model_id != -1){
+        if(OWMediaObjectViewActivity.model_id != -1){
         	OWVideoRecording recording = OWVideoRecording.objects(getActivity().getApplicationContext(), OWVideoRecording.class)
-    				.get(RecordingViewActivity.model_id);
+    				.get(OWMediaObjectViewActivity.model_id);
         	
         	if(recording != null)
         		mapRecording(recording);

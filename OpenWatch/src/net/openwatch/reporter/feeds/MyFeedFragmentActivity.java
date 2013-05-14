@@ -39,7 +39,7 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.AbsListView.OnScrollListener;
 import net.openwatch.reporter.OWApplication;
-import net.openwatch.reporter.RecordingViewActivity;
+import net.openwatch.reporter.OWMediaObjectViewActivity;
 import net.openwatch.reporter.R;
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
@@ -206,7 +206,7 @@ public class MyFeedFragmentActivity extends FragmentActivity {
         }
 
         @Override public void onListItemClick(ListView l, View v, int position, long id) {
-        	Intent i = new Intent(this.getActivity(), RecordingViewActivity.class);
+        	Intent i = new Intent(this.getActivity(), OWMediaObjectViewActivity.class);
         	try{
         		i.putExtra(Constants.INTERNAL_DB_ID, (Integer)v.getTag(R.id.list_item_model));
         	}catch(Exception e){

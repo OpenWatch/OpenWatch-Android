@@ -10,19 +10,21 @@ import net.openwatch.reporter.constants.Constants.HIT_TYPE;
 import net.openwatch.reporter.http.OWServiceRequests;
 import net.openwatch.reporter.http.OWServiceRequests.RequestCallback;
 import net.openwatch.reporter.model.OWServerObject;
-import net.openwatch.reporter.model.OWStory;
 import net.openwatch.reporter.model.OWVideoRecording;
 import net.openwatch.reporter.share.Share;
 
-import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
@@ -35,20 +37,18 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.view.Window;
+import android.view.ViewStub;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-public class RecordingViewActivity extends SherlockFragmentActivity {
+public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 
 	private static final String TAG = "RecordingViewActivity";
 	
@@ -57,14 +57,15 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 	TabHost mTabHost;
 	ViewPager mViewPager;
 	TabsAdapter mTabsAdapter;
-	VideoView video_view;
+	View media_view;
 
 	public static int model_id = -1;
 	int server_id = -1;
 	boolean is_local = false;
-	boolean is_user_recording = false;
+	boolean is_user_owner = false;
 	boolean video_playing = false;
 	boolean is_landscape = false;
+	boolean media_view_inflated = false;
 	
 	LayoutInflater inflater;
 
@@ -72,63 +73,47 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		/*
+		 * Lock Activity portrait for now
 		if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
 			is_landscape = true;
 		}else
 			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-	
+			*/
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		setContentView(R.layout.activity_local_recording_view);
-		video_view = (VideoView) findViewById(R.id.videoview);
-		if(!is_landscape){
-			//make a guess of the videoView height so when we fit it to the loaded video
-			// the swap isn't too jarring
-			Display display = getWindowManager().getDefaultDisplay();
-			int height;
-			if(Build.VERSION.SDK_INT >=11){
-				Point size = new Point();
-				display.getSize(size);
-				height = (int)(size.x * 3 / 4.0); // assuming 4:3 aspect
-			}else{
-				height = (int)(display.getWidth() * 3 / 4.0); 
-			}
-			video_view.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, height));
-		}
+		//media_view = findViewById(R.id.media_object_media_view_stub);
 
 		inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		String video_path = null;
+		
 		try {
 			model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
 			OWServerObject media_obj = OWServerObject.objects(this, OWServerObject.class).get(model_id);
+			server_id = media_obj.server_id.get();
+			setupMediaViewForOWServerObject(media_obj);
 			SharedPreferences prefs = this.getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
 			int user_id = prefs.getInt(DBConstants.USER_SERVER_ID, 0);
 			if(user_id != 0){
 				Log.i("UserRecCheck", "user_id " + user_id + "media_user_id: " + media_obj.user.get(getApplicationContext()).server_id.get());
 				if (media_obj.user.get(getApplicationContext()) != null && user_id == media_obj.user.get(getApplicationContext()).server_id.get()){
-					is_user_recording = true;
+					is_user_owner = true;
 				}
 			}
-			server_id = media_obj.server_id.get();
+			
 			if(!is_landscape && media_obj != null && media_obj.title.get() != null)
 				this.getSupportActionBar().setTitle(media_obj.title.get());
-			if( media_obj.local_video_recording.get(getApplicationContext()) != null ){
-				// This is a local recording, attempt to play HQ file
-				is_local = true;
-				video_path = media_obj.local_video_recording.get(getApplicationContext()).hq_filepath.get();
-				
-			} else if( media_obj.video_recording.get(getApplicationContext()) != null && media_obj.video_recording.get(getApplicationContext()).video_url.get() != null){
-				// remote recording, and video_url present
-				video_path = media_obj.video_recording.get(getApplicationContext()).video_url.get();
-			}
 			
-			fetchOWRecording(model_id);
-			
+			updateOWMediaObject(model_id);
+			/*
+			String video_path = null;
 			if(video_path != null){
 				Log.i(TAG, "Video uri: " + video_path);
-				setupVideoView(R.id.videoview, video_path);
+				setupVideoView(R.id.media_object_media_view, video_path);
 			} else{
 				Log.e(TAG, "Recording has no local or remote video uri specified");
 			}
+			*/
 			if(server_id > 0)
 				OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, CONTENT_TYPE.VIDEO, HIT_TYPE.VIEW);
 			// Log.i(TAG, "got model_id : " + String.valueOf(model_id));
@@ -146,7 +131,7 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 			
 			Bundle fragBundle = new Bundle(1);
 			fragBundle.putBoolean(Constants.IS_LOCAL_RECORDING, is_local);
-			fragBundle.putBoolean(Constants.IS_USER_RECORDING, is_user_recording);
+			fragBundle.putBoolean(Constants.IS_USER_RECORDING, is_user_owner);
 			mTabsAdapter.addTab(mTabHost.newTabSpec(getString(R.string.tab_info))
 					.setIndicator(inflateCustomTab(getString(R.string.tab_info))),
 					OWMediaObjectInfoFragment.class, fragBundle);
@@ -180,7 +165,7 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 			menu.removeItem(R.id.menu_delete);
 			
 		}
-		if(!is_user_recording){
+		if(!is_user_owner){
 			menu.removeItem(R.id.menu_save);
 		}
 		return true;
@@ -208,7 +193,7 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-	private void fetchOWRecording(final int model_id){
+	private void updateOWMediaObject(final int model_id){
 		// remote recording, and need to get video_url
 		final Context c = this.getApplicationContext();
 		RequestCallback cb = new RequestCallback(){
@@ -222,20 +207,20 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 			public void onSuccess() {
 				if( OWServerObject.objects(c, OWServerObject.class).get(model_id).video_recording.get(c).video_url.get() != null ){
 					if(!video_playing)
-						setupVideoView(R.id.videoview, OWServerObject.objects(c, OWServerObject.class).get(model_id).video_recording.get(c).video_url.get());
+						setupMediaViewForOWServerObject(OWServerObject.objects(c, OWServerObject.class).get(model_id));
 					if(getMapFragment() != null)
-						((OWMediaObjectBackedEntity) RecordingViewActivity.this.getMapFragment() ).populateViews(OWServerObject.objects(c, OWServerObject.class).get(model_id), c);
+						((OWMediaObjectBackedEntity) OWMediaObjectViewActivity.this.getMapFragment() ).populateViews(OWServerObject.objects(c, OWServerObject.class).get(model_id), c);
 					if(getInfoFragment() != null)
-					((OWMediaObjectBackedEntity) RecordingViewActivity.this.getInfoFragment() ).populateViews(OWServerObject.objects(c, OWServerObject.class).get(model_id), c);
+					((OWMediaObjectBackedEntity) OWMediaObjectViewActivity.this.getInfoFragment() ).populateViews(OWServerObject.objects(c, OWServerObject.class).get(model_id), c);
 				}
 			}
 			
 		};
-		OWServiceRequests.getRecording(c, OWServerObject.objects(this, OWServerObject.class).get(model_id).video_recording.get(c).uuid.get(), cb);
+		//OWServiceRequests.getRecording(c, OWServerObject.objects(this, OWServerObject.class).get(model_id).video_recording.get(c).uuid.get(), cb);
 	}
-
+/*
 	public void setVideoViewVisible(boolean visible) {
-		View video = findViewById(R.id.videoview);
+		View video = findViewById(R.id.media_object_media_view);
 		if (visible) {
 			video.setVisibility(View.VISIBLE);
 		} else {
@@ -243,6 +228,7 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 		}
 
 	}
+	*/
 	
 	private View inflateCustomTab(String tab_title){
     	ViewGroup tab = (ViewGroup) inflater.inflate(R.layout.tab_indicator_openwatch, (ViewGroup) this.findViewById(android.R.id.tabs), false);
@@ -260,12 +246,12 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 					@Override
 					public void onVideoSizeChanged(MediaPlayer mp, int width,
 							int height) {
-						VideoView video_view = (VideoView) findViewById(R.id.videoview);
+						VideoView video_view = (VideoView) findViewById(R.id.media_object_media_view);
 						//video_view.setVisibility(View.VISIBLE);
 						(findViewById(R.id.progress_container)).setVisibility(View.GONE);
 						video_view.setLayoutParams( new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 						MediaController mc = new MediaController(
-								RecordingViewActivity.this);
+								OWMediaObjectViewActivity.this);
 						video_view.setMediaController(mc);
 						mc.setAnchorView(video_view);
 						video_view.requestFocus();
@@ -276,6 +262,26 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 			}
 		});
 		video_view.start();
+	}
+	
+	public void setupImageView(int view_id, String uri){
+		if(is_local && !uri.contains("file:\\/\\/"))
+			uri = "file://" + uri;
+		Log.i("setupImageView", uri);
+		//ImageView v = (ImageView) findViewById(view_id);
+		//ImageSize size = getMediaViewDimens();
+		
+		ImageSize size = new ImageSize(640, 480);
+		Log.i("setupImageView", String.format("ImageView dimen: %d x %d ", size.getWidth(), size.getHeight()));
+		ImageLoader.getInstance().loadImage(uri, size, null, new SimpleImageLoadingListener() {
+		    @Override
+		    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+		    	Log.i("setupImageView", "got bitmap");
+		       ((ImageView) media_view).setImageBitmap(loadedImage);
+		       return;
+		    }
+		});
+		
 	}
 	
 	public void onAttachFragment (Fragment fragment){
@@ -292,6 +298,84 @@ public class RecordingViewActivity extends SherlockFragmentActivity {
 	public Fragment getInfoFragment(){
 		if(attached_fragments.size() == 2)
 			return attached_fragments.get(0);
+		return null;
+	}
+	
+	public void setupMediaViewForOWServerObject(OWServerObject object){
+		String media_path = "";
+		switch(object.getType(getApplicationContext())){
+		case VIDEO:
+			if( object.local_video_recording.get(getApplicationContext()) != null ){
+				// This is a local recording, attempt to play HQ file
+				is_local = true;
+				media_path = object.local_video_recording.get(getApplicationContext()).hq_filepath.get();
+				
+			} else if( object.video_recording.get(getApplicationContext()) != null && object.video_recording.get(getApplicationContext()).video_url.get() != null){
+				// remote recording, and video_url present
+				media_path = object.video_recording.get(getApplicationContext()).video_url.get();
+			}
+			inflateMediaView(R.layout.video_media_view);
+			this.setupVideoView(R.id.media_object_media_view, media_path);
+			break;
+		case AUDIO:
+			media_path = object.audio.get(getApplicationContext()).getMediaFilepath(getApplicationContext());
+			if(media_path == null || media_path.compareTo("") == 0){
+				media_path = object.audio.get(getApplicationContext()).media_url.get();
+				is_local = false;
+			}else
+				is_local = true;
+			inflateMediaView(R.layout.video_media_view);
+			this.setupVideoView(R.id.media_object_media_view, media_path);
+			break;
+		case PHOTO:
+			media_path = object.photo.get(getApplicationContext()).getMediaFilepath(getApplicationContext());
+			if(media_path == null || media_path.compareTo("") == 0){
+				media_path = object.photo.get(getApplicationContext()).media_url.get();
+				is_local = false;
+			} else
+				is_local = true;
+			inflateMediaView(R.layout.photo_media_view);
+			this.setupImageView(R.id.media_object_media_view, media_path);
+			break;
+		}
+		
+	}
+	
+	public void inflateMediaView(int layoutResource){
+		ViewStub stub = (ViewStub) findViewById(R.id.media_object_media_view_stub);
+		stub.setLayoutResource(layoutResource);
+		media_view = stub.inflate();
+		//setMediaViewDimens();
+		media_view_inflated = true;
+	}
+	
+	@SuppressLint("NewApi")
+	public void setMediaViewDimens(){
+		if(!is_landscape){
+			ImageSize size = getMediaViewDimens();
+			media_view.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, size.getHeight()));
+		}
+	}
+	
+	@SuppressLint("NewApi")
+	public ImageSize getMediaViewDimens(){
+		if(!is_landscape){
+			//make a guess of the videoView height so when we fit it to the loaded video
+			// the swap isn't too jarring
+			Display display = getWindowManager().getDefaultDisplay();
+			int height;
+			int width;
+			if(Build.VERSION.SDK_INT >=11){
+				Point size = new Point();
+				display.getSize(size);
+				height = (int)(size.x * 3 / 4.0); // assuming 4:3 aspect
+				width = size.y;
+			}else{
+				height = (int)(display.getWidth() * 3 / 4.0); 
+				width = (int)(display.getWidth());
+			}
+			return new ImageSize(width, height);
+		}
 		return null;
 	}
 

@@ -153,7 +153,7 @@ public class OWAudio extends Model implements OWMediaObject{
 	} */
 
 	@Override
-	public MEDIA_TYPE getType() {
+	public MEDIA_TYPE getType(Context c) {
 		return Constants.MEDIA_TYPE.AUDIO;
 	}
 
