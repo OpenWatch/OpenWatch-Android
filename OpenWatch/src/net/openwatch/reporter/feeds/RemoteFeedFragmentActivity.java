@@ -35,6 +35,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
+import net.openwatch.reporter.OWInvestigationViewActivity;
 import net.openwatch.reporter.OWMediaObjectViewActivity;
 import net.openwatch.reporter.R;
 import net.openwatch.reporter.OWStoryViewActivity;
@@ -227,7 +228,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
         			break;
         		case INVESTIGATION:
         			//TODO: InvestigationViewActivity
-        			//i = new Intent(this.getActivity(), InvestigationViewActivity.class);
+        			i = new Intent(this.getActivity(), OWInvestigationViewActivity.class);
         			break;
         		case MEDIA_OBJECT:
         			i = new Intent(this.getActivity(), OWMediaObjectViewActivity.class);
