@@ -1,6 +1,7 @@
 package net.openwatch.reporter;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
@@ -22,6 +23,8 @@ import net.openwatch.reporter.recording.ChunkedAudioVideoSoftwareRecorder;
 import net.openwatch.reporter.recording.FFChunkedAudioVideoEncoder.ChunkedRecorderListener;
 
 import android.hardware.Camera;
+import android.media.CamcorderProfile;
+import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -42,9 +45,10 @@ public class RecorderActivity extends SherlockActivity implements
 
 	static final String TAG = "RecorderActivity";
 	
-	SurfaceView camera_preview;
+	SurfaceView mCameraPreview;
 
 	Camera mCamera;
+	MediaRecorder mMediaRecorder;
 	
 	PowerManager.WakeLock wl;
 	
@@ -206,23 +210,11 @@ public class RecorderActivity extends SherlockActivity implements
 		
 		this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-		camera_preview = (SurfaceView) findViewById(R.id.camera_surface_view);
-		camera_preview.getHolder().addCallback(this); // register the Activity
-														// to be called when the
-														// SurfaceView is ready
+		mCameraPreview = (SurfaceView) findViewById(R.id.camera_surface_view);
+		mCameraPreview.getHolder().addCallback(this); // register the Activity
+		// to be called when the
+		// SurfaceView is ready
 		c = this;
-		
-		if(!is_recording){
-			try {
-				// Create an instance of Camera
-				mCamera = getCameraInstance();
-				prepareOutputLocation();
-				ready_to_record = true;
-			} catch (Exception e) {
-				Log.e("Recorder init error", "Could not init Camera");
-				e.printStackTrace();
-			}
-		}
 	}
 
 	@Override
@@ -258,12 +250,11 @@ public class RecorderActivity extends SherlockActivity implements
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
-
 	}
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		if(!is_recording && ready_to_record)
+		if(!is_recording)
 			startRecording();
 	}
 
@@ -271,7 +262,7 @@ public class RecorderActivity extends SherlockActivity implements
 	public void surfaceDestroyed(SurfaceHolder holder) {
 	}
 	
-	public void prepareOutputLocation(){
+	public boolean prepareOutputLocation() throws IOException{
 		File recording_dir = FileUtils.getStorageDirectory(
 				FileUtils.getRootStorageDirectory(RecorderActivity.this,
 						Constants.ROOT_OUTPUT_DIR),
@@ -280,7 +271,11 @@ public class RecorderActivity extends SherlockActivity implements
 		mRecording_uuid = generateRecordingIdentifier();
 		
 		output_filename = FileUtils.getStorageDirectory(recording_dir, mRecording_uuid).getAbsolutePath();
-		output_filename += "/";
+		output_filename += "/hq";
+		File output_file = new File(output_filename);
+		if(output_file.mkdirs())
+			output_filename += "/hq.mp4";
+		return output_file.createNewFile();
 	}
 	
 	
@@ -300,6 +295,19 @@ public class RecorderActivity extends SherlockActivity implements
 			//PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 			//wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "OWRecording");
 			//wl.acquire();
+			if (prepareVideoRecorder()) {
+                // Camera is available and unlocked, MediaRecorder is prepared,
+                // now you can start recording
+                mMediaRecorder.start();
+
+                // inform the user that recording has started
+                is_recording = true;
+            } else {
+            	Log.e(TAG, "failed to start recording");
+                // prepare didn't work, release the camera
+                releaseMediaRecorder();
+                // inform user
+            }
 			Log.d(TAG, "startRecording()");
 		} catch (Exception e) {
 			Log.e(TAG, "failed to start recording");
@@ -315,8 +323,10 @@ public class RecorderActivity extends SherlockActivity implements
 		if (is_recording) {
 			if(wl != null)
 				wl.release();
-			stopRecording();
 			recording_end = String.valueOf(new Date().getTime() / 1000);
+			mMediaRecorder.stop();
+			releaseMediaRecorder();
+			mCamera.lock();
 			Intent i = new Intent(RecorderActivity.this, WhatHappenedActivity.class);
 			if(media_object_id > 0){
 				i.putExtra(Constants.INTERNAL_DB_ID,media_object_id);
@@ -359,5 +369,70 @@ public class RecorderActivity extends SherlockActivity implements
 			}).show();
 		}
 	}
+	
+	private boolean prepareVideoRecorder(){
+		try {
+			prepareOutputLocation();
+		} catch (IOException e1) {
+			Log.e(TAG, "failed to create output file");
+			e1.printStackTrace();
+		}
+	    mCamera = getCameraInstance();
+	    mMediaRecorder = new MediaRecorder();
+
+	    // Step 1: Unlock and set camera to MediaRecorder
+	    mCamera.unlock();
+	    mMediaRecorder.setCamera(mCamera);
+
+	    // Step 2: Set sources
+	    mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
+	    mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+
+	    // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
+	    mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_480P));
+
+	    // Step 4: Set output file
+	    mMediaRecorder.setOutputFile(output_filename);
+
+	    // Step 5: Set the preview output
+	    mMediaRecorder.setPreviewDisplay(mCameraPreview.getHolder().getSurface());
+
+	    // Step 6: Prepare configured MediaRecorder
+	    try {
+	        mMediaRecorder.prepare();
+	    } catch (IllegalStateException e) {
+	        Log.d(TAG, "IllegalStateException preparing MediaRecorder: " + e.getMessage());
+	        releaseMediaRecorder();
+	        return false;
+	    } catch (IOException e) {
+	        Log.d(TAG, "IOException preparing MediaRecorder: " + e.getMessage());
+	        releaseMediaRecorder();
+	        return false;
+	    }
+	    return true;
+	}
+	
+	private void releaseMediaRecorder(){
+        if (mMediaRecorder != null) {
+            mMediaRecorder.reset();   // clear recorder configuration
+            mMediaRecorder.release(); // release the recorder object
+            mMediaRecorder = null;
+            mCamera.lock();           // lock camera for later use
+        }
+    }
+	
+	private void releaseCamera(){
+        if (mCamera != null){
+            mCamera.release();        // release the camera for other applications
+            mCamera = null;
+        }
+    }
+	
+	@Override
+    protected void onPause() {
+        super.onPause();
+        releaseMediaRecorder();       // if you are using MediaRecorder, release it first
+        releaseCamera();              // release the camera immediately on pause event
+    }
 
 }
