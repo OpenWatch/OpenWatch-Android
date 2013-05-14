@@ -26,7 +26,7 @@ import net.openwatch.reporter.contentprovider.OWContentProvider;
 import net.openwatch.reporter.http.OWServiceRequests;
 
 
-public class OWVideoRecording extends Model implements OWMediaObject{
+public class OWVideoRecording extends Model implements OWServerObjectInterface{
 	private static final String TAG = "OWRecording";
 
 	// Specific to OWRecording

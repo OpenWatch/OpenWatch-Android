@@ -151,7 +151,7 @@ public class MainActivity extends SherlockActivity {
 		if(data == null)
 			Log.i("MainActivity-onActivityResult", "data null");
 		if(requestCode == camera_action_code && resultCode == RESULT_OK){
-			Intent i = new Intent(this, PictureReviewActivity.class);
+			Intent i = new Intent(this, OWPhotoReviewActivity.class);
 			i.putExtra("owphoto_id", owphoto_id);
 			Log.i("MainActivity-onActivityResult", "bundling owphoto_id: " + String.valueOf(owphoto_id));
 			startActivity(i);

@@ -28,7 +28,7 @@ import net.openwatch.reporter.location.DeviceLocation.GPSRequestCallback;
 import net.openwatch.reporter.model.OWAudio;
 import net.openwatch.reporter.model.OWFeed;
 import net.openwatch.reporter.model.OWInvestigation;
-import net.openwatch.reporter.model.OWMediaObject;
+import net.openwatch.reporter.model.OWServerObjectInterface;
 import net.openwatch.reporter.model.OWServerObject;
 import net.openwatch.reporter.model.OWPhoto;
 import net.openwatch.reporter.model.OWVideoRecording;
@@ -150,9 +150,9 @@ public class OWServiceRequests {
 		};
 
 		AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
-		http_client.get(Constants.OW_API_URL + Constants.OW_STORY
+		http_client.get(Constants.OW_API_URL + "s"
 				+ File.separator + String.valueOf(id), get_handler);
-		Log.i(TAG, METHOD + " : " + Constants.OW_API_URL + Constants.OW_STORY
+		Log.i(TAG, METHOD + " : " + Constants.OW_API_URL + "s"
 				+ File.separator + String.valueOf(id));
 	}
 
@@ -424,7 +424,7 @@ public class OWServiceRequests {
 		
 	}*/
 	
-	public static void createOWMobileGeneratedObject(final Context app_context, final OWMediaObject object){
+	public static void createOWMobileGeneratedObject(final Context app_context, final OWServerObjectInterface object){
 		JsonHttpResponseHandler post_handler = new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONObject response) {
@@ -463,7 +463,7 @@ public class OWServiceRequests {
 				.JSONObjectToStringEntity(object.toJsonObject(app_context)), "application/json", post_handler);
 	}
 	
-	public static void sendOWMobileGeneratedObjectMedia(final Context app_context, final OWMediaObject object){
+	public static void sendOWMobileGeneratedObjectMedia(final Context app_context, final OWServerObjectInterface object){
 		new Thread(){
 			public void run(){
 				String file_response;
@@ -486,8 +486,11 @@ public class OWServiceRequests {
 
 	}
 	
-	private static String instanceEndpointForOWMediaObject(Context c, OWMediaObject object){
-		return Constants.OW_API_URL + Constants.API_ENDPOINT_BY_MEDIA_TYPE.get(object.getMediaType(c)) + "/" + object.getUUID(c) +"/";
+	private static String instanceEndpointForOWMediaObject(Context c, OWServerObjectInterface object){
+		if(object.getMediaType(c) != null)
+			return Constants.OW_API_URL + Constants.API_ENDPOINT_BY_MEDIA_TYPE.get(object.getMediaType(c)) + "/" + object.getUUID(c) +"/";
+		else
+			return Constants.OW_API_URL + Constants.API_ENDPOINT_BY_CONTENT_TYPE.get(object.getContentType(c)) + "/" + object.getServerId(c) +"/";
 	}
 	
 	private static String endpointForMediaType(MEDIA_TYPE type){
@@ -503,7 +506,7 @@ public class OWServiceRequests {
 	 * @param cb
 	 */
 	public static void syncOWMediaObject(final Context app_context,
-			 final OWMediaObject object) {
+			 final OWServerObjectInterface object) {
 		final String METHOD = "syncRecording";
 		final int model_id = ((Model) object).getId(); // will this work?
 		JsonHttpResponseHandler get_handler = new JsonHttpResponseHandler() {
@@ -608,14 +611,16 @@ public class OWServiceRequests {
 			}
 
 		};
-		getOWMediaObjectMeta(app_context, object, get_handler);
+		getOWServerObjectMeta(app_context, object, "", get_handler);
 
 	}
 
-	public static void getOWMediaObjectMeta(Context app_context, OWMediaObject object, JsonHttpResponseHandler response_handler) {
+	public static void getOWServerObjectMeta(Context app_context, OWServerObjectInterface object, String http_get_string, JsonHttpResponseHandler response_handler) {
 		AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
-		Log.i(TAG, "Commencing Get Recording Meta: " + instanceEndpointForOWMediaObject(app_context, object));
-		http_client.get(instanceEndpointForOWMediaObject(app_context, object), response_handler);
+		if(http_get_string == null)
+			http_get_string = "";
+		Log.i(TAG, "Commencing Get Recording Meta: " + instanceEndpointForOWMediaObject(app_context, object) + http_get_string);
+		http_client.get(instanceEndpointForOWMediaObject(app_context, object) + http_get_string, response_handler);
 	}
 
 	/**
@@ -626,7 +631,7 @@ public class OWServiceRequests {
 	 * @param response_handler
 	 */
 	public static void editOWMediaObject(Context app_context,
-			OWMediaObject object, JsonHttpResponseHandler response_handler) {
+			OWServerObjectInterface object, JsonHttpResponseHandler response_handler) {
 		AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
 		Log.i(TAG,
 				"Commencing Edit Recording: "

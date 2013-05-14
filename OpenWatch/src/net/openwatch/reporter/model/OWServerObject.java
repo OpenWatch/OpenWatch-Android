@@ -27,7 +27,7 @@ import com.orm.androrm.field.ForeignKeyField;
 import com.orm.androrm.field.IntegerField;
 import com.orm.androrm.field.ManyToManyField;
 
-public class OWServerObject extends Model implements OWMediaObject{
+public class OWServerObject extends Model implements OWServerObjectInterface{
 	private static final String TAG = "OWMediaObject";
 	
 	public CharField title = new CharField();

@@ -20,7 +20,7 @@ import com.orm.androrm.field.CharField;
 import com.orm.androrm.field.DoubleField;
 import com.orm.androrm.field.ForeignKeyField;
 
-public class OWAudio extends Model implements OWMediaObject{
+public class OWAudio extends Model implements OWServerObjectInterface{
 	private static final String TAG = "OWMobileGeneratedObject";
 	
 	public CharField uuid = new CharField();

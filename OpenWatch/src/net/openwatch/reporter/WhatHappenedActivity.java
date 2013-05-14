@@ -59,7 +59,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 	
 	private void fetchRecordingFromOW(){
 		final Context app_context = this.getApplicationContext();
-		OWServiceRequests.getOWMediaObjectMeta(app_context, OWServerObject.objects(app_context, OWServerObject.class).get(model_id).video_recording.get(app_context), new JsonHttpResponseHandler(){
+		OWServiceRequests.getOWServerObjectMeta(app_context, OWServerObject.objects(app_context, OWServerObject.class).get(model_id).video_recording.get(app_context), "", new JsonHttpResponseHandler(){
 			private static final String TAG = "OWServiceRequests";
 			@Override
     		public void onSuccess(JSONObject response){

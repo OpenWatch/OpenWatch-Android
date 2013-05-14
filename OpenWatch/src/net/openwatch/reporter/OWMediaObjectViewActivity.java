@@ -331,6 +331,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 			}else
 				is_local = true;
 			inflateMediaView(R.layout.video_media_view);
+			Log.i(TAG, "audio media_path: " + media_path);
 			this.setupVideoView(R.id.media_object_media_view, media_path);
 			break;
 		case PHOTO:

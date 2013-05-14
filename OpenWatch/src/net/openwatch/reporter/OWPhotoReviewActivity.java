@@ -18,7 +18,7 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.provider.MediaStore;
 
-public class PictureReviewActivity extends Activity {
+public class OWPhotoReviewActivity extends Activity {
 	
 	private ImageView previewImageView;
 	private int owphoto_id = -1;

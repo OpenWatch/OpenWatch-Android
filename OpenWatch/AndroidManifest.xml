@@ -88,7 +88,7 @@
             android:label="@string/title_activity_action_bar_feed" >
         </activity>
         <activity
-            android:name="net.openwatch.reporter.StoryViewActivity"
+            android:name="net.openwatch.reporter.OWStoryViewActivity"
             android:label="@string/title_activity_story_view"
             android:parentActivityName="net.openwatch.reporter.FeedFragmentActivity" >
             <meta-data
@@ -100,12 +100,16 @@
             android:label="@string/title_activity_welcome" >
         </activity>
         <activity
-            android:name="net.openwatch.reporter.PictureReviewActivity"
+            android:name="net.openwatch.reporter.OWPhotoReviewActivity"
             android:label="@string/title_activity_picture_review"
             android:parentActivityName="net.openwatch.reporter.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="net.openwatch.reporter.MainActivity" />
+        </activity>
+        <activity
+            android:name="net.openwatch.reporter.OWInvestigationViewActivity"
+            android:label="@string/title_activity_owinvestigation_view" >
         </activity>
     </application>
 

@@ -9,7 +9,7 @@ import com.orm.androrm.QuerySet;
 
 import android.content.Context;
 
-public interface OWMediaObject {
+public interface OWServerObjectInterface {
 	
 	public String getTitle(Context c);
 	public void setTitle(Context c, String title);

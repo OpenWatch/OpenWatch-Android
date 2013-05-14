@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import net.openwatch.reporter.OWUtils;
-import net.openwatch.reporter.PictureReviewActivity;
+import net.openwatch.reporter.OWPhotoReviewActivity;
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
 

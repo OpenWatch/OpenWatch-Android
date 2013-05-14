@@ -26,7 +26,7 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-public class StoryViewActivity extends SherlockActivity implements OWMediaObjectBackedEntity{
+public class OWStoryViewActivity extends SherlockActivity implements OWMediaObjectBackedEntity{
 	private static final String TAG = "StoryViewActivity";
 	
 	static int model_id = -1;
@@ -61,7 +61,7 @@ public class StoryViewActivity extends SherlockActivity implements OWMediaObject
 					@Override
 					public void onSuccess() {
 						if( OWServerObject.objects(c, OWServerObject.class).get(model_id).story.get(getApplicationContext()).body.get() != null ){
-							StoryViewActivity.this.populateViews(OWServerObject.objects(c, OWServerObject.class).get(model_id), c);
+							OWStoryViewActivity.this.populateViews(OWServerObject.objects(c, OWServerObject.class).get(model_id), c);
 						}
 					}
 					

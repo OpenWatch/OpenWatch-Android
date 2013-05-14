@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:weightSum="1.0"
-    tools:context=".PictureReviewActivity" >
+    tools:context=".OWPhotoReviewActivity" >
 
     <ImageView
         android:id="@+id/picture_preview"

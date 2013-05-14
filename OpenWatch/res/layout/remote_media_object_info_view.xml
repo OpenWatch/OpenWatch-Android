@@ -5,7 +5,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="100dp"
         android:layout_margin="5dp" >
 
         <ImageView
@@ -64,8 +64,8 @@
         <TextView
             android:id="@+id/editTitle"
             style="@style/Theme.openwatch.feedItemTitleText"
-            android:layout_above="@id/view_icon"
             android:layout_toRightOf="@id/user_thumbnail"
+            android:ellipsize="marquee"
             android:fontFamily="sans-serif-condensed" >
 
             <requestFocus />

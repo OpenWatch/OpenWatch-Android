@@ -50,6 +50,7 @@ public class Constants {
 	// for fileUtils and OWServiceRequests
 	public static enum MEDIA_TYPE { VIDEO, PHOTO, AUDIO };
 	public static HashMap<MEDIA_TYPE, String> API_ENDPOINT_BY_MEDIA_TYPE = new HashMap<MEDIA_TYPE, String>() {{put(MEDIA_TYPE.VIDEO, "v"); put(MEDIA_TYPE.PHOTO, "p"); put(MEDIA_TYPE.AUDIO, "a"); }};
+	public static HashMap<CONTENT_TYPE, String> API_ENDPOINT_BY_CONTENT_TYPE = new HashMap<CONTENT_TYPE, String>() {{put(CONTENT_TYPE.INVESTIGATION, "i"); put(CONTENT_TYPE.STORY, "s"); }};
 	public static final String OW_CONTENT_TYPE = "owcontent_type";
 	
 	// Date Formatter for OW server time

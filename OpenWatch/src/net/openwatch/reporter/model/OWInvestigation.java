@@ -19,7 +19,7 @@ import com.orm.androrm.QuerySet;
 import com.orm.androrm.field.CharField;
 import com.orm.androrm.field.ForeignKeyField;
 
-public class OWInvestigation extends Model implements OWMediaObject{
+public class OWInvestigation extends Model implements OWServerObjectInterface{
 	private static final String TAG = "OWInvestigation";
 	
 	public CharField blurb = new CharField();

@@ -25,7 +25,7 @@ import com.orm.androrm.field.DoubleField;
 import com.orm.androrm.field.ForeignKeyField;
 import com.orm.androrm.field.IntegerField;
 
-public class OWPhoto extends Model implements OWMediaObject{
+public class OWPhoto extends Model implements OWServerObjectInterface{
 	private static final String TAG = "OWPhoto";
 	
 	public CharField uuid = new CharField();
