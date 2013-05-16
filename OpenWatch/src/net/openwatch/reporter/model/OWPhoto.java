@@ -198,11 +198,11 @@ public class OWPhoto extends Model implements OWServerObjectInterface{
 		OWPhoto existing_photo = null;
 		
 		DatabaseAdapter dba = DatabaseAdapter.getInstance(app_context);
-		String query_string = String.format("SELECT %s FROM %s WHERE ( %s = \"%s\" AND %s IS NOT NULL)", DBConstants.ID, DBConstants.MEDIA_OBJECT_TABLENAME, DBConstants.STORY_SERVER_ID, json_obj.getString(Constants.OW_SERVER_ID), "photo");
+		String query_string = String.format("SELECT %s FROM %s WHERE %s = \"%s\"", DBConstants.ID, DBConstants.PHOTO_TABLENAME, DBConstants.RECORDINGS_TABLE_UUID, json_obj.getString(Constants.OW_UUID));
 		Log.i(TAG, "searching for existing audio: " + query_string);
 		Cursor result = dba.open().query(query_string);
 		if(result != null && result.moveToFirst()){
-			int photo_id = result.getInt(0);
+            int photo_id = result.getInt(0);
 			if(photo_id != 0)
 				existing_photo = OWPhoto.objects(app_context, OWPhoto.class).get(photo_id);
 			if(existing_photo != null)
@@ -210,7 +210,7 @@ public class OWPhoto extends Model implements OWServerObjectInterface{
 		}
 		
 		if(existing_photo == null){
-			Log.i(TAG, "creating new audio");
+			Log.i(TAG, String.format("creating new audio for server_id"));
 			existing_photo = new OWPhoto(app_context);
 		}
 		
