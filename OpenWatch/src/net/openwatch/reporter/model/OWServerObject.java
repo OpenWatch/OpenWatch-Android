@@ -93,7 +93,7 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
 		context = context.getApplicationContext();
 		setLastEdited(context, Constants.utc_formatter.format(new Date()));
 		boolean super_save =  super.save(context);
-		
+		//Log.i(TAG, String.format("setLastEdited: %s", getLastEdited(context)));
 		// notify the ContentProvider that the dataset has changed
 		context.getContentResolver().notifyChange(OWContentProvider.getMediaObjectUri(getId()), null);
 		// notify all of this object's feed uris

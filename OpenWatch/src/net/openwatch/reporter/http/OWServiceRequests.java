@@ -233,9 +233,7 @@ public class OWServiceRequests {
 	 * Parse an OpenWatch.net feed, saving its contents to the databasee
 	 * 
 	 * @param app_context
-	 * @param feed
-	 *            The type of feed to return. See OWServiceRequests.OWFeed
-	 */
+     */
 	private static void getFeed(final Context app_context, JSONObject params, final String ext_feed_name, final int page, final PaginatedRequestCallback cb){
 		final String METHOD = "getFeed";
 		final String feed_name = ext_feed_name.trim().toLowerCase();
@@ -448,7 +446,7 @@ public class OWServiceRequests {
 		};
 		
 		AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
-		Log.i(TAG, "Commencing Create OWServerObject " + endpointForMediaType(object.getMediaType(app_context)));
+		Log.i(TAG, String.format("Commencing Create OWServerObject: %s with json: %s", endpointForMediaType(object.getMediaType(app_context)), object.toJsonObject(app_context) ));
 		//Log.i(TAG, object.getType().toString());
 		//Log.i(TAG, object.toJsonObject(app_context).toString());
 		//Log.i(TAG, Utils.JSONObjectToStringEntity(object.toJsonObject(app_context)).toString());
@@ -496,31 +494,32 @@ public class OWServiceRequests {
 	 * necessary
 	 * 
 	 * @param app_context
-	 * @param cb
 	 */
 	public static void syncOWServerObject(final Context app_context,
 			 final OWServerObjectInterface object) {
 		final String METHOD = "syncRecording";
-		final int model_id = object.getServerId(app_context);
+		final int model_id = ((Model)object).getId();
 		JsonHttpResponseHandler get_handler = new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONObject response) {
 				Log.i(TAG, "getMeta response: " + response.toString());
-				if (response.has("recording")) {
+				if (response.has("id")) {
 					try {
-						JSONObject object_json = response
-								.getJSONObject("object");
+						//JSONObject object_json = response
+						//		.getJSONObject("object");
 						// response was successful
 						OWServerObject server_object = OWServerObject.objects(
 								app_context, OWServerObject.class).get(
 								model_id);
+                        if(server_object == null)
+                            Log.e(TAG, String.format("Could not locate OWServerObject with id: %d", model_id) );
 						Date last_edited_remote = Constants.utc_formatter
-								.parse(object_json.getString("last_edited"));
+								.parse(response.getString("last_edited"));
 						Date last_edited_local = Constants.utc_formatter.parse(server_object
 								.getLastEdited(app_context));
 						Log.i(TAG,
 								"Sync dates. Remote: "
-										+ object_json
+										+ response
 												.getString("last_edited")
 										+ " local: "
 										+ server_object.getLastEdited(app_context));
@@ -529,22 +528,22 @@ public class OWServiceRequests {
 						boolean doSave = false;
 						// using the interface methods requires saving before
 						// the object ref is lost
-						if (object_json.has(Constants.OW_SERVER_ID)) {
-							server_object.server_id.set(object_json
+						if (response.has(Constants.OW_SERVER_ID)) {
+							server_object.server_id.set(response
 									.getInt(Constants.OW_SERVER_ID));
 							// recording.setServerId(app_context,
 							// recording_json.getInt(Constants.OW_SERVER_ID));
 							doSave = true;
 						}
-						if (object_json.has(Constants.OW_FIRST_POSTED)) {
-							server_object.first_posted.set(object_json
+						if (response.has(Constants.OW_FIRST_POSTED)) {
+							server_object.first_posted.set(response
 									.getString(Constants.OW_FIRST_POSTED));
 							// recording.setFirstPosted(app_context,
 							// recording_json.getString(Constants.OW_FIRST_POSTED));
 							doSave = true;
 						}
-						if (object_json.has(Constants.OW_THUMB_URL)) {
-							server_object.thumbnail_url.set(object_json
+						if (response.has(Constants.OW_THUMB_URL)) {
+							server_object.thumbnail_url.set(response
 									.getString(Constants.OW_THUMB_URL));
 							// recording.setThumbnailUrl(app_context,
 							// recording_json.getString(Constants.OW_THUMB_URL));
@@ -568,7 +567,7 @@ public class OWServiceRequests {
 							// call child object's updateWithJson -> calls OWServerObject's updateWithJson
 							
 							if(child_obj != null)
-								child_obj.updateWithJson(app_context, object_json);
+								child_obj.updateWithJson(app_context, response);
 							
 						} else if (last_edited_remote.before(last_edited_local)) {
 							// copy local to remote
@@ -630,7 +629,6 @@ public class OWServiceRequests {
 	 * Post recording data to server. object should be a child OW object. i.e: NOT OWServerObject
 	 * 
 	 * @param app_context
-	 * @param recording
 	 * @param response_handler
 	 */
 	public static void editOWServerObject(Context app_context,

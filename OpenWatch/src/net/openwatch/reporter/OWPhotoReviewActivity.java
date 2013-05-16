@@ -1,9 +1,11 @@
 package net.openwatch.reporter;
 
 import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
+import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.http.OWServiceRequests;
 import net.openwatch.reporter.model.OWPhoto;
 import android.os.Bundle;
@@ -20,28 +22,37 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.provider.MediaStore;
 
-public class OWPhotoReviewActivity extends SherlockActivity {
+public class OWPhotoReviewActivity extends SherlockFragmentActivity {
 	
 	private static final String TAG = "OWPhotoReviewActivity";
 	
 	private ImageView previewImageView;
+    static int owphoto_parent_id = -1;
 	private int owphoto_id = -1;
-	private boolean didAttemptSync = false;
-	
-	private EditText photoEditText;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_picture_review);
+        this.getSupportActionBar().setTitle("Describe your Picture");
 		// Show the Up button in the action bar.
 		setupActionBar();
 		Log.i("PictureReview","got it");
 		final Intent i = getIntent();
+        if(i.hasExtra("owphoto_id")){
+            owphoto_id = i.getIntExtra("owphoto_id", 0);
+            postOWPhoto();
+        } else
+            Log.e(TAG, "unable to read OWPhoto id from intent");
+        if(i.hasExtra(Constants.INTERNAL_DB_ID))
+            owphoto_parent_id = i.getIntExtra(Constants.INTERNAL_DB_ID, 0);
+        else
+            Log.e(TAG, "unable to read photo's OWServerObject id from intent");
 		
-		photoEditText = (EditText) findViewById(R.id.picture_caption);
 		previewImageView = (ImageView) findViewById(R.id.picture_preview);
-		previewImageView.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener(){
+        if(i != null)
+		    previewImageView.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener(){
 			
 			@Override
 			public void onGlobalLayout() {
@@ -55,9 +66,8 @@ public class OWPhotoReviewActivity extends SherlockActivity {
 	    if(intent.hasExtra(MediaStore.EXTRA_OUTPUT)){
 	    	Log.i("loadScaledPic", "got extra_output from intent");
 	    	OWUtils.loadScaledPicture(intent.getStringExtra(MediaStore.EXTRA_OUTPUT), previewImageView);
-	    }else if(intent.hasExtra("owphoto_id")){
+	    }else if(owphoto_id > 0){
 	    	Log.i("loadScaledPic", "got output from intent");
-	    	owphoto_id = intent.getIntExtra("owphoto_id", -1);
 	    	Log.i("PictureReview-loadScaled", "get owphoto_id: " + String.valueOf(owphoto_id));
 	    	OWPhoto photo = OWPhoto.objects(getApplicationContext(), OWPhoto.class).get(owphoto_id);
 	    	OWUtils.loadScaledPicture(photo.filepath.get(), previewImageView);
@@ -96,26 +106,28 @@ public class OWPhotoReviewActivity extends SherlockActivity {
 			return true;
 			
 		case R.id.menu_submit:
-			 syncPhoto();
 			 this.finish();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 	
-	private void syncPhoto(){
-		OWPhoto photo = OWPhoto.objects(getApplicationContext(), OWPhoto.class).get(owphoto_id);
+	private void postOWPhoto(){
+        /* Title sync will be handled onPause() by OWMediaObjectInfoFragment
+
+        Log.i(TAG, String.format("Preparing to sync Photo %d with ServerObject %d", owphoto_id, photo.media_object.get(getApplicationContext()).getId()));
+        Log.i(TAG, String.format("Attempting to set photo title from edittext: %s", photoEditText.getText().toString()));
 		photo.setTitle(getApplicationContext(), photoEditText.getText().toString());
+        photo.media_object.get(getApplicationContext()).save(getApplicationContext());
 		photo.save(getApplicationContext());
-		Log.i(TAG, "syncPhoto, uuid: " +  photo.getUUID(getApplicationContext()));
+		Log.i(TAG, String.format("postOWPhoto, uuid: %s title: %s",  photo.getUUID(getApplicationContext()), photo.getTitle(getApplicationContext())) );
+
+		*/
+        OWPhoto photo = OWPhoto.objects(getApplicationContext(), OWPhoto.class).get(owphoto_id);
 		OWServiceRequests.createOWServerObject(getApplicationContext(), photo);
-		didAttemptSync = true;
 	}
 	
 	public void onPause(){
-		if(!didAttemptSync){
-			 syncPhoto();
-		}
 		super.onPause();
 	}
 	

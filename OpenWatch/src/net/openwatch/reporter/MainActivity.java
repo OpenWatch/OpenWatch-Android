@@ -30,6 +30,7 @@ public class MainActivity extends SherlockActivity {
 	
 	private static int camera_action_code = 444;
 	private static int owphoto_id = -1;
+    private static int owphoto_parent_id = -1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +73,7 @@ public class MainActivity extends SherlockActivity {
 		photo.uuid.set(uuid);
 		photo.save(getApplicationContext());
 		owphoto_id = photo.getId();
+        owphoto_parent_id = photo.media_object.get(getApplicationContext()).getId();
 		Log.i("MainActivity-cameraButtonClick", "get owphoto_id: " + String.valueOf(owphoto_id));
 	    startActivityForResult(takePictureIntent, camera_action_code);
 	}
@@ -153,7 +155,8 @@ public class MainActivity extends SherlockActivity {
 		if(requestCode == camera_action_code && resultCode == RESULT_OK){
 			Intent i = new Intent(this, OWPhotoReviewActivity.class);
 			i.putExtra("owphoto_id", owphoto_id);
-			Log.i("MainActivity-onActivityResult", "bundling owphoto_id: " + String.valueOf(owphoto_id));
+            i.putExtra(Constants.INTERNAL_DB_ID, owphoto_parent_id); // server object id
+			Log.i("MainActivity-onActivityResult", String.format("bundling owphoto_id: %d, owserverobject_id: %d",owphoto_id, owphoto_parent_id));
 			startActivity(i);
 		}
 		

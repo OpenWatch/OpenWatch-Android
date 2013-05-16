@@ -57,7 +57,12 @@ public class OWPhoto extends Model implements OWServerObjectInterface{
 	@Override
 	public boolean save(Context context) {
 		// notify the ContentProvider that the dataset has changed
-		context.getContentResolver().notifyChange(OWContentProvider.getTagUri(this.getId()), null);
+		//context.getContentResolver().notifyChange(OWContentProvider.getTagUri(this.getId()), null);
+        if(media_object.get(context) != null){
+            media_object.get(context).setLastEdited(context, Constants.utc_formatter.format(new Date()));
+            media_object.get(context).save(context);
+        }
+
 		return super.save(context);
 	}
 	
