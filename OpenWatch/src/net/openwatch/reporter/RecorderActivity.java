@@ -2,6 +2,7 @@ package net.openwatch.reporter;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
@@ -54,16 +55,18 @@ public class RecorderActivity extends SherlockActivity implements
 	
 	Context c;
 	
+	Date start_date;
+	Date stop_date;
+	
 	boolean ready_to_record = false;
 	boolean is_recording = false;
 	
 	// VideoRecording data
 	int media_object_id = 0;
 	int owrecording_id = 0;
-	String recording_uuid = "";
 	
 	String output_filename;
-	String mRecording_uuid;
+	String recording_uuid;
 	String recording_start;
 	String recording_end;
 	
@@ -151,7 +154,8 @@ public class RecorderActivity extends SherlockActivity implements
 	    	        	});
 	    	        	
 	        			OWMediaRequests.start(c, public_upload_token, recording_uuid, command[1]);
-        			}
+        			}else
+        				Log.e(TAG, "recording_uuid is null on send start signal!");
                 }
         	} else if(command[0].compareTo("end") == 0){
         		if(command.length == 4){
@@ -268,9 +272,9 @@ public class RecorderActivity extends SherlockActivity implements
 						Constants.ROOT_OUTPUT_DIR),
 				Constants.VIDEO_OUTPUT_DIR);
 		
-		mRecording_uuid = generateRecordingIdentifier();
+		recording_uuid = generateRecordingIdentifier();
 		
-		output_filename = FileUtils.getStorageDirectory(recording_dir, mRecording_uuid).getAbsolutePath();
+		output_filename = FileUtils.getStorageDirectory(recording_dir, recording_uuid).getAbsolutePath();
 		output_filename += "/hq";
 		File output_file = new File(output_filename);
 		if(output_file.mkdirs())
@@ -290,12 +294,13 @@ public class RecorderActivity extends SherlockActivity implements
 	private void startRecording(){
 		try {
 			//av_recorder.startRecording(mCamera, camera_preview, output_filename);
-			recording_start = String.valueOf(new Date().getTime() / 1000);
-			
 			//PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 			//wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "OWRecording");
 			//wl.acquire();
 			if (prepareVideoRecorder()) {
+				start_date = new Date();
+				recording_start = String.valueOf(start_date.getTime() / 1000);
+				new MediaSignalTask().execute("start", Constants.utc_formatter.format(start_date));
                 // Camera is available and unlocked, MediaRecorder is prepared,
                 // now you can start recording
                 mMediaRecorder.start();
@@ -324,6 +329,9 @@ public class RecorderActivity extends SherlockActivity implements
 			if(wl != null)
 				wl.release();
 			recording_end = String.valueOf(new Date().getTime() / 1000);
+			stop_date = new Date();
+			new MediaSignalTask().execute("end", Constants.utc_formatter.format(start_date), Constants.utc_formatter.format(stop_date), new JSONArray(new ArrayList()).toString());
+			new MediaSignalTask().execute("hq", output_filename);
 			mMediaRecorder.stop();
 			releaseMediaRecorder();
 			mCamera.lock();
@@ -334,7 +342,7 @@ public class RecorderActivity extends SherlockActivity implements
 			}else
 				Log.e(TAG, "Error getting mediaobject id from chunk_listener");
 
-			i.putExtra(Constants.OW_REC_UUID, mRecording_uuid);
+			i.putExtra(Constants.OW_REC_UUID, recording_uuid);
 			i.setFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
 			startActivity(i);
 			finish(); // ensure this activity removed from the stack

@@ -22,6 +22,8 @@ import android.provider.MediaStore;
 
 public class OWPhotoReviewActivity extends SherlockActivity {
 	
+	private static final String TAG = "OWPhotoReviewActivity";
+	
 	private ImageView previewImageView;
 	private int owphoto_id = -1;
 	private boolean didAttemptSync = false;
@@ -105,7 +107,8 @@ public class OWPhotoReviewActivity extends SherlockActivity {
 		OWPhoto photo = OWPhoto.objects(getApplicationContext(), OWPhoto.class).get(owphoto_id);
 		photo.setTitle(getApplicationContext(), photoEditText.getText().toString());
 		photo.save(getApplicationContext());
-		OWServiceRequests.createOWMobileGeneratedObject(getApplicationContext(), photo);
+		Log.i(TAG, "syncPhoto, uuid: " +  photo.getUUID(getApplicationContext()));
+		OWServiceRequests.createOWServerObject(getApplicationContext(), photo);
 		didAttemptSync = true;
 	}
 	

@@ -418,7 +418,7 @@ public class OWServiceRequests {
 		
 	}*/
 	
-	public static void createOWMobileGeneratedObject(final Context app_context, final OWServerObjectInterface object){
+	public static void createOWServerObject(final Context app_context, final OWServerObjectInterface object){
 		JsonHttpResponseHandler post_handler = new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONObject response) {
@@ -448,8 +448,7 @@ public class OWServiceRequests {
 		};
 		
 		AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
-		Log.i(TAG, "Commencing Create OWMGObject " + Constants.OW_API_URL
-				+ Constants.OW_RECORDING);
+		Log.i(TAG, "Commencing Create OWServerObject " + endpointForMediaType(object.getMediaType(app_context)));
 		//Log.i(TAG, object.getType().toString());
 		//Log.i(TAG, object.toJsonObject(app_context).toString());
 		//Log.i(TAG, Utils.JSONObjectToStringEntity(object.toJsonObject(app_context)).toString());
