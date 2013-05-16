@@ -249,9 +249,10 @@ public class OWVideoRecording extends Model implements OWServerObjectInterface{
 	public boolean save(Context context) {
 		// notify the ContentProvider that the dataset has changed
 		context.getContentResolver().notifyChange(OWContentProvider.getRemoteRecordingUri(getId()), null);
-		if(media_object.get(context) != null) // this is called once in <init> to get db id before medi_object created
+		if(media_object.get(context) != null){ // this is called once in <init> to get db id before medi_object created
 			setLastEdited(context, Constants.utc_formatter.format(new Date()));
-            media_object.get(context).save(context);
+            media_object.get(context).save(context); // TODO: NPE occured here
+        }
 		return super.save(context);
 	}
 
