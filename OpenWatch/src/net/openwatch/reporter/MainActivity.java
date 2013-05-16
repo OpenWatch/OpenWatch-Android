@@ -81,7 +81,7 @@ public class MainActivity extends SherlockActivity {
 		startActivity(i);
 	}
 	
-	public void watchButtonClick(View v){
+	public void featuredButtonClick(View v){
 		Intent i = new Intent(this, FeedFragmentActivity.class);
 		i.putExtra(Constants.FEED_TYPE, OWFeedType.FEATURED);
 		startActivity(i);
