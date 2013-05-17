@@ -180,10 +180,22 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
         }
         
         private void fetchNextFeedPage(){
-        	if(Constants.isOWFeedTypeGeoSensitive(feed) && device_location != null)
-        		OWServiceRequests.getGeoFeed(this.getActivity().getApplicationContext(), device_location, feed, page+1, cb);	
-        	else
-        		OWServiceRequests.getFeed(this.getActivity().getApplicationContext(), feed, page+1, cb);	
+        	if(Constants.isOWFeedTypeGeoSensitive(feed) && device_location != null){
+                try{
+        		OWServiceRequests.getGeoFeed(this.getActivity().getApplicationContext(), device_location, feed, page+1, cb);	 // NPE HERE
+                }catch(NullPointerException e){
+                    Log.e(TAG, "NPE getting GeoFeed");
+                    e.printStackTrace();
+                }
+            }
+        	else{
+                try{
+                    OWServiceRequests.getFeed(this.getActivity().getApplicationContext(), feed, page+1, cb);
+                }catch(NullPointerException e){
+                    Log.e(TAG, "NPE getting GeoFeed");
+                    e.printStackTrace();
+                }
+            }
         }
         
         private void restartLoader(){

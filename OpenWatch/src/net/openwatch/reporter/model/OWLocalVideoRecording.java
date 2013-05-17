@@ -99,9 +99,9 @@ public class OWLocalVideoRecording extends Model {
 			if(recording.get(c).getDescription(c) != null && recording.get(c).getDescription(c).compareTo("") != 0){
 				result.put(Constants.OW_DESCRIPTION, recording.get(c).getDescription(c));
 			}
-			if(this.segments.get(c, this).count() > 0){
-				result.put(Constants.OW_ALL_FILES, segmentsToJSONArray(c));
-			}
+			//if(this.segments.get(c, this).count() > 0){
+			result.put(Constants.OW_ALL_FILES, segmentsToJSONArray(c));
+			//}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

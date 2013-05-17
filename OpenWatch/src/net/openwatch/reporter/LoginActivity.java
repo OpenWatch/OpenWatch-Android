@@ -4,6 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+
+import net.openwatch.reporter.account.Authentication;
 import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,8 +57,6 @@ public class LoginActivity extends SherlockActivity {
 	private static final String TAG = "LoginActivity";
 	private static final int SELECT_PHOTO = 100;
 	private static final int TAKE_PHOTO = 101;
-
-	AsyncHttpClient http_client;
 
 	// Values for email and password at the time of the login attempt.
 	private String mEmail;
@@ -231,11 +231,6 @@ public class LoginActivity extends SherlockActivity {
 	 * errors are presented and no actual login attempt is made.
 	 */
 	public void attemptLogin() {
-		if (http_client != null) {
-			Log.d(TAG, "http_client is not null");
-			return;
-		}
-
 		// Reset errors.
 		mEmailView.setError(null);
 		mPasswordView.setError(null);
@@ -344,7 +339,7 @@ public class LoginActivity extends SherlockActivity {
 			public void onSuccess(JSONObject response) {
 				Log.i(TAG, "OW login success: " + response.toString());
 				try {
-					setUserAuthenticated(response);
+					Authentication.setUserAuthenticated(getApplicationContext(), response, mEmail);
 
 					if ((Boolean) response.getBoolean(Constants.OW_SUCCESS) == true) {
 						Log.i(TAG, "OW login success: " + response.toString());
@@ -405,8 +400,6 @@ public class LoginActivity extends SherlockActivity {
 
 			@Override
 			public void onFinish() {
-				Log.i(TAG, "OW login finish");
-				http_client = null;
 			}
 		};
 
@@ -430,7 +423,7 @@ public class LoginActivity extends SherlockActivity {
 					if (response.getBoolean(Constants.OW_SUCCESS) == true) {
 						Log.i(TAG, "OW signup success: " + response.toString());
 						// Set authed preference
-						setUserAuthenticated(response);
+						Authentication.setUserAuthenticated(getApplicationContext(), response, mEmail);
 
 						toWelcomeActivity();
 						return;
@@ -477,8 +470,6 @@ public class LoginActivity extends SherlockActivity {
 
 			@Override
 			public void onFinish() {
-				Log.i(TAG, "OW login finish");
-				http_client = null;
 			}
 		};
 
@@ -487,191 +478,11 @@ public class LoginActivity extends SherlockActivity {
 
 	}
 
-	/**
-	 * Registers this mobile app with the OpenWatch service sends the
-	 * application version number
-	 */
-	public void RegisterApp(String public_upload_token) {
-		// Post public_upload_token, signup_type
-		JsonHttpResponseHandler response_handler = new JsonHttpResponseHandler() {
-			private static final String TAG = "OWServiceRequests";
 
-			@Override
-			public void onSuccess(JSONObject response) {
-				Log.i(TAG, "OW app register success: " + response);
-
-				try {
-					if (response.getBoolean(Constants.OW_SUCCESS) == true) {
-						Log.i(TAG,
-								"OW app registration success: "
-										+ response.toString());
-
-						setRegisteredTask task = (setRegisteredTask) new setRegisteredTask()
-								.execute();
-						return;
-					} else {
-						int error_code = response.getInt(Constants.OW_ERROR);
-						switch (error_code) {
-
-						case 415: // invalid public upload token
-							Log.e(TAG,
-									"invalid public upload token on app registration");
-							break;
-						default:
-							Log.e(TAG, "Other error on app registration: "
-									+ response.getString(Constants.OW_REASON));
-							break;
-						}
-					}
-				} catch (JSONException e) {
-					Log.e(TAG, "Error parsing json registration response");
-				}
-			}
-
-			@Override
-			public void onFailure(Throwable e, String response) {
-				Log.i(TAG, "OW app registration failure: " + response);
-			}
-
-			@Override
-			public void onFinish() {
-				Log.i(TAG, "OW app registration finish");
-				http_client = null;
-			}
-		};
-
-		OWServiceRequests.RegisterApp(getApplicationContext(),
-				public_upload_token, response_handler);
-	}
-
-	/**
-	 * Makes the appropriate adjustments to the SharedPreferences based on the
-	 * result stored in server_response
-	 * 
-	 * @param server_response
-	 */
-	public void setUserAuthenticated(JSONObject server_response) {
-		SharedPreferences profile = getSharedPreferences(
-				Constants.PROFILE_PREFS, MODE_PRIVATE);
-		try {
-			if (server_response.getBoolean(Constants.OW_SUCCESS)
-					&& !profile.getBoolean(Constants.REGISTERED, false)) {
-				try {
-					RegisterApp(server_response.getString(Constants.PUB_TOKEN));
-				} catch (JSONException e) {
-					Log.e(TAG, "Error parsing pub token from JSON");
-					e.printStackTrace();
-				}
-			}
-			new SetAuthedTask(getApplicationContext()).execute(server_response);
-		} catch (JSONException e) {
-			Log.e(TAG, "Error parsing server response in setUserAuthenticated");
-			e.printStackTrace();
-		}
-
-	}
 
 	private void logOut() {
-		SharedPreferences profile = getSharedPreferences(
-				Constants.PROFILE_PREFS, MODE_PRIVATE);
-		profile.edit().clear().commit();
-		this.setViewsAsNotAuthenticated();
-	}
-
-	/**
-	 * Save the OpenWatch service login response data to SharedPreferences this
-	 * includes the public and private upload token, authentication state, and
-	 * the submitted email.
-	 * 
-	 * @author davidbrodsky
-	 * 
-	 */
-	private class SetAuthedTask extends AsyncTask<JSONObject, Void, Void> {
-		Context c;
-
-		public SetAuthedTask(Context c) {
-			this.c = c;
-		}
-
-		protected Void doInBackground(JSONObject... server_response_array) {
-			JSONObject server_response = server_response_array[0];
-			// Confirm returned email matches
-			try {
-				SharedPreferences profile = getSharedPreferences(
-						Constants.PROFILE_PREFS, MODE_PRIVATE);
-				SharedPreferences.Editor editor = profile.edit();
-				if (server_response.getBoolean(Constants.OW_SUCCESS)) {
-					if ((server_response.getString(Constants.OW_EMAIL))
-							.compareTo(mEmail) != 0)
-						Log.e(TAG,
-								"Email mismatch. Client submitted "
-										+ mEmail
-										+ " Server responded: "
-										+ ((String) server_response
-												.get(Constants.OW_EMAIL)));
-					editor.putBoolean(Constants.AUTHENTICATED, true);
-					editor.putInt(DBConstants.USER_SERVER_ID,
-							server_response.getInt(DBConstants.USER_SERVER_ID));
-					editor.putString(Constants.PUB_TOKEN,
-							server_response.getString(Constants.PUB_TOKEN));
-					editor.putString(Constants.PRIV_TOKEN,
-							server_response.getString(Constants.PRIV_TOKEN));
-					Log.i(TAG,
-							"Got upload tokens. Pub: "
-									+ server_response
-											.getString(Constants.PUB_TOKEN)
-									+ " Priv: "
-									+ server_response
-											.getString(Constants.PRIV_TOKEN));
-					if (c != null) {
-						OWUser myself = new OWUser();
-						myself.updateWithJson(c, server_response);
-						Log.i(TAG, "Created user in db with #tags: " + String.valueOf(myself.tags.get(c, myself).count()));
-						editor.putInt(Constants.INTERNAL_USER_ID, myself.getId());
-					}
-				} else {
-					Log.i(TAG, "Set user not authenticated");
-					editor.putBoolean(Constants.AUTHENTICATED, false);
-				}
-				editor.putString(Constants.EMAIL, mEmail); // save email even if
-															// login
-															// unsuccessful
-				editor.commit();
-				OWApplication.user_data = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE).getAll();
-			} catch (JSONException e) {
-				Log.e(TAG,
-						"SavePreferenceTask: Error reading JSONObject response: "
-								+ server_response.toString());
-				e.printStackTrace();
-			}
-			return null;
-		}
-
-		protected Void onPostExecute() {
-			showProgress(false);
-			return null;
-		}
-	}
-
-	/**
-	 * Set the SharedPreferences to reflect app registration complete
-	 * 
-	 * @author davidbrodsky
-	 * 
-	 */
-	private class setRegisteredTask extends AsyncTask<Void, Void, Void> {
-		protected Void doInBackground(Void... server_response_array) {
-			SharedPreferences profile = getSharedPreferences(
-					Constants.PROFILE_PREFS, MODE_PRIVATE);
-			SharedPreferences.Editor editor = profile.edit();
-			editor.putBoolean(Constants.REGISTERED, true);
-			editor.commit();
-			return null;
-		}
-
-		protected Void onPostExecute() {
-			return null;
-		}
+        Authentication.logOut(getApplicationContext());
+        this.setViewsAsNotAuthenticated();
 	}
 
 	public StringEntity getAuthJSON() {

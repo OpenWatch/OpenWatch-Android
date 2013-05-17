@@ -251,7 +251,7 @@ public class OWVideoRecording extends Model implements OWServerObjectInterface{
 		context.getContentResolver().notifyChange(OWContentProvider.getRemoteRecordingUri(getId()), null);
 		if(media_object.get(context) != null){ // this is called once in <init> to get db id before medi_object created
 			setLastEdited(context, Constants.utc_formatter.format(new Date()));
-            media_object.get(context).save(context); // TODO: NPE occured here
+            media_object.get(context).save(context);
         }
 		return super.save(context);
 	}

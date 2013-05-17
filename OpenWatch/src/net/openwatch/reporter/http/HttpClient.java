@@ -158,4 +158,9 @@ public class HttpClient {
 		return trusted;
 	}
 
+    public static void clearCookieStore(Context c){
+        PersistentCookieStore cookie_store = new PersistentCookieStore(c);
+        cookie_store.clear();
+    }
+
 }

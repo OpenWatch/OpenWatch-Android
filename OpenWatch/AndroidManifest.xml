@@ -107,6 +107,7 @@
             android:name="net.openwatch.reporter.OWInvestigationViewActivity"
             android:label="@string/title_activity_owinvestigation_view" >
         </activity>
+        <activity android:name=".FancyLoginActivity"/>
     </application>
 
 </manifest>
