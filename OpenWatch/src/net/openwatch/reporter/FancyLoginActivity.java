@@ -2,6 +2,7 @@ package net.openwatch.reporter;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,6 +23,9 @@ import java.util.TimerTask;
  * Created by davidbrodsky on 5/16/13.
  */
 public class FancyLoginActivity extends SherlockActivity {
+    private static final String TAG = "FancyLoginActivity";
+
+    boolean image_2_visible = false;
 
     ImageView image_1;
     ImageView image_2;
@@ -40,7 +44,7 @@ public class FancyLoginActivity extends SherlockActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_fancy_login);
 
         image_1 = (ImageView) findViewById(R.id.image_1);
         image_2 = (ImageView) findViewById(R.id.image_2);
@@ -50,12 +54,24 @@ public class FancyLoginActivity extends SherlockActivity {
         zoom = AnimationUtils.loadAnimation(this, R.anim.zoom);
     }
 
+    @SuppressLint("NewApi")
     @Override
     public void onResume(){
         super.onResume();
         if(Build.VERSION.SDK_INT > 11){
             timer = new Timer();
             timer.scheduleAtFixedRate(new FadeTimerTask(), animation_clock, animation_clock);
+            if(image_2_visible){
+                image_2.animate()
+                        .scaleX((float) 1.10)
+                        .scaleY((float) 1.10)
+                        .setDuration(animation_clock - 50).start();
+            }else{
+                image_1.animate()
+                        .scaleX((float) 1.10)
+                        .scaleY((float) 1.10)
+                        .setDuration(animation_clock - 50).start();
+            }
         }
     }
 
@@ -75,12 +91,48 @@ public class FancyLoginActivity extends SherlockActivity {
         return true;
     }
 
+    @SuppressLint("NewApi")
     private void crossfade(){
-        if(image_2.getVisibility() == View.VISIBLE){
-            _crossfade(image_1, image_2);
-        }
-        else{
-            _crossfade(image_2, image_1);
+        if(image_2_visible){
+            //fade out image_2
+            image_2.animate()
+                    .alpha(0f)
+                    .setDuration(1000)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            //fadeOut.setVisibility(View.GONE);
+                            image_2.setScaleX((float)1.0);
+                            image_2.setScaleY((float)1.0);
+                            image_2_visible = false;
+                        }
+                    }).start();
+            // Zoom image_1
+
+            image_1.animate()
+                    .scaleX((float) 1.10)
+                    .scaleY((float) 1.10)
+                    .setDuration(animation_clock - 50).start();
+
+        } else{
+            // fade in image_2
+            image_2.animate()
+                    .alpha(1f)
+                    .setDuration(1000)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            image_2_visible = true;
+                            image_1.setScaleX((float)1.0);
+                            image_1.setScaleY((float)1.0);
+                        }
+                    }).start();
+
+            image_2.animate()
+                    .scaleX((float) 1.10)
+                    .scaleY((float) 1.10)
+                    .setDuration(animation_clock - 50).start();
+
         }
     }
 
@@ -90,7 +142,7 @@ public class FancyLoginActivity extends SherlockActivity {
         // (but fully transparent) during the animation.
         Log.i("FadeIn", "FadeOut alpha: " + String.valueOf(fadeOut.getAlpha()));
         fadeIn.setAlpha(0f);
-        fadeIn.setVisibility(View.VISIBLE);
+        //fadeIn.setVisibility(View.VISIBLE);
 
         // Animate the content view to 100% opacity, and clear any animation
         // listener set on the view.
@@ -116,7 +168,7 @@ public class FancyLoginActivity extends SherlockActivity {
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        fadeOut.setVisibility(View.GONE);
+                        //fadeOut.setVisibility(View.GONE);
                         fadeOut.setScaleX((float)1.0);
                         fadeOut.setScaleY((float)1.0);
                     }
