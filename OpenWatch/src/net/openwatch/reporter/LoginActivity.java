@@ -409,7 +409,7 @@ public class LoginActivity extends SherlockActivity {
 	}
 
 	/**
-	 * Create a new account with the OpenWatch servicee assuming mEmail and
+	 * Create a new account with the OpenWatch service assuming mEmail and
 	 * mPassword are pre-populated from the EditText fields
 	 */
 	public void UserSignup() {

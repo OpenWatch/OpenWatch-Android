@@ -26,7 +26,7 @@ public class Constants {
 	// and development endpoint addresses
 	public static final boolean USE_DEV_ENDPOINTS = false;
 	
-	public static final String PROD_HOST = "https://staging.openwatch.net/";
+	public static final String PROD_HOST = "https://openwatch.net/";
 	public static final String PROD_CAPTURE_HOST = "https://capture.openwatch.net/";
 	
 	public static final String DEV_HOST = "http://10.0.1.26:8000/";
