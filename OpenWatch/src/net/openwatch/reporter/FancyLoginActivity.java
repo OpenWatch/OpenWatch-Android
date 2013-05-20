@@ -3,9 +3,12 @@ package net.openwatch.reporter;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -15,7 +18,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import net.openwatch.reporter.account.Authentication;
+import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.http.OWServiceRequests;
+import org.apache.http.entity.StringEntity;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -30,8 +41,13 @@ public class FancyLoginActivity extends SherlockActivity {
     ImageView image_1;
     ImageView image_2;
 
-    EditText email;
-    EditText password;
+    EditText mEmailView;
+    EditText mPasswordView;
+
+    boolean password_field_visible = false;
+
+    String mEmail;
+    String mPassword;
 
     Timer timer;
 
@@ -48,8 +64,8 @@ public class FancyLoginActivity extends SherlockActivity {
 
         image_1 = (ImageView) findViewById(R.id.image_1);
         image_2 = (ImageView) findViewById(R.id.image_2);
-        email = (EditText) findViewById(R.id.field_email);
-        password = (EditText) findViewById(R.id.field_password);
+        mEmailView = (EditText) findViewById(R.id.field_email);
+        mPasswordView = (EditText) findViewById(R.id.field_password);
 
         zoom = AnimationUtils.loadAnimation(this, R.anim.zoom);
     }
@@ -136,45 +152,6 @@ public class FancyLoginActivity extends SherlockActivity {
         }
     }
 
-    private void _crossfade(View fadeIn, final View fadeOut) {
-
-        // Set the content view to 0% opacity but visible, so that it is visible
-        // (but fully transparent) during the animation.
-        Log.i("FadeIn", "FadeOut alpha: " + String.valueOf(fadeOut.getAlpha()));
-        fadeIn.setAlpha(0f);
-        //fadeIn.setVisibility(View.VISIBLE);
-
-        // Animate the content view to 100% opacity, and clear any animation
-        // listener set on the view.
-        fadeIn.animate()
-                .alpha(1f)
-                .setDuration(1000)
-                .setListener(null).start();
-
-        // Zoom content view
-
-        fadeIn.animate()
-                .scaleX((float) 1.10)
-                .scaleY((float) 1.10)
-                .setDuration(animation_clock - 50).start();
-
-        // Animate the loading view to 0% opacity. After the animation ends,
-        // set its visibility to GONE as an optimization step (it won't
-        // participate in layout passes, etc.)
-        Log.i("FadeOut", "FadeIn alpha: " + String.valueOf(fadeIn.getAlpha()));
-        fadeOut.animate()
-                .alpha(0f)
-                .setDuration(1000)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        //fadeOut.setVisibility(View.GONE);
-                        fadeOut.setScaleX((float)1.0);
-                        fadeOut.setScaleY((float)1.0);
-                    }
-                }).start();
-    }
-
     private class FadeTimerTask extends TimerTask {
 
         @Override
@@ -187,4 +164,257 @@ public class FancyLoginActivity extends SherlockActivity {
             });
         }
     }
+
+    public void onLoginButtonClick(View v){
+        if(password_field_visible){
+            attemptLogin();
+        }else{
+            checkEmailAvailable();
+
+        }
+    }
+
+    public void checkEmailAvailable(){
+        mEmailView.setError(null);
+        mEmail = mEmailView.getText().toString().trim();
+        showProgress(true);
+        OWServiceRequests.checkOWEmailAvailable(getApplicationContext(), mEmail, new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(JSONObject response) {
+
+                try {
+                    if(response.has("available") && response.getBoolean("available")){
+                        // Create a new account
+                        quickUserSignup();
+                    }else if(response.getBoolean("available") == false){
+                        // Collect password and login account
+                        showPasswordField();
+                    }
+                } catch (JSONException e) {
+                    Log.e(TAG, "checkEmailAvailable failed to parse JSON: " + response);
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Throwable e, String response) {
+                Log.i(TAG,"checkEmailAvailable failure: " + response);
+            }
+
+            @Override
+            public void onFinish() {
+                showProgress(false);
+                Log.i(TAG,"checkEmailAvailable finished");
+            }
+
+        });
+    }
+
+    /**
+     * Attempts to sign in or register the account specified by the login form.
+     * If there are form errors (invalid email, missing fields, etc.), the
+     * errors are presented and no actual login attempt is made.
+     */
+    public void attemptLogin() {
+        // Reset errors.
+        mEmailView.setError(null);
+        mPasswordView.setError(null);
+
+        // Store values at the time of the login attempt.
+        mEmail = mEmailView.getText().toString().trim();
+        mPassword = mPasswordView.getText().toString();
+
+        boolean cancel = false;
+        View focusView = null;
+
+        // Check for a valid password.
+        if (TextUtils.isEmpty(mPassword)) {
+            mPasswordView.setError(getString(R.string.error_field_required));
+            focusView = mPasswordView;
+            cancel = true;
+        } else if (mPassword.length() < 4) {
+            mPasswordView.setError(getString(R.string.error_invalid_password));
+            focusView = mPasswordView;
+            cancel = true;
+        }
+
+        // Check for a valid email address.
+        if (TextUtils.isEmpty(mEmail)) {
+            mEmailView.setError(getString(R.string.error_field_required));
+            focusView = mEmailView;
+            cancel = true;
+        } else if (!OWUtils.checkEmail(mEmail)) {
+            mEmailView.setError(getString(R.string.error_invalid_email));
+            focusView = mEmailView;
+            cancel = true;
+        }
+
+        if (cancel) {
+            // There was an error; don't attempt login and focus the first
+            // form field with an error.
+            focusView.requestFocus();
+        } else {
+            // Show a progress spinner, and kick off a background task to
+            // perform the user login attempt.
+            //mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
+            showProgress(true);
+            UserLogin();
+        }
+    }
+
+    /**
+     * Login an existing account with the OpenWatch service assuming mEmail and
+     * mPassword are pre-populated from the EditText fields
+     */
+    public void UserLogin() {
+        JsonHttpResponseHandler response_handler = new JsonHttpResponseHandler() {
+            private static final String TAG = "OWServiceRequests";
+
+            @Override
+            public void onStart() {
+                Log.i(TAG, "onStart");
+            }
+
+            @Override
+            public void onSuccess(JSONObject response) {
+                Log.i(TAG, "OW login success: " + response.toString());
+                try {
+                    Authentication.setUserAuthenticated(getApplicationContext(), response, mEmail);
+
+                    if ((Boolean) response.getBoolean(Constants.OW_SUCCESS) == true) {
+                        Log.i(TAG, "OW login success: " + response.toString());
+
+                        navigateToOnBoardingActivity(true);
+                        return;
+                    } else {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(
+                                FancyLoginActivity.this);
+                        int error_code = response.getInt(Constants.OW_ERROR);
+
+                        switch (error_code) {
+
+                            case 403: // No account with provided email
+                                      // We won't login until email checked
+                                break;
+                            default: // Incorrect email address / password (Error
+                                // 412)
+                                dialog.setTitle(R.string.login_dialog_denied_title)
+                                        .setMessage(
+                                                R.string.login_dialog_denied_msg)
+                                        .setNeutralButton(R.string.login_dialog_ok,
+                                                defaultDialogOnClickListener)
+                                        .show();
+                                break;
+                        }
+                        showProgress(false);
+
+                    }
+                } catch (JSONException e) {
+                    Log.e(TAG, "error parsing json response");
+                }
+
+            }
+
+            @Override
+            public void onFailure(Throwable e, String response) {
+                Log.i(TAG, "OW login failure: " + response);
+                AlertDialog.Builder dialog = new AlertDialog.Builder(
+                        FancyLoginActivity.this);
+                dialog.setTitle(R.string.login_dialog_failed_title)
+                        .setMessage(R.string.login_dialog_failed_msg)
+                        .setNeutralButton(R.string.login_dialog_ok,
+                                defaultDialogOnClickListener).show();
+                showProgress(false);
+            }
+
+            @Override
+            public void onFinish() {
+            }
+        };
+
+        OWServiceRequests.userLogin(getApplicationContext(), getAuthJSON(),
+                response_handler);
+
+    }
+
+    public DialogInterface.OnClickListener defaultDialogOnClickListener = new DialogInterface.OnClickListener() {
+
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            dialog.dismiss();
+        }
+
+    };
+
+    public void showProgress(final boolean show) {
+
+    }
+
+    public StringEntity getAuthJSON() {
+        if(mEmail == null || mPassword == null)
+            return null;
+
+        JSONObject json = new JSONObject();
+        StringEntity se = null;
+        try {
+            json.put(Constants.OW_EMAIL, mEmail);
+            json.put(Constants.OW_PW, mPassword);
+            se = new StringEntity(json.toString());
+        } catch (JSONException e) {
+            Log.e(TAG, String.format("Error creating json from email %s password %s", mEmail, mPassword));
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e1) {
+            Log.e(TAG, "Failed to put JSON string in StringEntity");
+            e1.printStackTrace();
+        }
+        return se;
+    }
+
+    private void navigateToOnBoardingActivity(boolean didLogin) {
+        Intent i = new Intent(FancyLoginActivity.this, MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        // It's possible the sharedPreference setting won't be written by the
+        // time MainActivity
+        // checks its state, causing an erroneous redirect back to LoginActivity
+        if (didLogin)
+            i.putExtra(Constants.AUTHENTICATED, true);
+
+        startActivity(i);
+    }
+
+    private void showPasswordField(){
+        mPasswordView.setVisibility(View.VISIBLE);
+        password_field_visible = true;
+    }
+
+    private void quickUserSignup(){
+        OWServiceRequests.quickUserSignup(getApplicationContext(), mEmail, new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(JSONObject response) {
+                Log.i(TAG, "OW quicksignup success: " + response.toString());
+                navigateToOnBoardingActivity(true);
+            }
+
+            @Override
+            public void onFailure(Throwable e, String response) {
+                Log.i(TAG, "OW quicksignup failure: " + response);
+                AlertDialog.Builder dialog = new AlertDialog.Builder(
+                        FancyLoginActivity.this);
+                dialog.setTitle(R.string.login_dialog_failed_title)
+                        .setMessage(R.string.login_dialog_failed_msg)
+                        .setNeutralButton(R.string.login_dialog_ok,
+                                defaultDialogOnClickListener).show();
+
+            }
+
+            @Override
+            public void onFinish() {
+                showProgress(false);
+            }
+        });
+
+    }
+
 }

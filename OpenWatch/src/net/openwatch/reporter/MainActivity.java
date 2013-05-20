@@ -138,6 +138,7 @@ public class MainActivity extends SherlockActivity {
 		}
 		if(!authenticated && !this.getIntent().hasExtra(Constants.AUTHENTICATED)){
 			Intent i = new Intent(this, FancyLoginActivity.class	);
+            //Intent i = new Intent(this, LoginActivity.class	);
 			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 			String email = profile.getString(Constants.EMAIL, null);
 			if(email != null)

@@ -17,25 +17,19 @@ import com.google.gson.Gson;
 import com.loopj.android.http.*;
 
 import net.openwatch.reporter.constants.Constants;
-import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.file.FileUtils;
 import net.openwatch.reporter.http.OWServiceRequests;
-import net.openwatch.reporter.model.OWUser;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -58,7 +52,7 @@ public class LoginActivity extends SherlockActivity {
 	private static final int SELECT_PHOTO = 100;
 	private static final int TAKE_PHOTO = 101;
 
-	// Values for email and password at the time of the login attempt.
+	// Values for mEmailView and password at the time of the login attempt.
 	private String mEmail;
 	private String mPassword;
 
@@ -258,7 +252,7 @@ public class LoginActivity extends SherlockActivity {
 			mEmailView.setError(getString(R.string.error_field_required));
 			focusView = mEmailView;
 			cancel = true;
-		} else if (!checkEmail(mEmail)) {
+		} else if (!OWUtils.checkEmail(mEmail)) {
 			mEmailView.setError(getString(R.string.error_invalid_email));
 			focusView = mEmailView;
 			cancel = true;
@@ -316,10 +310,6 @@ public class LoginActivity extends SherlockActivity {
 			mLoginStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
 			mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
 		}
-	}
-
-	private boolean checkEmail(String email) {
-		return Constants.EMAIL_ADDRESS_PATTERN.matcher(email).matches();
 	}
 
 	/**
@@ -403,8 +393,8 @@ public class LoginActivity extends SherlockActivity {
 			}
 		};
 
-		OWServiceRequests.UserLogin(getApplicationContext(), getAuthJSON(),
-				response_handler);
+		OWServiceRequests.userLogin(getApplicationContext(), getAuthJSON(),
+                response_handler);
 
 	}
 
@@ -473,8 +463,8 @@ public class LoginActivity extends SherlockActivity {
 			}
 		};
 
-		OWServiceRequests.UserSignup(getApplicationContext(), getAuthJSON(),
-				response_handler);
+		OWServiceRequests.userSignup(getApplicationContext(), getAuthJSON(),
+                response_handler);
 
 	}
 

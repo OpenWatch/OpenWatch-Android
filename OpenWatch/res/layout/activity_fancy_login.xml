@@ -63,6 +63,7 @@
             android:layout_height="50dp"
             android:fontFamily="sans-serif-bold"
             android:layout_centerHorizontal="true"
+            android:onClick="onLoginButtonClick"
             android:textColor="#fff"
             android:shadowColor="@android:color/black"
             android:shadowDx="2"

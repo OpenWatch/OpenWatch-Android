@@ -52,4 +52,8 @@ public class OWUtils {
 		return url;
 	}
 
+    public static boolean checkEmail(String email) {
+        return Constants.EMAIL_ADDRESS_PATTERN.matcher(email).matches();
+    }
+
 }

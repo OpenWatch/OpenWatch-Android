@@ -754,8 +754,8 @@ public class OWServiceRequests {
 	/**
 	 * Login an existing account with the OpenWatch service
 	 */
-	public static void UserLogin(Context app_context, StringEntity post_body,
-			JsonHttpResponseHandler response_handler) {
+	public static void userLogin(Context app_context, StringEntity post_body,
+                                 JsonHttpResponseHandler response_handler) {
 		AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
 		Log.i(TAG, "Commencing login to: " + Constants.OW_API_URL
 				+ Constants.OW_LOGIN);
@@ -768,8 +768,8 @@ public class OWServiceRequests {
 	/**
 	 * Create a new account with the OpenWatch servicee
 	 */
-	public static void UserSignup(Context app_context, StringEntity post_body,
-			JsonHttpResponseHandler response_handler) {
+	public static void userSignup(Context app_context, StringEntity post_body,
+                                  JsonHttpResponseHandler response_handler) {
 
 		AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
 		Log.i(TAG, "Commencing signup to: " + Constants.OW_API_URL
@@ -779,6 +779,36 @@ public class OWServiceRequests {
 				response_handler);
 
 	}
+
+    /**
+     * Create a new account with the OpenWatch servicee
+     */
+    public static void quickUserSignup(Context app_context, String email,
+                                  JsonHttpResponseHandler response_handler) {
+
+        JSONObject json = new JSONObject();
+        StringEntity se = null;
+        try {
+            json.put("email", email);
+            se = new StringEntity(json.toString());
+        } catch (JSONException e) {
+            Log.e(TAG, "Error loading email to json");
+            e.printStackTrace();
+            return;
+        } catch (UnsupportedEncodingException e) {
+            Log.e(TAG, "Error creating StringEntity from json");
+            e.printStackTrace();
+            return;
+        }
+
+        AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
+        Log.i(TAG, "Commencing signup to: " + Constants.OW_API_URL
+                + "quick_signup");
+        http_client.post(app_context, Constants.OW_API_URL
+                + "quick_signup", se, "application/json",
+                response_handler);
+
+    }
 
 	/**
 	 * Registers this mobile app with the OpenWatch service sends the
@@ -839,4 +869,10 @@ public class OWServiceRequests {
 
 		OWServiceRequests.getTags(app_context, cb);
 	}
+
+    public static void checkOWEmailAvailable(Context app_context, String email, JsonHttpResponseHandler response_handler){
+        AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
+        Log.i(TAG, "Checking email available: " + email);
+        http_client.get(app_context, Constants.OW_API_URL + "email_available", response_handler);
+    }
 }
