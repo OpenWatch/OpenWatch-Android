@@ -117,7 +117,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onForgotPasswordClick"
-            android:clickable="true"
+			android:clickable="true"
             android:textColor="@android:color/white"
             android:shadowColor="#000"
             android:shadowDy="-2"
@@ -125,4 +125,5 @@
             android:textSize="18sp"
             android:text="Forgot Password?"
             />
+
 </RelativeLayout>
