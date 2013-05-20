@@ -32,11 +32,11 @@ public class OWVideoRecording extends Model implements OWServerObjectInterface{
 	// Specific to OWRecording
 	public CharField creation_time = new CharField();
 	public CharField uuid = new CharField();
-	public CharField video_url = new CharField();
 	public DoubleField begin_lat = new DoubleField();
 	public DoubleField begin_lon = new DoubleField();
 	public DoubleField end_lat = new DoubleField();
 	public DoubleField end_lon = new DoubleField();
+    public CharField media_url = new CharField();
 	
 	public ForeignKeyField<OWServerObject> media_object = new ForeignKeyField<OWServerObject> ( OWServerObject.class );
 
@@ -201,17 +201,20 @@ public class OWVideoRecording extends Model implements OWServerObjectInterface{
 		try {
 			if(json.has(Constants.OW_CREATION_TIME))
 				creation_time.set(json.getString(Constants.OW_CREATION_TIME));
-			if(json.has(Constants.OW_VIDEO_URL))
-				video_url.set(json.getString(Constants.OW_VIDEO_URL));
+
+            if(json.has("media_url")){
+                media_url.set(json.getString("media_url"));
+            }
 			
-			
-			if(json.has(Constants.OW_START_LOCATION)){
-				begin_lat.set(json.getJSONObject(Constants.OW_START_LOCATION).getDouble(Constants.OW_LAT));
-				begin_lon.set(json.getJSONObject(Constants.OW_START_LOCATION).getDouble(Constants.OW_LON));
+			if(json.has("start_lat") && json.has("start_lon")){
+				begin_lat.set(json.getDouble("start_lat"));
+				begin_lon.set(json.getDouble("start_lon"));
+                Log.i(TAG, String.format("got start_location. Lat: %f Lon: %f", begin_lat.get(), begin_lon.get()));
 			}
-			if(json.has(Constants.OW_END_LOCATION)){
-				end_lat.set(json.getJSONObject(Constants.OW_END_LOCATION).getDouble(Constants.OW_LAT));
-				end_lon.set(json.getJSONObject(Constants.OW_END_LOCATION).getDouble(Constants.OW_LON));
+			if(json.has("end_lat") && json.has("end_lon") ){
+				end_lat.set(json.getDouble("end_lat"));
+				end_lon.set(json.getDouble("end_lon"));
+                Log.i(TAG, String.format("got end_location. Lat: %f Lon: %f", end_lat.get(), end_lon.get()));
 			}
 			
 			if(json.has(Constants.OW_UUID))

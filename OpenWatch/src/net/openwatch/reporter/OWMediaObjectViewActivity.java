@@ -2,6 +2,8 @@ package net.openwatch.reporter;
 
 import java.util.ArrayList;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.orm.androrm.Model;
 import net.openwatch.reporter.FeedFragmentActivity.TabsAdapter;
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
@@ -11,6 +13,8 @@ import net.openwatch.reporter.constants.Constants.HIT_TYPE;
 import net.openwatch.reporter.http.OWServiceRequests;
 import net.openwatch.reporter.http.OWServiceRequests.RequestCallback;
 import net.openwatch.reporter.model.OWServerObject;
+import net.openwatch.reporter.model.OWServerObjectInterface;
+import net.openwatch.reporter.model.OWStory;
 import net.openwatch.reporter.model.OWVideoRecording;
 import net.openwatch.reporter.share.Share;
 
@@ -48,6 +52,8 @@ import android.widget.MediaController;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.VideoView;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 
@@ -110,7 +116,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 			if(!is_landscape && media_obj != null && media_obj.title.get() != null)
 				this.getSupportActionBar().setTitle(media_obj.title.get());
 			
-			updateOWMediaObject(model_id);
+			updateOWMediaObject(media_obj);
 			/*
 			String video_path = null;
 			if(video_path != null){
@@ -199,30 +205,33 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-	private void updateOWMediaObject(final int model_id){
-		// remote recording, and need to get video_url
+	private void updateOWMediaObject(OWServerObject server_object){
+		// remote object, and need to get media_url
 		final Context c = this.getApplicationContext();
-		RequestCallback cb = new RequestCallback(){
+		OWServiceRequests.getOWServerObjectMeta(c, server_object, "", new JsonHttpResponseHandler(){
 
-			@Override
-			public void onFailure() {
-			
-			}
+            @Override
+            public void onSuccess(JSONObject response) {
+                Log.i(TAG,"getOWServerObject in ViewActivity success! " + response.toString());
+                OWServerObject serverObject = OWServerObject.objects(c, OWServerObject.class).get(model_id);
+                OWServerObjectInterface child = (OWServerObjectInterface) serverObject.getChildObject(c);
+                if (child != null && response.has("id")){
+                    child.updateWithJson(c, response);
+                    setupMediaViewForOWServerObject(serverObject);
+                    if(getMapFragment() != null)
+                        ((OWMediaObjectBackedEntity) OWMediaObjectViewActivity.this.getMapFragment() ).populateViews(serverObject, c);
+                    if(getInfoFragment() != null)
+                        ((OWMediaObjectBackedEntity) OWMediaObjectViewActivity.this.getInfoFragment() ).populateViews(serverObject, c);
+                }
+            }
 
-			@Override
-			public void onSuccess() {
-				if( OWServerObject.objects(c, OWServerObject.class).get(model_id).video_recording.get(c).video_url.get() != null ){
-					if(!video_playing)
-						setupMediaViewForOWServerObject(OWServerObject.objects(c, OWServerObject.class).get(model_id));
-					if(getMapFragment() != null)
-						((OWMediaObjectBackedEntity) OWMediaObjectViewActivity.this.getMapFragment() ).populateViews(OWServerObject.objects(c, OWServerObject.class).get(model_id), c);
-					if(getInfoFragment() != null)
-					((OWMediaObjectBackedEntity) OWMediaObjectViewActivity.this.getInfoFragment() ).populateViews(OWServerObject.objects(c, OWServerObject.class).get(model_id), c);
-				}
-			}
-			
-		};
-		//OWServiceRequests.getRecording(c, OWServerObject.objects(this, OWServerObject.class).get(model_id).video_recording.get(c).uuid.get(), cb);
+            @Override
+            public void onFailure(Throwable e, JSONObject errorResponse) {
+                Log.i(TAG,"getOWServerObject in ViewActivity success!" + errorResponse.toString());
+                e.printStackTrace();
+            }
+
+        });
 	}
 /*
 	public void setVideoViewVisible(boolean visible) {
@@ -267,6 +276,12 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 				});
 			}
 		});
+        video_view.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                video_playing = false;
+            }
+        });
 		video_view.start();
 	}
 	
@@ -309,19 +324,23 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 	
 	public void setupMediaViewForOWServerObject(OWServerObject object){
 		String media_path = "";
+        Log.i(TAG, String.format("setupMediaView. lat:%f, lon:%f", object.getLat(getApplicationContext()), object.getLon(getApplicationContext()) ));
 		switch(object.getMediaType(getApplicationContext())){
 		case VIDEO:
-			if( object.local_video_recording.get(getApplicationContext()) != null ){
-				// This is a local recording, attempt to play HQ file
-				is_local = true;
-				media_path = object.local_video_recording.get(getApplicationContext()).hq_filepath.get();
-				
-			} else if( object.video_recording.get(getApplicationContext()) != null && object.video_recording.get(getApplicationContext()).video_url.get() != null){
-				// remote recording, and video_url present
-				media_path = object.video_recording.get(getApplicationContext()).video_url.get();
-			}
-			inflateMediaView(R.layout.video_media_view);
-			this.setupVideoView(R.id.media_object_media_view, media_path);
+            if(!video_playing){
+                if( object.local_video_recording.get(getApplicationContext()) != null ){
+                    // This is a local recording, attempt to play HQ file
+                    is_local = true;
+                    media_path = object.local_video_recording.get(getApplicationContext()).hq_filepath.get();
+
+                } else if( object.video_recording.get(getApplicationContext()) != null && object.video_recording.get(getApplicationContext()).media_url.get() != null){
+                    // remote recording, and video_url present
+                    media_path = object.video_recording.get(getApplicationContext()).media_url.get();
+                }
+                inflateMediaView(R.layout.video_media_view);
+                Log.i(TAG, String.format("setupMediaView. media_url: %s", media_path));
+                this.setupVideoView(R.id.media_object_media_view, media_path);
+            }
 			break;
 		case AUDIO:
 			media_path = object.audio.get(getApplicationContext()).getMediaFilepath(getApplicationContext());
@@ -331,7 +350,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 			}else
 				is_local = true;
 			inflateMediaView(R.layout.video_media_view);
-			Log.i(TAG, "audio media_path: " + media_path);
+            Log.i(TAG, String.format("setupMediaView. media_url: %s", media_path));
 			this.setupVideoView(R.id.media_object_media_view, media_path);
 			break;
 		case PHOTO:
@@ -342,6 +361,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 			} else
 				is_local = true;
 			inflateMediaView(R.layout.photo_media_view);
+            Log.i(TAG, String.format("setupMediaView. media_url: %s", media_path));
 			this.setupImageView(R.id.media_object_media_view, media_path);
 			break;
 		}
@@ -349,10 +369,12 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 	}
 	
 	public void inflateMediaView(int layoutResource){
-		ViewStub stub = (ViewStub) findViewById(R.id.media_object_media_view_stub);
-		stub.setLayoutResource(layoutResource);
-		media_view = stub.inflate();
-		//setMediaViewDimens();
+        if(!media_view_inflated){
+            ViewStub stub = (ViewStub) findViewById(R.id.media_object_media_view_stub);
+            stub.setLayoutResource(layoutResource);
+            media_view = stub.inflate();
+            //setMediaViewDimens();
+        }
 		media_view_inflated = true;
 	}
 	

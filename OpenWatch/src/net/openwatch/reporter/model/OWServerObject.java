@@ -386,8 +386,11 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
 
 	@Override
 	public double getLat(Context c) {
-		// TODO Auto-generated method stub
-		return 0;
+        OWServerObjectInterface child = (OWServerObjectInterface)getChildObject(c);
+		if(child != null){
+            return child.getLat(c);
+        }
+        return 0.0;
 	}
 
 	@Override
@@ -398,8 +401,11 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
 
 	@Override
 	public double getLon(Context c) {
-		// TODO Auto-generated method stub
-		return 0;
+        OWServerObjectInterface child = (OWServerObjectInterface)getChildObject(c);
+        if(child != null){
+            return child.getLon(c);
+        }
+        return 0.0;
 	}
 
 	@Override

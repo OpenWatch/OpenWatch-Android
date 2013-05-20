@@ -1,6 +1,8 @@
 package net.openwatch.reporter;
 
+import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.model.OWServerObject;
+import net.openwatch.reporter.model.OWServerObjectInterface;
 import net.openwatch.reporter.model.OWVideoRecording;
 import android.content.Context;
 import android.os.Bundle;
@@ -59,11 +61,10 @@ public class MapFragment extends SupportMapFragment implements OWMediaObjectBack
             Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         if(OWMediaObjectViewActivity.model_id != -1){
-        	OWVideoRecording recording = OWVideoRecording.objects(getActivity().getApplicationContext(), OWVideoRecording.class)
-    				.get(OWMediaObjectViewActivity.model_id);
-        	
-        	if(recording != null)
-        		mapRecording(recording);
+        	OWServerObject server_object = OWServerObject.objects(getActivity().getApplicationContext(), OWServerObject.class).get(OWMediaObjectViewActivity.model_id);
+
+        	if(server_object != null)
+        		mapOWServerObjectInterface(server_object);
         	
         }
         // Hack to fix MapFragment causing drawing errors
@@ -76,13 +77,18 @@ public class MapFragment extends SupportMapFragment implements OWMediaObjectBack
         return view;
     }
     
-    private void mapRecording(OWVideoRecording recording){
-    	if(recording.begin_lat.get() != null && recording.end_lat.get() != null)
-    		Log.i(TAG, "recording begin point: " + String.valueOf(recording.begin_lat.get()) + ", " + String.valueOf(recording.begin_lon.get()));
-    	if(recording.end_lat.get() != null && recording.end_lat.get() != null)
-    		Log.i(TAG, "recording end point: " + String.valueOf(recording.end_lat.get()) + ", " + String.valueOf(recording.end_lon.get()));
-    	mStartLocation = new LatLng(recording.begin_lat.get(), recording.begin_lon.get());
-    	mStopLocation = new LatLng(recording.end_lat.get(), recording.end_lon.get());
+    private void mapOWServerObjectInterface(OWServerObject server_object){
+        Context app_context = getActivity().getApplicationContext();
+        if(server_object.getMediaType(app_context) == Constants.MEDIA_TYPE.VIDEO){
+            OWVideoRecording video_object = (OWVideoRecording) server_object.getChildObject(app_context);
+            if(video_object.begin_lat.get() != null && video_object.end_lat.get() != null)
+                Log.i(TAG, "recording begin point: " + String.valueOf(video_object.begin_lat.get()) + ", " + String.valueOf(video_object.begin_lon.get()));
+            mStartLocation = new LatLng(video_object.begin_lat.get(), video_object.begin_lon.get());
+        }
+        if(server_object.getLat(app_context) != 0.0 && server_object.getLon(app_context) != 0.0){
+            Log.i(TAG, "recording end point: " + String.valueOf(server_object.getLat(app_context)) + ", " + String.valueOf(server_object.getLon(app_context)));
+    	    mStopLocation = new LatLng(server_object.getLat(app_context), server_object.getLon(app_context));
+        }
     	initMap();
     }
 
@@ -93,23 +99,29 @@ public class MapFragment extends SupportMapFragment implements OWMediaObjectBack
         UiSettings settings = getMap().getUiSettings();
         //settings.setAllGesturesEnabled(false);
         settings.setMyLocationButtonEnabled(false);
-
-        getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(mStartLocation, 10));
         getMap().clear();
-        getMap().addMarker(
-                new MarkerOptions().position(mStartLocation)
-                        .icon(BitmapDescriptorFactory
-                                .fromResource(R.drawable.marker_start)));
-        getMap().addMarker(
-                new MarkerOptions().position(mStopLocation)
-                        .icon(BitmapDescriptorFactory
-                                .fromResource(R.drawable.marker_stop)));
+        if(mStartLocation != null){
+            getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(mStartLocation, 10));
+            getMap().addMarker(
+                    new MarkerOptions().position(mStartLocation)
+                            .icon(BitmapDescriptorFactory
+                                    .fromResource(R.drawable.marker_start)));
+        }
+        if(mStopLocation != null){
+            getMap().addMarker(
+                    new MarkerOptions().position(mStopLocation)
+                            .icon(BitmapDescriptorFactory
+                                    .fromResource(R.drawable.marker_stop)));
+            if(mStartLocation == null)
+                getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(mStopLocation, 10));
+        }
+
         getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(mStartLocation, 18));
     }
 
 	@Override
-	public void populateViews(OWServerObject media_object, Context app_context) {
-		mapRecording(media_object.video_recording.get(app_context));
+	public void populateViews(OWServerObject server_object, Context c) {
+		mapOWServerObjectInterface(server_object);
 	}
 
 }

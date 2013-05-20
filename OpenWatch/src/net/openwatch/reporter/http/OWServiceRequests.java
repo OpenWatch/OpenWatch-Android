@@ -200,32 +200,23 @@ public class OWServiceRequests {
    	 *	}
 `	 * }
 	 * @param app_context
-	 * @param feed
 	 * @param page
 	 * @param cb
 	 */
 	public static void getGeoFeed(final Context app_context, final Location gps_location, final String feed_name, final int page, final PaginatedRequestCallback cb){
-	
-		JSONObject root = new JSONObject();
-		JSONObject location = new JSONObject();
-		try {
-			if(gps_location != null){
-				location.put("latitude", gps_location.getLatitude());
-				location.put("longitude", gps_location.getLongitude());
-			}
 
-			root.put("location", location);
-			getFeed(app_context, root, feed_name, page, cb);
-			Log.i(TAG, "got location, fetching geo feed");
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+        String urlparams = "";
+        if(gps_location != null){
+            urlparams += String.format("&latitude=%f&longitude=%f",gps_location.getLatitude(), gps_location.getLongitude());
+            Log.i(TAG, String.format("got location for geo feed: lat: %f , lon: %f", gps_location.getLatitude(), gps_location.getLongitude()));
+        }
+
+        getFeed(app_context, urlparams, feed_name, page, cb);
+
 	}
 	
 	public static void getFeed(final Context app_context, final String feed_name, final int page, final PaginatedRequestCallback cb){
-		getFeed(app_context, null, feed_name, page, cb);
+		getFeed(app_context, "", feed_name, page, cb);
 	}
 	
 
@@ -234,7 +225,7 @@ public class OWServiceRequests {
 	 * 
 	 * @param app_context
      */
-	private static void getFeed(final Context app_context, JSONObject params, final String ext_feed_name, final int page, final PaginatedRequestCallback cb){
+	private static void getFeed(final Context app_context, String getParams, final String ext_feed_name, final int page, final PaginatedRequestCallback cb){
 		final String METHOD = "getFeed";
 		final String feed_name = ext_feed_name.trim().toLowerCase();
 		
@@ -267,18 +258,10 @@ public class OWServiceRequests {
 		
 		AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
 		String endpoint = Constants.feedExternalEndpointFromString(feed_name, page);
-		
-		if(feed_name.compareTo(OWFeedType.LOCAL.toString().toLowerCase()) == 0){
-			http_client.post(app_context, endpoint, Utils.JSONObjectToStringEntity(params), "application/json", get_handler);
-		}
-		//else if(OWFeedType.`){
-			
-		//}
-		else{
-			http_client.get(endpoint, get_handler);
-		}		
-		
-		Log.i(TAG, "getFeed: " + endpoint);
+
+		http_client.get(endpoint + getParams, get_handler);
+
+		Log.i(TAG, "getFeed: " + endpoint+getParams);
 	}
 
 	/**

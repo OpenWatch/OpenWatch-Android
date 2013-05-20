@@ -168,8 +168,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 						public void onSuccess(Location result) {
 							device_location = result;
 							fetchNextFeedPage();
-						}
-	            		
+                        }
 	            	};
 	            	DeviceLocation.getLocation(getActivity().getApplicationContext(), false, gps_callback);
 	            }else{

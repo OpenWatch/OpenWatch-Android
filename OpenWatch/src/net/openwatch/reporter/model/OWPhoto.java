@@ -114,10 +114,10 @@ public class OWPhoto extends Model implements OWServerObjectInterface{
 				this.setTitle(c, json.getString(Constants.OW_TITLE));
 			if(json.has(Constants.OW_UUID))
 				this.setUUID(c, json.getString(Constants.OW_UUID));
-			if(json.has(Constants.OW_LAT))
-				this.setLat(c, json.getDouble(Constants.OW_LAT));
-			if(json.has(Constants.OW_LON))
-				this.setLon(c, json.getDouble(Constants.OW_LON));
+			if(json.has("end_lat"))
+				this.setLat(c, json.getDouble("end_lat"));
+			if(json.has("end_lon"))
+				this.setLon(c, json.getDouble("end_lon"));
 			if(json.has(Constants.OW_FIRST_POSTED))
 				this.setFirstPosted(c, json.getString(Constants.OW_FIRST_POSTED));
 			if(json.has(Constants.OW_THUMB_URL))
