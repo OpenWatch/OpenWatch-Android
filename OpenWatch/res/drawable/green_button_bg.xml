@@ -4,32 +4,30 @@
 
     <!-- disabled -->
     <item android:state_enabled="false"><shape>
+        <gradient android:angle="270" android:endColor="#c1cdc3" android:startColor="#d6e2d8" />
+        <stroke android:color="#429442" android:width="1dp"/>
+        <corners android:radius="8dp" />
+    </shape></item>
 
-            <gradient android:angle="270" android:endColor="#c1cdc3" android:startColor="#d6e2d8" />
-
-            <corners android:radius="8dp" />
-        </shape></item>
-
-    <!-- pressed -->
     <!-- pressed -->
     <item android:state_pressed="true"><shape>
-            <gradient android:angle="270" android:endColor="#57bd68" android:startColor="#65d878" />
-
+            <gradient android:angle="270" android:endColor="#70c170" android:startColor="#52a452" />
+            <stroke android:color="#429442" android:width="1dp"/>
             <corners android:radius="8dp" />
-        </shape></item>
+    </shape></item>
 
     <!-- focused -->
     <item android:state_focused="true"><shape>
-             <gradient android:angle="270" android:endColor="#57bd68" android:startColor="#65d878" />
-
-            <corners android:radius="8dp" />
-        </shape></item>
+        <gradient android:angle="270" android:endColor="#70c170" android:startColor="#52a452" />
+        <stroke android:color="#429442" android:width="1dp"/>
+        <corners android:radius="8dp" />
+    </shape></item>
 
     <!-- default -->
     <item><shape>
-             <gradient android:angle="270" android:endColor="#65d878" android:startColor="#71f086" />
-
-            <corners android:radius="8dp" />
-        </shape></item>
+        <gradient android:angle="270" android:endColor="#54a554" android:startColor="#a7e4a7" />
+        <stroke android:color="#429442" android:width="1dp"/>
+        <corners android:radius="8dp" />
+    </shape></item>
 
 </selector>

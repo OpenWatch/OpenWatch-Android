@@ -119,6 +119,8 @@ public class MainActivity extends SherlockActivity {
 	 * @return
 	 */
 	public void checkUserStatus(){
+
+        boolean debug_fancy = false;
 		
 		SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, 0);
 		boolean authenticated = profile.getBoolean(Constants.AUTHENTICATED, false);
@@ -136,10 +138,10 @@ public class MainActivity extends SherlockActivity {
 			// check this application state
 			//OWServiceRequests.onLaunchSync(this.getApplicationContext()); // get list of tags, etc
 		}
-		if(!authenticated && !this.getIntent().hasExtra(Constants.AUTHENTICATED)){
+		if(debug_fancy || (!authenticated && !this.getIntent().hasExtra(Constants.AUTHENTICATED) ) ){
 			Intent i = new Intent(this, FancyLoginActivity.class	);
             //Intent i = new Intent(this, LoginActivity.class	);
-			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
 			String email = profile.getString(Constants.EMAIL, null);
 			if(email != null)
 				i.putExtra(Constants.EMAIL, email);

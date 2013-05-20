@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import com.actionbarsherlock.app.SherlockActivity;
@@ -27,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -41,8 +44,12 @@ public class FancyLoginActivity extends SherlockActivity {
     ImageView image_1;
     ImageView image_2;
 
+    Button mLoginButton;
+
     EditText mEmailView;
     EditText mPasswordView;
+
+    View progressView;
 
     boolean password_field_visible = false;
 
@@ -66,6 +73,8 @@ public class FancyLoginActivity extends SherlockActivity {
         image_2 = (ImageView) findViewById(R.id.image_2);
         mEmailView = (EditText) findViewById(R.id.field_email);
         mPasswordView = (EditText) findViewById(R.id.field_password);
+        mLoginButton = (Button) findViewById(R.id.button_login);
+        progressView = findViewById(R.id.button_login_progress);
 
         zoom = AnimationUtils.loadAnimation(this, R.anim.zoom);
     }
@@ -165,23 +174,31 @@ public class FancyLoginActivity extends SherlockActivity {
         }
     }
 
+    public void onForgotPasswordClick(View v){
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.openwatch.net/accounts/password/reset/"));
+        startActivity(browserIntent);
+    }
+
     public void onLoginButtonClick(View v){
+        showProgress(true);
         if(password_field_visible){
             attemptLogin();
         }else{
-            checkEmailAvailable();
-
+            checkEmailAvailableAndSignup();
         }
     }
 
-    public void checkEmailAvailable(){
+    public void checkEmailAvailableAndSignup(){
+        if(!validateInput())
+            return;
+
         mEmailView.setError(null);
         mEmail = mEmailView.getText().toString().trim();
         showProgress(true);
         OWServiceRequests.checkOWEmailAvailable(getApplicationContext(), mEmail, new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(JSONObject response) {
-
+                Log.i(TAG, "checkOWEmailAvailable response " + response.toString());
                 try {
                     if(response.has("available") && response.getBoolean("available")){
                         // Create a new account
@@ -191,7 +208,7 @@ public class FancyLoginActivity extends SherlockActivity {
                         showPasswordField();
                     }
                 } catch (JSONException e) {
-                    Log.e(TAG, "checkEmailAvailable failed to parse JSON: " + response);
+                    Log.e(TAG, "checkEmailAvailableAndSignup failed to parse JSON: " + response);
                     e.printStackTrace();
                 }
 
@@ -199,13 +216,13 @@ public class FancyLoginActivity extends SherlockActivity {
 
             @Override
             public void onFailure(Throwable e, String response) {
-                Log.i(TAG,"checkEmailAvailable failure: " + response);
+                Log.i(TAG,"checkEmailAvailableAndSignup failure: " + response);
             }
 
             @Override
             public void onFinish() {
                 showProgress(false);
-                Log.i(TAG,"checkEmailAvailable finished");
+                Log.i(TAG,"checkEmailAvailableAndSignup finished");
             }
 
         });
@@ -217,6 +234,20 @@ public class FancyLoginActivity extends SherlockActivity {
      * errors are presented and no actual login attempt is made.
      */
     public void attemptLogin() {
+        boolean formValid = validateInput();
+        if (formValid) {
+            showProgress(true);
+            UserLogin();
+        }
+        // if form is not valid, validateInput will present errors inline
+    }
+
+    /*
+        Validate the mEmailView and mPasswordView values
+        returns True if valid, False otherwise
+        if False, view errors are populated
+     */
+    private boolean validateInput(){
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
@@ -229,14 +260,16 @@ public class FancyLoginActivity extends SherlockActivity {
         View focusView = null;
 
         // Check for a valid password.
-        if (TextUtils.isEmpty(mPassword)) {
-            mPasswordView.setError(getString(R.string.error_field_required));
-            focusView = mPasswordView;
-            cancel = true;
-        } else if (mPassword.length() < 4) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
+        if(mPasswordView.getVisibility() == View.VISIBLE){
+            if (TextUtils.isEmpty(mPassword)) {
+                mPasswordView.setError(getString(R.string.error_field_required));
+                focusView = mPasswordView;
+                cancel = true;
+            } else if (mPassword.length() < 4) {
+                mPasswordView.setError(getString(R.string.error_invalid_password));
+                focusView = mPasswordView;
+                cancel = true;
+            }
         }
 
         // Check for a valid email address.
@@ -254,12 +287,15 @@ public class FancyLoginActivity extends SherlockActivity {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
+            showProgress(false);
+            return false;
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             //mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
-            showProgress(true);
-            UserLogin();
+            //showProgress(true);
+            //UserLogin();
+            return true;
         }
     }
 
@@ -348,7 +384,11 @@ public class FancyLoginActivity extends SherlockActivity {
     };
 
     public void showProgress(final boolean show) {
-
+        if(show){
+            progressView.setVisibility(View.VISIBLE);
+        }else{
+            progressView.setVisibility(View.GONE);
+        }
     }
 
     public StringEntity getAuthJSON() {
@@ -386,6 +426,8 @@ public class FancyLoginActivity extends SherlockActivity {
 
     private void showPasswordField(){
         mPasswordView.setVisibility(View.VISIBLE);
+        mPasswordView.requestFocus();
+        mLoginButton.setText("Login");
         password_field_visible = true;
     }
 

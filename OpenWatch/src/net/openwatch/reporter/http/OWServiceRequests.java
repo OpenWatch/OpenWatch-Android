@@ -873,6 +873,6 @@ public class OWServiceRequests {
     public static void checkOWEmailAvailable(Context app_context, String email, JsonHttpResponseHandler response_handler){
         AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
         Log.i(TAG, "Checking email available: " + email);
-        http_client.get(app_context, Constants.OW_API_URL + "email_available", response_handler);
+        http_client.get(app_context, Constants.OW_API_URL + "email_available?email=" + email, response_handler);
     }
 }
