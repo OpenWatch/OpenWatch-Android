@@ -58,6 +58,8 @@
             android:background="@drawable/white_edittext_bg"
             android:padding="5dp"
             android:hint="Email"
+            android:imeActionId="@+id/login"
+            android:imeActionLabel="@string/action_sign_in_short"
             android:textSize="22sp"
             />
 
@@ -74,6 +76,8 @@
             android:padding="5dp"
             android:layout_centerHorizontal="true"
             android:hint="Password"
+            android:imeActionId="@+id/login"
+            android:imeActionLabel="@string/action_sign_in_short"
             android:textSize="22sp"
             />
 

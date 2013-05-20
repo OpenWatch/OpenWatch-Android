@@ -11,13 +11,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -77,6 +80,31 @@ public class FancyLoginActivity extends SherlockActivity {
         progressView = findViewById(R.id.button_login_progress);
 
         zoom = AnimationUtils.loadAnimation(this, R.anim.zoom);
+
+        mEmailView
+                .setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView textView, int id,
+                                                  KeyEvent keyEvent) {
+                        if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                            onLoginButtonClick(mLoginButton);
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+        mPasswordView
+                .setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView textView, int id,
+                                                  KeyEvent keyEvent) {
+                        if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                            onLoginButtonClick(mLoginButton);
+                            return true;
+                        }
+                        return false;
+                    }
+                });
     }
 
     @SuppressLint("NewApi")
