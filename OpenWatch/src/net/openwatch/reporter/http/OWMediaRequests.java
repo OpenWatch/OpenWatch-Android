@@ -17,6 +17,9 @@ import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import android.content.BroadcastReceiver;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
@@ -110,10 +113,6 @@ public class OWMediaRequests {
 	 * POSTs an end signal to the OW MediaCapture Service
 	 * 
 	 * @param upload_token
-	 * @param recording_id
-	 * @param recording_start
-	 * @param recording_end
-	 * @param all_files
 	 */
 	public static void end(Context c, String upload_token,
 			OWVideoRecording recording) {
@@ -232,6 +231,7 @@ public class OWMediaRequests {
 								&& response.has(Constants.OW_SUCCESS)
 								&& response.getString(Constants.OW_SUCCESS)
 										.compareTo("true") == 0) {
+                            int server_object_id = -1;
 							if (!is_HQ) {
 								OWLocalVideoRecordingSegment segment = OWLocalVideoRecordingSegment
 										.objects(c,
@@ -239,16 +239,28 @@ public class OWMediaRequests {
 										.get(model_id);
 								segment.uploaded.set(true);
 								segment.save(c);
+                                server_object_id = segment.local_recording.get(c).recording.get(c).media_object.get(c).getId();
 							} else {
 								OWLocalVideoRecording local = OWLocalVideoRecording
 										.objects(c, OWLocalVideoRecording.class)
 										.get(model_id);
 								local.hq_synced.set(true);
+                                server_object_id = local.recording.get(c).media_object.get(c).getId();
 								if (local.areSegmentsSynced(c)) {
 									local.lq_synced.set(true);
 								}
 								local.save(c);
 							}
+
+                            // BEGIN BROADCAST
+                            Log.d("sender", "Broadcasting message");
+                            Intent intent = new Intent("server_object_sync");
+                            // You can also include some extra data.
+                            intent.putExtra("status", 1);
+                            intent.putExtra("server_object_id", server_object_id);
+                            LocalBroadcastManager.getInstance(c).sendBroadcast(intent);
+                            // END BROADCAST
+
 						}
 					}
 				} catch (ParseException e) {

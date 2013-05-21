@@ -1,11 +1,14 @@
 package net.openwatch.reporter;
 
+import android.content.*;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
+import android.widget.TextView;
 import android.widget.VideoView;
 import org.json.JSONObject;
 
@@ -23,14 +26,11 @@ import net.openwatch.reporter.model.OWVideoRecording;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
-import android.content.Intent;
 import android.util.Log;
 
 public class WhatHappenedActivity extends SherlockFragmentActivity {
+
 	private static final String TAG = "WhatHappenedActivity";
 	static int model_id = -1;
 	int recording_server_id = -1;
@@ -55,6 +55,9 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 		fetchRecordingFromOW();
 		
 		Log.i(TAG, "sent recordingMeta request");
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(serverObjectSyncStateMessageReceiver,
+                new IntentFilter("server_object_sync"));
 	}
 
 	@Override
@@ -223,5 +226,32 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
             video_view.start();
         }
     }
+
+    private BroadcastReceiver serverObjectSyncStateMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            int status = intent.getIntExtra("status", -1);
+            if(status == 1){ // sync complete
+                if(model_id == intent.getIntExtra("server_object_id", -1) && model_id != -1){
+                    OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
+                    Log.d("WhatHappenedActivity-BroadcastReceived", "sync complete. serverObject serverID: " + String.valueOf(serverObject.getServerId(getApplicationContext())));
+                    final String url = OWUtils.urlForOWServerObject(serverObject, getApplicationContext());
+                    findViewById(R.id.sync_progress).setVisibility(View.GONE);
+                    findViewById(R.id.sync_complete).setVisibility(View.VISIBLE);
+                    TextView sync_progress = ((TextView)findViewById(R.id.sync_progress_text));
+                    sync_progress.setText("Your Video is Live! \n" + url);
+                    sync_progress.setClickable(true);
+                    sync_progress.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                            startActivity(browserIntent);
+                        }
+                    });
+                }
+            }
+        }
+    };
 
 }

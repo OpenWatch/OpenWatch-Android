@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 import android.os.Build;
+import net.openwatch.reporter.http.OWServiceRequests;
 import org.json.JSONArray;
 
 import com.actionbarsherlock.app.SherlockActivity;

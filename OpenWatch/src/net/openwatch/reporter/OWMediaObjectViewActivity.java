@@ -1,30 +1,5 @@
 package net.openwatch.reporter;
 
-import java.util.ArrayList;
-
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.orm.androrm.Model;
-import net.openwatch.reporter.FeedFragmentActivity.TabsAdapter;
-import net.openwatch.reporter.constants.Constants;
-import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
-import net.openwatch.reporter.constants.DBConstants;
-import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
-import net.openwatch.reporter.constants.Constants.HIT_TYPE;
-import net.openwatch.reporter.http.OWServiceRequests;
-import net.openwatch.reporter.http.OWServiceRequests.RequestCallback;
-import net.openwatch.reporter.model.OWServerObject;
-import net.openwatch.reporter.model.OWServerObjectInterface;
-import net.openwatch.reporter.model.OWStory;
-import net.openwatch.reporter.model.OWVideoRecording;
-import net.openwatch.reporter.share.Share;
-
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageSize;
-import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -40,20 +15,29 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.Display;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.view.ViewGroup.LayoutParams;
-import android.view.ViewStub;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.MediaController;
-import android.widget.TabHost;
-import android.widget.TextView;
-import android.widget.VideoView;
-import org.json.JSONException;
+import android.widget.*;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
+import net.openwatch.reporter.FeedFragmentActivity.TabsAdapter;
+import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
+import net.openwatch.reporter.constants.Constants.HIT_TYPE;
+import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
+import net.openwatch.reporter.constants.DBConstants;
+import net.openwatch.reporter.http.OWServiceRequests;
+import net.openwatch.reporter.model.OWServerObject;
+import net.openwatch.reporter.model.OWServerObjectInterface;
+import net.openwatch.reporter.share.Share;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 
