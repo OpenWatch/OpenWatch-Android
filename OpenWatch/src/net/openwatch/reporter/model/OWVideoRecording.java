@@ -237,10 +237,11 @@ public class OWVideoRecording extends Model implements OWServerObjectInterface{
 			if (begin_lon.get() != null)
 				json_obj.put(Constants.OW_START_LON, begin_lon.get().toString());
 			if (end_lat.get() != null)
-				json_obj.put(Constants.OW_START_LAT, end_lat.get().toString());
+				json_obj.put(Constants.OW_END_LAT, end_lat.get().toString());
 			if (end_lon.get() != null)
-				json_obj.put(Constants.OW_START_LON, end_lon.get().toString());
+				json_obj.put(Constants.OW_END_LON, end_lon.get().toString());
 
+            Log.i(TAG, "VideoToJson: " + json_obj.toString());
 		}catch(JSONException e){
 			Log.e(TAG, "Error serializing recording to json");
 			e.printStackTrace();

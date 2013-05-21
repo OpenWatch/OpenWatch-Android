@@ -3,9 +3,15 @@ package net.openwatch.reporter.location;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.orm.androrm.Model;
+import net.openwatch.reporter.OWApplication;
+import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.http.OWMediaRequests;
+import net.openwatch.reporter.http.OWServiceRequests;
 import net.openwatch.reporter.http.OWServiceRequests.RequestCallback;
 import net.openwatch.reporter.model.OWLocalVideoRecording;
+import net.openwatch.reporter.model.OWServerObject;
+import net.openwatch.reporter.model.OWServerObjectInterface;
 import net.openwatch.reporter.model.OWVideoRecording;
 import android.content.Context;
 import android.location.Location;
@@ -141,12 +147,13 @@ public class DeviceLocation {
     }
     
     /**
+     * use setOWServerObjectLocation for it all
      * Specific method for interacting with DeviceLocation
      * in the context of media start and stop signals
      * @param app_context
-     * @param recording_db_id
      * @param isStart
      */
+    /*
     public static void setRecordingLocation(final Context app_context, final String upload_token, final int recording_db_id, final boolean isStart){
 		DeviceLocation deviceLocation = new DeviceLocation();
 		
@@ -180,6 +187,55 @@ public class DeviceLocation {
        // For end, wait for additional accuracy
        deviceLocation.getLocation(app_context, locationResult, !isStart);
 	}
+    */
+
+    public static void setOWServerObjectLocation(final Context app_context, final int server_object_id, final boolean isStart){
+        Log.i(TAG, "setOWServerObjectLocation isStart: " + String.valueOf(isStart));
+        DeviceLocation deviceLocation = new DeviceLocation();
+
+        LocationResult locationResult = new LocationResult(){
+            @Override
+            public void gotLocation(final Location location){
+                //Got the location!
+                OWServerObject serverObject = OWServerObject.objects(app_context, OWServerObject.class).get(server_object_id);
+                Object child = serverObject.getChildObject(app_context);
+                if (location != null) {
+                    Log.i(TAG, "gotLocation");
+                    if(serverObject.getMediaType(app_context) == Constants.MEDIA_TYPE.VIDEO){
+                        if(isStart){
+                            ((OWVideoRecording)child).begin_lat.set(location.getLatitude());
+                            ((OWVideoRecording)child).begin_lon.set(location.getLongitude());
+                            Log.d("RefreshLocation", String.format("set video start loc: %f x %f", location.getLatitude(), location.getLongitude()));
+                        }else{
+                            ((OWVideoRecording)child).end_lat.set(location.getLatitude());
+                            ((OWVideoRecording)child).end_lon.set(location.getLongitude());
+                            Log.d("RefreshLocation", String.format("set video end loc: %f x %f", location.getLatitude(), location.getLongitude()));
+                        }
+                    }
+                    else{
+                        ((OWServerObjectInterface) child).setLat(app_context, location.getLatitude());
+                        ((OWServerObjectInterface) child).setLon(app_context, location.getLongitude());
+                        Log.d("RefreshLocation", String.format("set server object end loc: %f x %f", location.getLatitude(), location.getLongitude()));
+                    }
+                    Log.d("RefreshLocation"," accuracy: "+ String.valueOf(location.getAccuracy())+" meters");
+
+                    // If this was the end signal, check to see if
+                    // server_id has been retrieved. If so, send another updateMetadata
+                    // request to ensure geo data available
+                    ((Model) child).save(app_context);
+                    if(serverObject.getMediaType(app_context) == Constants.MEDIA_TYPE.VIDEO){
+                        OWMediaRequests.updateMeta(app_context, OWApplication.user_data.get(Constants.PUB_TOKEN).toString(), (OWVideoRecording)child);
+                    }else{
+                        OWServiceRequests.syncOWServerObject(app_context, serverObject);
+                    }
+                }
+            };
+        };
+        Log.i(TAG, "getLocation()...");
+        // For start, get location as quickly as possible
+        // For end, wait for additional accuracy
+        deviceLocation.getLocation(app_context, locationResult, !isStart);
+    }
     
     public static void getLocation(Context context, boolean waitForGpsFix, final GPSRequestCallback cb){
     	DeviceLocation deviceLocation = new DeviceLocation();
