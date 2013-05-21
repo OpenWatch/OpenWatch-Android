@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import android.os.Build;
 import org.json.JSONArray;
 
 import com.actionbarsherlock.app.SherlockActivity;
@@ -408,7 +409,13 @@ public class RecorderActivity extends SherlockActivity implements
 	    mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 
 	    // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
-	    mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_480P));
+        if(Build.VERSION.SDK_INT >= 11)
+	        mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_480P));
+        else{
+            mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+            mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+            mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H263);
+        }
 
 	    // Step 4: Set output file
 	    mMediaRecorder.setOutputFile(output_filename);

@@ -82,7 +82,7 @@ public class OWInvestigationViewActivity extends SherlockActivity implements OWM
 	
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu){
-		menu.removeItem(R.id.menu_delete);
+		//menu.removeItem(R.id.menu_delete);
 		menu.removeItem(R.id.menu_save);
 		return true;
 	}

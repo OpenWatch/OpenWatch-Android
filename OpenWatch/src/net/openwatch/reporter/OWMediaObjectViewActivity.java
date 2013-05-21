@@ -174,7 +174,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu){
 		if(!is_local){
-			menu.removeItem(R.id.menu_delete);
+			//menu.removeItem(R.id.menu_delete);
 			
 		}
 		if(!is_user_owner){
@@ -198,9 +198,11 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 				OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, content_type, media_type, HIT_TYPE.CLICK);
 			}
 			break;
+        /*
 		case R.id.menu_delete:
 			OWMediaObjectViewFunctions.showDeleteDialog(this, model_id);
 			break;
+		*/
 		}
 		return super.onOptionsItemSelected(item);
 	}

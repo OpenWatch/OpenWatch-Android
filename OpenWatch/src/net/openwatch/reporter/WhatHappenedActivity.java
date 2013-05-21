@@ -1,5 +1,12 @@
 package net.openwatch.reporter;
 
+import android.media.MediaPlayer;
+import android.net.Uri;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.MediaController;
+import android.widget.VideoView;
 import org.json.JSONObject;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -28,7 +35,8 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 	static int model_id = -1;
 	int recording_server_id = -1;
 	String recording_uuid;
-	
+
+    boolean video_playing = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +47,8 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 		try{
 			model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
 			recording_uuid = getIntent().getExtras().getString(Constants.OW_REC_UUID);
+            OWServerObject server_object = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
+            setupVideoView(server_object);
 		}catch (Exception e){
 			Log.e(TAG, "could not load recording_id from intent");
 		}
@@ -171,5 +181,49 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 		getSupportMenuInflater().inflate(R.menu.activity_what_happened, menu);
 		return true;
 	}
+
+    private void setupVideoView(OWServerObject object){
+        String media_path = "";
+        if(!video_playing){
+            if( object.local_video_recording.get(getApplicationContext()) != null ){
+                // This is a local recording, attempt to play HQ file
+                media_path = object.local_video_recording.get(getApplicationContext()).hq_filepath.get();
+
+            }
+            Log.i(TAG, String.format("setupMediaView. media_url: %s", media_path));
+            //setupVideoView(R.id.media_object_media_view, media_path);
+            VideoView video_view = (VideoView) findViewById(R.id.videoview);
+            video_view.setVideoURI(Uri.parse(media_path));
+            video_view.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    mp.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
+                        @Override
+                        public void onVideoSizeChanged(MediaPlayer mp, int width,
+                                                       int height) {
+                            VideoView video_view = (VideoView) findViewById(R.id.videoview);
+                            //video_view.setVisibility(View.VISIBLE);
+                            //(findViewById(R.id.progress_container)).setVisibility(View.GONE);
+                            video_view.setLayoutParams( new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                            MediaController mc = new MediaController(
+                                    WhatHappenedActivity.this);
+                            video_view.setMediaController(mc);
+                            mc.setAnchorView(video_view);
+                            video_view.requestFocus();
+                            video_view.start();
+                            video_playing = true;
+                        }
+                    });
+                }
+            });
+            video_view.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    video_playing = false;
+                }
+            });
+            video_view.start();
+        }
+    }
 
 }
