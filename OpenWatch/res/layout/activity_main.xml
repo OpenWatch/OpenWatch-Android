@@ -48,6 +48,7 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
+        <!--
         <Button
             android:id="@+id/button_microphone"
             android:layout_width="wrap_content"
@@ -64,6 +65,7 @@
             android:textColor="#000000"
             android:textSize="24sp"
             android:textStyle="bold" />
+            -->
     </RelativeLayout>
 
     <RelativeLayout

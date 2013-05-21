@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 public class Share {
-	
+
 	public static void showShareDialog(Context c, String dialog_title, String url){
 		
 		Intent i = new Intent(Intent.ACTION_SEND);

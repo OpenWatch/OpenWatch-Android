@@ -56,7 +56,7 @@ public class OWServiceRequests {
 
 	private static final String TAG = "OWServiceRequests";
 
-	public interface RequestCallback {
+    public interface RequestCallback {
 		public void onFailure();
 		public void onSuccess();
 	}
@@ -399,7 +399,7 @@ public class OWServiceRequests {
 		
 	}*/
 	
-	public static void createOWServerObject(final Context app_context, final OWServerObjectInterface object){
+	public static void createOWServerObject(final Context app_context, final OWServerObjectInterface object, final RequestCallback cb){
 		JsonHttpResponseHandler post_handler = new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONObject response) {
@@ -408,6 +408,8 @@ public class OWServiceRequests {
 					if(response.has("success") && response.getBoolean("success")){
 						Log.i(TAG, "create object success!");
 						object.updateWithJson(app_context, response.getJSONObject("object"));
+                        if(cb != null)
+                            cb.onSuccess();
 						sendOWMobileGeneratedObjectMedia(app_context, object);
 					}
 				} catch (JSONException e) {
@@ -419,6 +421,8 @@ public class OWServiceRequests {
 			public void onFailure(Throwable e, String response) {
 				Log.i(TAG, "getObject fail: " + response);
 				e.printStackTrace();
+                if(cb != null)
+                    cb.onFailure();
 			}
 
 			@Override

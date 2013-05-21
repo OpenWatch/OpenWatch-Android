@@ -69,20 +69,18 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 	
 	private void fetchRecordingFromOW(){
 		final Context app_context = this.getApplicationContext();
-		OWServiceRequests.getOWServerObjectMeta(app_context, OWServerObject.objects(app_context, OWServerObject.class).get(model_id).video_recording.get(app_context), "", new JsonHttpResponseHandler(){
+		OWServiceRequests.getOWServerObjectMeta(app_context, OWServerObject.objects(app_context, OWServerObject.class).get(model_id), "", new JsonHttpResponseHandler(){
 			private static final String TAG = "OWServiceRequests";
 			@Override
     		public void onSuccess(JSONObject response){
 				Log.i(TAG, "getRecording response: " + response.toString());
-				if(response.has("recording")){
+				if(response.has("id")){
 					Log.i(TAG, "Got server recording response!");
 					try{
-						JSONObject recording_json = response.getJSONObject("recording");
 						// response was successful
 						OWVideoRecording recording = OWServerObject.objects(app_context, OWServerObject.class).get(model_id).video_recording.get(app_context);
-						recording.updateWithJson(app_context, recording_json);
-						if(recording_json.has(Constants.OW_SERVER_ID) )
-							recording_server_id = recording_json.getInt(Constants.OW_SERVER_ID);
+						recording.updateWithJson(app_context, response);
+						recording_server_id = response.getInt(Constants.OW_SERVER_ID);
 						Log.i(TAG, "recording updated with server meta response");
 						return;
 					} catch(Exception e){
@@ -117,7 +115,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 			return;
 		}
 		//final OWVideoRecording recording = OWMediaObject.objects(getApplicationContext(), OWMediaObject.class).get(model_id).video_recording.get(getApplicationContext());
-		if( recording_server_id == -1){
+		if(recording_server_id == -1){
 			Log.i(TAG, "recording does not have a valid server_id. Cannot present share dialog");
 			Intent i = new Intent(WhatHappenedActivity.this, MainActivity.class);
 			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

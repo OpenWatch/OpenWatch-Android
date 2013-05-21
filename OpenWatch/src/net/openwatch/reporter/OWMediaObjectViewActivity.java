@@ -194,7 +194,8 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 			return true;
 		case R.id.menu_share:
 			if(server_id > 0){
-				Share.showShareDialog(this, getString(R.string.share_story), OWVideoRecording.getUrlFromId(server_id));
+                OWServerObject server_obj = OWServerObject.objects(this, OWServerObject.class).get(model_id);
+				Share.showShareDialog(this, "Share This Media!", OWUtils.urlForOWServerObject(server_obj, getApplicationContext()));
 				OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, content_type, media_type, HIT_TYPE.CLICK);
 			}
 			break;
