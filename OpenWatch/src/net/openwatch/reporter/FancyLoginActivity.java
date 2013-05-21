@@ -460,10 +460,12 @@ public class FancyLoginActivity extends SherlockActivity {
     }
 
     private void quickUserSignup(){
+        final String email = mEmail;
         OWServiceRequests.quickUserSignup(getApplicationContext(), mEmail, new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(JSONObject response) {
                 Log.i(TAG, "OW quicksignup success: " + response.toString());
+                Authentication.setUserAuthenticated(getApplicationContext(), response, email);
                 navigateToOnBoardingActivity(true);
             }
 

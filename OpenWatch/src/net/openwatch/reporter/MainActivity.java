@@ -12,6 +12,7 @@ import net.openwatch.reporter.constants.Constants.OWFeedType;
 import net.openwatch.reporter.database.DatabaseManager;
 import net.openwatch.reporter.file.FileUtils;
 import net.openwatch.reporter.http.OWServiceRequests;
+import net.openwatch.reporter.location.DeviceLocation;
 import net.openwatch.reporter.model.OWPhoto;
 import android.net.Uri;
 import android.os.Bundle;
@@ -75,6 +76,7 @@ public class MainActivity extends SherlockActivity {
 		owphoto_id = photo.getId();
         owphoto_parent_id = photo.media_object.get(getApplicationContext()).getId();
 		Log.i("MainActivity-cameraButtonClick", "get owphoto_id: " + String.valueOf(owphoto_id));
+        DeviceLocation.setOWServerObjectLocation(getApplicationContext(), owphoto_parent_id, false);
 	    startActivityForResult(takePictureIntent, camera_action_code);
 	}
 	
@@ -146,7 +148,12 @@ public class MainActivity extends SherlockActivity {
 			if(email != null)
 				i.putExtra(Constants.EMAIL, email);
 			startActivity(i);
+            // This will set OWApplication.user_data
 		}
+        else if(authenticated){
+            // If the user state is stored, load user_data into memory
+            OWApplication.user_data = getApplicationContext().getSharedPreferences(Constants.PROFILE_PREFS, getApplicationContext().MODE_PRIVATE).getAll();
+        }
 		
 	}
 	

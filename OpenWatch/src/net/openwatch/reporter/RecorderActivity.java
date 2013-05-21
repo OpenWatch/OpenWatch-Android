@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.json.JSONArray;
@@ -148,7 +149,8 @@ public class RecorderActivity extends SherlockActivity implements
 
 							@Override
 							public void run() {
-								DeviceLocation.setRecordingLocation(c, public_upload_token, owrecording_id, true);
+                                DeviceLocation.setOWServerObjectLocation(c, media_object_id , true);
+								//DeviceLocation.setRecordingLocation(c, public_upload_token, owrecording_id, true);
 							}
 	    	        		
 	    	        	});
@@ -169,7 +171,8 @@ public class RecorderActivity extends SherlockActivity implements
 
 						@Override
 						public void run() {
-							DeviceLocation.setRecordingLocation(c, public_upload_token, owrecording_id, false);
+                            DeviceLocation.setOWServerObjectLocation(c, media_object_id , false);
+							//DeviceLocation.setRecordingLocation(c, public_upload_token, owrecording_id, false);
 						}
     	        		
     	        	});
@@ -244,6 +247,14 @@ public class RecorderActivity extends SherlockActivity implements
 		Camera c = null;
 		try {
 			c = Camera.open(); // attempt to get a Camera instance
+            Camera.Parameters parameters = c.getParameters();
+            List<String> focusModes = parameters.getSupportedFocusModes();
+            if (focusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO))
+            {
+                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+            }
+            c.setParameters(parameters);
+
 		} catch (Exception e) {
 			// Camera is not available (in use or does not exist)
 			Log.e(TAG, "Could not open camera");

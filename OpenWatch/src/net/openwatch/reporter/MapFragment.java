@@ -116,7 +116,10 @@ public class MapFragment extends SupportMapFragment implements OWMediaObjectBack
                 getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(mStopLocation, 10));
         }
 
-        getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(mStartLocation, 18));
+        if(mStartLocation != null )
+            getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(mStartLocation, 18));
+        else if(mStopLocation != null)
+            getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(mStopLocation, 18));
     }
 
 	@Override
