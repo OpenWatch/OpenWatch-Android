@@ -63,6 +63,8 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
             view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.investigation_icon));
         if(!cursor.isNull(view_cache.photo_col))
             view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.camera_icon));
+        if(!cursor.isNull(view_cache.video_col))
+            view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.camcorder_icon));
 
 
         view.setTag(R.id.list_item_model, cursor.getInt(view_cache._id_col));

@@ -6,21 +6,17 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.Window;
+import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.*;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -46,6 +42,9 @@ public class FancyLoginActivity extends SherlockActivity {
 
     ImageView image_1;
     ImageView image_2;
+
+    ScrollView scrollContainer;
+    View activityRootView;
 
     Button mLoginButton;
 
@@ -78,8 +77,22 @@ public class FancyLoginActivity extends SherlockActivity {
         mPasswordView = (EditText) findViewById(R.id.field_password);
         mLoginButton = (Button) findViewById(R.id.button_login);
         progressView = findViewById(R.id.button_login_progress);
+        scrollContainer = (ScrollView) findViewById(R.id.scroll_container);
+        scrollContainer.setSmoothScrollingEnabled(true);
 
         zoom = AnimationUtils.loadAnimation(this, R.anim.zoom);
+
+        activityRootView = findViewById(R.id.container);
+        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
+                if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
+                    scrollFullDown();
+                }
+
+            }
+        });
 
         mEmailView
                 .setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -454,9 +467,14 @@ public class FancyLoginActivity extends SherlockActivity {
 
     private void showPasswordField(){
         mPasswordView.setVisibility(View.VISIBLE);
+        scrollFullDown();
         mPasswordView.requestFocus();
         mLoginButton.setText("Login");
         password_field_visible = true;
+    }
+
+    private void scrollFullDown(){
+        scrollContainer.fullScroll(View.FOCUS_DOWN);
     }
 
     private void quickUserSignup(){
@@ -488,5 +506,6 @@ public class FancyLoginActivity extends SherlockActivity {
         });
 
     }
+
 
 }

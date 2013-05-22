@@ -179,7 +179,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 		case R.id.menu_share:
 			if(server_id > 0){
                 OWServerObject server_obj = OWServerObject.objects(this, OWServerObject.class).get(model_id);
-				Share.showShareDialog(this, "Share This Media!", OWUtils.urlForOWServerObject(server_obj, getApplicationContext()));
+				Share.showShareDialogWithInfo(this, "Share This Media!", server_obj.getTitle(getApplicationContext()), OWUtils.urlForOWServerObject(server_obj, getApplicationContext()));
 				OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, content_type, media_type, HIT_TYPE.CLICK);
 			}
 			break;

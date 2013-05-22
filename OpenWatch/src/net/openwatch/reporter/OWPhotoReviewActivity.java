@@ -168,7 +168,7 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
             public void onClick(DialogInterface dialog, int which) {
                 // Share
                 dialog.dismiss();
-                Share.showShareDialog(c, "Share Photo", OWUtils.urlForOWServerObject(server_obj, getApplicationContext()));
+                Share.showShareDialogWithInfo(c, "Share Photo", server_obj.getTitle(getApplicationContext()),OWUtils.urlForOWServerObject(server_obj, getApplicationContext()));
                 OWServiceRequests.increaseHitCount(getApplicationContext(), server_obj.getServerId(getApplicationContext()), owphoto_parent_id, server_obj.getContentType(getApplicationContext()), server_obj.getMediaType(getApplicationContext()), Constants.HIT_TYPE.CLICK);
             }
 

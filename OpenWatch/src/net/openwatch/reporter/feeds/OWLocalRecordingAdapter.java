@@ -59,6 +59,8 @@ public class OWLocalRecordingAdapter extends SimpleCursorAdapter {
             view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.investigation_icon));
         if(!cursor.isNull(view_cache.photo_col))
             view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.camera_icon));
+        if(!cursor.isNull(view_cache.video_col))
+            view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.camcorder_icon));
 
         /*
         if(cursor.isNull(cursor.getColumnIndex(DBConstants.MEDIA_OBJECT_LOCAL_VIDEO))){

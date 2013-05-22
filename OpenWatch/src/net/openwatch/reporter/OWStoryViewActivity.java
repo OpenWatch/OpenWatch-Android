@@ -108,8 +108,8 @@ public class OWStoryViewActivity extends SherlockActivity implements OWMediaObje
 			return true;
 		case R.id.menu_share:
 			if(server_id > 0){
-				Share.showShareDialog(this, getString(R.string.share_story), OWStory.getUrlFromId(server_id));
-				OWServerObject server_object = OWServerObject.objects(this, OWServerObject.class).get(server_id);
+                OWServerObject server_object = OWServerObject.objects(this, OWServerObject.class).get(server_id);
+				Share.showShareDialogWithInfo(this, getString(R.string.share_story), server_object.getTitle(getApplicationContext()), OWStory.getUrlFromId(server_id));
 				OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, server_object.getContentType(getApplicationContext()), server_object.getMediaType(getApplicationContext()), HIT_TYPE.CLICK);
 			}
 			break;

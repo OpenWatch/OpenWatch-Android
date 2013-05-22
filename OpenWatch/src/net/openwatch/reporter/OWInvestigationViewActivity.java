@@ -96,7 +96,7 @@ public class OWInvestigationViewActivity extends SherlockActivity implements OWM
 		case R.id.menu_share:
 			if(server_id > 0){
 				OWServerObject object = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
-				Share.showShareDialog(this, getString(R.string.share_investigation), OWUtils.urlForOWServerObject(object, getApplicationContext()));
+				Share.showShareDialogWithInfo(this, getString(R.string.share_investigation), object.getTitle(getApplicationContext()),OWUtils.urlForOWServerObject(object, getApplicationContext()));
 				OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, CONTENT_TYPE.INVESTIGATION, null, HIT_TYPE.CLICK);
 			}
 			break;
