@@ -29,16 +29,16 @@ public class OWLocalRecordingAdapter extends SimpleCursorAdapter {
         	view_cache.title = (TextView) view.findViewById(R.id.title);
         	view_cache.thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
         	//view_cache.date = (TextView) view.findViewById(R.id.date);
-        	view_cache.views = (TextView) view.findViewById(R.id.view_count);
-        	view_cache.actions = (TextView) view.findViewById(R.id.action_count);
+        	//view_cache.views = (TextView) view.findViewById(R.id.view_count);
+        	//view_cache.actions = (TextView) view.findViewById(R.id.action_count);
         	//view_cache.status = (TextView) view.findViewById(R.id.status);
             view_cache.typeIcon = (ImageView) view.findViewById(R.id.type_icon);
             
         	view_cache.title_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_TITLE);   
         	view_cache.date_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_FIRST_POSTED);   
         	view_cache.thumbnail_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_THUMB_URL);
-        	view_cache.views_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_VIEWS);
-        	view_cache.actions_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_ACTIONS);
+        	//view_cache.views_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_VIEWS);
+        	//view_cache.actions_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_ACTIONS);
         	//view_cache.local_vid_col = cursor.getColumnIndexOrThrow(DBConstants.MEDIA_OBJECT_LOCAL_VIDEO);
             view_cache.audio_col = cursor.getColumnIndexOrThrow(DBConstants.MEDIA_OBJECT_AUDIO);
             view_cache.photo_col = cursor.getColumnIndexOrThrow(DBConstants.MEDIA_OBJECT_PHOTO);
@@ -50,8 +50,8 @@ public class OWLocalRecordingAdapter extends SimpleCursorAdapter {
         }
         
         view_cache.title.setText(cursor.getString(view_cache.title_col));
-        view_cache.views.setText(cursor.getString(view_cache.views_col));
-        view_cache.actions.setText(cursor.getString(view_cache.actions_col));
+        //view_cache.views.setText(cursor.getString(view_cache.views_col));
+        //view_cache.actions.setText(cursor.getString(view_cache.actions_col));
 
         if(!cursor.isNull(view_cache.audio_col))
             view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.microphone_icon));
@@ -93,8 +93,8 @@ public class OWLocalRecordingAdapter extends SimpleCursorAdapter {
         TextView title;
         ImageView thumbnail;
         ImageView typeIcon;
-        TextView views;
-        TextView actions;
+        //TextView views;
+        //TextView actions;
         //TextView status;
         
         int last_seen_id;
@@ -102,8 +102,8 @@ public class OWLocalRecordingAdapter extends SimpleCursorAdapter {
         int title_col; 
         int thumbnail_col;
         int date_col;
-        int views_col;
-        int actions_col;
+        //int views_col;
+        //int actions_col;
         //int local_vid_col;
         int _id_col;
 
