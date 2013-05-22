@@ -16,6 +16,17 @@
 
     <!-- Multiline textview ellipsize is broken in Android -->
 
+    <ImageView
+            android:id="@+id/type_icon"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/camcorder_icon" />
+
+    <!--
     <TextView
         android:id="@+id/action_count"
         style="@style/Theme.openwatch.feedItemOtherText"
@@ -48,6 +59,8 @@
         android:layout_toLeftOf="@id/view_count"
         android:src="@drawable/eye_icon" />
 
+        -->
+
     <TextView
         android:id="@+id/by"
         style="@style/Theme.openwatch.feedItemOtherText"
@@ -65,7 +78,7 @@
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="20dp"
-        android:layout_toLeftOf="@id/view_icon"
+        android:layout_toLeftOf="@id/type_icon"
         android:layout_toRightOf="@id/by"
         android:textColor="@color/text_light" />
 

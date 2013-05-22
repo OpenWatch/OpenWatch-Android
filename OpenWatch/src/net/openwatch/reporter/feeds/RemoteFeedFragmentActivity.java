@@ -295,8 +295,11 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 			DBConstants.RECORDINGS_TABLE_ACTIONS,
 			DBConstants.RECORDINGS_TABLE_THUMB_URL,
 			DBConstants.RECORDINGS_TABLE_USERNAME,
-			DBConstants.MEDIA_OBJECT_STORY,
-			DBConstants.MEDIA_OBJECT_VIDEO
+            DBConstants.MEDIA_OBJECT_STORY,
+            DBConstants.MEDIA_OBJECT_AUDIO,
+            DBConstants.MEDIA_OBJECT_VIDEO,
+            DBConstants.MEDIA_OBJECT_PHOTO,
+            DBConstants.MEDIA_OBJECT_INVESTIGATION
 
 	    };
 
