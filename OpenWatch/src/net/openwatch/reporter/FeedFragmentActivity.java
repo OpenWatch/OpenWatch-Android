@@ -89,9 +89,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         setContentView(R.layout.fragment_tabs_pager);
         this.getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-       
-        
-        
+
         getDisplayWidth();
         mTabHost = (TabHost)findViewById(android.R.id.tabhost);
         mTabHost.setup();

@@ -48,8 +48,10 @@ public class Constants {
 			OW_API_URL = PROD_HOST + "api/";
 		}
 	}
-	
-	// For view tag
+
+
+
+    // For view tag
 	public static enum CONTENT_TYPE { MEDIA_OBJECT, STORY, INVESTIGATION };
 	// for fileUtils and OWServiceRequests
 	public static enum MEDIA_TYPE { VIDEO, PHOTO, AUDIO };
@@ -132,9 +134,10 @@ public class Constants {
 	public static final String OW_LOCAL = "local";
 	public static final String OW_FEATURED = "featured";
 	public static final String OW_FOLLOWING = "following";
+    public static final String OW_RAW = "raw";
 	// Feed types : Each is related to an API endpoint in OWServiceRequests getFeed
 	public static enum OWFeedType{
-		FEATURED, LOCAL, FOLLOWING, USER
+		FEATURED, LOCAL, FOLLOWING, USER, RAW
 	}
 	
 	private static ArrayList<String> OW_FEEDS = new ArrayList<String>();
@@ -206,6 +209,9 @@ public class Constants {
 		case USER:
 			endpoint = Constants.OW_RECORDINGS;
 			break;
+        case RAW:
+                endpoint = Constants.OW_RAW;
+                break;
 		}
 		return endpoint;
 	}
