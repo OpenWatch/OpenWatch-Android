@@ -1,5 +1,6 @@
 package net.openwatch.reporter;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,6 +8,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import net.openwatch.reporter.constants.Constants;
@@ -23,7 +25,7 @@ public final class OnBoardingFragment extends Fragment {
         return fragment;
     }
 
-    private int layout_resource_id = -1;
+    public int layout_resource_id = -1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,23 @@ public final class OnBoardingFragment extends Fragment {
         //layout.addView(text);
 
         return layout;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        final Activity activity = getActivity();
+
+        if(layout_resource_id == R.layout.on_boarding_3){
+            CompoundButton agent_toggle = (CompoundButton) this.getView().findViewById(R.id.agent_toggle);
+            agent_toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    ((OnBoardingActivity) activity).onAgentChecked(isChecked);
+                }
+            });
+        }
     }
 
     @Override

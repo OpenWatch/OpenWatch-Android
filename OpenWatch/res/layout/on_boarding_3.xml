@@ -12,34 +12,16 @@
         android:src="@drawable/onbo_3"/>
 
 
-    <Button
-        android:id="@+id/button_get_started"
-        android:background="@drawable/green_button_bg"
-        android:layout_width="250dp"
-        android:layout_height="50dp"
-        android:textColor="#fff"
-        android:shadowColor="#264826"
-        android:shadowDy="-2"
-        android:shadowRadius=".1"
-        android:textSize="25sp"
-        android:layout_marginBottom="5dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:onClick="onNavigationButtonClick"
-        android:text="Get Started"/>
-
-
     <Switch
             android:id="@+id/agent_toggle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_above="@id/button_get_started"
             android:layout_marginBottom="100dp"
             android:textOn="YES"
             android:textOff="NO"
+            android:textSize="25sp"
             tools:ignore="NewApi"/>
-
 
 </RelativeLayout>

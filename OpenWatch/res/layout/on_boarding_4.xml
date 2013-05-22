@@ -1,13 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
     <ImageView
+        android:id="@+id/on_boarding_4_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/onbo_4" />
+        android:src="@drawable/onbo_4a" />
 
-</LinearLayout>
+    <Button
+            android:id="@+id/button_get_started"
+            android:background="@drawable/green_button_bg"
+            android:layout_width="250dp"
+            android:layout_height="50dp"
+            android:textColor="#fff"
+            android:shadowColor="#264826"
+            android:shadowDy="-2"
+            android:shadowRadius=".1"
+            android:textSize="25sp"
+            android:layout_marginBottom="5dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:onClick="onNavigationButtonClick"
+            android:text="Get Started"/>
+
+
+</RelativeLayout>
