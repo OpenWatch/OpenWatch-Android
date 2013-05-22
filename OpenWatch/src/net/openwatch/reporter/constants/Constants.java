@@ -21,6 +21,8 @@ import net.openwatch.reporter.model.OWServerObject;
  *
  */
 public class Constants {
+
+    public static final String SUPPORT_EMAIL = "tickets@openwatch.uservoice.com";
 	
 	// Set this flag to toggle between production 
 	// and development endpoint addresses

@@ -2,6 +2,10 @@ package net.openwatch.reporter;
 
 import java.util.UUID;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.util.Log;
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.model.OWServerObject;
 
@@ -54,6 +58,21 @@ public class OWUtils {
 
     public static boolean checkEmail(String email) {
         return Constants.EMAIL_ADDRESS_PATTERN.matcher(email).matches();
+    }
+
+    public static String getPackageVersion(Context c){
+        String packageVersion = "";
+        try {
+            PackageInfo pInfo = c.getPackageManager().getPackageInfo(
+                    c.getPackageName(), 0);
+            packageVersion += "I have OpenWatch version " + pInfo.versionName;
+            packageVersion += " running on Android API " + String.valueOf(Build.VERSION.SDK_INT) + ".";
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e("getPackageVersion", "Unable to read PackageName in RegisterApp");
+            e.printStackTrace();
+        }
+        return packageVersion;
+            //USER_AGENT += " (Android API " + Build.VERSION.RELEASE + ")";
     }
 
 }

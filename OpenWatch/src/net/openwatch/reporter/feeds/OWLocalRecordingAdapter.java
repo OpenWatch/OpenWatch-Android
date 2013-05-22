@@ -31,14 +31,20 @@ public class OWLocalRecordingAdapter extends SimpleCursorAdapter {
         	//view_cache.date = (TextView) view.findViewById(R.id.date);
         	view_cache.views = (TextView) view.findViewById(R.id.view_count);
         	view_cache.actions = (TextView) view.findViewById(R.id.action_count);
-        	view_cache.status = (TextView) view.findViewById(R.id.status);
+        	//view_cache.status = (TextView) view.findViewById(R.id.status);
+            view_cache.typeIcon = (ImageView) view.findViewById(R.id.type_icon);
             
         	view_cache.title_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_TITLE);   
         	view_cache.date_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_FIRST_POSTED);   
         	view_cache.thumbnail_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_THUMB_URL);
         	view_cache.views_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_VIEWS);
         	view_cache.actions_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_ACTIONS);
-        	view_cache.local_vid_col = cursor.getColumnIndexOrThrow(DBConstants.MEDIA_OBJECT_LOCAL_VIDEO);
+        	//view_cache.local_vid_col = cursor.getColumnIndexOrThrow(DBConstants.MEDIA_OBJECT_LOCAL_VIDEO);
+            view_cache.audio_col = cursor.getColumnIndexOrThrow(DBConstants.MEDIA_OBJECT_AUDIO);
+            view_cache.photo_col = cursor.getColumnIndexOrThrow(DBConstants.MEDIA_OBJECT_PHOTO);
+            view_cache.video_col = cursor.getColumnIndexOrThrow(DBConstants.MEDIA_OBJECT_VIDEO);
+            view_cache.investigation_col = cursor.getColumnIndexOrThrow(DBConstants.MEDIA_OBJECT_INVESTIGATION);
+
         	view_cache._id_col = cursor.getColumnIndexOrThrow(DBConstants.ID);
             view.setTag(R.id.list_item_cache, view_cache);
         }
@@ -46,12 +52,21 @@ public class OWLocalRecordingAdapter extends SimpleCursorAdapter {
         view_cache.title.setText(cursor.getString(view_cache.title_col));
         view_cache.views.setText(cursor.getString(view_cache.views_col));
         view_cache.actions.setText(cursor.getString(view_cache.actions_col));
-        
+
+        if(!cursor.isNull(view_cache.audio_col))
+            view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.microphone_icon));
+        if(!cursor.isNull(view_cache.investigation_col))
+            view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.investigation_icon));
+        if(!cursor.isNull(view_cache.photo_col))
+            view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.camera_icon));
+
+        /*
         if(cursor.isNull(cursor.getColumnIndex(DBConstants.MEDIA_OBJECT_LOCAL_VIDEO))){
         	view_cache.status.setVisibility(View.GONE);
         }else{
         	view_cache.status.setVisibility(View.VISIBLE);
         }
+        */
         
         /* Don't show date for now
         if(cursor.getString(view_cache.date_col) != null){
@@ -77,9 +92,10 @@ public class OWLocalRecordingAdapter extends SimpleCursorAdapter {
     static class ViewCache {
         TextView title;
         ImageView thumbnail;
+        ImageView typeIcon;
         TextView views;
         TextView actions;
-        TextView status;
+        //TextView status;
         
         int last_seen_id;
                         
@@ -88,8 +104,14 @@ public class OWLocalRecordingAdapter extends SimpleCursorAdapter {
         int date_col;
         int views_col;
         int actions_col;
-        int local_vid_col;
+        //int local_vid_col;
         int _id_col;
+
+        int audio_col;
+        int photo_col;
+        int video_col;
+        int investigation_col;
+
     }
 
 }

@@ -250,7 +250,10 @@ public class MyFeedFragmentActivity extends FragmentActivity {
 			DBConstants.RECORDINGS_TABLE_THUMB_URL,
 			DBConstants.RECORDINGS_TABLE_VIEWS,
 			DBConstants.RECORDINGS_TABLE_ACTIONS,
-			DBConstants.MEDIA_OBJECT_LOCAL_VIDEO
+            DBConstants.MEDIA_OBJECT_AUDIO,
+            DBConstants.MEDIA_OBJECT_VIDEO,
+            DBConstants.MEDIA_OBJECT_PHOTO,
+            DBConstants.MEDIA_OBJECT_INVESTIGATION
 	    };
 
 		@Override

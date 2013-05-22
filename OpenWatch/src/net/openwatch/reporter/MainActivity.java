@@ -108,6 +108,14 @@ public class MainActivity extends SherlockActivity {
 		startActivity(i);
 	}
 
+    public void feedbackButtonClick(View v){
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                "mailto",Constants.SUPPORT_EMAIL, null));
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "OpenWatch-Android feedback");
+        emailIntent.putExtra(Intent.EXTRA_TEXT,"Hey OpenWatch!\n\n" + OWUtils.getPackageVersion(getApplicationContext()));
+        startActivity(Intent.createChooser(emailIntent, "Send us feedback"));
+    }
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
