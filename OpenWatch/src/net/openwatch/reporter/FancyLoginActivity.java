@@ -440,7 +440,7 @@ public class FancyLoginActivity extends SherlockActivity {
     }
 
     private void navigateToOnBoardingActivity(boolean didLogin) {
-        Intent i = new Intent(FancyLoginActivity.this, MainActivity.class);
+        Intent i = new Intent(FancyLoginActivity.this, OnBoardingActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         // It's possible the sharedPreference setting won't be written by the

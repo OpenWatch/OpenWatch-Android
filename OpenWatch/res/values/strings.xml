@@ -123,4 +123,11 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_owinvestigation_view">OWInvestigationViewActivity</string>
 
+    <!-- OnBoardingActivity -->
+    <string name="on_boarding_welcome_title">
+        <![CDATA[
+        <h1>Welcome,<br> New <font color=\'red\'>Watcher!</font></h1>
+        ]]>
+    </string>
+
 </resources>

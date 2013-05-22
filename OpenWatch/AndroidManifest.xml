@@ -109,6 +109,7 @@
             android:label="@string/title_activity_owinvestigation_view" >
         </activity>
         <activity android:name=".FancyLoginActivity"/>
+        <activity android:name=".OnBoardingActivity"/>
     </application>
 
 </manifest>
