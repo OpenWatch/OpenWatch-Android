@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.media.MediaPlayer.OnVideoSizeChangedListener;
@@ -21,6 +22,7 @@ import android.widget.*;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.example.touch.TouchImageView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
@@ -274,21 +276,46 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 	
 	public void setupImageView(int view_id, String uri){
 		if(is_local && !uri.contains("file:\\/\\/"))
-			uri = "file://" + uri;
+            uri = "file://" + uri;
+        final String absolute_uri = uri;
 		Log.i("setupImageView", uri);
 		//ImageView v = (ImageView) findViewById(view_id);
 		//ImageSize size = getMediaViewDimens();
 		
 		ImageSize size = new ImageSize(640, 480);
 		Log.i("setupImageView", String.format("ImageView dimen: %d x %d ", size.getWidth(), size.getHeight()));
-		ImageLoader.getInstance().loadImage(uri, size, null, new SimpleImageLoadingListener() {
+		ImageLoader.getInstance().loadImage(absolute_uri, size, null, new SimpleImageLoadingListener() {
 		    @Override
 		    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-		    	Log.i("setupImageView", "got bitmap");
+		    	Log.i("setupImageView", String.format("got bitmap, loading into imageView of size %dx%d",media_view.getWidth(), media_view.getHeight()));
 		       ((ImageView) media_view).setImageBitmap(loadedImage);
 		       return;
 		    }
 		});
+
+        final ViewGroup container = (ViewGroup) this.findViewById(R.id.container);
+
+        final Context c = this.getApplicationContext();
+
+        media_view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LayoutInflater layoutInflater = (LayoutInflater) c.getSystemService(LAYOUT_INFLATER_SERVICE);
+                View popupView = layoutInflater.inflate(R.layout.image_popup, null);
+                PopupWindow popupWindow = new PopupWindow(popupView,LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT, true);
+                popupWindow.setBackgroundDrawable(new BitmapDrawable()); // Now the popUp responds to onKey
+                // http://stackoverflow.com/questions/3121232/android-popup-window-dismissal
+                popupWindow.setContentView(popupView);
+                popupWindow.showAtLocation(container, Gravity.CENTER,0,0);
+
+
+                Display display = getWindowManager().getDefaultDisplay();
+                Point size = new Point();
+                display.getSize(size);
+                ImageSize fullscreen_size = new ImageSize(size.x, size.y);
+                ImageLoader.getInstance().displayImage(absolute_uri, (ImageView)popupView.findViewById(R.id.image));
+            }
+        });
 		
 	}
 	
