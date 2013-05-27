@@ -474,7 +474,8 @@ public class FancyLoginActivity extends SherlockActivity {
     }
 
     private void scrollFullDown(){
-        scrollContainer.fullScroll(View.FOCUS_DOWN);
+        //scrollContainer.fullScroll(View.FOCUS_DOWN);
+        scrollContainer.smoothScrollBy(0, 250);
     }
 
     private void quickUserSignup(){
