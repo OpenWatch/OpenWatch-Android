@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
+
+import net.openwatch.reporter.model.*;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.entity.StringEntity;
@@ -20,15 +22,6 @@ import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
 import net.openwatch.reporter.constants.Constants.OWFeedType;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
-import net.openwatch.reporter.model.OWAudio;
-import net.openwatch.reporter.model.OWFeed;
-import net.openwatch.reporter.model.OWInvestigation;
-import net.openwatch.reporter.model.OWServerObjectInterface;
-import net.openwatch.reporter.model.OWServerObject;
-import net.openwatch.reporter.model.OWPhoto;
-import net.openwatch.reporter.model.OWVideoRecording;
-import net.openwatch.reporter.model.OWTag;
-import net.openwatch.reporter.model.OWStory;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -463,6 +456,10 @@ public class OWServiceRequests {
 		}.start();
 
 	}
+
+    private static String instanceEndpointForOWUser(Context c, OWUser u){
+        return Constants.OW_API_URL + "u/" + String.valueOf(u.server_id.get()) + "/";
+    }
 	
 	private static String instanceEndpointForOWMediaObject(Context c, OWServerObjectInterface object){
 		if(object.getMediaType(c) != null)
@@ -668,6 +665,16 @@ public class OWServiceRequests {
 					}
 				});
 	}
+
+    public static void syncOWUser(final Context app_context, OWUser user){
+        AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
+        Log.i(TAG,
+                "Commencing Edit User: "
+                        + user.toJSON());
+        http_client.post(app_context, instanceEndpointForOWUser(app_context, user), Utils
+                .JSONObjectToStringEntity(user.toJSON()),
+                "application/json", null);
+    }
 
 	/**
 	 * Merges server tag list with stored. Assume names are unchanging (treated

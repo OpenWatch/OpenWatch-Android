@@ -242,4 +242,9 @@
 		<item name="android:textSize">18sp</item>
     </style>
 
+    <style name="FadeInAndOutAnimation">
+        <item name="android:windowEnterAnimation">@anim/fadein</item>
+        <item name="android:windowExitAnimation">@anim/fadeout</item>
+    </style>
+
 </resources>

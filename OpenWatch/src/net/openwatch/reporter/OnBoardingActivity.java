@@ -12,6 +12,8 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.viewpagerindicator.CirclePageIndicator;
 import com.viewpagerindicator.PageIndicator;
 import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.http.OWServiceRequests;
+import net.openwatch.reporter.model.OWUser;
 
 /**
      * Created by davidbrodsky on 5/21/13.
@@ -23,13 +25,11 @@ import net.openwatch.reporter.constants.Constants;
         ViewPager mPager;
         PageIndicator mIndicator;
 
-        public CompoundButton agentToggle;
-
         boolean didLogin = false;
+        boolean agent_applicant = false;
 
         Fragment agentFragment;
         Fragment finalFragment;
-        ImageView finalOnBoardingView;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +63,13 @@ import net.openwatch.reporter.constants.Constants;
     }
 
     public void onNavigationButtonClick(View v){
+        // Sync preferences
+        if(OWApplication.user_data != null && OWApplication.user_data.containsKey(Constants.INTERNAL_USER_ID)){
+            OWUser user = OWUser.objects(getApplicationContext(), OWUser.class).get((Integer)OWApplication.user_data.get(Constants.INTERNAL_USER_ID));
+            user.agent_applicant.set(agent_applicant);
+            user.save(getApplicationContext());
+            OWServiceRequests.syncOWUser(getApplicationContext(), user);
+        }
         Intent i = new Intent(OnBoardingActivity.this, MainActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -81,6 +88,7 @@ import net.openwatch.reporter.constants.Constants;
             Log.e(TAG, "onAgentChecked. finalFragment is still null");
             return;
         }
+        agent_applicant = isChecked;
         if(!isChecked){
             ((ImageView)finalFragment.getView().findViewById(R.id.on_boarding_4_image)).setImageDrawable(getResources().getDrawable(R.drawable.onbo_4a));
         }else{

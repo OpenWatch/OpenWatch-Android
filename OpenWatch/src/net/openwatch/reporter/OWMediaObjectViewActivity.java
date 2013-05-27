@@ -25,6 +25,8 @@ import com.actionbarsherlock.view.MenuItem;
 import com.example.touch.TouchImageView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 import net.openwatch.reporter.FeedFragmentActivity.TabsAdapter;
@@ -241,6 +243,10 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 	}
 
 	public void setupVideoView(int view_id, String filepath) {
+        if(filepath == null){
+            Log.e(TAG, "setupVideoView uri is null");
+            return;
+        }
 		VideoView video_view = (VideoView) findViewById(view_id);
 		video_view.setVideoURI(Uri.parse(filepath));
 		video_view.setOnPreparedListener(new OnPreparedListener() {
@@ -275,6 +281,10 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 	}
 	
 	public void setupImageView(int view_id, String uri){
+        if(uri == null){
+            Log.e(TAG, "setupImageView uri is null");
+            return;
+        }
 		if(is_local && !uri.contains("file:\\/\\/"))
             uri = "file://" + uri;
         final String absolute_uri = uri;
@@ -302,18 +312,46 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
             public void onClick(View v) {
                 LayoutInflater layoutInflater = (LayoutInflater) c.getSystemService(LAYOUT_INFLATER_SERVICE);
                 View popupView = layoutInflater.inflate(R.layout.image_popup, null);
-                PopupWindow popupWindow = new PopupWindow(popupView,LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT, true);
+                final PopupWindow popupWindow = new PopupWindow(popupView,LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT, true);
+                popupWindow.setAnimationStyle(R.style.FadeInAndOutAnimation);
+                popupView.findViewById(R.id.image).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        popupWindow.dismiss();
+                    }
+                });
                 popupWindow.setBackgroundDrawable(new BitmapDrawable()); // Now the popUp responds to onKey
                 // http://stackoverflow.com/questions/3121232/android-popup-window-dismissal
                 popupWindow.setContentView(popupView);
-                popupWindow.showAtLocation(container, Gravity.CENTER,0,0);
+
 
 
                 Display display = getWindowManager().getDefaultDisplay();
                 Point size = new Point();
                 display.getSize(size);
                 ImageSize fullscreen_size = new ImageSize(size.x, size.y);
-                ImageLoader.getInstance().displayImage(absolute_uri, (ImageView)popupView.findViewById(R.id.image));
+                ImageLoader.getInstance().displayImage(absolute_uri, (ImageView)popupView.findViewById(R.id.image),new ImageLoadingListener() {
+                    @Override
+                    public void onLoadingStarted(String imageUri, View view) {
+
+                    }
+
+                    @Override
+                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                    }
+
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        popupWindow.showAtLocation(container, Gravity.CENTER,0,0);
+                    }
+
+                    @Override
+                    public void onLoadingCancelled(String imageUri, View view) {
+
+                    }
+                });
+                //ImageLoader.getInstance().displayImage(absolute_uri, (ImageView)popupView.findViewById(R.id.image));
             }
         });
 		
