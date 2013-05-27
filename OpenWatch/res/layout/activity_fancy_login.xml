@@ -12,7 +12,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/syria_peace" />
+            android:src="@drawable/openwatch_splash_syria_peace" />
 
     <ImageView
             android:id="@+id/image_2"
@@ -20,7 +20,7 @@
             android:layout_height="fill_parent"
             android:scaleType="centerCrop"
             android:alpha="0"
-            android:src="@drawable/syria_girl" />
+            android:src="@drawable/openwatch_splash_police_back" />
 
     <ScrollView
         android:id="@+id/scroll_container"
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/openwatch" />
+            android:src="@drawable/openwatch_white" />
 
     <TextView
         android:id="@+id/welcome_text"
