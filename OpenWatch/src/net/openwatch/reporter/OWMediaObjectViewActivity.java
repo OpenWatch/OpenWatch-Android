@@ -258,7 +258,9 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 							int height) {
 						VideoView video_view = (VideoView) findViewById(R.id.media_object_media_view);
 						//video_view.setVisibility(View.VISIBLE);
+
 						video_view.setLayoutParams( new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+                        showProgress(false);
 						MediaController mc = new MediaController(
 								OWMediaObjectViewActivity.this);
 						video_view.setMediaController(mc);
@@ -297,6 +299,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 		    @Override
 		    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 		    	Log.i("setupImageView", String.format("got bitmap, loading into imageView of size %dx%d",media_view.getWidth(), media_view.getHeight()));
+                showProgress(false);
 		       ((ImageView) media_view).setImageBitmap(loadedImage);
 		       return;
 		    }
@@ -385,6 +388,8 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
                     media_path = object.local_video_recording.get(getApplicationContext()).hq_filepath.get();
 
                 } else if( object.video_recording.get(getApplicationContext()) != null && object.video_recording.get(getApplicationContext()).media_url.get() != null){
+                    is_local = false;
+                    showProgress(true);
                     // remote recording, and video_url present
                     media_path = object.video_recording.get(getApplicationContext()).media_url.get();
                 }
@@ -398,6 +403,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 			if(media_path == null || media_path.compareTo("") == 0){
 				media_path = object.audio.get(getApplicationContext()).media_url.get();
 				is_local = false;
+                showProgress(true);
 			}else
 				is_local = true;
 			inflateMediaView(R.layout.video_media_view);
@@ -409,6 +415,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 			if(media_path == null || media_path.compareTo("") == 0){
 				media_path = object.photo.get(getApplicationContext()).media_url.get();
 				is_local = false;
+                showProgress(true);
 			} else
 				is_local = true;
 			inflateMediaView(R.layout.photo_media_view);
@@ -458,5 +465,14 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 		}
 		return null;
 	}
+
+    public void showProgress(boolean doShow){
+        if(doShow){
+            findViewById(R.id.progress).setVisibility(View.VISIBLE);
+        }else{
+            findViewById(R.id.progress).setVisibility(View.GONE);
+        }
+
+    }
 
 }

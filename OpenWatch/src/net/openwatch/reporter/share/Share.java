@@ -15,7 +15,10 @@ public class Share {
 	}
 
     public static void showShareDialogWithInfo(Context c, String dialog_title, String item_title,  String url){
-        String toShare = url + "\n" + item_title + "\n" + "via @OpenWatch";
+        String toShare = url;
+        if(item_title != null)
+            toShare += "\n" + item_title;
+        toShare += "\n" + "via @OpenWatch";
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("text/plain");
         i.putExtra(Intent.EXTRA_TEXT, toShare);
