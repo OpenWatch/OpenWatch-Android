@@ -138,7 +138,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
         builder.setView(layout);
         final AlertDialog dialog = builder.create();
 
-        ((TextView) layout.findViewById(R.id.share_title)).setText("Your photo is live! Spread the word and make an impact!");
+        ((TextView) layout.findViewById(R.id.share_title)).setText("Your video is live! Spread the word and make an impact!");
         layout.findViewById(R.id.button_share).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

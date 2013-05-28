@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
@@ -10,37 +10,30 @@
     <!--  Filled with an appropriate View
     	  depending on the OWMediaObject type -->
     <ViewStub
-        android:id="@+id/media_object_media_view_stub"
+        android:id="@+id/media_object_media_view"
         android:inflatedId="@+id/media_object_media_view"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_gravity="center" />
-<!-- 
-    <VideoView
-        android:id="@+id/videoview"
-        android:layout_width="fill_parent"
-        android:layout_height="250dp"
-        android:layout_gravity="center"
-        android:visibility="visible" />
- -->
-
-    <LinearLayout
-        android:id="@+id/progress_container"
+        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone" >
+        android:layout_gravity="center" />
 
-        <ProgressBar
+    <ProgressBar
             android:id="@+id/progress"
-            style="@android:style/Widget.ProgressBar.Large"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+            android:layout_alignTop="@id/media_object_media_view"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="100dp"
+            android:layout_marginRight="15dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_centerHorizontal="true"
+            android:indeterminate="true"
+            android:indeterminateBehavior="cycle"
+            android:visibility="gone"
+            />
 
     <TabHost
         android:id="@android:id/tabhost"
+        android:layout_below="@id/media_object_media_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
@@ -70,4 +63,4 @@
         </LinearLayout>
     </TabHost>
 
-</LinearLayout>
+</RelativeLayout>

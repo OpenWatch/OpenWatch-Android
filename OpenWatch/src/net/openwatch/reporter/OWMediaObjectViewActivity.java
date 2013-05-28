@@ -258,8 +258,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 							int height) {
 						VideoView video_view = (VideoView) findViewById(R.id.media_object_media_view);
 						//video_view.setVisibility(View.VISIBLE);
-						(findViewById(R.id.progress_container)).setVisibility(View.GONE);
-						video_view.setLayoutParams( new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+						video_view.setLayoutParams( new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 						MediaController mc = new MediaController(
 								OWMediaObjectViewActivity.this);
 						video_view.setMediaController(mc);
@@ -422,7 +421,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 	
 	public void inflateMediaView(int layoutResource){
         if(!media_view_inflated){
-            ViewStub stub = (ViewStub) findViewById(R.id.media_object_media_view_stub);
+            ViewStub stub = (ViewStub) findViewById(R.id.media_object_media_view);
             stub.setLayoutResource(layoutResource);
             media_view = stub.inflate();
             //setMediaViewDimens();
@@ -434,7 +433,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 	public void setMediaViewDimens(){
 		if(!is_landscape){
 			ImageSize size = getMediaViewDimens();
-			media_view.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, size.getHeight()));
+			media_view.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, size.getHeight()));
 		}
 	}
 	
