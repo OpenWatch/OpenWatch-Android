@@ -1,22 +1,11 @@
 package net.openwatch.reporter.http;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.Socket;
-import java.net.URL;
-import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
-import java.util.List;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManagerFactory;
 
 import net.openwatch.reporter.R;
 import net.openwatch.reporter.SECRETS;
@@ -40,6 +29,10 @@ public class HttpClient {
 	
 	public static String USER_AGENT = null;
 
+    // Cache http clients
+    private static AsyncHttpClient asyncHttpClient;
+    private static DefaultHttpClient defaultHttpClient;
+
 	/**
 	 * Returns a new AsyncHttpClient initialized with a PersistentCookieStore
 	 * 
@@ -49,9 +42,11 @@ public class HttpClient {
 	 * @return an initialized AsyncHttpClient
 	 */
 	public static AsyncHttpClient setupAsyncHttpClient(Context c) {
-		AsyncHttpClient http_client = setupAsyncHttpClient();
+        if(asyncHttpClient != null)
+            return asyncHttpClient;
+		AsyncHttpClient httpClient = setupVanillaAsyncHttpClient();
 		PersistentCookieStore cookie_store = new PersistentCookieStore(c);
-		http_client.setCookieStore(cookie_store);
+		httpClient.setCookieStore(cookie_store);
 		// List cookies = cookie_store.getCookies();
 		// Log.i(TAG, "Setting cookie store. size: " +
 		// cookie_store.getCookies().size());
@@ -68,33 +63,38 @@ public class HttpClient {
 			}
 			USER_AGENT += " (Android API " + Build.VERSION.RELEASE + ")";
 		}
-		http_client.setUserAgent(USER_AGENT);
+		httpClient.setUserAgent(USER_AGENT);
 		// Pin SSL cert if not hitting dev endpoint
 		if(!Constants.USE_DEV_ENDPOINTS){
-			http_client.setSSLSocketFactory(createApacheOWSSLSocketFactory(c));
+			httpClient.setSSLSocketFactory(createApacheOWSSLSocketFactory(c));
 		}
-		return http_client;
+        asyncHttpClient = httpClient;
+		return asyncHttpClient;
 	}
 
 	// For non ssl, no-cookie store use
 	
-	private static AsyncHttpClient setupAsyncHttpClient() {
+	private static AsyncHttpClient setupVanillaAsyncHttpClient() {
 		return new AsyncHttpClient();
 	}
 	
 	public static DefaultHttpClient setupDefaultHttpClient(Context c){
-		DefaultHttpClient http_client = new DefaultHttpClient();
+        if(defaultHttpClient != null)
+            return defaultHttpClient;
+
+		DefaultHttpClient httpClient = new DefaultHttpClient();
 		PersistentCookieStore cookie_store = new PersistentCookieStore(c);
-		http_client.setCookieStore(cookie_store);
+		httpClient.setCookieStore(cookie_store);
 		SSLSocketFactory socketFactory;
 		try {
 			// Pin SSL cert if not hitting dev endpoint
 			if(!Constants.USE_DEV_ENDPOINTS){
 				socketFactory = new SSLSocketFactory(loadOWKeyStore(c));
 				Scheme sch = new Scheme("https", socketFactory, 443);
-		        http_client.getConnectionManager().getSchemeRegistry().register(sch);
+		        httpClient.getConnectionManager().getSchemeRegistry().register(sch);
 			}
-	        return http_client;
+            defaultHttpClient = httpClient;
+	        return defaultHttpClient;
 		} catch (KeyManagementException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
