@@ -1,16 +1,8 @@
 package net.openwatch.reporter.model;
 
-import java.util.ArrayList;
-import java.util.Date;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
-
 import com.orm.androrm.DatabaseAdapter;
 import com.orm.androrm.Filter;
 import com.orm.androrm.Model;
@@ -23,7 +15,12 @@ import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
 import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
-import net.openwatch.reporter.http.OWServiceRequests;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Date;
 
 
 public class OWVideoRecording extends Model implements OWServerObjectInterface{

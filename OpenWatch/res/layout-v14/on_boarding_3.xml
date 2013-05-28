@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
@@ -11,7 +12,7 @@
         android:src="@drawable/onbo_3"/>
 
 
-    <ToggleButton
+    <Switch
             android:id="@+id/agent_toggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -20,6 +21,7 @@
             android:layout_marginBottom="50dp"
             android:textOn="YES"
             android:textOff="NO"
-            android:textSize="25dp"/>
+            android:textSize="25dp"
+            tools:ignore="NewApi"/>
 
 </RelativeLayout>

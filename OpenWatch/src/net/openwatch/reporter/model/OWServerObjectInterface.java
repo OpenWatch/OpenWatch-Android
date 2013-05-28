@@ -1,13 +1,10 @@
 package net.openwatch.reporter.model;
 
+import android.content.Context;
+import com.orm.androrm.QuerySet;
 import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
 import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
-
 import org.json.JSONObject;
-
-import com.orm.androrm.QuerySet;
-
-import android.content.Context;
 
 public interface OWServerObjectInterface {
 	

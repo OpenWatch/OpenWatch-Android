@@ -1,18 +1,14 @@
 package net.openwatch.reporter.model;
 
-import java.util.Locale;
-
-import net.openwatch.reporter.constants.DBConstants;
-import net.openwatch.reporter.constants.Constants.OWFeedType;
-
 import android.content.Context;
-import android.util.Log;
-
 import com.orm.androrm.Filter;
 import com.orm.androrm.Model;
 import com.orm.androrm.QuerySet;
 import com.orm.androrm.field.CharField;
-import com.orm.androrm.field.ManyToManyField;
+import net.openwatch.reporter.constants.Constants.OWFeedType;
+import net.openwatch.reporter.constants.DBConstants;
+
+import java.util.Locale;
 
 public class OWFeed extends Model{
 	

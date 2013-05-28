@@ -1,7 +1,6 @@
 package net.openwatch.reporter;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
@@ -10,8 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import net.openwatch.reporter.constants.Constants;
 
 /**
  * Created by davidbrodsky on 5/21/13.

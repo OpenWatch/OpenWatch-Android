@@ -2,23 +2,8 @@
 package net.openwatch.reporter.model;
 
 
-import java.util.Date;
-
-import net.openwatch.reporter.constants.Constants;
-import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
-import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
-import net.openwatch.reporter.constants.Constants.OWFeedType;
-import net.openwatch.reporter.constants.DBConstants;
-import net.openwatch.reporter.contentprovider.OWContentProvider;
-import net.openwatch.reporter.http.OWServiceRequests;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.Context;
 import android.util.Log;
-
 import com.orm.androrm.Filter;
 import com.orm.androrm.Model;
 import com.orm.androrm.QuerySet;
@@ -26,6 +11,18 @@ import com.orm.androrm.field.CharField;
 import com.orm.androrm.field.ForeignKeyField;
 import com.orm.androrm.field.IntegerField;
 import com.orm.androrm.field.ManyToManyField;
+import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
+import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
+import net.openwatch.reporter.constants.Constants.OWFeedType;
+import net.openwatch.reporter.constants.DBConstants;
+import net.openwatch.reporter.contentprovider.OWContentProvider;
+import net.openwatch.reporter.http.OWServiceRequests;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Date;
 
 public class OWServerObject extends Model implements OWServerObjectInterface{
 	private static final String TAG = "OWMediaObject";

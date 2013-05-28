@@ -1,22 +1,15 @@
 package net.openwatch.reporter.model;
 
-import java.util.Collection;
-
+import android.content.Context;
+import android.util.Log;
+import com.orm.androrm.Model;
 import com.orm.androrm.field.*;
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.http.OWServiceRequests;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import android.content.Context;
-import android.util.Log;
-
-import com.orm.androrm.Filter;
-import com.orm.androrm.Model;
-import com.orm.androrm.QuerySet;
 
 public class OWUser extends Model{
 	private static final String TAG = "OWUser";

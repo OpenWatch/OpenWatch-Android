@@ -1,19 +1,5 @@
 package net.openwatch.reporter;
 
-import java.text.ParseException;
-
-import net.openwatch.reporter.constants.Constants;
-import net.openwatch.reporter.constants.Constants.HIT_TYPE;
-import net.openwatch.reporter.http.OWServiceRequests;
-import net.openwatch.reporter.http.OWServiceRequests.RequestCallback;
-import net.openwatch.reporter.model.OWServerObject;
-import net.openwatch.reporter.model.OWStory;
-import net.openwatch.reporter.share.Share;
-
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -25,6 +11,18 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.Constants.HIT_TYPE;
+import net.openwatch.reporter.http.OWServiceRequests;
+import net.openwatch.reporter.http.OWServiceRequests.RequestCallback;
+import net.openwatch.reporter.model.OWServerObject;
+import net.openwatch.reporter.model.OWStory;
+import net.openwatch.reporter.share.Share;
+
+import java.text.ParseException;
 
 public class OWStoryViewActivity extends SherlockActivity implements OWMediaObjectBackedEntity{
 	private static final String TAG = "StoryViewActivity";

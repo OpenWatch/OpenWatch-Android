@@ -1,19 +1,5 @@
 package net.openwatch.reporter.recording;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import org.json.JSONArray;
-
-import net.openwatch.reporter.recording.FFChunkedAudioVideoEncoder.ChunkedRecorderListener;
-import net.openwatch.reporter.recording.audio.AudioSoftwarePoller;
-import net.openwatch.reporter.recording.FFChunkedAudioVideoEncoder;
-
 import android.annotation.SuppressLint;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
@@ -21,6 +7,15 @@ import android.hardware.Camera.Size;
 import android.os.Build;
 import android.util.Log;
 import android.view.SurfaceView;
+import net.openwatch.reporter.recording.FFChunkedAudioVideoEncoder.ChunkedRecorderListener;
+import net.openwatch.reporter.recording.audio.AudioSoftwarePoller;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ChunkedAudioVideoSoftwareRecorder {
 	

@@ -1,11 +1,5 @@
 package net.openwatch.reporter;
 
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import net.openwatch.reporter.constants.Constants;
-import net.openwatch.reporter.model.OWServerObject;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
@@ -18,6 +12,12 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.model.OWServerObject;
 
 public class OWMediaObjectInfoFragment extends SherlockFragment implements
 		OWMediaObjectBackedEntity {

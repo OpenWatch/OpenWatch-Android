@@ -1,34 +1,16 @@
 package net.openwatch.reporter.database;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import net.openwatch.reporter.constants.Constants;
-import net.openwatch.reporter.constants.DBConstants;
-import net.openwatch.reporter.model.OWAudio;
-import net.openwatch.reporter.model.OWFeed;
-import net.openwatch.reporter.model.OWInvestigation;
-import net.openwatch.reporter.model.OWLocalVideoRecording;
-import net.openwatch.reporter.model.OWLocalVideoRecordingSegment;
-import net.openwatch.reporter.model.OWServerObject;
-import net.openwatch.reporter.model.OWPhoto;
-import net.openwatch.reporter.model.OWVideoRecording;
-import net.openwatch.reporter.model.OWTag;
-import net.openwatch.reporter.model.OWStory;
-import net.openwatch.reporter.model.OWUser;
-
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.CursorJoiner.Result;
 import android.util.Log;
-
 import com.orm.androrm.DatabaseAdapter;
 import com.orm.androrm.Model;
-import com.orm.androrm.QuerySet;
-import com.orm.androrm.Where;
+import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.DBConstants;
+import net.openwatch.reporter.model.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseManager {
 	

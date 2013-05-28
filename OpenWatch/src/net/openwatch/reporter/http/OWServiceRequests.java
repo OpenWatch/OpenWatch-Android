@@ -1,27 +1,5 @@
 package net.openwatch.reporter.http;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.Date;
-import java.util.HashMap;
-
-import net.openwatch.reporter.model.*;
-import org.apache.http.ParseException;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.entity.StringEntity;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import net.openwatch.reporter.OWApplication;
-import net.openwatch.reporter.constants.Constants;
-import net.openwatch.reporter.constants.Constants.HIT_TYPE;
-import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
-import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
-import net.openwatch.reporter.constants.Constants.OWFeedType;
-import net.openwatch.reporter.constants.DBConstants;
-import net.openwatch.reporter.contentprovider.OWContentProvider;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -30,7 +8,6 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
-
 import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -38,6 +15,27 @@ import com.orm.androrm.DatabaseAdapter;
 import com.orm.androrm.Filter;
 import com.orm.androrm.Model;
 import com.orm.androrm.QuerySet;
+import net.openwatch.reporter.OWApplication;
+import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
+import net.openwatch.reporter.constants.Constants.HIT_TYPE;
+import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
+import net.openwatch.reporter.constants.Constants.OWFeedType;
+import net.openwatch.reporter.constants.DBConstants;
+import net.openwatch.reporter.contentprovider.OWContentProvider;
+import net.openwatch.reporter.model.*;
+import org.apache.http.ParseException;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.entity.StringEntity;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
+import java.util.HashMap;
 
 /**
  * OWService (Django) Requests

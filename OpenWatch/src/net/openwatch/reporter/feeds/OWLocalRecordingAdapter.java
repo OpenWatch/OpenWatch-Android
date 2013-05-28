@@ -1,17 +1,14 @@
 package net.openwatch.reporter.feeds;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-
-import net.openwatch.reporter.R;
-import net.openwatch.reporter.constants.Constants;
-import net.openwatch.reporter.constants.DBConstants;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import net.openwatch.reporter.R;
+import net.openwatch.reporter.constants.DBConstants;
 
 public class OWLocalRecordingAdapter extends SimpleCursorAdapter {
 

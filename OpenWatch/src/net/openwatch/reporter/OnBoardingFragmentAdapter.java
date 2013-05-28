@@ -3,7 +3,6 @@ package net.openwatch.reporter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import com.viewpagerindicator.IconPagerAdapter;
 
 /**
  * Created by davidbrodsky on 5/21/13.

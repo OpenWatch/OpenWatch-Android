@@ -1,12 +1,5 @@
 package net.openwatch.reporter.view;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import net.openwatch.reporter.R;
-import net.openwatch.reporter.model.OWVideoRecording;
-import net.openwatch.reporter.model.OWTag;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,6 +11,12 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import net.openwatch.reporter.R;
+import net.openwatch.reporter.model.OWTag;
+import net.openwatch.reporter.model.OWVideoRecording;
+
+import java.util.HashMap;
+import java.util.LinkedList;
 
 public class TagPoolLayout extends TableLayout {
 	private static final String TAG = "TagPoolLayout";

@@ -1,26 +1,22 @@
 package net.openwatch.reporter;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.NavUtils;
+import android.util.Log;
+import android.webkit.WebView;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.loopj.android.http.JsonHttpResponseHandler;
-
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
 import net.openwatch.reporter.constants.Constants.HIT_TYPE;
 import net.openwatch.reporter.http.OWServiceRequests;
 import net.openwatch.reporter.model.OWServerObject;
-import net.openwatch.reporter.model.OWVideoRecording;
 import net.openwatch.reporter.share.Share;
-import android.os.Bundle;
-import android.app.Activity;
-import android.content.Context;
-import android.support.v4.app.NavUtils;
-import android.util.Log;
-import android.webkit.WebView;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class OWInvestigationViewActivity extends SherlockActivity implements OWMediaObjectBackedEntity {
 	private static final String TAG = "OWInvestigationViewActivity";

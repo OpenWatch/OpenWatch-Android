@@ -1,24 +1,22 @@
 package net.openwatch.reporter.location;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
-import com.orm.androrm.Model;
-import net.openwatch.reporter.OWApplication;
-import net.openwatch.reporter.constants.Constants;
-import net.openwatch.reporter.http.OWMediaRequests;
-import net.openwatch.reporter.http.OWServiceRequests;
-import net.openwatch.reporter.http.OWServiceRequests.RequestCallback;
-import net.openwatch.reporter.model.OWLocalVideoRecording;
-import net.openwatch.reporter.model.OWServerObject;
-import net.openwatch.reporter.model.OWServerObjectInterface;
-import net.openwatch.reporter.model.OWVideoRecording;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import com.orm.androrm.Model;
+import net.openwatch.reporter.OWApplication;
+import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.http.OWMediaRequests;
+import net.openwatch.reporter.http.OWServiceRequests;
+import net.openwatch.reporter.model.OWServerObject;
+import net.openwatch.reporter.model.OWServerObjectInterface;
+import net.openwatch.reporter.model.OWVideoRecording;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 //	Thanks, Fedor!
 public class DeviceLocation {

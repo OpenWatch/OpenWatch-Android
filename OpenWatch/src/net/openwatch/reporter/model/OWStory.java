@@ -1,27 +1,21 @@
 package net.openwatch.reporter.model;
 
-import java.io.File;
-import java.util.Date;
-
-import net.openwatch.reporter.constants.Constants;
-import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
-import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
-import net.openwatch.reporter.constants.DBConstants;
-import net.openwatch.reporter.contentprovider.OWContentProvider;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
-
 import com.orm.androrm.DatabaseAdapter;
-import com.orm.androrm.Filter;
 import com.orm.androrm.Model;
 import com.orm.androrm.QuerySet;
 import com.orm.androrm.field.CharField;
 import com.orm.androrm.field.ForeignKeyField;
+import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.Constants.CONTENT_TYPE;
+import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
+import net.openwatch.reporter.constants.DBConstants;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Date;
 
 public class OWStory extends Model implements OWServerObjectInterface{
 	private static final String TAG = "OWStory";

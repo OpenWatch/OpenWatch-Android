@@ -22,7 +22,6 @@ import android.widget.*;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.example.touch.TouchImageView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -67,7 +66,6 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 	
 	LayoutInflater inflater;
 
-	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -437,7 +435,6 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 		media_view_inflated = true;
 	}
 	
-	@SuppressLint("NewApi")
 	public void setMediaViewDimens(){
 		if(!is_landscape){
 			ImageSize size = getMediaViewDimens();

@@ -1,48 +1,38 @@
 package net.openwatch.reporter;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-
-import android.os.Build;
-import net.openwatch.reporter.http.OWServiceRequests;
-import org.json.JSONArray;
-
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-
-import net.openwatch.reporter.constants.Constants;
-import net.openwatch.reporter.file.FileUtils;
-import net.openwatch.reporter.http.OWMediaRequests;
-import net.openwatch.reporter.location.DeviceLocation;
-import net.openwatch.reporter.model.OWLocalVideoRecording;
-import net.openwatch.reporter.model.OWServerObject;
-import net.openwatch.reporter.model.OWVideoRecording;
-import net.openwatch.reporter.recording.ChunkedAudioVideoSoftwareRecorder;
-import net.openwatch.reporter.recording.FFChunkedAudioVideoEncoder.ChunkedRecorderListener;
-
-import android.hardware.Camera;
-import android.media.CamcorderProfile;
-import android.media.MediaRecorder;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.PowerManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.hardware.Camera;
+import android.media.CamcorderProfile;
+import android.media.MediaRecorder;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.file.FileUtils;
+import net.openwatch.reporter.http.OWMediaRequests;
+import net.openwatch.reporter.location.DeviceLocation;
+import net.openwatch.reporter.model.OWLocalVideoRecording;
+import net.openwatch.reporter.model.OWVideoRecording;
+import org.json.JSONArray;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 public class RecorderActivity extends SherlockActivity implements
 		SurfaceHolder.Callback {

@@ -1,12 +1,11 @@
 package net.openwatch.reporter;
 
-import java.util.Map;
-
+import android.app.Application;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
-import android.app.Application;
+import java.util.Map;
 
 public class OWApplication extends Application {
 	

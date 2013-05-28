@@ -5,13 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
-
-import android.content.Context;
-
-import net.openwatch.reporter.model.OWServerObject;
 
 /**
  * A class containing values that are not user-facing and so

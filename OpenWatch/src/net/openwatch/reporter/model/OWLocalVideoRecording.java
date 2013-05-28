@@ -1,22 +1,20 @@
 package net.openwatch.reporter.model;
 
-import java.util.Date;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import net.openwatch.reporter.constants.Constants;
-import net.openwatch.reporter.contentprovider.OWContentProvider;
 import android.content.Context;
 import android.util.Log;
-
 import com.orm.androrm.Model;
 import com.orm.androrm.QuerySet;
 import com.orm.androrm.field.BooleanField;
 import com.orm.androrm.field.CharField;
 import com.orm.androrm.field.ForeignKeyField;
 import com.orm.androrm.field.OneToManyField;
+import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.contentprovider.OWContentProvider;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Date;
 
 public class OWLocalVideoRecording extends Model {
 	private static final String TAG = "OWLocalRecording";

@@ -1,21 +1,17 @@
 package net.openwatch.reporter.file;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import net.openwatch.reporter.OWUtils;
-import net.openwatch.reporter.OWPhotoReviewActivity;
-import net.openwatch.reporter.constants.Constants;
-import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
-
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
+import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class FileUtils {
 	

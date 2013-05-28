@@ -1,53 +1,32 @@
 package net.openwatch.reporter.http;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.net.ssl.HttpsURLConnection;
-
-import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
+import android.util.Log;
+import com.google.gson.Gson;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.model.OWLocalVideoRecording;
+import net.openwatch.reporter.model.OWLocalVideoRecordingSegment;
+import net.openwatch.reporter.model.OWVideoRecording;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import net.openwatch.reporter.constants.Constants;
-import net.openwatch.reporter.model.OWLocalVideoRecording;
-import net.openwatch.reporter.model.OWLocalVideoRecordingSegment;
-import net.openwatch.reporter.model.OWVideoRecording;
-
-import android.content.Context;
-import android.net.http.AndroidHttpClient;
-import android.util.Log;
-
-import com.google.gson.Gson;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class OWMediaRequests {
 

@@ -1,9 +1,5 @@
 package net.openwatch.reporter;
 
-import net.openwatch.reporter.constants.Constants;
-import net.openwatch.reporter.model.OWServerObject;
-import net.openwatch.reporter.model.OWServerObjectInterface;
-import net.openwatch.reporter.model.OWVideoRecording;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -20,6 +15,9 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.model.OWServerObject;
+import net.openwatch.reporter.model.OWVideoRecording;
 
 public class MapFragment extends SupportMapFragment implements OWMediaObjectBackedEntity{
 	private static final String TAG = "MapFragment";

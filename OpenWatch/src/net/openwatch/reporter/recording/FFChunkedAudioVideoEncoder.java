@@ -1,10 +1,10 @@
 package net.openwatch.reporter.recording;
 
-import java.util.ArrayList;
-import java.util.Date;
-
 import android.content.Context;
 import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * JNI Wrapper around the OpenWatch FFMPEG encoding library

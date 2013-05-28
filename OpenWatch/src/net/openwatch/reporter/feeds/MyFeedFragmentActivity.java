@@ -16,19 +16,16 @@
 
 package net.openwatch.reporter.feeds;
 
-import com.orm.androrm.Filter;
-import com.orm.androrm.QuerySet;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SearchViewCompat.OnQueryTextListenerCompat;
 import android.util.Log;
@@ -36,8 +33,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.AbsListView;
-import android.widget.ListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.ListView;
+import com.orm.androrm.Filter;
+import com.orm.androrm.QuerySet;
 import net.openwatch.reporter.OWMediaObjectViewActivity;
 import net.openwatch.reporter.R;
 import net.openwatch.reporter.constants.Constants;

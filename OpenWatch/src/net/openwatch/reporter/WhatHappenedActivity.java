@@ -1,9 +1,12 @@
 package net.openwatch.reporter;
 
+import android.app.AlertDialog;
 import android.content.*;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,25 +14,18 @@ import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
-import net.openwatch.reporter.share.Share;
-import org.json.JSONObject;
-
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.loopj.android.http.JsonHttpResponseHandler;
-
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.DBConstants;
 import net.openwatch.reporter.contentprovider.OWContentProvider;
 import net.openwatch.reporter.http.OWServiceRequests;
 import net.openwatch.reporter.model.OWServerObject;
 import net.openwatch.reporter.model.OWVideoRecording;
-import android.os.Bundle;
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.DialogInterface.OnClickListener;
-import android.util.Log;
+import net.openwatch.reporter.share.Share;
+import org.json.JSONObject;
 
 public class WhatHappenedActivity extends SherlockFragmentActivity {
 

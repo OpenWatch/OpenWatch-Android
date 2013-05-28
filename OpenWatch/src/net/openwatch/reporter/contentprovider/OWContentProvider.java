@@ -1,11 +1,5 @@
 package net.openwatch.reporter.contentprovider;
 
-import com.orm.androrm.DatabaseAdapter;
-
-import net.openwatch.reporter.constants.Constants.OWFeedType;
-import net.openwatch.reporter.constants.Constants;
-import net.openwatch.reporter.constants.DBConstants;
-import net.openwatch.reporter.model.OWFeed;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
@@ -13,6 +7,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.util.Log;
+import com.orm.androrm.DatabaseAdapter;
+import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.Constants.OWFeedType;
+import net.openwatch.reporter.constants.DBConstants;
 
 public class OWContentProvider extends ContentProvider {
 	

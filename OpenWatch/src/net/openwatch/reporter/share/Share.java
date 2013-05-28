@@ -2,7 +2,6 @@ package net.openwatch.reporter.share;
 
 import android.content.Context;
 import android.content.Intent;
-import net.openwatch.reporter.model.OWServerObject;
 
 public class Share {
 

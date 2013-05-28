@@ -1,24 +1,5 @@
 package net.openwatch.reporter;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-
-import net.openwatch.reporter.account.Authentication;
-import org.apache.http.entity.StringEntity;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.google.gson.Gson;
-import com.loopj.android.http.*;
-
-import net.openwatch.reporter.constants.Constants;
-import net.openwatch.reporter.file.FileUtils;
-import net.openwatch.reporter.http.OWServiceRequests;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
@@ -39,8 +20,25 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.ImageView;
+import android.widget.TextView;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.google.gson.Gson;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import net.openwatch.reporter.account.Authentication;
+import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.file.FileUtils;
+import net.openwatch.reporter.http.OWServiceRequests;
+import org.apache.http.entity.StringEntity;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 
 /**
  * Activity which displays a login screen to the user, offering registration as
@@ -509,7 +507,6 @@ public class LoginActivity extends SherlockActivity {
 
 	};
 
-	@SuppressLint("NewApi")
 	private void returnToMainActivity(boolean didLogin) {
 		Intent i = new Intent(LoginActivity.this, MainActivity.class);
 		i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
@@ -523,7 +520,6 @@ public class LoginActivity extends SherlockActivity {
 		startActivity(i);
 	}
 	
-	@SuppressLint("NewApi")
 	private void toWelcomeActivity(){
 		Intent i = new Intent(LoginActivity.this, WelcomeActivity.class);
 		i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK

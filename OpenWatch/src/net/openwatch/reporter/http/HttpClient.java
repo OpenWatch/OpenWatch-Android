@@ -1,28 +1,21 @@
 package net.openwatch.reporter.http;
 
-import java.io.InputStream;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-
-import net.openwatch.reporter.R;
-import net.openwatch.reporter.SECRETS;
-import net.openwatch.reporter.constants.Constants;
-
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 import android.util.Log;
-
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.PersistentCookieStore;
+import net.openwatch.reporter.R;
+import net.openwatch.reporter.SECRETS;
+import net.openwatch.reporter.constants.Constants;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.InputStream;
+import java.security.*;
 
 public class HttpClient {
 	private static final String TAG = "HttpClient";

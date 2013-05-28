@@ -28,33 +28,22 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.viewpagerindicator.TitlePageIndicator;
+import net.openwatch.reporter.constants.Constants;
+import net.openwatch.reporter.constants.Constants.OWFeedType;
+import net.openwatch.reporter.feeds.MyFeedFragmentActivity;
+import net.openwatch.reporter.feeds.RemoteFeedFragmentActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Set;
-
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.orm.androrm.QuerySet;
-import com.viewpagerindicator.TitlePageIndicator;
-
-import net.openwatch.reporter.constants.Constants;
-import net.openwatch.reporter.constants.DBConstants;
-import net.openwatch.reporter.constants.Constants.OWFeedType;
-import net.openwatch.reporter.feeds.MyFeedFragmentActivity;
-import net.openwatch.reporter.feeds.RemoteFeedFragmentActivity;
-import net.openwatch.reporter.model.OWFeed;
-import net.openwatch.reporter.model.OWTag;
-import net.openwatch.reporter.model.OWUser;
 
 /**
  * Demonstrates combining a TabHost with a ViewPager to implement a tab UI

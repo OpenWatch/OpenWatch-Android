@@ -1,15 +1,10 @@
 package net.openwatch.reporter.http;
 
-import java.io.UnsupportedEncodingException;
-
+import android.util.Log;
 import org.apache.http.entity.StringEntity;
 import org.json.JSONObject;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Log;
-import android.widget.ImageView;
+import java.io.UnsupportedEncodingException;
 
 public class Utils {
 	private static final String TAG = "HttpUtils";

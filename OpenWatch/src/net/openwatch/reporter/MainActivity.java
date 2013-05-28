@@ -1,31 +1,27 @@
 package net.openwatch.reporter;
 
-import java.io.File;
-
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
-
+import com.bugsense.trace.BugSenseHandler;
 import net.openwatch.reporter.constants.Constants;
 import net.openwatch.reporter.constants.Constants.MEDIA_TYPE;
 import net.openwatch.reporter.constants.Constants.OWFeedType;
 import net.openwatch.reporter.database.DatabaseManager;
 import net.openwatch.reporter.file.FileUtils;
-import net.openwatch.reporter.http.OWServiceRequests;
 import net.openwatch.reporter.location.DeviceLocation;
 import net.openwatch.reporter.model.OWPhoto;
-import android.net.Uri;
-import android.os.Bundle;
-import android.provider.MediaStore;
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
 
-import com.bugsense.trace.BugSenseHandler;
+import java.io.File;
 
 public class MainActivity extends SherlockActivity {
 	

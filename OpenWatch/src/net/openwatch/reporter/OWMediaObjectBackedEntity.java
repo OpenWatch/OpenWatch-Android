@@ -2,7 +2,6 @@ package net.openwatch.reporter;
 
 import android.content.Context;
 import net.openwatch.reporter.model.OWServerObject;
-import net.openwatch.reporter.model.OWVideoRecording;
 
 public interface OWMediaObjectBackedEntity {
 
