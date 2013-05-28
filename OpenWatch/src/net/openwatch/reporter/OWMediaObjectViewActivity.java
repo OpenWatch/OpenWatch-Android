@@ -246,11 +246,18 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
             Log.e(TAG, "setupVideoView uri is null");
             return;
         }
-		VideoView video_view = (VideoView) findViewById(view_id);
+		final VideoView video_view = (VideoView) findViewById(view_id);
 		video_view.setVideoURI(Uri.parse(filepath));
 		video_view.setOnPreparedListener(new OnPreparedListener() {
 			@Override
 			public void onPrepared(MediaPlayer mp) {
+                showProgress(false);
+                MediaController mc = new MediaController(
+                        OWMediaObjectViewActivity.this);
+                video_view.setMediaController(mc);
+                mc.setAnchorView(video_view);
+                video_view.requestFocus();
+                video_view.start();
 				mp.setOnVideoSizeChangedListener(new OnVideoSizeChangedListener() {
 					@Override
 					public void onVideoSizeChanged(MediaPlayer mp, int width,
@@ -259,7 +266,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 						//video_view.setVisibility(View.VISIBLE);
 
 						//video_view.setLayoutParams( new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-                        showProgress(false);
+
 						MediaController mc = new MediaController(
 								OWMediaObjectViewActivity.this);
 						video_view.setMediaController(mc);
@@ -277,7 +284,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
                 video_playing = false;
             }
         });
-		video_view.start();
+		//video_view.start();
 	}
 	
 	public void setupImageView(int view_id, String uri){
