@@ -303,7 +303,7 @@ public class RecorderActivity extends SherlockActivity implements
 			if (prepareVideoRecorder()) {
 				start_date = new Date();
 				recording_start = String.valueOf(start_date.getTime() / 1000);
-				new MediaSignalTask().execute("start", Constants.utc_formatter.format(start_date));
+				new MediaSignalTask().execute("start", "");
                 // Camera is available and unlocked, MediaRecorder is prepared,
                 // now you can start recording
                 mMediaRecorder.start();
