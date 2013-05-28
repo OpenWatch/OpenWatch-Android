@@ -93,10 +93,9 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 			server_id = media_obj.server_id.get();
 			setupMediaViewForOWServerObject(media_obj);
 
-			//SharedPreferences prefs = this.getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
-            //int user_id = prefs.getInt(DBConstants.USER_SERVER_ID, 0);
-            if(OWApplication.user_data.containsKey(DBConstants.USER_SERVER_ID)){
-                int user_id = (Integer)OWApplication.user_data.get(DBConstants.USER_SERVER_ID);
+            SharedPreferences prefs = this.getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
+            int user_id = prefs.getInt(DBConstants.USER_SERVER_ID, 0);
+            if(user_id != 0){
                 Log.i("UserRecCheck", "user_id " + user_id + "media_user_id: " + media_obj.user.get(getApplicationContext()).server_id.get());
                 if (media_obj.user.get(getApplicationContext()) != null && user_id == media_obj.user.get(getApplicationContext()).server_id.get()){
                     is_user_owner = true;
