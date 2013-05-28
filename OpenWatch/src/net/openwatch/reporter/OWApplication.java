@@ -25,6 +25,8 @@ public class OWApplication extends Application {
 		DisplayImageOptions displayOptions = new DisplayImageOptions.Builder()
 		.cacheInMemory()
 		.cacheOnDisc()
+        .showImageOnFail(R.drawable.thumbnail_placeholder)
+        .showStubImage(R.drawable.thumbnail_placeholder)
 		.build();
 			
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
