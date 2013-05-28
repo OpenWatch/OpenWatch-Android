@@ -4,12 +4,14 @@ import android.content.*;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.v4.content.LocalBroadcastManager;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
+import net.openwatch.reporter.share.Share;
 import org.json.JSONObject;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -126,33 +128,43 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 			this.finish();
 			return;
 		}
+        final Context c = this;
 		Log.i(TAG, "recording server_id: " + String.valueOf(recording_server_id));
-			
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(getString(R.string.share_dialog_title))
-		.setMessage(getString(R.string.share_dialog_message))
-		.setPositiveButton(getString(R.string.share_dialog_no), new OnClickListener(){
+        LayoutInflater inflater = (LayoutInflater)
+                c.getSystemService(LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.share_prompt,
+                (ViewGroup) findViewById(R.id.root_layout), false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(c);
+        builder.setView(layout);
+        final AlertDialog dialog = builder.create();
 
-			@SuppressLint("NewApi")
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				// No thanks
-				Intent i = new Intent(WhatHappenedActivity.this, MainActivity.class);
-				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-				startActivity(i);
-				dialog.dismiss();
-			}
-			
-		}).setNegativeButton(getString(R.string.share_dialog_title), new OnClickListener(){
+        ((TextView) layout.findViewById(R.id.share_title)).setText("Your photo is live! Spread the word and make an impact!");
+        layout.findViewById(R.id.button_share).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                OWServerObject server_obj = OWServerObject.objects(c, OWServerObject.class).get(model_id);
+                Share.showShareDialogWithInfo(c, "Share Photo", server_obj.getTitle(getApplicationContext()), OWUtils.urlForOWServerObject(server_obj, getApplicationContext()));
+                OWServiceRequests.increaseHitCount(getApplicationContext(), server_obj.getServerId(getApplicationContext()), model_id, server_obj.getContentType(getApplicationContext()), server_obj.getMediaType(getApplicationContext()), Constants.HIT_TYPE.CLICK);
+            }
+        });
+        layout.findViewById(R.id.share_nothanks).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Intent i = new Intent(WhatHappenedActivity.this, MainActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(i);
 
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				// Share
-				dialog.dismiss();
-				showShareDialog(recording_server_id);
-			}
-			
-		}).show();
+            }
+        });
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                //TODO: Catch returning to activity when you cancel share dialog. Instead finish activity
+            }
+        });
+        dialog.show();
 	}
 	
 	private void showShareDialog(int recording_server_id){

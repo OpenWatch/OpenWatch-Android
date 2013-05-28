@@ -3,6 +3,7 @@ package net.openwatch.reporter;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,8 +13,11 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -146,33 +150,41 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
             return;
         }
         Log.i(TAG, "photo server_id: " + String.valueOf(server_id));
+        LayoutInflater inflater = (LayoutInflater)
+                c.getSystemService(LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.share_prompt,
+                (ViewGroup) findViewById(R.id.root_layout), false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(c);
+        builder.setView(layout);
+        final AlertDialog dialog = builder.create();
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.share_dialog_title))
-                .setMessage(getString(R.string.share_dialog_message))
-                .setPositiveButton(getString(R.string.share_dialog_no), new DialogInterface.OnClickListener(){
-
-                    @SuppressLint("NewApi")
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // No thanks
-                        Intent i = new Intent(OWPhotoReviewActivity.this, MainActivity.class);
-                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(i);
-                        dialog.dismiss();
-                    }
-
-                }).setNegativeButton(getString(R.string.share_dialog_title), new DialogInterface.OnClickListener(){
-
+        ((TextView) layout.findViewById(R.id.share_title)).setText("Your photo is live! Spread the word and make an impact!");
+        layout.findViewById(R.id.button_share).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Share
+            public void onClick(View v) {
                 dialog.dismiss();
-                Share.showShareDialogWithInfo(c, "Share Photo", server_obj.getTitle(getApplicationContext()),OWUtils.urlForOWServerObject(server_obj, getApplicationContext()));
+                OWServerObject server_obj = OWServerObject.objects(c, OWServerObject.class).get(owphoto_parent_id);
+                Share.showShareDialogWithInfo(c, "Share Photo", server_obj.getTitle(getApplicationContext()), OWUtils.urlForOWServerObject(server_obj, getApplicationContext()));
                 OWServiceRequests.increaseHitCount(getApplicationContext(), server_obj.getServerId(getApplicationContext()), owphoto_parent_id, server_obj.getContentType(getApplicationContext()), server_obj.getMediaType(getApplicationContext()), Constants.HIT_TYPE.CLICK);
             }
+        });
+        layout.findViewById(R.id.share_nothanks).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Intent i = new Intent(OWPhotoReviewActivity.this, MainActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(i);
 
-        }).show();
+            }
+        });
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                //TODO: Catch returning to activity when you cancel share dialog. Instead finish activity
+            }
+        });
+        dialog.show();
     }
 	
 	private void postOWPhoto(){
