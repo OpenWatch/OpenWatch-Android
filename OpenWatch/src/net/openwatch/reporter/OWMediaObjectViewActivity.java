@@ -259,7 +259,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 						VideoView video_view = (VideoView) findViewById(R.id.media_object_media_view);
 						//video_view.setVisibility(View.VISIBLE);
 
-						video_view.setLayoutParams( new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+						//video_view.setLayoutParams( new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
                         showProgress(false);
 						MediaController mc = new MediaController(
 								OWMediaObjectViewActivity.this);
