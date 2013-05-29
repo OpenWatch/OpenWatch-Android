@@ -29,9 +29,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SearchViewCompat.OnQueryTextListenerCompat;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.View;
+import android.view.*;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
@@ -76,6 +74,8 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
     	int page = 0;
     	boolean has_next_page = false;
         boolean fetching_next_page = false;
+
+        View loading_footer;
     	
     	String feed;
     	Location device_location;
@@ -102,6 +102,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 						RemoteRecordingsListFragment.this.has_next_page = true;
 					didRefreshFeed = true;
                     fetching_next_page = false;
+                    showLoadingMore(false);
 					restartLoader();
 				}
 			}
@@ -122,7 +123,12 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             setHasOptionsMenu(true);
 
             // Initialize adapter without cursor. Let loader provide it when ready
-            mAdapter = new OWMediaObjectAdapter(getActivity(), null); 
+            mAdapter = new OWMediaObjectAdapter(getActivity(), null);
+            // Add footer loading view
+            LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
+            loading_footer = layoutInflater.inflate(R.layout.list_view_loading_footer, (ViewGroup) getActivity().findViewById(android.R.id.list), false);
+            loading_footer.setVisibility(View.GONE);
+            getListView().addFooterView(loading_footer);
             setListAdapter(mAdapter);
             
             this.getListView().setOnScrollListener(new OnScrollListener(){
@@ -183,6 +189,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
                     try{
                         OWServiceRequests.getGeoFeed(this.getActivity().getApplicationContext(), device_location, feed, page+1, cb);	 // NPE HERE
                         fetching_next_page = true;
+                        showLoadingMore(true);
                     }catch(NullPointerException e){
                         Log.e(TAG, "NPE getting GeoFeed");
                         e.printStackTrace();
@@ -192,6 +199,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
                     try{
                         OWServiceRequests.getFeed(this.getActivity().getApplicationContext(), feed, page+1, cb);
                         fetching_next_page = true;
+                        showLoadingMore(true);
                     }catch(NullPointerException e){
                         Log.e(TAG, "NPE getting GeoFeed");
                         e.printStackTrace();
@@ -257,6 +265,15 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
         		return;
         	}
         	
+        }
+
+
+        private void showLoadingMore(boolean show){
+            if(show){
+                loading_footer.setVisibility(View.VISIBLE);
+            }else{
+                loading_footer.setVisibility(View.GONE);
+            }
         }
 
         
