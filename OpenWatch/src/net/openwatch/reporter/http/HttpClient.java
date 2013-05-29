@@ -19,6 +19,8 @@ import java.security.*;
 
 public class HttpClient {
 	private static final String TAG = "HttpClient";
+
+    private static final boolean USE_SSL_PINNING = true;
 	
 	public static String USER_AGENT = null;
 
@@ -35,8 +37,12 @@ public class HttpClient {
 	 * @return an initialized AsyncHttpClient
 	 */
 	public static AsyncHttpClient setupAsyncHttpClient(Context c) {
-        if(asyncHttpClient != null)
+        if(asyncHttpClient != null){
+            //Log.i("setupAsyncHttpClient","client cached");
             return asyncHttpClient;
+        }else{
+            //Log.i("setupAsyncHttpClient","client not cached");
+        }
 		AsyncHttpClient httpClient = setupVanillaAsyncHttpClient();
 		PersistentCookieStore cookie_store = new PersistentCookieStore(c);
 		httpClient.setCookieStore(cookie_store);
@@ -58,7 +64,7 @@ public class HttpClient {
 		}
 		httpClient.setUserAgent(USER_AGENT);
 		// Pin SSL cert if not hitting dev endpoint
-		if(!Constants.USE_DEV_ENDPOINTS){
+		if(!Constants.USE_DEV_ENDPOINTS && USE_SSL_PINNING){
 			httpClient.setSSLSocketFactory(createApacheOWSSLSocketFactory(c));
 		}
         asyncHttpClient = httpClient;
@@ -81,7 +87,7 @@ public class HttpClient {
 		SSLSocketFactory socketFactory;
 		try {
 			// Pin SSL cert if not hitting dev endpoint
-			if(!Constants.USE_DEV_ENDPOINTS){
+			if(!Constants.USE_DEV_ENDPOINTS && USE_SSL_PINNING){
 				socketFactory = new SSLSocketFactory(loadOWKeyStore(c));
 				Scheme sch = new Scheme("https", socketFactory, 443);
 		        httpClient.getConnectionManager().getSchemeRegistry().register(sch);

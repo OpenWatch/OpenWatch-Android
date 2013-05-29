@@ -145,8 +145,8 @@ public class OWContentProvider extends ContentProvider {
 		sortOrder	How the rows in the cursor should be sorted. If null then the provider is free to define the sort order.
 		 */
 		DatabaseAdapter adapter = DatabaseAdapter.getInstance(getContext().getApplicationContext());
-		Log.i(TAG, adapter.getDatabaseName());
-		Log.i(TAG, uri.toString());
+		//Log.i(TAG, adapter.getDatabaseName());
+		//Log.i(TAG, uri.toString());
 		String query;
 		switch(uriType){
 			case MEDIA_OBJS_BY_USER:
@@ -156,22 +156,22 @@ public class OWContentProvider extends ContentProvider {
 				result = adapter.open().query(query);
 				break;
 			case LOCAL_RECORDINGS:
-				Log.i(TAG, select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " WHERE " + DBConstants.MEDIA_OBJECT_LOCAL_VIDEO + " IS NOT NULL " + sortby);
+				//Log.i(TAG, select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " WHERE " + DBConstants.MEDIA_OBJECT_LOCAL_VIDEO + " IS NOT NULL " + sortby);
 				result = adapter.open().query(select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " WHERE " + DBConstants.MEDIA_OBJECT_LOCAL_VIDEO + " IS NOT NULL " + " ORDER BY " + sortby);
 				break;
 			case LOCAL_RECORDING_ID:
-				Log.i(TAG, select + " FROM " + DBConstants.RECORDINGS_TABLENAME + "WHERE _id="+uri.getLastPathSegment());
+				//Log.i(TAG, select + " FROM " + DBConstants.RECORDINGS_TABLENAME + "WHERE _id="+uri.getLastPathSegment());
 				result = adapter.open().query(select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " WHERE " + DBConstants.MEDIA_OBJECT_LOCAL_VIDEO + " IS NOT NULL AND " + DBConstants.ID + "=" +uri.getLastPathSegment());
 				//adapter.close();
 				break;
 			case MEDIA_OBJS_BY_FEED:
-				Log.i("URI"+uri.getLastPathSegment(), "Query CP for Feed ");
+				//Log.i("URI"+uri.getLastPathSegment(), "Query CP for Feed ");
 				int feed_id = -1;
 				//Log.i(TAG, "get feed _id query:" + " SELECT " + DBConstants.ID + " from owfeed where NAME = \"" + uri.getLastPathSegment() + "\"");
 				Cursor feed_cursor = adapter.open().query("SELECT " + DBConstants.ID + "  from " + DBConstants.FEED_TABLENAME +" WHERE " + DBConstants.FEED_NAME+ "= \"" + uri.getLastPathSegment() + "\""); // empty
 				if(feed_cursor.moveToFirst()){
 					feed_id = feed_cursor.getInt(0);
-					Log.i(TAG, String.format("got feed_id: %d", feed_id));
+					//Log.i(TAG, String.format("got feed_id: %d", feed_id));
 					feed_cursor.close();
 				}
 				else{
@@ -194,7 +194,7 @@ public class OWContentProvider extends ContentProvider {
 				result = adapter.open().query(select + " FROM " + DBConstants.RECORDINGS_TABLENAME + " WHERE " + DBConstants.ID + "=" + uri.getLastPathSegment());
 				break;
 			case TAGS:
-				Log.i(TAG, select + " FROM " + DBConstants.TAG_TABLE_NAME + where + sortby);
+				//Log.i(TAG, select + " FROM " + DBConstants.TAG_TABLE_NAME + where + sortby);
 				result = adapter.open().query(select + " FROM " + DBConstants.TAG_TABLENAME + " " + where + sortby);
 				break;
 			case TAG_SEARCH:
@@ -210,8 +210,8 @@ public class OWContentProvider extends ContentProvider {
 		//adapter.close();
 		// Make sure that potential listeners are getting notified
 		if(result != null){
-			Log.i(TAG, String.valueOf(result.getCount()));
-			Log.i("URI" + uri.getLastPathSegment(), " CP set notificationUri: " + uri.toString());
+			//Log.i(TAG, String.valueOf(result.getCount()));
+			//Log.i("URI" + uri.getLastPathSegment(), " CP set notificationUri: " + uri.toString());
 			result.setNotificationUri(getContext().getContentResolver(), uri);
 		}
 		return result;
