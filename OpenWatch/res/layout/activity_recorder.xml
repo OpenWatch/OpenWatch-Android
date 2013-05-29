@@ -6,8 +6,27 @@
 
     <SurfaceView
         android:id="@+id/camera_surface_view"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:gravity="center" />
+
+    <Button
+            android:id="@+id/button_stop"
+            android:background="@drawable/red_button_bg"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="20dp"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:fontFamily="sans-serif-condensed"
+            android:onClick="onStopRecordingButtonClick"
+            android:textColor="#fff"
+            android:shadowColor="#264826"
+            android:shadowDy="-2"
+            android:shadowRadius=".1"
+            android:text="Stop"
+            android:textSize="25sp"
+            />
+
 
 </RelativeLayout>

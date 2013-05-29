@@ -13,9 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.util.Log;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.view.WindowManager;
+import android.view.*;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -202,8 +200,9 @@ public class RecorderActivity extends SherlockActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_recorder);
-		this.getSupportActionBar().setTitle(getString(R.string.recording));
+		//this.getSupportActionBar().setTitle(getString(R.string.recording));
 		ready_to_record = false;
 		Log.i(TAG,"onCreate");
 		
@@ -211,6 +210,7 @@ public class RecorderActivity extends SherlockActivity implements
 
 		mCameraPreview = (SurfaceView) findViewById(R.id.camera_surface_view);
 		mCameraPreview.getHolder().addCallback(this); // register the Activity
+        mCameraPreview.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS); // req'd pre 3.0
 		// to be called when the
 		// SurfaceView is ready
 		c = this;
@@ -241,6 +241,8 @@ public class RecorderActivity extends SherlockActivity implements
 			c = Camera.open(); // attempt to get a Camera instance
             Camera.Parameters parameters = c.getParameters();
             List<String> focusModes = parameters.getSupportedFocusModes();
+            if(Build.VERSION.SDK_INT >= 14)
+                parameters.setRecordingHint(true);
             if (focusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO))
             {
                 parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
@@ -450,6 +452,10 @@ public class RecorderActivity extends SherlockActivity implements
         super.onPause();
         releaseMediaRecorder();       // if you are using MediaRecorder, release it first
         releaseCamera();              // release the camera immediately on pause event
+    }
+
+    public void onStopRecordingButtonClick(View v){
+        showStopRecordingDialog();
     }
 
 }
