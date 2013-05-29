@@ -306,4 +306,6 @@ public class OWInvestigation extends Model implements OWServerObjectInterface{
 		return CONTENT_TYPE.INVESTIGATION;
 	}
 
+
+
 }
