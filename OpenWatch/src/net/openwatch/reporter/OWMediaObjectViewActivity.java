@@ -248,6 +248,13 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
         }
 		final VideoView video_view = (VideoView) findViewById(view_id);
 		video_view.setVideoURI(Uri.parse(filepath));
+        video_view.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+                Log.i("VideoView error", String.format("what %d extra %d", what, extra));
+                return true;
+            }
+        });
 		video_view.setOnPreparedListener(new OnPreparedListener() {
 			@Override
 			public void onPrepared(MediaPlayer mp) {
