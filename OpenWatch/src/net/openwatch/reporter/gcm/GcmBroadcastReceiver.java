@@ -20,7 +20,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-
+        /*
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
         ctx = context;
         String messageType = gcm.getMessageType(intent);
@@ -33,7 +33,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
             sendNotification("Received: " + intent.getExtras().toString());
         }
         setResultCode(Activity.RESULT_OK);
-
+        */
     }
 
     // Put the GCM message into a notification and post it.

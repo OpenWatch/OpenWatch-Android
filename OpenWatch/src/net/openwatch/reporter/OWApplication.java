@@ -1,6 +1,7 @@
 package net.openwatch.reporter;
 
 import android.app.Application;
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -30,6 +31,10 @@ public class OWApplication extends Application {
 			
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
 		.defaultDisplayImageOptions(displayOptions)
+        .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
+        .memoryCacheSize(2 * 1024 * 1024)
+        .discCacheSize(25 * 1024 * 1024)
+        .discCacheFileCount(100)
 		.build();
 		
 		return config;

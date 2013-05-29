@@ -23,6 +23,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
@@ -308,15 +309,40 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 		
 		ImageSize size = new ImageSize(640, 480);
 		Log.i("setupImageView", String.format("ImageView dimen: %d x %d ", size.getWidth(), size.getHeight()));
+        DisplayImageOptions options = new DisplayImageOptions.Builder().showStubImage(R.drawable.blank).build();
+        ImageLoader.getInstance().displayImage(absolute_uri, (ImageView) media_view,options, new ImageLoadingListener() {
+            @Override
+            public void onLoadingStarted(String imageUri, View view) {
+
+            }
+
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+            }
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                Log.i("setupImageView", "onLoadingComplete");
+                showProgress(false);
+            }
+
+            @Override
+            public void onLoadingCancelled(String imageUri, View view) {
+
+            }
+        } );
+        /*
 		ImageLoader.getInstance().loadImage(absolute_uri, size, null, new SimpleImageLoadingListener() {
 		    @Override
 		    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 		    	Log.i("setupImageView", String.format("got bitmap, loading into imageView of size %dx%d",media_view.getWidth(), media_view.getHeight()));
-                showProgress(false);
+
 		       ((ImageView) media_view).setImageBitmap(loadedImage);
 		       return;
 		    }
 		});
+		*/
 
         final ViewGroup container = (ViewGroup) this.findViewById(R.id.container);
 
