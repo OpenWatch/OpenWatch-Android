@@ -216,7 +216,20 @@ public class OWServiceRequests {
 	 * 
 	 * @param app_context
      */
+    private static String last_feed_name;
+    private static long last_request_time = System.currentTimeMillis();
+    private static final long request_threshold = 250; // ignore duplicate requests separated by less than this many ms
 	private static void getFeed(final Context app_context, String getParams, final String ext_feed_name, final int page, final PaginatedRequestCallback cb){
+        if(last_feed_name != null && last_feed_name.compareTo(ext_feed_name) == 0){
+            if(last_request_time - System.currentTimeMillis() < request_threshold){
+                Log.i(TAG, String.format("Aborting request for feed %s, last completed %d ms ago", last_feed_name, last_request_time - System.currentTimeMillis()));
+                if(cb != null)
+                    cb.onFailure(page);
+                return;
+            }
+        }
+        last_feed_name = ext_feed_name;
+        last_request_time = System.currentTimeMillis();
 		final String METHOD = "getFeed";
 		final String feed_name = ext_feed_name.trim().toLowerCase();
 		
@@ -286,6 +299,9 @@ public class OWServiceRequests {
 
 		@Override
 		protected Boolean doInBackground(JSONObject... params) {
+            // Benchmarking
+            long start_time = System.currentTimeMillis();
+            //Log.i("Benchmark", String.format("begin parsing %s feed", feed_name));
 			DatabaseAdapter adapter = DatabaseAdapter.getInstance(c);
 			adapter.beginTransaction();
 			
@@ -301,22 +317,37 @@ public class OWServiceRequests {
 						feed.delete(c);
 					}
 				}
+                //Benchmark
+                long obj_start_time;
 				// Now parse the new data and create the feed anew
 				JSONArray json_array = response.getJSONArray("objects");
 				JSONObject json_obj;
 				for(int x=0; x<json_array.length(); x++){
 					json_obj = json_array.getJSONObject(x);
 					if(json_obj.has("type")){
-						if(json_obj.getString("type").compareTo("video") == 0)
+						if(json_obj.getString("type").compareTo("video") == 0){
+                            //obj_start_time = System.currentTimeMillis();
 							OWVideoRecording.createOrUpdateOWRecordingWithJson(c, json_obj, OWFeed.getFeedFromString(c, feed_name));
-						else if(json_obj.getString("type").compareTo("story") == 0)
+                            //Log.i("Benchamrk", String.format("createdOrUpdated video in %d ms", System.currentTimeMillis() - obj_start_time));
+                        }
+						else if(json_obj.getString("type").compareTo("story") == 0){
 							OWStory.createOrUpdateOWStoryWithJson(c, json_obj, OWFeed.getFeedFromString(c, feed_name));
-						else if(json_obj.getString("type").compareTo("photo") == 0)
+                        }
+						else if(json_obj.getString("type").compareTo("photo") == 0){
+                            //obj_start_time = System.currentTimeMillis();
 							OWPhoto.createOrUpdateOWPhotoWithJson(c, json_obj, OWFeed.getFeedFromString(c, feed_name));
-						else if(json_obj.getString("type").compareTo("audio") == 0)
+                            //Log.i("Benchamrk", String.format("createdOrUpdated photo in %d ms", System.currentTimeMillis() - obj_start_time));
+                        }
+						else if(json_obj.getString("type").compareTo("audio") == 0){
+                            //obj_start_time = System.currentTimeMillis();
 							OWAudio.createOrUpdateOWAudioWithJson(c, json_obj, OWFeed.getFeedFromString(c, feed_name));
-						else if(json_obj.getString("type").compareTo("investigation") == 0)
+                            //Log.i("Benchamrk", String.format("createdOrUpdated audio in %d ms", System.currentTimeMillis() - obj_start_time));
+                        }
+						else if(json_obj.getString("type").compareTo("investigation") == 0){
+                            //obj_start_time = System.currentTimeMillis();
 							OWInvestigation.createOrUpdateOWInvestigationWithJson(c, json_obj, OWFeed.getFeedFromString(c, feed_name));
+                            //Log.i("Benchamrk", String.format("createdOrUpdated inv in %d ms", System.currentTimeMillis() - obj_start_time));
+                        }
 						
 					}
 				}
@@ -349,6 +380,9 @@ public class OWServiceRequests {
 					
 				}
 				success = true;
+                // Benchmark
+                long end_time = System.currentTimeMillis();
+                Log.i("Benchmark", String.format("finish parsing %s feed in %d ms", feed_name, end_time-start_time));
 			}catch(JSONException e){
 				adapter.rollbackTransaction();
 				Log.e(TAG, "Error parsing " + feed_name + " feed response");

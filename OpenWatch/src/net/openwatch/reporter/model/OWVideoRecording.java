@@ -132,7 +132,7 @@ public class OWVideoRecording extends Model implements OWServerObjectInterface{
 		OWVideoRecording rec = createOrUpdateOWRecordingWithJson(app_context, json_obj);
 		// add recording to feed if not null
 		if(feed != null){
-			Log.i(TAG, String.format("Adding recording %s to feed %s", rec.uuid.get(), feed.name.get()));
+			//Log.i(TAG, String.format("Adding recording %s to feed %s", rec.uuid.get(), feed.name.get()));
 			rec.addToFeed(app_context, feed);
 			rec.save(app_context);
 			//Log.i(TAG, String.format("Feed %s now has %d items", feed.name.get(), feed.video_recordings.get(app_context, feed).count()) );
@@ -153,12 +153,13 @@ public class OWVideoRecording extends Model implements OWServerObjectInterface{
 			int recording_id = result.getInt(0);
 			if(recording_id != 0)
 				existing_rec = OWVideoRecording.objects(app_context, OWVideoRecording.class).get(recording_id);
-			if(existing_rec != null)
-				Log.i(TAG, "found existing video recording for id: " + String.valueOf( json_obj.getString(Constants.OW_SERVER_ID)));
+			if(existing_rec != null){
+				//Log.i(TAG, "found existing video recording for id: " + String.valueOf( json_obj.getString(Constants.OW_SERVER_ID)));
+            }
 		}
 		
 		if(existing_rec == null){
-			Log.i(TAG, "creating new recording");
+			//Log.i(TAG, "creating new recording");
 			existing_rec = new OWVideoRecording(app_context);
 		}
 		
@@ -206,19 +207,19 @@ public class OWVideoRecording extends Model implements OWServerObjectInterface{
 			if(json.has("start_lat") && json.has("start_lon")){
 				begin_lat.set(json.getDouble("start_lat"));
 				begin_lon.set(json.getDouble("start_lon"));
-                Log.i(TAG, String.format("got start_location. Lat: %f Lon: %f", begin_lat.get(), begin_lon.get()));
+                //Log.i(TAG, String.format("got start_location. Lat: %f Lon: %f", begin_lat.get(), begin_lon.get()));
 			}
 			if(json.has("end_lat") && json.has("end_lon") ){
 				end_lat.set(json.getDouble("end_lat"));
 				end_lon.set(json.getDouble("end_lon"));
-                Log.i(TAG, String.format("got end_location. Lat: %f Lon: %f", end_lat.get(), end_lon.get()));
+                //Log.i(TAG, String.format("got end_location. Lat: %f Lon: %f", end_lat.get(), end_lon.get()));
 			}
 			
 			if(json.has(Constants.OW_UUID))
 				uuid.set(json.getString(Constants.OW_UUID));
 
 			save(app_context);
-			Log.i(TAG, "updateWIthJson. server_id: " + String.valueOf(getServerId(app_context)) );
+			//Log.i(TAG, "updateWIthJson. server_id: " + String.valueOf(getServerId(app_context)) );
 		} catch (JSONException e) {
 			Log.e(TAG, "failed to update model with json");
 			e.printStackTrace();

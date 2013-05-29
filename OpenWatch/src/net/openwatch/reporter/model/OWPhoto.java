@@ -177,7 +177,7 @@ public class OWPhoto extends Model implements OWServerObjectInterface{
 		OWPhoto photo = createOrUpdateOWPhotoWithJson(app_context, json_obj);
 		// add recording to feed if not null
 		if(feed != null){
-			Log.i(TAG, String.format("Adding audio %s to feed %s", photo.uuid.get(), feed.name.get()));
+			//Log.i(TAG, String.format("Adding audio %s to feed %s", photo.uuid.get(), feed.name.get()));
 			photo.addToFeed(app_context, feed);
 			photo.save(app_context);
 			//Log.i(TAG, String.format("Feed %s now has %d items", feed.name.get(), feed.video_recordings.get(app_context, feed).count()) );
@@ -193,18 +193,19 @@ public class OWPhoto extends Model implements OWServerObjectInterface{
 		
 		DatabaseAdapter dba = DatabaseAdapter.getInstance(app_context);
 		String query_string = String.format("SELECT %s FROM %s WHERE %s = \"%s\"", DBConstants.ID, DBConstants.PHOTO_TABLENAME, DBConstants.RECORDINGS_TABLE_UUID, json_obj.getString(Constants.OW_UUID));
-		Log.i(TAG, "searching for existing audio: " + query_string);
+		//Log.i(TAG, "searching for existing audio: " + query_string);
 		Cursor result = dba.open().query(query_string);
 		if(result != null && result.moveToFirst()){
             int photo_id = result.getInt(0);
 			if(photo_id != 0)
 				existing_photo = OWPhoto.objects(app_context, OWPhoto.class).get(photo_id);
-			if(existing_photo != null)
-				Log.i(TAG, "found existing audio for id: " + String.valueOf( json_obj.getString(Constants.OW_SERVER_ID)));
+			if(existing_photo != null){
+				//Log.i(TAG, "found existing audio for id: " + String.valueOf( json_obj.getString(Constants.OW_SERVER_ID)));
+            }
 		}
 		
 		if(existing_photo == null){
-			Log.i(TAG, String.format("creating new audio for server_id"));
+			//Log.i(TAG, String.format("creating new audio for server_id"));
 			existing_photo = new OWPhoto(app_context);
 		}
 		

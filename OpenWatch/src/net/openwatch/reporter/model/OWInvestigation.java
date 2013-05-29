@@ -83,10 +83,10 @@ public class OWInvestigation extends Model implements OWServerObjectInterface{
 		OWInvestigation investigation = createOrUpdateOWInvestigationWithJson(app_context, json_obj);
 		// add Investigation to feed if not null
 		if(feed != null){
-			Log.i(TAG, String.format("Adding Investigation %s to feed %s", investigation.getTitle(app_context), feed.name.get()));
+			//Log.i(TAG, String.format("Adding Investigation %s to feed %s", investigation.getTitle(app_context), feed.name.get()));
 			investigation.addToFeed(app_context, feed);
 			//story.save(app_context);
-			Log.i(TAG, String.format("Story %s now belongs to %d feeds", investigation.getTitle(app_context), investigation.media_object.get(app_context).feeds.get(app_context, investigation.media_object.get(app_context)).count() ));
+			//Log.i(TAG, String.format("Story %s now belongs to %d feeds", investigation.getTitle(app_context), investigation.media_object.get(app_context).feeds.get(app_context, investigation.media_object.get(app_context)).count() ));
 		}
 		
 		return investigation;
@@ -103,12 +103,13 @@ public class OWInvestigation extends Model implements OWServerObjectInterface{
 			if(media_obj_id != 0){
 				existing = OWServerObject.objects(app_context, OWServerObject.class).get(media_obj_id).investigation.get(app_context);
 			}
-			if(existing != null)
-				Log.i(TAG, "found existing Investigation for id: " + String.valueOf( json_obj.getString(Constants.OW_SERVER_ID)));
+			if(existing != null){
+				//Log.i(TAG, "found existing Investigation for id: " + String.valueOf( json_obj.getString(Constants.OW_SERVER_ID)));
+            }
 		}
 		
 		if(existing == null){
-			Log.i(TAG, "creating new Investigation");
+			//Log.i(TAG, "creating new Investigation");
 			existing = new OWInvestigation(app_context);
 		}
 		

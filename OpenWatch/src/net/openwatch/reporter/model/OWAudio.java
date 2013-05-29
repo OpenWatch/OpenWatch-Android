@@ -57,7 +57,7 @@ public class OWAudio extends Model implements OWServerObjectInterface{
 		OWAudio audio = createOrUpdateOWAudioWithJson(app_context, json_obj);
 		// add recording to feed if not null
 		if(feed != null){
-			Log.i(TAG, String.format("Adding audio %s to feed %s", audio.uuid.get(), feed.name.get()));
+			//Log.i(TAG, String.format("Adding audio %s to feed %s", audio.uuid.get(), feed.name.get()));
 			audio.addToFeed(app_context, feed);
 			audio.save(app_context);
 			//Log.i(TAG, String.format("Feed %s now has %d items", feed.name.get(), feed.video_recordings.get(app_context, feed).count()) );
@@ -73,18 +73,19 @@ public class OWAudio extends Model implements OWServerObjectInterface{
 		
 		DatabaseAdapter dba = DatabaseAdapter.getInstance(app_context);
 		String query_string = String.format("SELECT %s FROM %s WHERE ( %s = \"%s\" AND %s IS NOT NULL)", DBConstants.ID, DBConstants.MEDIA_OBJECT_TABLENAME, DBConstants.STORY_SERVER_ID, json_obj.getString(Constants.OW_SERVER_ID), "audio");
-		Log.i(TAG, "searching for existing audio: " + query_string);
+		//Log.i(TAG, "searching for existing audio: " + query_string);
 		Cursor result = dba.open().query(query_string);
 		if(result != null && result.moveToFirst()){
 			int audio_id = result.getInt(0);
 			if(audio_id != 0)
 				existing_audio = OWServerObject.objects(app_context, OWServerObject.class).get(audio_id).audio.get(app_context);
-			if(existing_audio != null)
-				Log.i(TAG, "found existing audio for id: " + String.valueOf( json_obj.getString(Constants.OW_SERVER_ID)));
+			if(existing_audio != null){
+				//Log.i(TAG, "found existing audio for id: " + String.valueOf( json_obj.getString(Constants.OW_SERVER_ID)));
+            }
 		}
 		
 		if(existing_audio == null){
-			Log.i(TAG, "creating new audio");
+			//Log.i(TAG, "creating new audio");
 			existing_audio = new OWAudio(app_context);
 		}
 		
