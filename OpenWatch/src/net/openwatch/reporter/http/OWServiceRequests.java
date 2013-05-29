@@ -221,7 +221,7 @@ public class OWServiceRequests {
     private static final long request_threshold = 250; // ignore duplicate requests separated by less than this many ms
 	private static void getFeed(final Context app_context, String getParams, final String ext_feed_name, final int page, final PaginatedRequestCallback cb){
         if(last_feed_name != null && last_feed_name.compareTo(ext_feed_name) == 0){
-            if(last_request_time - System.currentTimeMillis() < request_threshold){
+            if(System.currentTimeMillis() - last_request_time < request_threshold){
                 Log.i(TAG, String.format("Aborting request for feed %s, last completed %d ms ago", last_feed_name, last_request_time - System.currentTimeMillis()));
                 if(cb != null)
                     cb.onFailure(page);

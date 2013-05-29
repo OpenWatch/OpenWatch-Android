@@ -75,6 +75,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
     	boolean didRefreshFeed = false;
     	int page = 0;
     	boolean has_next_page = false;
+        boolean fetching_next_page = false;
     	
     	String feed;
     	Location device_location;
@@ -100,6 +101,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 					else
 						RemoteRecordingsListFragment.this.has_next_page = true;
 					didRefreshFeed = true;
+                    fetching_next_page = false;
 					restartLoader();
 				}
 			}
@@ -176,20 +178,24 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
         }
         
         private void fetchNextFeedPage(){
-        	if(Constants.isOWFeedTypeGeoSensitive(feed) && device_location != null){
-                try{
-        		OWServiceRequests.getGeoFeed(this.getActivity().getApplicationContext(), device_location, feed, page+1, cb);	 // NPE HERE
-                }catch(NullPointerException e){
-                    Log.e(TAG, "NPE getting GeoFeed");
-                    e.printStackTrace();
+            if(!fetching_next_page){
+                if(Constants.isOWFeedTypeGeoSensitive(feed) && device_location != null){
+                    try{
+                        OWServiceRequests.getGeoFeed(this.getActivity().getApplicationContext(), device_location, feed, page+1, cb);	 // NPE HERE
+                        fetching_next_page = true;
+                    }catch(NullPointerException e){
+                        Log.e(TAG, "NPE getting GeoFeed");
+                        e.printStackTrace();
+                    }
                 }
-            }
-        	else{
-                try{
-                    OWServiceRequests.getFeed(this.getActivity().getApplicationContext(), feed, page+1, cb);
-                }catch(NullPointerException e){
-                    Log.e(TAG, "NPE getting GeoFeed");
-                    e.printStackTrace();
+                else{
+                    try{
+                        OWServiceRequests.getFeed(this.getActivity().getApplicationContext(), feed, page+1, cb);
+                        fetching_next_page = true;
+                    }catch(NullPointerException e){
+                        Log.e(TAG, "NPE getting GeoFeed");
+                        e.printStackTrace();
+                    }
                 }
             }
         }

@@ -133,9 +133,14 @@ public class Constants {
 	public static final String OW_FOLLOWING = "following";
     public static final String OW_RAW = "raw";
 	// Feed types : Each is related to an API endpoint in OWServiceRequests getFeed
-	public static enum OWFeedType{
+	/*
+    public static enum OWFeedType{
 		FEATURED, LOCAL, FOLLOWING, USER, RAW
 	}
+	*/
+    public static enum OWFeedType{
+        FEATURED, LOCAL, USER, RAW
+    }
 	
 	private static ArrayList<String> OW_FEEDS = new ArrayList<String>();
 	static{
@@ -200,9 +205,9 @@ public class Constants {
 		case LOCAL:
 			endpoint = Constants.OW_LOCAL;
 			break;
-		case FOLLOWING:
-			endpoint = Constants.OW_FOLLOWING;
-			break;
+		//case FOLLOWING:
+		//	endpoint = Constants.OW_FOLLOWING;
+		//	break;
 		case USER:
 			endpoint = Constants.OW_RECORDINGS;
 			break;

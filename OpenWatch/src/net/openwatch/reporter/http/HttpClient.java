@@ -78,8 +78,8 @@ public class HttpClient {
 	}
 	
 	public static DefaultHttpClient setupDefaultHttpClient(Context c){
-        if(defaultHttpClient != null)
-            return defaultHttpClient;
+        //if(defaultHttpClient != null)
+        //    return defaultHttpClient;
 
 		DefaultHttpClient httpClient = new DefaultHttpClient();
 		PersistentCookieStore cookie_store = new PersistentCookieStore(c);
@@ -92,8 +92,9 @@ public class HttpClient {
 				Scheme sch = new Scheme("https", socketFactory, 443);
 		        httpClient.getConnectionManager().getSchemeRegistry().register(sch);
 			}
-            defaultHttpClient = httpClient;
-	        return defaultHttpClient;
+            //defaultHttpClient = httpClient;
+	        //return defaultHttpClient;
+            return httpClient;
 		} catch (KeyManagementException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

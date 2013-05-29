@@ -83,6 +83,7 @@ public class MyFeedFragmentActivity extends FragmentActivity {
         int page = 0;
         boolean didRefreshFeed = false;
         boolean has_next_page = true;
+        boolean fetching_next_page = false;
         
         PaginatedRequestCallback cb = new PaginatedRequestCallback(){
         	
@@ -96,6 +97,7 @@ public class MyFeedFragmentActivity extends FragmentActivity {
 					else
 						LocalRecordingsListFragment.this.has_next_page = true;
 					didRefreshFeed = true;
+                    fetching_next_page = false;
 					restartLoader();
 				}
 			}
@@ -131,6 +133,7 @@ public class MyFeedFragmentActivity extends FragmentActivity {
 					boolean loadMore = firstVisibleItem + visibleItemCount >= totalItemCount;
 
 				        if(loadMore) {
+
 				            LocalRecordingsListFragment.this.fetchNextFeedPage();
 				        }
 
@@ -172,7 +175,10 @@ public class MyFeedFragmentActivity extends FragmentActivity {
         }
         
         private void fetchNextFeedPage(){
-        	OWServiceRequests.getFeed(this.getActivity().getApplicationContext(), feed, page+1, cb);
+            if(!fetching_next_page){
+                fetching_next_page = true;
+        	    OWServiceRequests.getFeed(this.getActivity().getApplicationContext(), feed, page+1, cb);
+            }
         }
 
         @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
