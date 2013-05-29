@@ -29,9 +29,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SearchViewCompat.OnQueryTextListenerCompat;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.View;
+import android.view.*;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
@@ -84,6 +82,7 @@ public class MyFeedFragmentActivity extends FragmentActivity {
         boolean didRefreshFeed = false;
         boolean has_next_page = true;
         boolean fetching_next_page = false;
+        View loading_footer;
         
         PaginatedRequestCallback cb = new PaginatedRequestCallback(){
         	
@@ -98,6 +97,7 @@ public class MyFeedFragmentActivity extends FragmentActivity {
 						LocalRecordingsListFragment.this.has_next_page = true;
 					didRefreshFeed = true;
                     fetching_next_page = false;
+                    showLoadingMore(false);
 					restartLoader();
 				}
 			}
@@ -114,7 +114,11 @@ public class MyFeedFragmentActivity extends FragmentActivity {
             setHasOptionsMenu(true);
 
             // Initialize adapter without cursor. Let loader provide it when ready
-            mAdapter = new OWLocalRecordingAdapter(getActivity(), null); 
+            mAdapter = new OWLocalRecordingAdapter(getActivity(), null);
+            LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
+            loading_footer = layoutInflater.inflate(R.layout.list_view_loading_footer, (ViewGroup) getActivity().findViewById(android.R.id.list), false);
+            loading_footer.setVisibility(View.GONE);
+            getListView().addFooterView(loading_footer);
             setListAdapter(mAdapter);
 
             this.getListView().setOnScrollListener(new OnScrollListener(){
@@ -177,6 +181,7 @@ public class MyFeedFragmentActivity extends FragmentActivity {
         private void fetchNextFeedPage(){
             if(!fetching_next_page){
                 fetching_next_page = true;
+                showLoadingMore(true);
         	    OWServiceRequests.getFeed(this.getActivity().getApplicationContext(), feed, page+1, cb);
             }
         }
@@ -216,6 +221,14 @@ public class MyFeedFragmentActivity extends FragmentActivity {
         	}
         	startActivity(i);
         	
+        }
+
+        private void showLoadingMore(boolean show){
+            if(show){
+                loading_footer.setVisibility(View.VISIBLE);
+            }else{
+                loading_footer.setVisibility(View.GONE);
+            }
         }
         
         private void restartLoader(){

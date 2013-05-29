@@ -100,6 +100,7 @@
         <activity
             android:name="net.openwatch.reporter.OWPhotoReviewActivity"
             android:label="@string/title_activity_picture_review"
+            android:windowSoftInputMode="adjustPan"
             android:parentActivityName="net.openwatch.reporter.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

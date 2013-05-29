@@ -34,7 +34,8 @@ public class OWUtils {
 	  
 	    // Determine how much to scale down the image
 	    int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-	  
+
+        //Log.i("loadScaledPicture", String.format("imageview is %dx%d. image is %dx%d. Scale factor is %d", targetW, targetH, photoW, photoH, scaleFactor));
 	    // Decode the image file into a Bitmap sized to fill the View
 	    bmOptions.inJustDecodeBounds = false;
 	    bmOptions.inSampleSize = scaleFactor;
