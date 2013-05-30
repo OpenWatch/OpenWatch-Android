@@ -39,6 +39,7 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
 
     boolean didShare = false;
     boolean didLoadImage = false;
+    int last_created_photo_id = -1; // post create object may occur multiple times
 
 
 	@Override
@@ -72,6 +73,18 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
 			}
 		});
 	}
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        last_created_photo_id = -1;
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+
+    }
 	
 	private void loadScaledPictureFromIntent(Intent intent) {
 	    //Bundle extras = intent.getExtras();
@@ -167,6 +180,7 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
                 OWServerObject server_obj = OWServerObject.objects(c, OWServerObject.class).get(owphoto_parent_id);
                 Share.showShareDialogWithInfo(c, "Share Photo", server_obj.getTitle(getApplicationContext()), OWUtils.urlForOWServerObject(server_obj, getApplicationContext()));
                 OWServiceRequests.increaseHitCount(getApplicationContext(), server_obj.getServerId(getApplicationContext()), owphoto_parent_id, server_obj.getContentType(getApplicationContext()), server_obj.getMediaType(getApplicationContext()), Constants.HIT_TYPE.CLICK);
+                OWPhotoReviewActivity.this.finish();
             }
         });
         layout.findViewById(R.id.share_nothanks).setOnClickListener(new View.OnClickListener() {
@@ -187,27 +201,27 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
         });
         dialog.show();
     }
-	
+	private static long last_call_time = System.currentTimeMillis();
 	private void postOWPhoto(){
-        /* Title sync will be handled onPause() by OWMediaObjectInfoFragment
+        Log.i(TAG, String.format("createOWPhoto object. last_id: %d, current_id: %d",last_created_photo_id, owphoto_id));
+        if(owphoto_id == last_created_photo_id  || System.currentTimeMillis() - last_call_time < 450){ // Welcome to jankville . OnCreate gets called twice here in some cases
+            Log.i(TAG, "Blocking duplicate photo create attempt");
+            last_call_time = System.currentTimeMillis();
+            return;
+        }else
+            last_call_time = System.currentTimeMillis();
+        last_created_photo_id = owphoto_id;
 
-        Log.i(TAG, String.format("Preparing to sync Photo %d with ServerObject %d", owphoto_id, photo.media_object.get(getApplicationContext()).getId()));
-        Log.i(TAG, String.format("Attempting to set photo title from edittext: %s", photoEditText.getText().toString()));
-		photo.setTitle(getApplicationContext(), photoEditText.getText().toString());
-        photo.media_object.get(getApplicationContext()).save(getApplicationContext());
-		photo.save(getApplicationContext());
-		Log.i(TAG, String.format("postOWPhoto, uuid: %s title: %s",  photo.getUUID(getApplicationContext()), photo.getTitle(getApplicationContext())) );
-
-		*/
         OWPhoto photo = OWPhoto.objects(getApplicationContext(), OWPhoto.class).get(owphoto_id);
 		OWServiceRequests.createOWServerObject(getApplicationContext(), photo, new OWServiceRequests.RequestCallback(){
             @Override
             public void onFailure() {
-
+                Log.i(TAG, "createOWServerObject failed");
             }
 
             @Override
             public void onSuccess() {
+                Log.i(TAG, "createOWServerObject success!");
                 OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(owphoto_parent_id);
                 final String url = OWUtils.urlForOWServerObject(serverObject, getApplicationContext());
                 findViewById(R.id.sync_progress).setVisibility(View.GONE);

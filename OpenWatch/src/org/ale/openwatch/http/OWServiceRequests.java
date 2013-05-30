@@ -429,7 +429,7 @@ public class OWServiceRequests {
 		JsonHttpResponseHandler post_handler = new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONObject response) {
-				Log.i(TAG, "getObject response: " + response.toString());
+				Log.i(TAG, "createObject response: " + response.toString());
 				try {
 					if(response.has("success") && response.getBoolean("success")){
 						Log.i(TAG, "create object success!");
@@ -445,7 +445,7 @@ public class OWServiceRequests {
 
 			@Override
 			public void onFailure(Throwable e, String response) {
-				Log.i(TAG, "getObject fail: " + response);
+				Log.i(TAG, "createObject fail: " + response);
 				e.printStackTrace();
                 if(cb != null)
                     cb.onFailure();
@@ -453,7 +453,7 @@ public class OWServiceRequests {
 
 			@Override
 			public void onFinish() {
-				Log.i(TAG, "getObject finish");
+				Log.i(TAG, "createObject finish");
 			}
 
 		};

@@ -33,7 +33,7 @@
                 android:layout_centerVertical="true"
                 android:indeterminate="true"
                 android:indeterminateBehavior="cycle"
-                android:visibility="gone"
+                android:visibility="visible"
                 />
 
         <ImageView
