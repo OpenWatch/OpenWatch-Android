@@ -370,9 +370,14 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 
 
                 Display display = getWindowManager().getDefaultDisplay();
-                Point size = new Point();
-                display.getSize(size);
-                ImageSize fullscreen_size = new ImageSize(size.x, size.y);
+                ImageSize fullscreen_size;
+                if(Build.VERSION.SDK_INT >= 13){
+                    Point size = new Point();
+                    display.getSize(size);
+                    fullscreen_size = new ImageSize(size.x, size.y);
+                }else{
+                    fullscreen_size = new ImageSize(display.getWidth(), display.getHeight());
+                }
                 ImageLoader.getInstance().displayImage(absolute_uri, (ImageView)popupView.findViewById(R.id.image),new ImageLoadingListener() {
                     @Override
                     public void onLoadingStarted(String imageUri, View view) {

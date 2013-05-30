@@ -72,6 +72,7 @@ public class FancyLoginActivity extends SherlockActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        requestWindowFeature(com.actionbarsherlock.view.Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.activity_fancy_login);
 
@@ -262,6 +263,10 @@ public class FancyLoginActivity extends SherlockActivity {
             @Override
             public void onFailure(Throwable e, String response) {
                 Log.i(TAG,"checkEmailAvailableAndSignup failure: " + response);
+                AlertDialog.Builder builder = new AlertDialog.Builder(FancyLoginActivity.this);
+                builder.setTitle("Uh oh")
+                        .setMessage("We were unable to reach openwatch.net. Please check your network connection and try again.")
+                        .show();
             }
 
             @Override
