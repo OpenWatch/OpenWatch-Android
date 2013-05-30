@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="net.openwatch.reporter"
+    package="org.ale.openwatch"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -9,7 +9,7 @@
         android:targetSdkVersion="17" />
 
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-    <uses-permission android:name="com.example.monitoringsensors.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="org.ale.openwatch.permission.MAPS_RECEIVE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -26,20 +26,20 @@
         android:required="true" />
 
     <application
-        android:name="net.openwatch.reporter.OWApplication"
+        android:name="org.ale.openwatch.OWApplication"
         android:debuggable="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:logo="@drawable/ic_ab_icon"
         android:theme="@style/Theme.openwatch" >
         <provider
-            android:name="net.openwatch.reporter.contentprovider.OWContentProvider"
-            android:authorities="net.openwatch.reporter.contentprovider.OWContentProvider"
+            android:name="org.ale.openwatch.contentprovider.OWContentProvider"
+            android:authorities="org.ale.openwatch.contentprovider.OWContentProvider"
             android:exported="false" >
         </provider>
 
         <activity
-            android:name="net.openwatch.reporter.LoginActivity"
+            android:name="org.ale.openwatch.LoginActivity"
             android:label=""
             android:windowSoftInputMode="adjustResize|stateVisible" >
             <intent-filter>
@@ -49,7 +49,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="net.openwatch.reporter.MainActivity"
+            android:name="org.ale.openwatch.MainActivity"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -58,14 +58,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="net.openwatch.reporter.RecorderActivity"
+            android:name="org.ale.openwatch.RecorderActivity"
             android:keepScreenOn="true"
             android:screenOrientation="landscape" >
         </activity>
-        <activity android:name="net.openwatch.reporter.FeedFragmentActivity" >
+        <activity android:name="org.ale.openwatch.FeedFragmentActivity" >
         </activity>
         <activity
-            android:name="net.openwatch.reporter.OWMediaObjectViewActivity"
+            android:name="org.ale.openwatch.OWMediaObjectViewActivity"
             android:label=""
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" >
@@ -77,45 +77,45 @@
         </meta-data>
 
         <activity
-            android:name="net.openwatch.reporter.WhatHappenedActivity"
+            android:name="org.ale.openwatch.WhatHappenedActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" >
         </activity>
         <activity
-            android:name="net.openwatch.reporter.SettingsActivity"
+            android:name="org.ale.openwatch.SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
         <activity
-            android:name="net.openwatch.reporter.OWStoryViewActivity"
+            android:name="org.ale.openwatch.OWStoryViewActivity"
             android:label="@string/title_activity_story_view"
-            android:parentActivityName="net.openwatch.reporter.FeedFragmentActivity" >
+            android:parentActivityName="org.ale.openwatch.FeedFragmentActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="net.openwatch.reporter.FeedFragmentActivity" />
+                android:value="org.ale.openwatch.FeedFragmentActivity" />
         </activity>
         <activity
-            android:name="net.openwatch.reporter.WelcomeActivity"
+            android:name="org.ale.openwatch.WelcomeActivity"
             android:label="@string/title_activity_welcome" >
         </activity>
         <activity
-            android:name="net.openwatch.reporter.OWPhotoReviewActivity"
+            android:name="org.ale.openwatch.OWPhotoReviewActivity"
             android:label="@string/title_activity_picture_review"
             android:windowSoftInputMode="adjustPan"
-            android:parentActivityName="net.openwatch.reporter.MainActivity" >
+            android:parentActivityName="org.ale.openwatch.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="net.openwatch.reporter.MainActivity" />
+                android:value="org.ale.openwatch.MainActivity" />
         </activity>
         <activity
-            android:name="net.openwatch.reporter.OWInvestigationViewActivity"
-            android:parentActivityName="net.openwatch.reporter.FeedFragmentActivity"
+            android:name="org.ale.openwatch.OWInvestigationViewActivity"
+            android:parentActivityName="org.ale.openwatch.FeedFragmentActivity"
             android:label="" >
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
-                    android:value="net.openwatch.reporter.FeedFragmentActivity" />
+                    android:value="org.ale.openwatch.FeedFragmentActivity" />
         </activity>
-        <activity android:name=".FancyLoginActivity"/>
-        <activity android:name=".OnBoardingActivity"/>
+        <activity android:name="org.ale.openwatch.FancyLoginActivity"/>
+        <activity android:name="org.ale.openwatch.OnBoardingActivity"/>
     </application>
 
 </manifest>

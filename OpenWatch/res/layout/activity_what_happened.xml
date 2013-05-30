@@ -67,7 +67,7 @@
             android:id="@+id/media_object_info"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            class="net.openwatch.reporter.OWMediaObjectInfoFragment" />
+            class="org.ale.openwatch.OWMediaObjectInfoFragment" />
     </FrameLayout>
     <!--
     <ImageView
