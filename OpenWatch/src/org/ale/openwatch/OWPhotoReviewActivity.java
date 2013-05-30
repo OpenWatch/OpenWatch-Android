@@ -38,6 +38,7 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
 	private int owphoto_id = -1;
 
     boolean didShare = false;
+    boolean didLoadImage = false;
 
 
 	@Override
@@ -65,7 +66,9 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
 			
 			@Override
 			public void onGlobalLayout() {
-				loadScaledPictureFromIntent(i);
+                if(!didLoadImage)
+				    loadScaledPictureFromIntent(i);
+                didLoadImage = true;
 			}
 		});
 	}
