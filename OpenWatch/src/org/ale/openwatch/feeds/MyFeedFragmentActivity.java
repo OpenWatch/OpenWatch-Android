@@ -221,12 +221,11 @@ public class MyFeedFragmentActivity extends FragmentActivity {
         	Intent i = new Intent(this.getActivity(), OWMediaObjectViewActivity.class);
         	try{
         		i.putExtra(Constants.INTERNAL_DB_ID, (Integer)v.getTag(R.id.list_item_model));
+                startActivity(i);
         	}catch(Exception e){
         		Log.e(TAG, "failed to load list item model tag");
         		return;
         	}
-        	startActivity(i);
-        	
         }
 
         private void showLoadingMore(boolean show){
