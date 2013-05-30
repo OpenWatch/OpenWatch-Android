@@ -111,16 +111,13 @@
     <string name="title_activity_web_browser">WebBrowserActivity</string>
     <string name="title_activity_welcome">Welcome, New Watcher!</string>
 
-    <!-- WelcomeActivity -->
-    <string name="thanks">Thanks for installing OpenWatch!</string>
-    <string name="welcome_1">You should use OpenWatch whenever you are a witness to an interesting event, you are stopped by the police or other authority figures, or when you feel like you are being victimized by criminals or corporate predators.</string>
-    <string name="welcome_2">When you press the \'Record\' button, your camera immediately begins streaming video to our servers, which you can later watch online. After you stop recording, please describe your event and tag it so that other users can find it. Meanwhile, a high-quality version of your recording will be synced online.</string>
-    <string name="welcome_3">You can also use the \'Featured\' and \'Local\' icons to watch interesting and local content. When you see something that you want to investigate further, go to OpenWatch.net and start a deeper investigation.</string>
-    <string name="welcome_4">If you find any bugs or have any ideas for new features, please let us know so we can work on them right away.</string>
-    <string name="enjoy">Enjoy! \n\n <b>Team OpenWatch</b></string>
-    <string name="start_watching">Start Watching!</string>
+   <!-- OWPhotoReviewActivity -->
     <string name="title_activity_picture_review">PictureReviewActivity</string>
+
+    <!-- SettingsActivity -->
     <string name="action_settings">Settings</string>
+
+    <!-- OWInvestigationActivity -->
     <string name="title_activity_owinvestigation_view">OWInvestigationViewActivity</string>
 
     <!-- OnBoardingActivity -->

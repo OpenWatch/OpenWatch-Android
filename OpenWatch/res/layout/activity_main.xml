@@ -54,7 +54,24 @@
             android:drawablePadding="10dp"
             android:fontFamily="sans-serif-light"
             android:onClick="featuredButtonClick"
-            android:text="Top Investigations"
+            android:text="Top Stories"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/button_local"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/button_camcorder"
+            android:layout_below="@id/button_featured"
+            android:layout_marginTop="15dp"
+            android:background="@android:color/transparent"
+            android:drawableLeft="@drawable/local_button"
+            android:drawablePadding="10dp"
+            android:fontFamily="sans-serif-light"
+            android:onClick="localButtonClick"
+            android:text="Local Feed"
             android:textColor="#000000"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -64,7 +81,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@id/button_camcorder"
-            android:layout_below="@id/button_featured"
+            android:layout_below="@id/button_local"
             android:layout_marginTop="15dp"
             android:background="@android:color/transparent"
             android:drawableLeft="@drawable/saved_button"
@@ -92,6 +109,7 @@
             android:textColor="#000000"
             android:textSize="24sp"
             android:textStyle="bold" />
+
 
         <Button
             android:id="@+id/button_settings"

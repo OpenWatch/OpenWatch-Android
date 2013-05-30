@@ -94,10 +94,6 @@
                 android:value="org.ale.openwatch.FeedFragmentActivity" />
         </activity>
         <activity
-            android:name="org.ale.openwatch.WelcomeActivity"
-            android:label="@string/title_activity_welcome" >
-        </activity>
-        <activity
             android:name="org.ale.openwatch.OWPhotoReviewActivity"
             android:label="@string/title_activity_picture_review"
             android:windowSoftInputMode="adjustPan"
