@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
+import android.view.View;
 import android.webkit.WebView;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
@@ -19,10 +20,14 @@ import org.ale.openwatch.share.Share;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URLEncoder;
+
 public class OWInvestigationViewActivity extends SherlockActivity implements OWMediaObjectBackedEntity {
 	private static final String TAG = "OWInvestigationViewActivity";
 	
 	private WebView web_view;
+    private View progress;
+
 	private int model_id;
 	private int server_id;
 	
@@ -32,6 +37,7 @@ public class OWInvestigationViewActivity extends SherlockActivity implements OWM
 		setContentView(R.layout.activity_owinvestigation_view);
 		
 		web_view = (WebView)findViewById(R.id.web_view);
+        progress = findViewById(R.id.progress);
 		
 		model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
 		OWServerObject object = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
@@ -56,8 +62,11 @@ public class OWInvestigationViewActivity extends SherlockActivity implements OWM
 				Log.i(TAG, "get i success : " + response.toString());
 				if(response.has("html"))
 					try {
-						web_view.loadData(response.getString("html"), "text/html", null);
-					} catch (JSONException e) {
+						//web_view.loadData(response.getString("html"), "text/html", null); // Didn't work on 2.2 test device
+                        showProgress(false);
+                        web_view.loadData( URLEncoder.encode(response.getString("html")).replaceAll("\\+"," "), "text/html", "utf-8" );  // Of course!
+                        // http://stackoverflow.com/questions/8421670/webpage-not-available-with-webview-loaddata-only-in-emulator
+                    } catch (JSONException e) {
 						Log.e(TAG, "unable to load html from investigation response: " + response.toString());
 						e.printStackTrace();
 					}
@@ -100,6 +109,14 @@ public class OWInvestigationViewActivity extends SherlockActivity implements OWM
 		}
 		return super.onOptionsItemSelected(item);
 	}
+
+    private void showProgress(boolean show){
+        if(show){
+            progress.setVisibility(View.VISIBLE);
+        }else{
+            progress.setVisibility(View.GONE);
+        }
+    }
 
 
 }
