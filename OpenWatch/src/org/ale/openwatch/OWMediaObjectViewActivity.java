@@ -1,7 +1,10 @@
 package org.ale.openwatch;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -244,7 +247,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 		return tab;
 	}
 
-	public void setupVideoView(int view_id, String filepath) {
+	public void setupVideoView(int view_id, final String filepath) {
         if(filepath == null){
             Log.e(TAG, "setupVideoView uri is null");
             return;
@@ -254,6 +257,48 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
         video_view.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
+                if(extra == -2147483648){ // General error
+                    String message = "Unfortunately, your device doesn't have native support for this video format.";
+                    boolean canPlayExternally = false;
+                    //final Intent playVideoExternally = new Intent(Intent.ACTION_VIEW, Uri.parse(filepath));
+                    final Intent playVideoExternally = new Intent(Intent.ACTION_VIEW);
+                    playVideoExternally.setDataAndType(Uri.parse(filepath), "video/mp4");
+                    if(OWUtils.isCallable(OWMediaObjectViewActivity.this, playVideoExternally)){
+                        canPlayExternally = true;
+                        message += " However, we've detected your device has an external application installed that may be able to play " +
+                                "this video.";
+                    }else{
+                        message = "However, there's a slim chance an external media player can " +
+                                "play H.264 video on your device. Don't get your hopes up, though.";
+                    }
+                    AlertDialog.Builder mediaErrorDialog = new AlertDialog.Builder(OWMediaObjectViewActivity.this)
+                            .setTitle("Cannot Play Video")
+                            .setMessage(message)
+                            .setNegativeButton("Bummer", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    OWMediaObjectViewActivity.this.showProgress(false);
+                                }
+                            });
+                    if(canPlayExternally){
+                        mediaErrorDialog .setPositiveButton("Play with external app", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                startActivity(playVideoExternally);
+                            }
+                        });
+                    }else{
+                        mediaErrorDialog .setPositiveButton("Search for external app", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent goToMarket = new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://search?q=h264+media+player"));
+                                startActivity(goToMarket);
+                            }
+                        });
+                    }
+                    mediaErrorDialog.show();
+                }
                 Log.i("VideoView error", String.format("what %d extra %d", what, extra));
                 return true;
             }
