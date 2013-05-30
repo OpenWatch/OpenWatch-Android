@@ -14,8 +14,6 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.bugsense.trace.BugSenseHandler;
 
-import org.ale.openwatch.R;
-
 import java.io.File;
 
 import org.ale.openwatch.constants.Constants;
@@ -86,7 +84,7 @@ public class MainActivity extends SherlockActivity {
 	
 	public void featuredButtonClick(View v){
 		Intent i = new Intent(this, FeedFragmentActivity.class);
-		i.putExtra(Constants.FEED_TYPE, OWFeedType.FEATURED);
+		i.putExtra(Constants.FEED_TYPE, OWFeedType.TOP);
 		startActivity(i);
 	}
 	

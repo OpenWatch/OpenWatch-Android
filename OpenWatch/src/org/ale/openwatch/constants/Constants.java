@@ -135,11 +135,11 @@ public class Constants {
 	// Feed types : Each is related to an API endpoint in OWServiceRequests getFeed
 	/*
     public static enum OWFeedType{
-		FEATURED, LOCAL, FOLLOWING, USER, RAW
+		TOP, LOCAL, FOLLOWING, USER, RAW
 	}
 	*/
     public static enum OWFeedType{
-        FEATURED, LOCAL, USER, RAW
+        TOP, LOCAL, USER, RAW
     }
 	
 	private static ArrayList<String> OW_FEEDS = new ArrayList<String>();
@@ -184,7 +184,10 @@ public class Constants {
 		if(!OW_FEEDS.contains(type) ){
 			endpoint = Constants.OW_API_URL + Constants.OW_TAG + File.separator + "?type="+ type + "&page=" + String.valueOf(page);
 		}else{
-			endpoint = Constants.OW_API_URL + Constants.OW_FEED + File.separator + "?type="+ type + "&page=" + String.valueOf(page);
+            if(type.equals("featured")){
+                endpoint = Constants.OW_API_URL + API_ENDPOINT_BY_CONTENT_TYPE.get(CONTENT_TYPE.INVESTIGATION) + "/?page=" + String.valueOf(page);
+            }else
+			    endpoint = Constants.OW_API_URL + Constants.OW_FEED + File.separator + "?type="+ type + "&page=" + String.valueOf(page);
 		}
 		
 		return endpoint;
@@ -199,7 +202,7 @@ public class Constants {
 	public static String feedInternalEndpointFromType(OWFeedType type){
 		String endpoint = "";
 		switch(type){
-		case FEATURED:
+		case TOP:
 			endpoint = Constants.OW_FEATURED;
 			break;
 		case LOCAL:
