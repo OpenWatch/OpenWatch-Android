@@ -524,7 +524,7 @@ public class LoginActivity extends SherlockActivity {
 	}
 	
 	private void toWelcomeActivity(){
-		Intent i = new Intent(LoginActivity.this, WelcomeActivity.class);
+		Intent i = new Intent(LoginActivity.this, OnBoardingActivity.class);
 		i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
 				| Intent.FLAG_ACTIVITY_CLEAR_TASK);
 		startActivity(i);
