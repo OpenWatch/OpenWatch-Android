@@ -1,6 +1,8 @@
 package org.ale.openwatch;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -74,6 +76,19 @@ public class OWUtils {
         }
         return packageVersion;
             //USER_AGENT += " (Android API " + Build.VERSION.RELEASE + ")";
+    }
+
+    public static void showConnectionErrorDialog(Context c){
+        AlertDialog.Builder builder = new AlertDialog.Builder(c);
+        builder.setTitle("Uh oh")
+                .setMessage("We were unable to reach openwatch.net. Please check your network connection and try again.")
+                .setPositiveButton("Bummer", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 
 }
