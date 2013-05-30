@@ -1,5 +1,9 @@
 package org.ale.openwatch;
 
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.Window;
+import android.widget.TabHost;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.http.OWServiceRequests;
 import org.ale.openwatch.model.OWUser;
@@ -21,10 +25,16 @@ import com.viewpagerindicator.PageIndicator;
      */
     public class OnBoardingActivity extends SherlockFragmentActivity {
         private static final String TAG = "OnBoardingActivity";
+        private static final int[] CONTENT = new int[] { R.layout.on_boarding_1, R.layout.on_boarding_2, R.layout.on_boarding_3, R.layout.on_boarding_4};
 
-        OnBoardingFragmentAdapter mAdapter;
         ViewPager mPager;
         PageIndicator mIndicator;
+
+        FeedFragmentActivity.TabsAdapter mTabsAdapter;
+        TabHost mTabHost;
+        CirclePageIndicator mCircleIndicator;
+
+        LayoutInflater inflater;
 
         boolean didLogin = false;
         boolean agent_applicant = false;
@@ -34,26 +44,42 @@ import com.viewpagerindicator.PageIndicator;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.on_boarding);
 
-        mAdapter = new OnBoardingFragmentAdapter(getSupportFragmentManager());
-
+        mTabHost = (TabHost)findViewById(android.R.id.tabhost);
+        mTabHost.setup();
         mPager = (ViewPager)findViewById(R.id.pager);
-        mPager.setAdapter(mAdapter);
+        mTabsAdapter = new FeedFragmentActivity.TabsAdapter(this, mTabHost, mPager);
+        mCircleIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
+        mCircleIndicator.setViewPager(mPager);
 
         mIndicator = (CirclePageIndicator)findViewById(R.id.indicator);
         mIndicator.setViewPager(mPager);
+
+        inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        populateTabs();
     }
 
-        @Override
-        protected void onResume(){
-            super.onResume();
-            if(this.getIntent().getBooleanExtra(Constants.AUTHENTICATED, false)){
-                didLogin = true;
-            }
-
-
+    private void populateTabs(){
+        Bundle fragBundle;
+        for(int layout : CONTENT){
+            fragBundle = new Bundle(1);
+            fragBundle.putInt("layout-id", layout);
+            mTabsAdapter.addTab(mTabHost.newTabSpec("").setIndicator(""), OnBoardingFragment.class, fragBundle);
         }
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        if(this.getIntent().getBooleanExtra(Constants.AUTHENTICATED, false)){
+            didLogin = true;
+        }
+
+
+    }
 
     public void onAttachFragment (Fragment fragment){
         if(((OnBoardingFragment)fragment).layout_resource_id == R.layout.on_boarding_4){

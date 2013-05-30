@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import org.ale.openwatch.constants.Constants;
 
 /**
  * Created by davidbrodsky on 5/21/13.
@@ -39,10 +40,13 @@ public final class OnBoardingFragment extends Fragment {
         layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
         layout.setGravity(Gravity.CENTER);
 
+        layout_resource_id = this.getArguments().getInt("layout-id");
+
         if(layout_resource_id != -1){
             inflater = (LayoutInflater) this.getActivity().getSystemService(this.getActivity().LAYOUT_INFLATER_SERVICE);
             inflater.inflate(layout_resource_id, layout);
         }
+
         //layout.addView(text);
 
         return layout;

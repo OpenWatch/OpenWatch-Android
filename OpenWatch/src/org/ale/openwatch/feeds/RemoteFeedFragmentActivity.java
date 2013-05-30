@@ -257,10 +257,11 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
         			i = new Intent(this.getActivity(), OWMediaObjectViewActivity.class);
         			break;
         		}
-        		
-        		i.putExtra(Constants.INTERNAL_DB_ID, (Integer)v.getTag(R.id.list_item_model));
-        		if(i != null)
+
+        		if(i != null){
+                    i.putExtra(Constants.INTERNAL_DB_ID, (Integer)v.getTag(R.id.list_item_model));
         			startActivity(i);
+                }
         	}catch(Exception e){
         		Log.e(TAG, "failed to load list item model tag");
         		return;
