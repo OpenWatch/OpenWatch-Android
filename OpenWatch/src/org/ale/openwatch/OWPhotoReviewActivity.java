@@ -48,7 +48,7 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
 		setContentView(R.layout.activity_picture_review);
         this.getSupportActionBar().setTitle("Describe your Picture");
 		// Show the Up button in the action bar.
-		setupActionBar();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		Log.i("PictureReview","got it");
 		final Intent i = getIntent();
         if(i.hasExtra("owphoto_id")){
@@ -97,16 +97,6 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
 	    	OWPhoto photo = OWPhoto.objects(getApplicationContext(), OWPhoto.class).get(owphoto_id);
 	    	OWUtils.loadScaledPicture(photo.filepath.get(), previewImageView);
 	    }
-	}
-
-	/**
-	 * Set up the {@link android.app.ActionBar}, if the API is available.
-	 */
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	private void setupActionBar() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			getActionBar().setDisplayHomeAsUpEnabled(true);
-		}
 	}
 
 	@Override

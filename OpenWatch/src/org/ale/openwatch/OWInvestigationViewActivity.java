@@ -35,6 +35,7 @@ public class OWInvestigationViewActivity extends SherlockActivity implements OWM
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_owinvestigation_view);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		web_view = (WebView)findViewById(R.id.web_view);
         progress = findViewById(R.id.progress);
@@ -63,8 +64,8 @@ public class OWInvestigationViewActivity extends SherlockActivity implements OWM
 				if(response.has("html"))
 					try {
 						//web_view.loadData(response.getString("html"), "text/html", null); // Didn't work on 2.2 test device
-                        showProgress(false);
                         web_view.loadData( URLEncoder.encode(response.getString("html")).replaceAll("\\+"," "), "text/html", "utf-8" );  // Of course!
+                        showProgress(false);
                         // http://stackoverflow.com/questions/8421670/webpage-not-available-with-webview-loaddata-only-in-emulator
                     } catch (JSONException e) {
 						Log.e(TAG, "unable to load html from investigation response: " + response.toString());
