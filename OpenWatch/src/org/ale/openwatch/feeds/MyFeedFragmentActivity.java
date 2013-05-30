@@ -16,6 +16,7 @@
 
 package org.ale.openwatch.feeds;
 
+import org.ale.openwatch.OWApplication;
 import org.ale.openwatch.OWMediaObjectViewActivity;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
@@ -174,7 +175,11 @@ public class MyFeedFragmentActivity extends FragmentActivity {
 	    			getLoaderManager().initLoader(0, null, this);
     			}
     		}else{
-    			setEmptyText(getString(R.string.login_for_local_recordings));
+                // It's possible the sharedpreferences haven't finished being written to, but the user has logged in
+                if( OWApplication.user_data != null && OWApplication.user_data.containsKey(Constants.AUTHENTICATED)){
+                    setEmptyText(getString(R.string.loading_recordings));
+                }else
+    			    setEmptyText(getString(R.string.login_for_local_recordings));
     		}
             
         }
