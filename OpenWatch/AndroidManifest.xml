@@ -87,6 +87,7 @@
         </activity>
         <activity
             android:name="org.ale.openwatch.OWStoryViewActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_story_view"
             android:parentActivityName="org.ale.openwatch.FeedFragmentActivity" >
             <meta-data
@@ -96,6 +97,7 @@
         <activity
             android:name="org.ale.openwatch.OWPhotoReviewActivity"
             android:label="@string/title_activity_picture_review"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             android:parentActivityName="org.ale.openwatch.MainActivity" >
             <meta-data
@@ -104,6 +106,7 @@
         </activity>
         <activity
             android:name="org.ale.openwatch.OWInvestigationViewActivity"
+            android:screenOrientation="portrait"
             android:parentActivityName="org.ale.openwatch.FeedFragmentActivity"
             android:label="" >
             <meta-data

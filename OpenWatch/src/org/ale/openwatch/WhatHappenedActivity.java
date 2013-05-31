@@ -56,9 +56,6 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 		fetchRecordingFromOW();
 		
 		Log.i(TAG, "sent recordingMeta request");
-
-        LocalBroadcastManager.getInstance(this).registerReceiver(serverObjectSyncStateMessageReceiver,
-                new IntentFilter("server_object_sync"));
 	}
 
 	@Override
@@ -180,14 +177,24 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 		WhatHappenedActivity.this.finish();
 		startActivity(Intent.createChooser(i, getString(R.string.share_dialog_title)));
 	}
-	
-	@Override
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(serverObjectSyncStateMessageReceiver,
+                new IntentFilter("server_object_sync"));
+    }
+
+
+    @Override
 	public void onPause(){
 		SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, 0);
 		int user_id = profile.getInt(DBConstants.USER_SERVER_ID, 0);
 		if(user_id > 0)
 			getContentResolver().notifyChange(OWContentProvider.getUserRecordingsUri(user_id), null);
-		super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(serverObjectSyncStateMessageReceiver);
+        super.onPause();
 	}
 	
 	@Override
@@ -256,7 +263,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
             // Get extra data included in the Intent
             int status = intent.getIntExtra("status", -1);
             if(status == 1){ // sync complete
-                if(model_id == intent.getIntExtra("server_object_id", -1) && model_id != -1){
+                if(model_id == intent.getIntExtra("model_id", -1) && model_id != -1){
                     OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
                     Log.d("WhatHappenedActivity-BroadcastReceived", "sync complete. serverObject serverID: " + String.valueOf(serverObject.getServerId(getApplicationContext())));
                     final String url = OWUtils.urlForOWServerObject(serverObject, getApplicationContext());

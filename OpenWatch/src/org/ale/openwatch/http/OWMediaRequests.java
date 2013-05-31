@@ -232,14 +232,14 @@ public class OWMediaRequests {
 								local.save(c);
 							}
 
-                            // BEGIN BROADCAST
+                            // BEGIN OWServerObject Sync Broadcast
                             Log.d("sender", "Broadcasting message");
                             Intent intent = new Intent("server_object_sync");
                             // You can also include some extra data.
                             intent.putExtra("status", 1);
-                            intent.putExtra("server_object_id", server_object_id);
+                            intent.putExtra("model_id", server_object_id);
                             LocalBroadcastManager.getInstance(c).sendBroadcast(intent);
-                            // END BROADCAST
+                            // END OWServerObject Sync Broadcast
 
 						}
 					}

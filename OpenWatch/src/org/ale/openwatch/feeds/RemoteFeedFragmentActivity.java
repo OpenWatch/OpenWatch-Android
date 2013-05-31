@@ -176,7 +176,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 							fetchNextFeedPage();
                         }
 	            	};
-	            	DeviceLocation.getLocation(getActivity().getApplicationContext(), false, gps_callback);
+	            	DeviceLocation.getLastKnownLocation(getActivity().getApplicationContext(), false, gps_callback);
 	            }else{
 	            	fetchNextFeedPage();
 	            }

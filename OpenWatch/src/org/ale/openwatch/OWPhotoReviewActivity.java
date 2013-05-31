@@ -1,15 +1,12 @@
 package org.ale.openwatch;
 
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.*;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,24 +17,21 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.http.OWServiceRequests;
 import org.ale.openwatch.model.OWPhoto;
 import org.ale.openwatch.model.OWServerObject;
 import org.ale.openwatch.share.Share;
-import org.json.JSONObject;
 
 public class OWPhotoReviewActivity extends SherlockFragmentActivity {
 	
 	private static final String TAG = "OWPhotoReviewActivity";
 	
 	private ImageView previewImageView;
-    static int owphoto_parent_id = -1;
+    static int ow_server_obj_id = -1;
 	private int owphoto_id = -1;
 
-    boolean didShare = false;
     boolean didLoadImage = false;
     int last_created_photo_id = -1; // post create object may occur multiple times
 
@@ -49,7 +43,7 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
         this.getSupportActionBar().setTitle("Describe your Picture");
 		// Show the Up button in the action bar.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		Log.i("PictureReview","got it");
+		Log.i(TAG,"onCreate");
 		final Intent i = getIntent();
         if(i.hasExtra("owphoto_id")){
             owphoto_id = i.getIntExtra("owphoto_id", 0);
@@ -57,7 +51,7 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
         } else
             Log.e(TAG, "unable to read OWPhoto id from intent");
         if(i.hasExtra(Constants.INTERNAL_DB_ID))
-            owphoto_parent_id = i.getIntExtra(Constants.INTERNAL_DB_ID, 0);
+            ow_server_obj_id = i.getIntExtra(Constants.INTERNAL_DB_ID, 0);
         else
             Log.e(TAG, "unable to read photo's OWServerObject id from intent");
 		
@@ -77,13 +71,14 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
     @Override
     public void onStop(){
         super.onStop();
+        Log.i(TAG,"onStop");
         last_created_photo_id = -1;
     }
 
     @Override
     public void onStart(){
         super.onStart();
-
+        Log.i(TAG,"onStart");
     }
 	
 	private void loadScaledPictureFromIntent(Intent intent) {
@@ -122,9 +117,9 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
 			
 		case R.id.menu_submit:
             showCompleteDialog();
-            //OWServerObject server_obj = OWServerObject.objects(this, OWServerObject.class).get(owphoto_parent_id);
+            //OWServerObject server_obj = OWServerObject.objects(this, OWServerObject.class).get(ow_server_obj_id);
             //Share.showShareDialog(this, getString(R.string.share_story), OWUtils.urlForOWServerObject(server_obj, getApplicationContext()));
-            //OWServiceRequests.increaseHitCount(getApplicationContext(), server_obj.getServerId(getApplicationContext()), owphoto_parent_id, server_obj.getContentType(getApplicationContext()), server_obj.getMediaType(getApplicationContext()), Constants.HIT_TYPE.CLICK);
+            //OWServiceRequests.increaseHitCount(getApplicationContext(), server_obj.getServerId(getApplicationContext()), ow_server_obj_id, server_obj.getContentType(getApplicationContext()), server_obj.getMediaType(getApplicationContext()), Constants.HIT_TYPE.CLICK);
             //this.finish();
 			return true;
 		}
@@ -135,11 +130,11 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
      * If a server_id was received, give option to share, else return to MainActivity
      */
     private void showCompleteDialog(){
-        if(owphoto_parent_id == -1){
+        if(ow_server_obj_id == -1){
             Log.e(TAG, "model_id not set. aborting showCompleteDialog");
             return;
         }
-        final OWServerObject server_obj = OWServerObject.objects(this, OWServerObject.class).get(owphoto_parent_id);
+        final OWServerObject server_obj = OWServerObject.objects(this, OWServerObject.class).get(ow_server_obj_id);
         final Context c = this;
         //final OWVideoRecording recording = OWMediaObject.objects(getApplicationContext(), OWMediaObject.class).get(model_id).video_recording.get(getApplicationContext());
         int server_id = -1;
@@ -167,9 +162,9 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                OWServerObject server_obj = OWServerObject.objects(c, OWServerObject.class).get(owphoto_parent_id);
+                OWServerObject server_obj = OWServerObject.objects(c, OWServerObject.class).get(ow_server_obj_id);
                 Share.showShareDialogWithInfo(c, "Share Photo", server_obj.getTitle(getApplicationContext()), OWUtils.urlForOWServerObject(server_obj, getApplicationContext()));
-                OWServiceRequests.increaseHitCount(getApplicationContext(), server_obj.getServerId(getApplicationContext()), owphoto_parent_id, server_obj.getContentType(getApplicationContext()), server_obj.getMediaType(getApplicationContext()), Constants.HIT_TYPE.CLICK);
+                OWServiceRequests.increaseHitCount(getApplicationContext(), server_obj.getServerId(getApplicationContext()), ow_server_obj_id, server_obj.getContentType(getApplicationContext()), server_obj.getMediaType(getApplicationContext()), Constants.HIT_TYPE.CLICK);
                 OWPhotoReviewActivity.this.finish();
             }
         });
@@ -191,15 +186,15 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
         });
         dialog.show();
     }
-	private static long last_call_time = System.currentTimeMillis();
+	//private static long last_call_time = System.currentTimeMillis();
 	private void postOWPhoto(){
         Log.i(TAG, String.format("createOWPhoto object. last_id: %d, current_id: %d",last_created_photo_id, owphoto_id));
-        if(owphoto_id == last_created_photo_id  || System.currentTimeMillis() - last_call_time < 450){ // Welcome to jankville . OnCreate gets called twice here in some cases
+        if(owphoto_id == last_created_photo_id  ){
             Log.i(TAG, "Blocking duplicate photo create attempt");
-            last_call_time = System.currentTimeMillis();
+            //last_call_time = System.currentTimeMillis();
             return;
         }else
-            last_call_time = System.currentTimeMillis();
+            //last_call_time = System.currentTimeMillis();
         last_created_photo_id = owphoto_id;
 
         OWPhoto photo = OWPhoto.objects(getApplicationContext(), OWPhoto.class).get(owphoto_id);
@@ -212,7 +207,10 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
             @Override
             public void onSuccess() {
                 Log.i(TAG, "createOWServerObject success!");
-                OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(owphoto_parent_id);
+                //showSyncSuccess();
+                // object created, but media not yet uploaded
+                /*
+                OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(ow_server_obj_id);
                 final String url = OWUtils.urlForOWServerObject(serverObject, getApplicationContext());
                 findViewById(R.id.sync_progress).setVisibility(View.GONE);
                 findViewById(R.id.sync_complete).setVisibility(View.VISIBLE);
@@ -226,49 +224,56 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
                         startActivity(browserIntent);
                     }
                 });
+                */
             }
         });
 	}
-	
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(serverObjectSyncStateMessageReceiver,
+                new IntentFilter("server_object_sync"));
+    }
+
+	@Override
 	public void onPause(){
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(serverObjectSyncStateMessageReceiver);
 		super.onPause();
 	}
 
-    private void fetchOWPhotoFromOW(){
-        final Context app_context = this.getApplicationContext();
-        OWServiceRequests.getOWServerObjectMeta(app_context, OWServerObject.objects(app_context, OWServerObject.class).get(owphoto_parent_id), "", new JsonHttpResponseHandler(){
-            private static final String TAG = "OWServiceRequests";
-            @Override
-            public void onSuccess(JSONObject response){
-                Log.i(TAG, "getRecording response: " + response.toString());
-                if(response.has("id")){
-                    Log.i(TAG, "Got server recording response!");
-                    try{
-                        // response was successful
-                        OWPhoto photo = OWServerObject.objects(app_context, OWServerObject.class).get(owphoto_parent_id).photo.get(app_context);
-                        photo.updateWithJson(app_context, response);
-                        Log.i(TAG, "recording updated with server meta response");
-                        return;
-                    } catch(Exception e){
-                        Log.e(TAG, "Error processing getRecording response");
-                        e.printStackTrace();
-                    }
+    private BroadcastReceiver serverObjectSyncStateMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            int status = intent.getIntExtra("status", -1);
+            Log.d("OWPhotoSync", String.format("Received sync success message with status %d. local model_id: %d, message model_id: %d ", status, ow_server_obj_id, intent.getIntExtra("model_id", -1)));
+            if(status == 1){ // sync complete
+                if(owphoto_id == intent.getIntExtra("child_model_id", -1) && owphoto_id != -1){
+                    showSyncSuccess();
                 }
-                Log.i(TAG, "Failed to handle server recording response!");
-
             }
+        }
+    };
 
-            @Override
-            public void onFailure(Throwable e, String response){
-                Log.i(TAG, "get recording meta failed: " + response);
-            }
-
-            @Override
-            public void onFinish(){
-                Log.i(TAG, "get recording meta finish");
-            }
-
-        });
+    private void showSyncSuccess(){
+        if(ow_server_obj_id != -1){
+            OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(ow_server_obj_id);
+            Log.d("OWPhotoSync", "showing sync complete. serverObject serverID: " + String.valueOf(serverObject.getServerId(getApplicationContext())));
+            final String url = OWUtils.urlForOWServerObject(serverObject, getApplicationContext());
+            findViewById(R.id.sync_progress).setVisibility(View.GONE);
+            findViewById(R.id.sync_complete).setVisibility(View.VISIBLE);
+            TextView sync_progress = ((TextView)findViewById(R.id.sync_progress_text));
+            sync_progress.setText("Your Photo is Live! \n" + url);
+            sync_progress.setClickable(true);
+            sync_progress.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity(browserIntent);
+                }
+            });
+        }
     }
-
 }

@@ -1,12 +1,14 @@
 package org.ale.openwatch.http;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
@@ -474,6 +476,17 @@ public class OWServiceRequests {
 				try {
 					file_response = OWMediaRequests.ApacheFilePost(app_context, instanceEndpointForOWMediaObject(app_context, object), object.getMediaFilepath(app_context), "file_data");
 					Log.i(TAG, "binary media sent! response: " + file_response);
+                    if(file_response.contains("object")){
+                        // BEGIN OWServerObject Sync Broadcast
+                        Log.d("OWPhotoSync", "Broadcasting sync success message");
+                        Intent intent = new Intent("server_object_sync");
+                        // You can also include some extra data.
+                        intent.putExtra("status", 1);
+                        intent.putExtra("child_model_id", ((Model)object).getId());
+                        LocalBroadcastManager.getInstance(app_context).sendBroadcast(intent);
+                        // END OWServerObject Sync Broadcast
+
+                    }
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

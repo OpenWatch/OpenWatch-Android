@@ -251,4 +251,29 @@ public class DeviceLocation {
         deviceLocation.getLocation(context, locationResult, waitForGpsFix);
 
     }
+
+    public static void getLastKnownLocation(Context context, boolean waitForGpsFix, final GPSRequestCallback cb){
+        DeviceLocation deviceLocation = new DeviceLocation();
+
+        LocationResult locationResult = new LocationResult(){
+            @Override
+            public void gotLocation(final Location location){
+                if(cb != null){
+                    cb.onSuccess(location);
+                }
+            }
+        };
+
+        LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        Location last_loc;
+        last_loc = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if(last_loc == null)
+            last_loc = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+        if(last_loc != null && cb != null){
+            cb.onSuccess(last_loc);
+        }else{
+            deviceLocation.getLocation(context, locationResult, waitForGpsFix);
+        }
+    }
 }
