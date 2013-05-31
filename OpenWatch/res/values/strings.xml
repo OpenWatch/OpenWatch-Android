@@ -126,5 +126,6 @@
         <h1>Welcome,<br> New <font color=\'red\'>Watcher!</font></h1>
         ]]>
     </string>
+    <string name="media_description_hint">What Happened? #tags #okay</string>
 
 </resources>

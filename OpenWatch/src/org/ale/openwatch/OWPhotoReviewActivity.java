@@ -90,7 +90,11 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
 	    	Log.i("loadScaledPic", "got output from intent");
 	    	Log.i("PictureReview-loadScaled", "get owphoto_id: " + String.valueOf(owphoto_id));
 	    	OWPhoto photo = OWPhoto.objects(getApplicationContext(), OWPhoto.class).get(owphoto_id);
-	    	OWUtils.loadScaledPicture(photo.filepath.get(), previewImageView);
+            try{
+	    	    OWUtils.loadScaledPicture(photo.filepath.get(), previewImageView);
+            }catch( OutOfMemoryError e){
+                Log.e(TAG, "OutOfMemory on loadScaledPicture");
+            }
 	    }
 	}
 
