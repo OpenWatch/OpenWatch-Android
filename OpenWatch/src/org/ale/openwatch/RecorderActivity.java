@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.AnimationDrawable;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
@@ -14,6 +15,7 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.*;
+import android.widget.ImageView;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -202,6 +204,7 @@ public class RecorderActivity extends SherlockActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        requestWindowFeature(com.actionbarsherlock.view.Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_recorder);
 		//this.getSupportActionBar().setTitle(getString(R.string.recording));
 		ready_to_record = false;
@@ -214,6 +217,14 @@ public class RecorderActivity extends SherlockActivity implements
         mCameraPreview.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS); // req'd pre 3.0
 		// to be called when the
 		// SurfaceView is ready
+        ImageView broadcast = (ImageView) findViewById(R.id.streaming_animation);
+        final AnimationDrawable broadcastAnimation = ((AnimationDrawable) broadcast.getBackground());
+        broadcast.post(new Runnable(){
+            public void run(){
+                broadcastAnimation.start();
+            }
+        });
+
 		c = this;
 	}
 

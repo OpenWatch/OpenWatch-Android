@@ -10,6 +10,15 @@
         android:layout_height="fill_parent"
         android:gravity="center" />
 
+    <ImageView
+            android:id="@+id/streaming_animation"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/streaming"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="20dp"/>
+
     <Button
             android:id="@+id/button_stop"
             android:background="@drawable/red_button_bg"
