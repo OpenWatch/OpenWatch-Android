@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
+        android:gravity="center"
+        tools:context=".MainActivity" >
+
+        <Button
+            android:id="@+id/button_camcorder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:background="@android:color/transparent"
+            android:drawableLeft="@drawable/camcorder_button"
+            android:drawablePadding="10dp"
+            android:onClick="camcorderButtonClick"
+            android:text="Broadcast Video"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/button_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/button_camcorder"
+            android:layout_below="@id/button_camcorder"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
+            android:drawableLeft="@drawable/camera_button"
+            android:drawablePadding="10dp"
+            android:layout_marginBottom="10dp"
+            android:onClick="cameraButtonClick"
+            android:text="Take Photo"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/button_featured"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/button_camera"
+            android:layout_alignLeft="@id/button_camcorder"
+            android:background="@android:color/transparent"
+            android:drawableLeft="@drawable/watch_button"
+            android:layout_marginTop="10dp"
+            android:drawablePadding="10dp"
+            android:onClick="featuredButtonClick"
+            android:text="Top Stories"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/button_local"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/button_camcorder"
+            android:layout_below="@id/button_featured"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
+            android:drawableLeft="@drawable/local_button"
+            android:drawablePadding="10dp"
+            android:onClick="localButtonClick"
+            android:text="Local Feed"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/button_saved"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/button_camcorder"
+            android:layout_below="@id/button_local"
+            android:layout_marginTop="15dp"
+            android:background="@android:color/transparent"
+            android:drawableLeft="@drawable/saved_button"
+            android:drawablePadding="10dp"
+            android:layout_marginBottom="10dp"
+            android:onClick="savedButtonClick"
+            android:text="Your Media"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/button_feedback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/button_camcorder"
+            android:layout_below="@id/button_saved"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
+            android:drawableLeft="@drawable/heart_button"
+            android:drawablePadding="10dp"
+            android:onClick="feedbackButtonClick"
+            android:text="Send Feedback"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+
+        <Button
+            android:id="@+id/button_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/button_camcorder"
+            android:layout_below="@id/button_feedback"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
+            android:drawableLeft="@drawable/settings_button"
+            android:drawablePadding="10dp"
+            android:onClick="settingsButtonClick"
+            android:text="Settings"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
