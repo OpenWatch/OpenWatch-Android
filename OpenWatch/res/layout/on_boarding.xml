@@ -1,50 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
-         xmlns:app="http://schemas.android.com/apk/res-auto"
-         android:id="@android:id/tabhost"
-         android:layout_width="match_parent"
-         android:layout_height="match_parent" >
-
-<LinearLayout
-        android:id="@+id/tabcontent_container"
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        tools:context=".OnBoardingActivity"
         android:orientation="vertical" >
 
-    <TabWidget
-            android:id="@android:id/tabs"
-            android:layout_width="match_parent"
+    <ImageSwitcher
+        android:id="@+id/image_switcher"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <Button
+            android:id="@+id/button_continue"
+            android:background="@drawable/green_button_bg"
+            android:layout_width="250dp"
+            android:layout_height="50dp"
+            android:textColor="#fff"
+            android:shadowColor="#264826"
+            android:shadowDy="-2"
+            android:shadowRadius=".1"
+            android:textSize="25sp"
+            android:layout_marginBottom="10dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:onClick="onNavigationButtonClick"
+            android:text="Continue"/>
+
+    <ToggleButton
+            android:id="@+id/agent_toggle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:orientation="horizontal"
-            android:visibility="gone" />
+            android:layout_above="@id/button_continue"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="15dp"
+            android:padding="5dp"
+            android:textOn="Yes"
+            android:textOff="No"
+            android:textSize="25dp"
+            android:visibility="gone"/>
 
-    <FrameLayout
-            android:id="@android:id/tabcontent"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="0" />
 
-    <android.support.v4.view.ViewPager
-            android:id="@+id/pager"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_weight="1" />
-
-    <com.viewpagerindicator.CirclePageIndicator
-            android:id="@+id/indicator"
-            android:padding="10dip"
-            android:layout_height="wrap_content"
-            android:layout_width="fill_parent"
-            android:background="@android:color/transparent"
-            app:radius="10dp"
-            app:fillColor="#FF0005"
-            app:pageColor="#FFFBF7"
-            app:strokeColor="#626262"
-            app:strokeWidth="1dp"
-            />
-</LinearLayout>
-
-</TabHost>
+</RelativeLayout>
