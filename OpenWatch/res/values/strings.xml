@@ -128,4 +128,7 @@
     </string>
     <string name="media_description_hint">What Happened? #tags #okay</string>
 
+    <!-- OWMediaObjectViewActivity -->
+    <string name="cannot_play_video">Your Device Cannot Play This Video</string>
+
 </resources>

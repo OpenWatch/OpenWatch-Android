@@ -66,6 +66,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 	boolean video_playing = false;
 	boolean is_landscape = false;
 	boolean media_view_inflated = false;
+    boolean is_resumed = false;
 	
 	CONTENT_TYPE content_type;
 	MEDIA_TYPE media_type;
@@ -155,7 +156,14 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+        is_resumed = true;
 	}
+
+    @Override
+    protected void onPause() {
+        is_resumed = false;
+        super.onPause();
+    }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -272,7 +280,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
                                 "play H.264 video on your device. Don't get your hopes up, though.";
                     }
                     AlertDialog.Builder mediaErrorDialog = new AlertDialog.Builder(OWMediaObjectViewActivity.this)
-                            .setTitle("Cannot Play Video")
+                            .setTitle(getString(R.string.cannot_play_video))
                             .setMessage(message)
                             .setNegativeButton("Bummer", new DialogInterface.OnClickListener() {
                                 @Override
@@ -297,7 +305,8 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
                             }
                         });
                     }
-                    mediaErrorDialog.show();
+                    if(is_resumed)
+                        mediaErrorDialog.show();
                 }
                 Log.i("VideoView error", String.format("what %d extra %d", what, extra));
                 return true;
@@ -436,7 +445,9 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 
                     @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        popupWindow.showAtLocation(container, Gravity.CENTER,0,0);
+                        if(is_resumed){
+                            popupWindow.showAtLocation(container, Gravity.CENTER,0,0);
+                        }
                     }
 
                     @Override
