@@ -358,7 +358,7 @@ public class RecorderActivity extends SherlockActivity implements
 				Log.i(TAG, "Bundling media_obj_id: " + String.valueOf(media_object_id));
 			}else
 				Log.e(TAG, "Error getting mediaobject id from chunk_listener");
-
+            i.putExtra("hq_filepath", output_filename);
 			i.putExtra(Constants.OW_REC_UUID, recording_uuid);
 			i.setFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
 			startActivity(i);
@@ -394,7 +394,8 @@ public class RecorderActivity extends SherlockActivity implements
 			}).show();
 		}
 	}
-	
+	private boolean h263Fallback = false;
+
 	private boolean prepareVideoRecorder(){
 		try {
 			prepareOutputLocation();
@@ -419,7 +420,10 @@ public class RecorderActivity extends SherlockActivity implements
         else{
             mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
             mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-            mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H263);
+            if(h263Fallback)
+                mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H263);
+            else
+                mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
         }
 
 	    // Step 4: Set output file
@@ -433,8 +437,15 @@ public class RecorderActivity extends SherlockActivity implements
 	        mMediaRecorder.prepare();
 	    } catch (IllegalStateException e) {
 	        Log.d(TAG, "IllegalStateException preparing MediaRecorder: " + e.getMessage());
-	        releaseMediaRecorder();
-	        return false;
+            // If we fail to initialize MPEG-4-SP pre API 11, try h263
+            if(Build.VERSION.SDK_INT >= 11 && !h263Fallback){
+                h263Fallback = true;
+                releaseMediaRecorder();
+                prepareVideoRecorder();
+            }else{
+                releaseMediaRecorder();
+                return false;
+            }
 	    } catch (IOException e) {
 	        Log.d(TAG, "IOException preparing MediaRecorder: " + e.getMessage());
 	        releaseMediaRecorder();

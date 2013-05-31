@@ -34,6 +34,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 	static int model_id = -1;
 	int recording_server_id = -1;
 	String recording_uuid;
+    String hq_filepath;
 
     boolean video_playing = false;
 
@@ -46,6 +47,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 		try{
 			model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
 			recording_uuid = getIntent().getExtras().getString(Constants.OW_REC_UUID);
+            hq_filepath = getIntent().getExtras().getString("hq_filepath");
             OWServerObject server_object = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
             setupVideoView(server_object);
 		}catch (Exception e){
@@ -201,11 +203,13 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
             if( object.local_video_recording.get(getApplicationContext()) != null ){
                 // This is a local recording, attempt to play HQ file
                 media_path = object.local_video_recording.get(getApplicationContext()).hq_filepath.get();
-
+                if(media_path == null && hq_filepath != null){ // temp hack
+                    media_path = hq_filepath;
+                }
             }
             Log.i(TAG, String.format("setupMediaView. media_url: %s", media_path));
             //setupVideoView(R.id.media_object_media_view, media_path);
-            VideoView video_view = (VideoView) findViewById(R.id.videoview);
+            final VideoView video_view = (VideoView) findViewById(R.id.videoview);
             video_view.setVideoURI(Uri.parse(media_path));
             video_view.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
@@ -217,7 +221,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
                             VideoView video_view = (VideoView) findViewById(R.id.videoview);
                             //video_view.setVisibility(View.VISIBLE);
                             //(findViewById(R.id.progress_container)).setVisibility(View.GONE);
-                            video_view.setLayoutParams( new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                            video_view.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                             MediaController mc = new MediaController(
                                     WhatHappenedActivity.this);
                             video_view.setMediaController(mc);
@@ -227,6 +231,13 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
                             video_playing = true;
                         }
                     });
+                }
+            });
+            video_view.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                @Override
+                public boolean onError(MediaPlayer mp, int what, int extra) {
+                    video_view.setVisibility(View.GONE);
+                    return true;
                 }
             });
             video_view.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {

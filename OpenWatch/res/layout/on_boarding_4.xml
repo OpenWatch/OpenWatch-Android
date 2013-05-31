@@ -9,7 +9,7 @@
         android:id="@+id/on_boarding_4_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/onbo_4a" />
+        android:src="@drawable/onbo_4" />
 
     <Button
             android:id="@+id/button_get_started"

@@ -247,4 +247,9 @@
         <item name="android:windowExitAnimation">@anim/fadeout</item>
     </style>
 
+    <style name="Theme.openwatch.Widget.Button.Toggle" parent="android:Widget">
+        <item name="android:background">@drawable/toggle_bg</item>
+        <item name="android:disabledAlpha">?android:attr/disabledAlpha</item>
+    </style>
+
 </resources>

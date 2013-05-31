@@ -23,7 +23,7 @@ import org.ale.openwatch.model.OWUser;
         boolean agent_applicant = false;
 
         int state = 0;
-        private static final int[] drawale_states = new int[] {R.drawable.onbo_1, R.drawable.onbo_2, R.drawable.onbo_3, R.drawable.onbo_4};
+        private static final int[] drawale_states = new int[] {R.drawable.onbo_1, R.drawable.onbo_2, R.drawable.onbo_3, R.drawable.onbo_4agent};
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +33,7 @@ import org.ale.openwatch.model.OWUser;
         imageSwitcher.setFactory(this);
         imageSwitcher.setInAnimation(this, android.R.anim.slide_in_left);
         imageSwitcher.setOutAnimation(this, android.R.anim.slide_out_right);
-        imageSwitcher.setImageResource(drawale_states[0]);
+        imageSwitcher.setImageResource(drawale_states[state]);
 
         agentToggle = (ToggleButton) findViewById(R.id.agent_toggle);
         agentToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -58,17 +58,14 @@ import org.ale.openwatch.model.OWUser;
         state ++;
         if(state <= 3){
             // Progress through onBoarding
-            if(state == 1)
-                imageSwitcher.setImageDrawable(getResources().getDrawable(R.drawable.onbo_2));
-                //imageSwitcher.setImageResource(R.drawable.onbo_2);
-            else if(state == 2)
-                imageSwitcher.setImageResource(R.drawable.onbo_3);
-            else if(state == 3){
+            imageSwitcher.setImageResource(drawale_states[state]);
+            if(state == 3){
+                // Show last on boarding screen depending on agent selection
                 continueButton.setText("Get Started");
                 if(agent_applicant)
-                    imageSwitcher.setImageResource(R.drawable.onbo_4);
+                    imageSwitcher.setImageResource(R.drawable.onbo_4agent);
                 else
-                    imageSwitcher.setImageResource(R.drawable.onbo_4a);
+                    imageSwitcher.setImageResource(R.drawable.onbo_4);
             }
             if(state == 2){
                 agentToggle.setVisibility(View.VISIBLE);
@@ -77,7 +74,6 @@ import org.ale.openwatch.model.OWUser;
             }
         }
         else{
-
             // Sync preferences and go to MainActivity
             if(OWApplication.user_data != null && OWApplication.user_data.containsKey(Constants.INTERNAL_USER_ID)){
                 OWUser user = OWUser.objects(getApplicationContext(), OWUser.class).get((Integer)OWApplication.user_data.get(Constants.INTERNAL_USER_ID));

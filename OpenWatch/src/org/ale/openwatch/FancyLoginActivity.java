@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -65,6 +66,8 @@ public class FancyLoginActivity extends SherlockActivity {
     Timer timer;
 
     Animation zoom;
+
+    public static boolean isVisible = false;
 
     long animation_clock = 5000;
 
@@ -129,6 +132,7 @@ public class FancyLoginActivity extends SherlockActivity {
     @Override
     public void onResume(){
         super.onResume();
+        isVisible = true;
         if(Build.VERSION.SDK_INT > 11){
             timer = new Timer();
             timer.scheduleAtFixedRate(new FadeTimerTask(), animation_clock, animation_clock);
@@ -149,6 +153,7 @@ public class FancyLoginActivity extends SherlockActivity {
     @Override
     public void onPause(){
         super.onPause();
+        isVisible = false;
         if(Build.VERSION.SDK_INT > 11){
             timer.cancel();
             timer = null;
@@ -497,12 +502,14 @@ public class FancyLoginActivity extends SherlockActivity {
             @Override
             public void onFailure(Throwable e, String response) {
                 Log.i(TAG, "OW quicksignup failure: " + response);
-                AlertDialog.Builder dialog = new AlertDialog.Builder(
-                        FancyLoginActivity.this);
-                dialog.setTitle(R.string.login_dialog_failed_title)
-                        .setMessage(R.string.login_dialog_failed_msg)
-                        .setNeutralButton(R.string.login_dialog_ok,
-                                defaultDialogOnClickListener).show();
+                if(isVisible){
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(FancyLoginActivity.this);
+                    dialog.setTitle(R.string.login_dialog_failed_title)
+                            .setMessage(R.string.login_dialog_failed_msg)
+                            .setNeutralButton(R.string.login_dialog_ok,
+                                    defaultDialogOnClickListener).show();
+                }
+
 
             }
 
