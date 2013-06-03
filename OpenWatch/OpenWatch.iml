@@ -25,7 +25,6 @@
     <orderEntry type="module" module-name="Universal-Image-Loader" exported="" />
     <orderEntry type="module" module-name="ViewPagerIndicator" exported="" />
     <orderEntry type="module" module-name="androrm" exported="" />
-    <orderEntry type="module" module-name="ParallaxScrollView" exported="" />
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
