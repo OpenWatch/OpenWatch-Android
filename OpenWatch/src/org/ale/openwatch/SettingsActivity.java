@@ -139,13 +139,13 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 	 * This fragment shows general preferences only. It is used when the
 	 * activity is showing a two-pane settings UI.
 	 */
-	/*
+
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public static class GeneralPreferenceFragment extends PreferenceFragment {
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
-			addPreferencesFromResource(R.xml.pref_account);
+            addPreferencesFromResource(R.xml.pref_account);
 
 			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
 			// to their values. When their values change, their summaries are
@@ -154,7 +154,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 			//bindPreferenceSummaryToValue(findPreference("example_text"));
 			//bindPreferenceSummaryToValue(findPreference("example_list"));
 		}
-	} */
+	}
 
 	
 }
