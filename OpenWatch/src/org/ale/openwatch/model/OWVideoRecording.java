@@ -228,7 +228,7 @@ public class OWVideoRecording extends Model implements OWServerObjectInterface{
 	}
 	
 	@Override
-	public JSONObject ftoJsonObject(Context app_context) {
+	public JSONObject toJsonObject(Context app_context) {
 		JSONObject json_obj = media_object.get(app_context).toJsonObject(app_context);
 		try{
 			if (begin_lat.get() != null)
