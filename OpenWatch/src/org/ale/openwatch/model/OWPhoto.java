@@ -60,8 +60,14 @@ public class OWPhoto extends Model implements OWServerObjectInterface{
 
 		return super.save(context);
 	}
-	
-	@Override
+
+    @Override
+    public void setSynced(Context c, boolean isSynced) {
+        synced.set(isSynced);
+        save(c);
+    }
+
+    @Override
 	public String getUUID(Context c) {
 		return this.uuid.get();
 	}

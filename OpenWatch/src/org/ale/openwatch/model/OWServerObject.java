@@ -109,8 +109,13 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
 		*/
 	    return super_save;
 	}
-	
-	public boolean hasTag(Context context, String tag_name) {
+
+    @Override
+    public void setSynced(Context c, boolean isSynced) {
+        ((OWServerObjectInterface) getChildObject(c)).setSynced(c, isSynced);
+    }
+
+    public boolean hasTag(Context context, String tag_name) {
 		Filter filter = new Filter();
 		filter.is(DBConstants.TAG_TABLE_NAME, tag_name);
 		return (tags.get(context, this).filter(filter).count() > 0);

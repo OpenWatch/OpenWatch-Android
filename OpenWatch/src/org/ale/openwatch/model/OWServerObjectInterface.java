@@ -62,4 +62,6 @@ public interface OWServerObjectInterface {
 	public JSONObject toJsonObject(Context c);
 	
 	public boolean save(Context c);
+
+    public void setSynced(Context c, boolean isSynced);
 }

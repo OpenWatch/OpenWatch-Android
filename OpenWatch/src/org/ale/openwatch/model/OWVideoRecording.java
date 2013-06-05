@@ -259,8 +259,17 @@ public class OWVideoRecording extends Model implements OWServerObjectInterface{
 		return super.save(context);
 	}
 
+    @Override
+    public void setSynced(Context c, boolean isSynced) {
+        if(local.get(c) != null){
+            local.get(c).hq_synced.set(isSynced);
+            local.get(c).lq_synced.set(isSynced);
+            save(c);
+        }
+    }
 
-	@Override
+
+    @Override
 	public void setTitle(Context c, String title) {
 		media_object.get(c).setTitle(c, title);
 	}

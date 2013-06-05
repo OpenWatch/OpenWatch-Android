@@ -51,8 +51,13 @@ public class OWStory extends Model implements OWServerObjectInterface{
 		}
 		return super.save(context);
 	}
-	
-	public void updateWithJson(Context app_context, JSONObject json){
+
+    @Override
+    public void setSynced(Context c, boolean isSynced) {
+
+    }
+
+    public void updateWithJson(Context app_context, JSONObject json){
  
 		this.media_object.get(app_context).updateWithJson(app_context, json);
 		

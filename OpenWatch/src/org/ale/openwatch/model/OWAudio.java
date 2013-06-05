@@ -53,8 +53,14 @@ public class OWAudio extends Model implements OWServerObjectInterface{
 		context.getContentResolver().notifyChange(OWContentProvider.getTagUri(this.getId()), null);
 		return super.save(context);
 	}
-	
-	public static OWAudio createOrUpdateOWAudioWithJson(Context app_context, JSONObject json_obj, OWFeed feed) throws JSONException{
+
+    @Override
+    public void setSynced(Context c, boolean isSynced) {
+        synced.set(isSynced);
+        save(c);
+    }
+
+    public static OWAudio createOrUpdateOWAudioWithJson(Context app_context, JSONObject json_obj, OWFeed feed) throws JSONException{
 		OWAudio audio = createOrUpdateOWAudioWithJson(app_context, json_obj);
 		// add recording to feed if not null
 		if(feed != null){

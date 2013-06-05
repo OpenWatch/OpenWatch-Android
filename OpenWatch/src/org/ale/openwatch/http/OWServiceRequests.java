@@ -479,6 +479,9 @@ public class OWServiceRequests {
                     if(file_response.contains("object")){
                         // BEGIN OWServerObject Sync Broadcast
                         Log.d("OWPhotoSync", "Broadcasting sync success message");
+                        object.setSynced(app_context, true);
+                        //if(object.getMediaType(app_context) == MEDIA_TYPE.PHOTO)
+                            //(Photo)
                         Intent intent = new Intent("server_object_sync");
                         // You can also include some extra data.
                         intent.putExtra("status", 1);
