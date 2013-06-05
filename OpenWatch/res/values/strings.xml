@@ -167,7 +167,7 @@
     <string name="cannot_play_video">Your Device Cannot Play This Video</string>
     <string name="video_error_intro">Unfortunately, your device doesn\'t have native support for this video format.</string>
     <string name="device_has_external_video_player">However, we\'ve detected your device has an external application installed that may be able to play this video.</string>
-    <string name="device_lacks_external_video_player">However, there\'s a slim chance an external media player can play this video on your device. Don't get your hopes up.</string>
+    <string name="device_lacks_external_video_player">However, there\'s a slim chance an external media player can play this video on your device. Don\'t get your hopes up.</string>
     <string name="play_video_externally">Play with external app</string>
     <string name="search_for_video_player">Search for external app</string>
     <string name="video_player_search_query">h264+media+player</string><!-- must be url encoded. i.e: h264+media+player -->
