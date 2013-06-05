@@ -1,7 +1,4 @@
 adb shell
-su
-chmod -R 777 /data/data/net.openwatch.reporter
+run-as org.ale.openwatch chmod 777 /data/data/org.ale.openwatch/databases/OpenWatchDB
 exit
-exit
-adb pull /data/data/net.openwatch.reporter/databases/OpenWatchDB ~/Desktop
-
+adb pull /data/data/org.ale.openwatch/databases/OpenWatchDB ~/Desktop

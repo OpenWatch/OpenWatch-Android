@@ -17,7 +17,7 @@ import org.json.JSONObject;
 
 import java.util.Date;
 
-public class OWLocalVideoRecording extends Model {
+public class OWLocalVideoRecording extends Model implements OWServerObjectInterface{
 	private static final String TAG = "OWLocalRecording";
 
 	public CharField recording_end_time = new CharField();
@@ -107,7 +107,183 @@ public class OWLocalVideoRecording extends Model {
 		return result;
 	}
 
-	/**
+    @Override
+    public String getTitle(Context c) {
+        return null;
+    }
+
+    @Override
+    public void setTitle(Context c, String title) {
+
+    }
+
+    @Override
+    public String getFirstPosted(Context c) {
+        return null;
+    }
+
+    @Override
+    public void setFirstPosted(Context c, String first_posted) {
+
+    }
+
+    @Override
+    public String getLastEdited(Context c) {
+        return null;
+    }
+
+    @Override
+    public void setLastEdited(Context c, String last_edited) {
+
+    }
+
+    @Override
+    public void setViews(Context c, int views) {
+
+    }
+
+    @Override
+    public Integer getViews(Context c) {
+        return null;
+    }
+
+    @Override
+    public void setActions(Context c, int actions) {
+
+    }
+
+    @Override
+    public Integer getActions(Context c) {
+        return null;
+    }
+
+    @Override
+    public void setServerId(Context c, int server_id) {
+
+    }
+
+    @Override
+    public Integer getServerId(Context c) {
+        return null;
+    }
+
+    @Override
+    public void setDescription(Context c, String description) {
+
+    }
+
+    @Override
+    public String getDescription(Context c) {
+        return null;
+    }
+
+    @Override
+    public void setThumbnailUrl(Context c, String url) {
+
+    }
+
+    @Override
+    public String getThumbnailUrl(Context c) {
+        return null;
+    }
+
+    @Override
+    public OWUser getUser(Context c) {
+        return null;
+    }
+
+    @Override
+    public void setUser(Context c, OWUser user) {
+
+    }
+
+    @Override
+    public String getUUID(Context c) {
+        return null;
+    }
+
+    @Override
+    public void setUUID(Context c, String uuid) {
+
+    }
+
+    @Override
+    public void setLat(Context c, double lat) {
+
+    }
+
+    @Override
+    public double getLat(Context c) {
+        return 0;
+    }
+
+    @Override
+    public void setLon(Context c, double lon) {
+
+    }
+
+    @Override
+    public double getLon(Context c) {
+        return 0;
+    }
+
+    @Override
+    public Constants.MEDIA_TYPE getMediaType(Context c) {
+        return Constants.MEDIA_TYPE.VIDEO;
+    }
+
+    @Override
+    public Constants.CONTENT_TYPE getContentType(Context c) {
+        return Constants.CONTENT_TYPE.MEDIA_OBJECT;
+    }
+
+    @Override
+    public void setMediaFilepath(Context c, String filepath) {
+        hq_filepath.set(filepath);
+    }
+
+    @Override
+    public String getMediaFilepath(Context c) {
+        return hq_filepath.get();
+    }
+
+    @Override
+    public QuerySet<OWTag> getTags(Context c) {
+        return null;
+    }
+
+    @Override
+    public void resetTags(Context c) {
+
+    }
+
+    @Override
+    public void addTag(Context c, OWTag tag) {
+
+    }
+
+    @Override
+    public void addToFeed(Context c, OWFeed feed) {
+
+    }
+
+    @Override
+    public void updateWithJson(Context c, JSONObject json) {
+        if(json.has("media_url")){
+                setSynced(c, true);
+        }
+        if(recording.get(c) != null)
+            recording.get(c).updateWithJson(c, json);
+    }
+
+    @Override
+    public JSONObject toJsonObject(Context c) {
+        if(recording.get(c) != null)
+            return recording.get(c).toJsonObject(c);
+        return null;
+    }
+
+    /**
 	 * Save and notify content provider
 	 */
 	@Override
@@ -121,5 +297,11 @@ public class OWLocalVideoRecording extends Model {
 		}
 		return super.save(context);
 	}
-	
+
+    @Override
+    public void setSynced(Context c, boolean isSynced) {
+        hq_synced.set(true);
+        save(c);
+    }
+
 }

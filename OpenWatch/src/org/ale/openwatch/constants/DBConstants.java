@@ -7,6 +7,9 @@ public class DBConstants {
 	// Recordings Database table and column names
 	// These correlate to field names in OWRecording
 	public static final String DB_NAME = "OpenWatchDB";
+
+    // Generic
+    public static final String SYNCED = "synced";
 	
 	// OWMediaObject table
 	public static final String MEDIA_OBJECT_TABLENAME = "owserverobject";
@@ -20,6 +23,8 @@ public class DBConstants {
 	
 	// Local Video Recordings Table
 	public static final String LOCAL_RECORDINGS_TABLENAME = "owlocalvideorecording";
+    public static final String LOCAL_RECORDINGS_LQ_SYNCED = "ly_synced";
+    public static final String LOCAL_RECORDINGS_HQ_SYNCED = "hq_synced";
 	
 	// Video Recording Table
 	public static final String RECORDINGS_TABLENAME = "owvideorecording";
