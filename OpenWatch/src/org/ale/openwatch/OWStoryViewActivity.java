@@ -126,7 +126,7 @@ public class OWStoryViewActivity extends SherlockActivity implements OWMediaObje
 		 this.getSupportActionBar().setTitle(media_object.getTitle(app_context));
 		((TextView) this.findViewById(R.id.title)).setText(media_object.getTitle(app_context));
 		((TextView) this.findViewById(R.id.blurb)).setText(media_object.story.get(app_context).blurb.get());
-		((TextView) this.findViewById(R.id.author)).setText("By " + media_object.username.get() + ".");
+		((TextView) this.findViewById(R.id.author)).setText(getString(R.string.By) + " " + media_object.username.get());
 		try {
 			((TextView) this.findViewById(R.id.date)).setText(Constants.user_date_formatter.format(Constants.utc_formatter.parse(media_object.getFirstPosted(app_context))));
 		} catch (ParseException e) {

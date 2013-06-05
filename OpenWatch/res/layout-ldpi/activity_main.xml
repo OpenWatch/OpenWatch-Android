@@ -19,7 +19,7 @@
             android:drawableLeft="@drawable/camcorder_button"
             android:drawablePadding="10dp"
             android:onClick="camcorderButtonClick"
-            android:text="Broadcast Video"
+            android:text="@string/video_button_text"
             android:textColor="#000000"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -36,7 +36,7 @@
             android:drawablePadding="10dp"
             android:layout_marginBottom="10dp"
             android:onClick="cameraButtonClick"
-            android:text="Take Photo"
+            android:text="@string/photo_button_text"
             android:textColor="#000000"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -52,7 +52,7 @@
             android:layout_marginTop="10dp"
             android:drawablePadding="10dp"
             android:onClick="featuredButtonClick"
-            android:text="Top Stories"
+            android:text="@string/top_stories_button_text"
             android:textColor="#000000"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -68,7 +68,7 @@
             android:drawableLeft="@drawable/local_button"
             android:drawablePadding="10dp"
             android:onClick="localButtonClick"
-            android:text="Local Feed"
+            android:text="@string/local_button_text"
             android:textColor="#000000"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -85,7 +85,7 @@
             android:drawablePadding="10dp"
             android:layout_marginBottom="10dp"
             android:onClick="savedButtonClick"
-            android:text="Your Media"
+            android:text="@string/saved_media_button_text"
             android:textColor="#000000"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -101,7 +101,7 @@
             android:drawableLeft="@drawable/heart_button"
             android:drawablePadding="10dp"
             android:onClick="feedbackButtonClick"
-            android:text="Send Feedback"
+            android:text="@string/feedback_button_text"
             android:textColor="#000000"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -118,7 +118,7 @@
             android:drawableLeft="@drawable/settings_button"
             android:drawablePadding="10dp"
             android:onClick="settingsButtonClick"
-            android:text="Settings"
+            android:text="@string/settings_button_text"
             android:textColor="#000000"
             android:textSize="24sp"
             android:textStyle="bold" />

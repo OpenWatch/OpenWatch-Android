@@ -15,7 +15,7 @@
             android:gravity="center"
             android:layout_centerHorizontal="true"
             android:textSize="20sp"
-            android:text="Your media is live! Spread the word and make an impact!"/>
+            android:text="@string/share_dialog_generic_title"/>
 
 
     <Button
@@ -33,7 +33,7 @@
             android:layout_marginTop="10dp"
             android:layout_centerHorizontal="true"
             android:onClick="shareClick"
-            android:text="Share!"/>
+            android:text="@string/share"/>
 
     <TextView
             android:id="@+id/share_nothanks"
@@ -46,6 +46,6 @@
             android:clickable="true"
             android:textSize="15sp"
             android:onClick="noThanksClick"
-            android:text="No Thanks"/>
+            android:text="@string/dialog_no"/>
 
 </RelativeLayout>

@@ -196,7 +196,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 		case R.id.menu_share:
 			if(server_id > 0){
                 OWServerObject server_obj = OWServerObject.objects(this, OWServerObject.class).get(model_id);
-				Share.showShareDialogWithInfo(this, "Share This Media!", server_obj.getTitle(getApplicationContext()), OWUtils.urlForOWServerObject(server_obj, getApplicationContext()));
+				Share.showShareDialogWithInfo(this, getString(R.string.share_media_dialog_title), server_obj.getTitle(getApplicationContext()), OWUtils.urlForOWServerObject(server_obj, getApplicationContext()));
 				OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, content_type, media_type, HIT_TYPE.CLICK);
 			}
 			break;
@@ -266,23 +266,21 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
                 if(extra == -2147483648){ // General error
-                    String message = "Unfortunately, your device doesn't have native support for this video format.";
+                    String message = getString(R.string.video_error_intro);
                     boolean canPlayExternally = false;
                     //final Intent playVideoExternally = new Intent(Intent.ACTION_VIEW, Uri.parse(filepath));
                     final Intent playVideoExternally = new Intent(Intent.ACTION_VIEW);
                     playVideoExternally.setDataAndType(Uri.parse(filepath), "video/mp4");
                     if(OWUtils.isCallable(OWMediaObjectViewActivity.this, playVideoExternally)){
                         canPlayExternally = true;
-                        message += " However, we've detected your device has an external application installed that may be able to play " +
-                                "this video.";
+                        message += " " + getString(R.string.device_has_external_video_player);
                     }else{
-                        message = "However, there's a slim chance an external media player can " +
-                                "play H.264 video on your device. Don't get your hopes up, though.";
+                        message = " " + getString(R.string.device_lacks_external_video_player);
                     }
                     AlertDialog.Builder mediaErrorDialog = new AlertDialog.Builder(OWMediaObjectViewActivity.this)
                             .setTitle(getString(R.string.cannot_play_video))
                             .setMessage(message)
-                            .setNegativeButton("Bummer", new DialogInterface.OnClickListener() {
+                            .setNegativeButton(getString(R.string.dialog_bummer), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
@@ -290,17 +288,17 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
                                 }
                             });
                     if(canPlayExternally){
-                        mediaErrorDialog .setPositiveButton("Play with external app", new DialogInterface.OnClickListener() {
+                        mediaErrorDialog .setPositiveButton(getString(R.string.play_video_externally), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 startActivity(playVideoExternally);
                             }
                         });
                     }else{
-                        mediaErrorDialog .setPositiveButton("Search for external app", new DialogInterface.OnClickListener() {
+                        mediaErrorDialog .setPositiveButton(getString(R.string.search_for_video_player), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Intent goToMarket = new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://search?q=h264+media+player"));
+                                Intent goToMarket = new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://search?q=" + getString(R.string.video_player_search_query)));
                                 startActivity(goToMarket);
                             }
                         });

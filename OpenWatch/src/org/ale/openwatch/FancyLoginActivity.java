@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -23,8 +22,6 @@ import android.widget.*;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.loopj.android.http.JsonHttpResponseHandler;
-
-import org.ale.openwatch.R;
 
 import org.ale.openwatch.account.Authentication;
 import org.ale.openwatch.constants.Constants;
@@ -226,7 +223,7 @@ public class FancyLoginActivity extends SherlockActivity {
     }
 
     public void onForgotPasswordClick(View v){
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.openwatch.net/accounts/password/reset/"));
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.OW_URL + Constants.PASSWORD_RESET_ENDPOINT));
         startActivity(browserIntent);
     }
 
@@ -390,7 +387,7 @@ public class FancyLoginActivity extends SherlockActivity {
                                 dialog.setTitle(R.string.login_dialog_denied_title)
                                         .setMessage(
                                                 R.string.login_dialog_denied_msg)
-                                        .setNeutralButton(R.string.login_dialog_ok,
+                                        .setNeutralButton(R.string.dialog_ok,
                                                 defaultDialogOnClickListener)
                                         .show();
                                 break;
@@ -411,7 +408,7 @@ public class FancyLoginActivity extends SherlockActivity {
                         FancyLoginActivity.this);
                 dialog.setTitle(R.string.login_dialog_failed_title)
                         .setMessage(R.string.login_dialog_failed_msg)
-                        .setNeutralButton(R.string.login_dialog_ok,
+                        .setNeutralButton(R.string.dialog_ok,
                                 defaultDialogOnClickListener).show();
                 showProgress(false);
             }
@@ -480,7 +477,7 @@ public class FancyLoginActivity extends SherlockActivity {
         mPasswordView.setVisibility(View.VISIBLE);
         scrollFullDown();
         mPasswordView.requestFocus();
-        mLoginButton.setText("Login");
+        mLoginButton.setText(getString(R.string.login_button_text));
         password_field_visible = true;
     }
 
@@ -506,7 +503,7 @@ public class FancyLoginActivity extends SherlockActivity {
                     AlertDialog.Builder dialog = new AlertDialog.Builder(FancyLoginActivity.this);
                     dialog.setTitle(R.string.login_dialog_failed_title)
                             .setMessage(R.string.login_dialog_failed_msg)
-                            .setNeutralButton(R.string.login_dialog_ok,
+                            .setNeutralButton(R.string.dialog_ok,
                                     defaultDialogOnClickListener).show();
                 }
 

@@ -40,7 +40,7 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_picture_review);
-        this.getSupportActionBar().setTitle("Describe your Picture");
+        this.getSupportActionBar().setTitle(getString(R.string.title_activity_picture_review_ab_title));
 		// Show the Up button in the action bar.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		Log.i(TAG,"onCreate");
@@ -71,24 +71,22 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
     @Override
     public void onStop(){
         super.onStop();
-        Log.i(TAG,"onStop");
         last_created_photo_id = -1;
     }
 
     @Override
     public void onStart(){
         super.onStart();
-        Log.i(TAG,"onStart");
     }
 	
 	private void loadScaledPictureFromIntent(Intent intent) {
 	    //Bundle extras = intent.getExtras();
 	    if(intent.hasExtra(MediaStore.EXTRA_OUTPUT)){
-	    	Log.i("loadScaledPic", "got extra_output from intent");
+	    	//Log.i("loadScaledPic", "got extra_output from intent");
 	    	OWUtils.loadScaledPicture(intent.getStringExtra(MediaStore.EXTRA_OUTPUT), previewImageView);
 	    }else if(owphoto_id > 0){
-	    	Log.i("loadScaledPic", "got output from intent");
-	    	Log.i("PictureReview-loadScaled", "get owphoto_id: " + String.valueOf(owphoto_id));
+	    	//Log.i("loadScaledPic", "got output from intent");
+	    	//Log.i("PictureReview-loadScaled", "get owphoto_id: " + String.valueOf(owphoto_id));
 	    	OWPhoto photo = OWPhoto.objects(getApplicationContext(), OWPhoto.class).get(owphoto_id);
             try{
 	    	    OWUtils.loadScaledPicture(photo.filepath.get(), previewImageView);
@@ -161,13 +159,13 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
         builder.setView(layout);
         final AlertDialog dialog = builder.create();
 
-        ((TextView) layout.findViewById(R.id.share_title)).setText("Your photo is live! Spread the word and make an impact!");
+        ((TextView) layout.findViewById(R.id.share_title)).setText(R.string.share_dialog_photo_title);
         layout.findViewById(R.id.button_share).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
                 OWServerObject server_obj = OWServerObject.objects(c, OWServerObject.class).get(ow_server_obj_id);
-                Share.showShareDialogWithInfo(c, "Share Photo", server_obj.getTitle(getApplicationContext()), OWUtils.urlForOWServerObject(server_obj, getApplicationContext()));
+                Share.showShareDialogWithInfo(c, getString(R.string.share_dialog_photo_button), server_obj.getTitle(getApplicationContext()), OWUtils.urlForOWServerObject(server_obj, getApplicationContext()));
                 OWServiceRequests.increaseHitCount(getApplicationContext(), server_obj.getServerId(getApplicationContext()), ow_server_obj_id, server_obj.getContentType(getApplicationContext()), server_obj.getMediaType(getApplicationContext()), Constants.HIT_TYPE.CLICK);
                 OWPhotoReviewActivity.this.finish();
             }
@@ -192,9 +190,9 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
     }
 	//private static long last_call_time = System.currentTimeMillis();
 	private void postOWPhoto(){
-        Log.i(TAG, String.format("createOWPhoto object. last_id: %d, current_id: %d",last_created_photo_id, owphoto_id));
+        //Log.i(TAG, String.format("createOWPhoto object. last_id: %d, current_id: %d",last_created_photo_id, owphoto_id));
         if(owphoto_id == last_created_photo_id  ){
-            Log.i(TAG, "Blocking duplicate photo create attempt");
+            //Log.i(TAG, "Blocking duplicate photo create attempt");
             //last_call_time = System.currentTimeMillis();
             return;
         }else
@@ -238,7 +236,7 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
         super.onResume();
 
         LocalBroadcastManager.getInstance(this).registerReceiver(serverObjectSyncStateMessageReceiver,
-                new IntentFilter("server_object_sync"));
+                new IntentFilter(Constants.OW_SYNC_STATE_FILTER));
     }
 
 	@Override
@@ -251,10 +249,10 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
-            int status = intent.getIntExtra("status", -1);
-            Log.d("OWPhotoSync", String.format("Received sync success message with status %d. local model_id: %d, message model_id: %d ", status, ow_server_obj_id, intent.getIntExtra("model_id", -1)));
+            int status = intent.getIntExtra(Constants.OW_SYNC_STATE_STATUS, -1);
+            Log.d("OWPhotoSync", String.format("Received sync success message with status %d. local model_id: %d, message model_id: %d ", status, ow_server_obj_id, intent.getIntExtra(Constants.OW_SYNC_STATE_MODEL_ID, -1)));
             if(status == 1){ // sync complete
-                if(owphoto_id == intent.getIntExtra("child_model_id", -1) && owphoto_id != -1){
+                if(owphoto_id == intent.getIntExtra(Constants.OW_SYNC_STATE_CHILD_ID, -1) && owphoto_id != -1){
                     showSyncSuccess();
                 }
             }
@@ -269,7 +267,7 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
             findViewById(R.id.sync_progress).setVisibility(View.GONE);
             findViewById(R.id.sync_complete).setVisibility(View.VISIBLE);
             TextView sync_progress = ((TextView)findViewById(R.id.sync_progress_text));
-            sync_progress.setText("Your Photo is Live! \n" + url);
+            sync_progress.setText(getString(R.string.sync_photo_complete_header_text) + "\n" + url);
             sync_progress.setClickable(true);
             sync_progress.setOnClickListener(new View.OnClickListener() {
                 @Override

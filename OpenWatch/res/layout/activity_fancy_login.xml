@@ -53,7 +53,7 @@
         android:shadowDy="-2"
         android:shadowRadius=".1"
         android:textSize="22sp"
-        android:text="Welcome to OpenWatch. Enter your email to start muckraking."
+        android:text="@string/fancy_login_welcome_text"
         />
 
     <EditText
@@ -67,7 +67,7 @@
             android:layout_centerHorizontal="true"
             android:background="@drawable/white_edittext_bg"
             android:padding="5dp"
-            android:hint="Email"
+            android:hint="@string/Email"
             android:imeActionId="@+id/login"
             android:imeActionLabel="@string/action_sign_in_short"
             android:textSize="22sp"
@@ -85,7 +85,7 @@
             android:background="@drawable/white_edittext_bg"
             android:padding="5dp"
             android:layout_centerHorizontal="true"
-            android:hint="Password"
+            android:hint="@string/Password"
             android:imeActionId="@+id/login"
             android:imeActionLabel="@string/action_sign_in_short"
             android:textSize="22sp"
@@ -105,7 +105,7 @@
             android:shadowColor="#264826"
             android:shadowDy="-2"
             android:shadowRadius=".1"
-            android:text="Get Started"
+            android:text="@string/get_started_button_text"
             android:textSize="25sp"
         />
 
@@ -137,7 +137,7 @@
             android:shadowDy="-2"
             android:shadowRadius=".1"
             android:textSize="18sp"
-            android:text="Forgot Password?"
+            android:text="@string/forgot_password_label"
             />
     </RelativeLayout>
     </ScrollView>

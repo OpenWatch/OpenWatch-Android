@@ -68,7 +68,7 @@
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@id/thumbnail"
-        android:text="@string/by"
+        android:text="@string/By"
         android:textColor="@color/text_light" />
 
     <TextView

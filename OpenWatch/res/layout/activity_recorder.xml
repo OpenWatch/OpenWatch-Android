@@ -33,7 +33,7 @@
             android:shadowColor="#264826"
             android:shadowDy="-2"
             android:shadowRadius=".1"
-            android:text="Stop"
+            android:text="@string/stop_recording_dialog_stop"
             android:textSize="25sp"
             />
 

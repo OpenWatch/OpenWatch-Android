@@ -61,7 +61,7 @@ import org.ale.openwatch.model.OWUser;
             imageSwitcher.setImageResource(drawale_states[state]);
             if(state == 3){
                 // Show last on boarding screen depending on agent selection
-                continueButton.setText("Get Started");
+                continueButton.setText(getString(R.string.get_started_button_text));
                 if(agent_applicant)
                     imageSwitcher.setImageResource(R.drawable.onbo_4agent);
                 else

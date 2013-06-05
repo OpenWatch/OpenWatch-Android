@@ -28,6 +28,8 @@ public class Constants {
 	
 	public static final String DEV_HOST = "http://10.0.1.26:8000/";
 	public static final String DEV_CAPTURE_HOST = "http://10.0.1.26:5000/";
+
+    public static final String PASSWORD_RESET_ENDPOINT = "accounts/password/reset/";
 	
 	// OpenWatch web service root url and endpoints
 	public static final String OW_MEDIA_URL;
@@ -277,7 +279,7 @@ public class Constants {
 	public static final String OW_LAT = "latitude";
 	public static final String OW_LON = "longitude";
 	
-	//Hit counts
+	// Hit counts
 	public static enum HIT_TYPE { VIEW, CLICK };
 	public static final String OW_STATUS = "status";
 	public static final String OW_HIT_URL = "increase_hitcount";
@@ -285,6 +287,12 @@ public class Constants {
 	public static final String OW_HIT_MEDIA_TYPE = "media_type";
 	public static final String OW_HIT_TYPE = "hit_type";
 	public static final String OW_HITS = "hits";
+
+    // BroadcastReceiver Intent filter
+    public static final String OW_SYNC_STATE_FILTER = "server_object_sync";
+    public static final String OW_SYNC_STATE_STATUS = "status";
+    public static final String OW_SYNC_STATE_MODEL_ID = "model_id";
+    public static final String OW_SYNC_STATE_CHILD_ID = "child_model_id";
 
 
 }

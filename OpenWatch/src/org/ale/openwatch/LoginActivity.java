@@ -2,7 +2,6 @@ package org.ale.openwatch;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -27,8 +26,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.gson.Gson;
 import com.loopj.android.http.JsonHttpResponseHandler;
-
-import org.ale.openwatch.R;
 
 import org.ale.openwatch.account.Authentication;
 import org.ale.openwatch.constants.Constants;
@@ -349,12 +346,12 @@ public class LoginActivity extends SherlockActivity {
 									R.string.login_dialog_unknown_email_title)
 									.setMessage(
 											getString(R.string.login_dialog_unknown_email_msg)
-													+ " " + mEmail + "?")
+													+ " " + mEmail + getString(R.string.question_mark))
 									.setNegativeButton(
 											R.string.login_dialog_signup,
 											signupDialogOnClickListener)
 									.setPositiveButton(
-											R.string.login_dialog_no,
+											R.string.dialog_no,
 											defaultDialogOnClickListener)
 									.show();
 							break;
@@ -363,7 +360,7 @@ public class LoginActivity extends SherlockActivity {
 							dialog.setTitle(R.string.login_dialog_denied_title)
 									.setMessage(
 											R.string.login_dialog_denied_msg)
-									.setNeutralButton(R.string.login_dialog_ok,
+									.setNeutralButton(R.string.dialog_ok,
 											defaultDialogOnClickListener)
 									.show();
 							break;
@@ -384,7 +381,7 @@ public class LoginActivity extends SherlockActivity {
 						LoginActivity.this);
 				dialog.setTitle(R.string.login_dialog_failed_title)
 						.setMessage(R.string.login_dialog_failed_msg)
-						.setNeutralButton(R.string.login_dialog_ok,
+						.setNeutralButton(R.string.dialog_ok,
 								defaultDialogOnClickListener).show();
 				showProgress(false);
 			}
@@ -438,7 +435,7 @@ public class LoginActivity extends SherlockActivity {
 											R.string.signup_dialog_failed_msg);
 							break;
 						}
-						dialog.setNeutralButton(R.string.login_dialog_ok,
+						dialog.setNeutralButton(R.string.dialog_ok,
 								defaultDialogOnClickListener);
 						dialog.show();
 					}
@@ -455,7 +452,7 @@ public class LoginActivity extends SherlockActivity {
 						LoginActivity.this);
 				dialog.setTitle(R.string.login_dialog_failed_title)
 						.setMessage(R.string.login_dialog_failed_msg)
-						.setNeutralButton(R.string.login_dialog_ok,
+						.setNeutralButton(R.string.dialog_ok,
 								defaultDialogOnClickListener).show();
 			}
 

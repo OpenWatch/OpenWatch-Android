@@ -108,9 +108,9 @@ public class MainActivity extends SherlockActivity {
     public void feedbackButtonClick(View v){
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                 "mailto",Constants.SUPPORT_EMAIL, null));
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "OpenWatch-Android feedback");
-        emailIntent.putExtra(Intent.EXTRA_TEXT,"Hey OpenWatch!\n\n" + OWUtils.getPackageVersion(getApplicationContext()));
-        startActivity(Intent.createChooser(emailIntent, "Send us feedback"));
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT,getString(R.string.share_email_subject));
+        emailIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_email_text) + OWUtils.getPackageVersion(getApplicationContext()));
+        startActivity(Intent.createChooser(emailIntent, getString(R.string.share_chooser_title)));
     }
 
 	@Override

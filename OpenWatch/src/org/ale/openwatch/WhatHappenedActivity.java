@@ -134,13 +134,13 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
         builder.setView(layout);
         final AlertDialog dialog = builder.create();
 
-        ((TextView) layout.findViewById(R.id.share_title)).setText("Your video is live! Spread the word and make an impact!");
+        ((TextView) layout.findViewById(R.id.share_title)).setText(R.string.share_dialog_video_message);
         layout.findViewById(R.id.button_share).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
                 OWServerObject server_obj = OWServerObject.objects(c, OWServerObject.class).get(model_id);
-                Share.showShareDialogWithInfo(c, "Share Photo", server_obj.getTitle(getApplicationContext()), OWUtils.urlForOWServerObject(server_obj, getApplicationContext()));
+                Share.showShareDialogWithInfo(c, getString(R.string.share_video), server_obj.getTitle(getApplicationContext()), OWUtils.urlForOWServerObject(server_obj, getApplicationContext()));
                 OWServiceRequests.increaseHitCount(getApplicationContext(), server_obj.getServerId(getApplicationContext()), model_id, server_obj.getContentType(getApplicationContext()), server_obj.getMediaType(getApplicationContext()), Constants.HIT_TYPE.CLICK);
                 WhatHappenedActivity.this.finish();
             }
@@ -261,16 +261,16 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
-            int status = intent.getIntExtra("status", -1);
+            int status = intent.getIntExtra(Constants.OW_SYNC_STATE_STATUS, -1);
             if(status == 1){ // sync complete
-                if(model_id == intent.getIntExtra("model_id", -1) && model_id != -1){
+                if(model_id == intent.getIntExtra(Constants.OW_SYNC_STATE_MODEL_ID, -1) && model_id != -1){
                     OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
                     Log.d("WhatHappenedActivity-BroadcastReceived", "sync complete. serverObject serverID: " + String.valueOf(serverObject.getServerId(getApplicationContext())));
                     final String url = OWUtils.urlForOWServerObject(serverObject, getApplicationContext());
                     findViewById(R.id.sync_progress).setVisibility(View.GONE);
                     findViewById(R.id.sync_complete).setVisibility(View.VISIBLE);
                     TextView sync_progress = ((TextView)findViewById(R.id.sync_progress_text));
-                    sync_progress.setText("Your Video is Live! \n" + url);
+                    sync_progress.setText(getString(R.string.sync_video_complete_header_text) +  "\n" + url);
                     sync_progress.setClickable(true);
                     sync_progress.setOnClickListener(new View.OnClickListener() {
                         @Override

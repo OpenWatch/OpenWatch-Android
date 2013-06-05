@@ -2,6 +2,7 @@ package org.ale.openwatch.share;
 
 import android.content.Context;
 import android.content.Intent;
+import org.ale.openwatch.R;
 
 public class Share {
 
@@ -17,7 +18,7 @@ public class Share {
         String toShare = url;
         if(item_title != null)
             toShare += "\n" + item_title;
-        toShare += "\n" + "via @OpenWatch";
+        toShare += "\n" + c.getString(R.string.via_openwatch);
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("text/plain");
         i.putExtra(Intent.EXTRA_TEXT, toShare);
