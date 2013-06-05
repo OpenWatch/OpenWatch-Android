@@ -40,6 +40,18 @@
     <string name="take_choose_picture_prompt">How shall we get your fine picture?</string>
     <string name="take_picture">Use camera</string>
     <string name="choose_picture">Browse gallery</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in_register"><b>Sign in</b> or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="menu_forgot_password">Recover lost password</string>
+    <string name="login_progress_signing_in">Signing in&#8230;</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+
+    <string name="message_account_stored">You are currently signed in. For security, your password is not stored on this device.</string>
 
     <!-- FancyLoginActivity -->
     <string name="fancy_login_welcome_text">Welcome to OpenWatch. Enter your email to get started.</string>
@@ -78,6 +90,7 @@
     <string name="tab_local">Local</string>
     <string name="tab_following">Following</string>
     <string name="tab_featured">Top Stories</string>
+    <string name="tab_Raw">Raw</string>
     <string name="title_activity_ormtest">ORMTestActivity</string>
     <string name="loading_recordings">Loading recordings</string>
     <string name="no_recordings">You have no recordings</string>
@@ -170,4 +183,12 @@
 
     <!-- ListView -->
     <string name="loading_next_page">Loading...</string>
+
+    <!-- Settings -->
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Account settings -->
+    <string name="pref_header_account">OpenWatch.net</string>
+    <string name="pref_title_account">Account</string>
+    <string name="pref_description_account">Your OpenWatch.net credentials</string>
 </resources>
