@@ -33,6 +33,8 @@ public class OWMediaRequests {
 
 	private static final String TAG = "OWMediaServiceRequests";
 
+    private static final String NULL_FILEPATH_ERROR = "error: Null Filepath";
+
 	/**
 	 * POSTs the start signal to the OW NodeMediaCapture Service
 	 * 
@@ -204,7 +206,7 @@ public class OWMediaRequests {
 				try {
 					String response_string = ApacheFilePost(c, urlStr, filename);
 					Log.i(TAG, "urlHttpConnectionPost Response: " + response_string);
-					if(response_string != null && response_string.compareTo("error")!= 0){
+					if(response_string != null && !response_string.contains("error")){
 						JSONObject response = new JSONObject(response_string);
 						if (response != null
 								&& response.has(Constants.OW_SUCCESS)
@@ -229,6 +231,7 @@ public class OWMediaRequests {
 									local.lq_synced.set(true);
 								}
 								local.save(c);
+                                Log.i("MediaSyncer", String.format("Set local recording %d hq_synced", local.getId()));
 							}
 
                             // BEGIN OWServerObject Sync Broadcast
@@ -241,7 +244,14 @@ public class OWMediaRequests {
                             // END OWServerObject Sync Broadcast
 
 						}
-					}
+					}else if(response_string != null && response_string.compareTo(OWMediaRequests.NULL_FILEPATH_ERROR) == 0){
+                        // if the request failed because the object has no media filepath set
+                        OWLocalVideoRecording local = OWLocalVideoRecording
+                                .objects(c, OWLocalVideoRecording.class)
+                                .get(model_id);
+                        local.setSynced(c, true); // set synced because this recording has been deleted from the device
+                                                  // don't try to sync each app load
+                    }
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -254,7 +264,9 @@ public class OWMediaRequests {
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}
+				} catch (NullPointerException e){
+                    e.printStackTrace();
+                }
 			}
 
 		}.run();
@@ -262,6 +274,8 @@ public class OWMediaRequests {
 	
 	public static String ApacheFilePost(Context c, String url, String filename, String post_key) throws ParseException, ClientProtocolException, IOException{
 		final String TAG = "ApacheFilePost";
+        if(filename == null)
+            return NULL_FILEPATH_ERROR;
 		Log.i(TAG, "url " + url + " filename " + filename);
 		DefaultHttpClient client = HttpClient.setupDefaultHttpClient(c);
 		HttpPost        post   = new HttpPost( url );

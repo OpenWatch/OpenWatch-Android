@@ -357,7 +357,7 @@ public class ChunkedAudioVideoSoftwareRecorder {
 				is_initialized = false;
 			}
 			else{
-				Log.e(TAG, "run() called but EncoderTask not initialized");
+				Log.e(TAG, "run() called but SyncTask not initialized");
 			}
 				
 		}

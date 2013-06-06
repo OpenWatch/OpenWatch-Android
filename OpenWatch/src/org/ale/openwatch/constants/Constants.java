@@ -259,6 +259,8 @@ public class Constants {
 	public static final String OW_MEDIA_UPLOAD = "upload";
 	public static final String OW_MEDIA_HQ_UPLOAD = "upload_hq";
 	public static final String OW_MEDIA_UPDATE_META = "update_metadata";
+
+    public static final String OW_HQ_FILENAME = "hq.mp4";
 	
 	// OpenWatch media capture web service POST keys
 	public static final String OW_REC_START = "recording_start";

@@ -241,7 +241,7 @@ public class RecorderActivity extends SherlockActivity implements
 		output_filename += "/hq";
 		File output_file = new File(output_filename);
 		if(output_file.mkdirs())
-			output_filename += "/hq.mp4";
+			output_filename += "/" + Constants.OW_HQ_FILENAME;
 		return output_file.createNewFile();
 	}
 	

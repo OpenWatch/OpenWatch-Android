@@ -474,6 +474,12 @@ public class OWServiceRequests {
 			public void run(){
 				String file_response;
 				try {
+                    String filepath = object.getMediaFilepath(app_context);
+                    if(filepath == null){
+                        Log.e(TAG, String.format("Error, OWServerobject %d has null filepath", ((Model)object).getId()));
+                        object.setSynced(app_context, true); // set object synced, because we have no hope of ever syncing it mobile file deleted
+                        return;
+                    }
 					file_response = OWMediaRequests.ApacheFilePost(app_context, instanceEndpointForOWMediaObject(app_context, object), object.getMediaFilepath(app_context), "file_data");
 					Log.i(TAG, "binary media sent! response: " + file_response);
                     if(file_response.contains("object")){
@@ -499,7 +505,9 @@ public class OWServiceRequests {
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}
+				} catch (NullPointerException e){
+                    e.printStackTrace();
+                }
 				
 			}
 		}.start();
