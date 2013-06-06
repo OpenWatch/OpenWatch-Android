@@ -54,7 +54,8 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 		}catch (Exception e){
 			Log.e(TAG, "could not load recording_id from intent");
 		}
-		fetchRecordingFromOW();
+        if(model_id != -1)
+		    fetchRecordingFromOW();
 		
 		Log.i(TAG, "sent recordingMeta request");
 	}
@@ -163,20 +164,6 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
             }
         });
         dialog.show();
-	}
-	
-	private void showShareDialog(int recording_server_id){
-        OWServerObject server_object = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
-		String url = Constants.OW_URL +  Constants.OW_RECORDING_VIEW + String.valueOf(recording_server_id);
-        String toShare = url + "\n" + server_object.getTitle(getApplicationContext()) + "\n" + "via @OpenWatch";
-		Log.i(TAG, "model_id: " + String.valueOf(model_id) + " url: " + url);
-		
-		Intent i = new Intent(Intent.ACTION_SEND);
-		i.setType("text/plain");
-		i.putExtra(Intent.EXTRA_TEXT, toShare);
-		i.setFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
-		WhatHappenedActivity.this.finish();
-		startActivity(Intent.createChooser(i, getString(R.string.share_dialog_title)));
 	}
 
     @Override
