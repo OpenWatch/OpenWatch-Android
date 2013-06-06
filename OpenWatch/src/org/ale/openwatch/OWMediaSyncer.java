@@ -1,17 +1,21 @@
 package org.ale.openwatch;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.orm.androrm.Filter;
+import com.orm.androrm.Model;
 import com.orm.androrm.QuerySet;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
+import org.ale.openwatch.http.OWMediaRequests;
 import org.ale.openwatch.http.OWServiceRequests;
 import org.ale.openwatch.model.OWLocalVideoRecording;
 import org.ale.openwatch.model.OWPhoto;
 import org.ale.openwatch.model.OWServerObject;
 import org.ale.openwatch.model.OWServerObjectInterface;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -33,8 +37,10 @@ public class OWMediaSyncer {
 
         Filter filter = new Filter();
         filter.is(DBConstants.SYNCED, 0);
-
         QuerySet<OWPhoto> unSyncedPhotos = OWPhoto.objects(c, OWPhoto.class).filter(filter);
+
+        filter = new Filter();
+        filter.is(DBConstants.LOCAL_RECORDINGS_HQ_SYNCED, 0);
         QuerySet<OWLocalVideoRecording> unSyncedRecordings = OWLocalVideoRecording.objects(c, OWLocalVideoRecording.class).filter(filter);
 
         for(OWPhoto photo : unSyncedPhotos){
@@ -44,20 +50,45 @@ public class OWMediaSyncer {
             objectsToSync.add(video);
         }
 
+        Log.i(TAG, String.format("Found %d unsynced objects", objectsToSync.size()));
+
         get_handler = new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(JSONObject response) {
                 Log.i(TAG, "getMeta response: " + response.toString());
                 if (response.has("id") && !response.has("media_url")) {
                     // send media
-                    OWServiceRequests.sendOWMobileGeneratedObjectMedia(c, getCurrentObject());
+                    Log.i(TAG, "Sending media for object");
+                    OWServerObjectInterface object = getCurrentObject();
+                    SharedPreferences prefs = c.getSharedPreferences(Constants.PROFILE_PREFS, c.MODE_PRIVATE);
+                    String public_upload_token = prefs.getString(Constants.PUB_TOKEN, "");
+                    if(object.getMediaType(c) == Constants.MEDIA_TYPE.VIDEO){
+                        OWMediaRequests.end(c, public_upload_token, ((OWLocalVideoRecording)object).recording.get(c));
+                        OWMediaRequests.safeSendHQFile(c, public_upload_token, object.getUUID(c), object.getMediaFilepath(c), ((Model)object).getId());
+                    }else{
+                        OWServiceRequests.sendOWMobileGeneratedObjectMedia(c, getCurrentObject());
+                    }
                 }
             }
 
             @Override
             public void onFailure(Throwable e, String response) {
-                Log.i(TAG, "getRecording failed. let's try creating object: " + response);
-                OWServiceRequests.createOWServerObject(c, getCurrentObject(), null);
+                //Log.i(TAG, "getRecording failed. let's try creating object: " + response);
+                //TODO: We should confirm the response status code is 404
+                if(getCurrentObject().getMediaType(c) == Constants.MEDIA_TYPE.VIDEO){
+                    new Thread(){
+                        public void run(){
+                            OWServerObjectInterface object = getCurrentObject();
+                            SharedPreferences prefs = c.getSharedPreferences(Constants.PROFILE_PREFS, c.MODE_PRIVATE);
+                            String public_upload_token = prefs.getString(Constants.PUB_TOKEN, "");
+                            OWMediaRequests.start(c, public_upload_token, object.getUUID(c), "");
+                            OWMediaRequests.end(c, public_upload_token, ((OWLocalVideoRecording)object).recording.get(c));
+                            OWMediaRequests.safeSendHQFile(c, public_upload_token, object.getUUID(c), object.getMediaFilepath(c), ((Model)object).getId());
+                        }
+                    }.start();
+
+                }else
+                    OWServiceRequests.createOWServerObject(c, getCurrentObject(), null);
                 e.printStackTrace();
             }
 
@@ -74,7 +105,8 @@ public class OWMediaSyncer {
 
         };
 
-        OWServiceRequests.getOWServerObjectMeta(c, getCurrentObject(), "", get_handler);
+        if(getCurrentObject() != null)
+            OWServiceRequests.getOWServerObjectMeta(c, getCurrentObject(), "", get_handler);
 
     }
 

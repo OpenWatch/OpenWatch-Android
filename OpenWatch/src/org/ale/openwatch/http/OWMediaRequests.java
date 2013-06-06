@@ -107,8 +107,7 @@ public class OWMediaRequests {
 				recording.uuid.get());
 		Log.i(TAG, "sending end signal to " + url + " request body: "
 				+ recording.local.get(c).toOWMediaServerJSON(c));
-		client.post(c, url, Utils.JSONObjectToStringEntity(recording.local.get(
-				c).toOWMediaServerJSON(c)), "application/json",
+		client.post(c, url, Utils.JSONObjectToStringEntity(recording.toJsonObject(c)), "application/json",
 				new AsyncHttpResponseHandler() {
 
 					@Override

@@ -80,7 +80,8 @@ public class OWLocalVideoRecording extends Model implements OWServerObjectInterf
 		}
 		return result;
 	}
-	
+
+    // deprecated
 	public JSONObject toOWMediaServerJSON(Context c){
 		JSONObject result = new JSONObject();
 		try {
@@ -199,6 +200,8 @@ public class OWLocalVideoRecording extends Model implements OWServerObjectInterf
 
     @Override
     public String getUUID(Context c) {
+        if(recording.get(c) != null)
+            return recording.get(c).getUUID(c);
         return null;
     }
 

@@ -141,10 +141,12 @@ public class MainActivity extends SherlockActivity {
 		}
 		
 		if(authenticated && db_initialized && !((OWApplication) this.getApplicationContext()).per_launch_sync){
-			// TODO: Attempt to login with stored credentials if we
+			// TODO: Attempt to login with stored credentials and report back if error
 			// check this application state
 			//OWServiceRequests.onLaunchSync(this.getApplicationContext()); // get list of tags, etc
-		}
+            OWMediaSyncer.syncMedia(getApplicationContext());
+            ((OWApplication) getApplicationContext()).per_launch_sync = true;
+        }
 		if(debug_fancy || (!authenticated && !this.getIntent().hasExtra(Constants.AUTHENTICATED) ) ){
 			Intent i = new Intent(this, FancyLoginActivity.class	);
             //Intent i = new Intent(this, LoginActivity.class	);

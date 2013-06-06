@@ -64,60 +64,6 @@ public class RecorderActivity extends SherlockActivity implements
 	String recording_start;
 	String recording_end;
 	
-	/*
-	 * ChunkedRecorderListener is set on FFChunkedAudioVideoEncoder 
-	 */
-	/*
-	ChunkedRecorderListener chunk_listener = new ChunkedRecorderListener(){
-		private static final String TAG = "ChunkedRecorderListener";
-		Context c; // for db transactions
-		String recording_uuid; // recording uuid for OW service
-		int owrecording_id = -1; // database id for OWLocalRecording
-		int owmediaobject_id = -1; // db id for OWMediaObject
-		ArrayList<String> all_files = null;
-		
-		@Override
-		public int getRecordingDBID(){
-			return owrecording_id;
-		}
-		@Override
-		public int getMediaObjectDBID(){
-			return owmediaobject_id;
-		}
-		@Override
-		public void setRecordingUUID(String recording_uuid) {
-			this.recording_uuid = recording_uuid;
-			
-		}
-				
-		public void setContext(Context c){
-			this.c = c.getApplicationContext();
-		}
-		
-		@Override
-		public void encoderShifted(final String finalized_file) {
-			new MediaSignalTask().execute("chunk", finalized_file);
-		}
-
-		@Override
-		public void encoderStarted(Date start_date) {
-			new MediaSignalTask().execute("start", Constants.utc_formatter.format(start_date));
-			
-		}
-
-		@Override
-		public void encoderStopped(Date start_date, Date stop_date, ArrayList<String> all_files) {
-			this.all_files = all_files;
-			//Log.i(TAG,"start-date: " + Constants.sdf.format(start_date) + " stop-date: " + Constants.sdf.format(stop_date));
-			//Log.i(TAG, "sending all_files: " + new JSONArray(all_files).toString());
-			new MediaSignalTask().execute("end", Constants.utc_formatter.format(start_date), Constants.utc_formatter.format(stop_date), new JSONArray(all_files).toString());
-			//new MediaSignalTask().execute("hq", hq_filename);
-			Log.i(TAG, "fired end and hq mediaSignalTasks");
-		}
-		
-		
-	*/
-	
 	class MediaSignalTask extends AsyncTask<String, Void, Void> {
         protected Void doInBackground(String... command) {
         	Log.i(TAG, "sendMediaCapture command: " + command[0] + " command length: " + command.length + " recording_uuid: " + recording_uuid);
@@ -191,7 +137,7 @@ public class RecorderActivity extends SherlockActivity implements
         protected Void onPostExecute() {
         	return null;
         }
-};
+    }
 	
 	@Override
 	protected void onDestroy(){
