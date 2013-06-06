@@ -4,9 +4,10 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="25dp"
-        android:layout_marginBottom="25dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
         android:gravity="center"
+        android:ignoreGravity="@+id/sync_progress_container"
         tools:context=".MainActivity" >
 
         <Button
@@ -17,6 +18,7 @@
             android:layout_centerHorizontal="true"
             android:background="@android:color/transparent"
             android:drawableLeft="@drawable/camcorder_button"
+            android:layout_marginTop="25dp"
             android:drawablePadding="10dp"
             android:onClick="camcorderButtonClick"
             android:text="@string/video_button_text"
@@ -122,4 +124,7 @@
             android:textColor="#000000"
             android:textSize="24sp"
             android:textStyle="bold" />
+
+        <include layout="@layout/progress_header"/>
+
     </RelativeLayout>

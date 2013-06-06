@@ -261,8 +261,8 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
-            int status = intent.getIntExtra(Constants.OW_SYNC_STATE_STATUS, -1);
-            if(status == 1){ // sync complete
+            int status = intent.getIntExtra(Constants.OW_SYNC_STATE_STATUS, Constants.OW_SYNC_STATUS_FAILED);
+            if(status == Constants.OW_SYNC_STATUS_SUCCESS){ // sync complete
                 if(model_id == intent.getIntExtra(Constants.OW_SYNC_STATE_MODEL_ID, -1) && model_id != -1){
                     OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
                     Log.d("WhatHappenedActivity-BroadcastReceived", "sync complete. serverObject serverID: " + String.valueOf(serverObject.getServerId(getApplicationContext())));
@@ -280,6 +280,8 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
                         }
                     });
                 }
+            }else if(status == Constants.OW_SYNC_STATUS_FAILED){
+
             }
         }
     };

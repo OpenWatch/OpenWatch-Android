@@ -9,6 +9,8 @@
         android:gravity="center"
         tools:context=".MainActivity" >
 
+        <include layout="@layout/progress_header"/>
+
         <Button
             android:id="@+id/button_camcorder"
             android:layout_width="wrap_content"

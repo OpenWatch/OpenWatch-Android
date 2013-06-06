@@ -24,6 +24,7 @@
     <string name="local_button_text">Local Feed</string>
     <string name="feedback_button_text">Send Feedback</string>
     <string name="settings_button_text">Settings</string>
+    <string name="syncing_existing_media">Syncing existing media...\nSync will continue in the background</string>
 
         <!-- Send Feedback Intent Extras -->
         <string name="share_email_subject">OpenWatch-Android feedback</string>

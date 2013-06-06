@@ -30,6 +30,8 @@ public class OWMediaSyncer {
 
     private static ExecutorService syncing_service = Executors.newSingleThreadExecutor();
 
+    public static boolean syncing = false;
+
 
     public static void syncMedia(final Context c){
 
@@ -56,15 +58,6 @@ public class OWMediaSyncer {
             numTasks++;
         }
         syncing_service.shutdown();
-
-        if(numTasks > 0){
-            Log.d(TAG, "Broadcasting background sync begin");
-            Intent intent = new Intent("server_object_sync");
-            // You can also include some extra data.
-            intent.putExtra("status", 1);
-            intent.putExtra("child_model_id", ((Model)object).getId());
-            LocalBroadcastManager.getInstance(app_context).sendBroadcast(intent);
-        }
 
         Log.i(TAG, String.format("Found %d unsynced objects", numTasks));
     }
@@ -97,6 +90,8 @@ public class OWMediaSyncer {
             @Override
             public void onSuccess(JSONObject response) {
                 Log.i(TAG, "getMeta response: " + response.toString());
+                if (response.has("id"))
+                    broadcastMessage(c, Constants.OW_SYNC_STATUS_BEGIN_BULK);
                 if (response.has("id") && !response.has("media_url")) {
                     // send binary media
                     Log.i(TAG, String.format("sending %s media with id %d", object.getMediaType(c).toString(), ((Model)object).getId()));
@@ -145,21 +140,28 @@ public class OWMediaSyncer {
             @Override
             public void onFailure(Throwable e, String response) {
                 Log.i(TAG, "getRecording failed. let's try creating object: " + response);
-                //TODO: We should confirm the response status code is 404
-                if(object.getMediaType(c) == Constants.MEDIA_TYPE.VIDEO){
-                    new Thread(){
-                        public void run(){
-                            SharedPreferences prefs = c.getSharedPreferences(Constants.PROFILE_PREFS, c.MODE_PRIVATE);
-                            String public_upload_token = prefs.getString(Constants.PUB_TOKEN, "");
-                            OWMediaRequests.start(c, public_upload_token, object.getUUID(c), "");
-                            OWMediaRequests.end(c, public_upload_token, ((OWLocalVideoRecording)object).recording.get(c));
-                            OWMediaRequests.safeSendHQFile(c, public_upload_token, object.getUUID(c), object.getMediaFilepath(c), ((Model)object).getId());
-                        }
-                    }.start();
-
-                }else
-                    OWServiceRequests.createOWServerObject(c, object, null);
                 e.printStackTrace();
+                Log.i(TAG+"getRecordingFailed", String.format("message: %s . cause: %s",e.getMessage(),e.getCause()));
+                //TODO: We should confirm the response status code is 404
+                if(e.getMessage().compareTo("NOT FOUND") == 0){
+                    broadcastMessage(c, Constants.OW_SYNC_STATUS_BEGIN_BULK);
+                    if(object.getMediaType(c) == Constants.MEDIA_TYPE.VIDEO){
+                        new Thread(){
+                            public void run(){
+                                SharedPreferences prefs = c.getSharedPreferences(Constants.PROFILE_PREFS, c.MODE_PRIVATE);
+                                String public_upload_token = prefs.getString(Constants.PUB_TOKEN, "");
+                                OWMediaRequests.start(c, public_upload_token, object.getUUID(c), "");
+                                OWMediaRequests.end(c, public_upload_token, ((OWLocalVideoRecording)object).recording.get(c));
+                                OWMediaRequests.safeSendHQFile(c, public_upload_token, object.getUUID(c), object.getMediaFilepath(c), ((Model)object).getId());
+                            }
+                        }.start();
+
+                    }else
+                        OWServiceRequests.createOWServerObject(c, object, null);
+                    e.printStackTrace();
+                }else{
+
+                }
             }
 
             @Override
@@ -168,6 +170,33 @@ public class OWMediaSyncer {
             }
 
         };
+    }
+
+    private static class SyncCompleteTask implements Runnable{
+
+        Context c;
+
+        public SyncCompleteTask(Context c){
+            this.c = c;
+        }
+
+        @Override
+        public void run() {
+            broadcastMessage(c, Constants.OW_SYNC_STATUS_END_BULK);
+        }
+
+
+    }
+
+    private static void broadcastMessage(Context c, int status){
+        if(status == Constants.OW_SYNC_STATUS_BEGIN_BULK)
+            syncing = true;
+        else if(status == Constants.OW_SYNC_STATUS_END_BULK)
+            syncing = false;
+        Log.i(TAG, String.format("broadcasting message %d", status));
+        Intent intent = new Intent(Constants.OW_SYNC_STATE_FILTER);
+        intent.putExtra(Constants.OW_SYNC_STATE_STATUS, status);
+        LocalBroadcastManager.getInstance(c).sendBroadcast(intent);
     }
 
 

@@ -295,6 +295,11 @@ public class Constants {
     public static final String OW_SYNC_STATE_STATUS = "status";
     public static final String OW_SYNC_STATE_MODEL_ID = "model_id";
     public static final String OW_SYNC_STATE_CHILD_ID = "child_model_id";
+    public static final int OW_SYNC_STATUS_BEGIN = 0;
+    public static final int OW_SYNC_STATUS_BEGIN_BULK = 10;
+    public static final int OW_SYNC_STATUS_END_BULK = 20;
+    public static final int OW_SYNC_STATUS_FAILED = -1;
+    public static final int OW_SYNC_STATUS_SUCCESS = 1;
 
 
 }

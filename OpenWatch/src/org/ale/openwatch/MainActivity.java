@@ -1,14 +1,14 @@
 package org.ale.openwatch;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
@@ -23,6 +23,7 @@ import org.ale.openwatch.database.DatabaseManager;
 import org.ale.openwatch.file.FileUtils;
 import org.ale.openwatch.location.DeviceLocation;
 import org.ale.openwatch.model.OWPhoto;
+import org.ale.openwatch.model.OWServerObject;
 
 public class MainActivity extends SherlockActivity {
 	
@@ -48,8 +49,21 @@ public class MainActivity extends SherlockActivity {
 	@Override
 	protected void onResume(){
 		super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(serverObjectSyncStateMessageReceiver,
+                new IntentFilter(Constants.OW_SYNC_STATE_FILTER));
+
+        if(OWMediaSyncer.syncing)
+            findViewById(R.id.sync_progress_container).setVisibility(View.VISIBLE);
+        else
+            findViewById(R.id.sync_progress_container).setVisibility(View.GONE);
 		checkUserStatus();
 	}
+
+    @Override
+    public void onPause(){
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(serverObjectSyncStateMessageReceiver);
+        super.onPause();
+    }
 
 
 	public void camcorderButtonClick(View v) {
@@ -178,5 +192,21 @@ public class MainActivity extends SherlockActivity {
 		}
 		
 	}
+
+    private BroadcastReceiver serverObjectSyncStateMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            int status = intent.getIntExtra(Constants.OW_SYNC_STATE_STATUS, Constants.OW_SYNC_STATUS_FAILED);
+            Log.i("MainActivity", String.format("got broadcastReceiver message %d", status));
+            if(status == Constants.OW_SYNC_STATUS_BEGIN_BULK){
+                findViewById(R.id.sync_progress_container).setVisibility(View.VISIBLE);
+                ((TextView)findViewById(R.id.sync_progress_text)).setText(getString(R.string.syncing_existing_media));
+
+            }else if(status == Constants.OW_SYNC_STATUS_END_BULK){
+                (findViewById(R.id.sync_progress_container)).setVisibility(View.GONE);
+            }
+        }
+    };
 
 }

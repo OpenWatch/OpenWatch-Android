@@ -249,9 +249,9 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
-            int status = intent.getIntExtra(Constants.OW_SYNC_STATE_STATUS, -1);
+            int status = intent.getIntExtra(Constants.OW_SYNC_STATE_STATUS, Constants.OW_SYNC_STATUS_FAILED);
             Log.d("OWPhotoSync", String.format("Received sync success message with status %d. local model_id: %d, message model_id: %d ", status, ow_server_obj_id, intent.getIntExtra(Constants.OW_SYNC_STATE_MODEL_ID, -1)));
-            if(status == 1){ // sync complete
+            if(status == Constants.OW_SYNC_STATUS_SUCCESS){ // sync complete
                 if(owphoto_id == intent.getIntExtra(Constants.OW_SYNC_STATE_CHILD_ID, -1) && owphoto_id != -1){
                     showSyncSuccess();
                 }
