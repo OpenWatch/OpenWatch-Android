@@ -19,6 +19,7 @@ import org.ale.openwatch.model.OWServerObjectInterface;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -43,29 +44,31 @@ public class OWMediaSyncer {
         filter.is(DBConstants.LOCAL_RECORDINGS_HQ_SYNCED, 0);
         QuerySet<OWLocalVideoRecording> unSyncedRecordings = OWLocalVideoRecording.objects(c, OWLocalVideoRecording.class).filter(filter);
 
+        ArrayList<Runnable> tasks = new ArrayList<Runnable>();
         SyncTask syncTask;
-        int numTasks = 0;
         for(OWPhoto photo : unSyncedPhotos){
             //objectsToSync.add(photo);
             syncTask = new SyncTask(c, photo, false);
-            syncing_service.submit(syncTask);
-            numTasks++;
+            tasks.add(syncTask);
         }
-        int len = unSyncedRecordings.count();
-        int loopCounter = 0;
         for(OWLocalVideoRecording video : unSyncedRecordings){
             //objectsToSync.add(video);
-            loopCounter ++;
-            if(len == loopCounter)
-                syncTask = new SyncTask(c, video, true); // mark as last task
-            else
-                syncTask = new SyncTask(c, video, false);
-            syncing_service.submit(syncTask);
-            numTasks++;
+            syncTask = new SyncTask(c, video, false);
+            tasks.add(syncTask);
         }
+        if(tasks.size() > 0){
+            ((SyncTask)tasks.get(tasks.size()-1)).finalTask = true;
+            for(Runnable task : tasks){
+                syncing_service.submit(task);
+            }
+        }else
+            syncing = false;
+
         syncing_service.shutdown();
 
-        Log.i(TAG, String.format("Found %d unsynced objects", numTasks));
+        // set syncing false
+
+        Log.i(TAG, String.format("Found %d unsynced objects", tasks.size()));
     }
 
     // encoding_task = new EncoderTask(ffencoder, video_frame_data, audio_samples);
@@ -77,7 +80,7 @@ public class OWMediaSyncer {
 
         OWServerObjectInterface object;
         Context c;
-        boolean finalTask = false;
+        public boolean finalTask = false;
 
         public SyncTask(Context c, OWServerObjectInterface object, boolean finalTask){
             this.object = object;
@@ -93,6 +96,24 @@ public class OWMediaSyncer {
             }
 
         }
+
+        OWServiceRequests.RequestCallback mediaSyncRequestCallback = new OWServiceRequests.RequestCallback() {
+            @Override
+            public void onFailure() {
+                if(finalTask){
+                    Log.i(TAG, "broadcasting bulk sync finish (failed)");
+                    broadcastMessage(c, Constants.OW_SYNC_STATUS_END_BULK);
+                }
+            }
+
+            @Override
+            public void onSuccess() {
+                if(finalTask){
+                    Log.i(TAG, "broadcasting bulk sync finish");
+                    broadcastMessage(c, Constants.OW_SYNC_STATUS_END_BULK);
+                }
+            }
+        };
 
         JsonHttpResponseHandler get_handler = new JsonHttpResponseHandler() {
             @Override
@@ -110,7 +131,7 @@ public class OWMediaSyncer {
                                 SharedPreferences prefs = c.getSharedPreferences(Constants.PROFILE_PREFS, c.MODE_PRIVATE);
                                 String public_upload_token = prefs.getString(Constants.PUB_TOKEN, "");
                                 OWMediaRequests.end(c, public_upload_token, ((OWLocalVideoRecording)object).recording.get(c));
-                                OWMediaRequests.safeSendHQFile(c, public_upload_token, object.getUUID(c), object.getMediaFilepath(c), ((Model)object).getId());
+                                OWMediaRequests.safeSendHQFile(c, public_upload_token, object.getUUID(c), object.getMediaFilepath(c), ((Model)object).getId(), mediaSyncRequestCallback);
                                 OWServiceRequests.syncOWServerObject(c, ((OWLocalVideoRecording)object).recording.get(c).media_object.get(c));
                             }
                         }.start();
@@ -134,7 +155,7 @@ public class OWMediaSyncer {
                                         Log.i(TAG, String.format("sending %s hq media with id %d", object.getMediaType(c).toString(), ((Model)object).getId()));
                                         SharedPreferences prefs = c.getSharedPreferences(Constants.PROFILE_PREFS, c.MODE_PRIVATE);
                                         String public_upload_token = prefs.getString(Constants.PUB_TOKEN, "");
-                                        OWMediaRequests.safeSendHQFile(c, public_upload_token, object.getUUID(c), object.getMediaFilepath(c), ((Model)object).getId());
+                                        OWMediaRequests.safeSendHQFile(c, public_upload_token, object.getUUID(c), object.getMediaFilepath(c), ((Model)object).getId(), mediaSyncRequestCallback);
                                     }
                                 }.start();
                             }
@@ -163,7 +184,7 @@ public class OWMediaSyncer {
                                 String public_upload_token = prefs.getString(Constants.PUB_TOKEN, "");
                                 OWMediaRequests.start(c, public_upload_token, object.getUUID(c), "");
                                 OWMediaRequests.end(c, public_upload_token, ((OWLocalVideoRecording)object).recording.get(c));
-                                OWMediaRequests.safeSendHQFile(c, public_upload_token, object.getUUID(c), object.getMediaFilepath(c), ((Model)object).getId());
+                                OWMediaRequests.safeSendHQFile(c, public_upload_token, object.getUUID(c), object.getMediaFilepath(c), ((Model)object).getId(), mediaSyncRequestCallback);
                                 OWServiceRequests.syncOWServerObject(c, ((OWLocalVideoRecording)object).recording.get(c).media_object.get(c));
                             }
                         }.start();
@@ -174,15 +195,13 @@ public class OWMediaSyncer {
                     }
                     e.printStackTrace();
                 }else{
-
+                    //network error
                 }
             }
 
             @Override
             public void onFinish() {
                 Log.i(TAG, "getRecording finish");
-                if(finalTask)
-                    broadcastMessage(c, Constants.OW_SYNC_STATUS_END_BULK);
             }
 
         };
@@ -198,6 +217,5 @@ public class OWMediaSyncer {
         intent.putExtra(Constants.OW_SYNC_STATE_STATUS, status);
         LocalBroadcastManager.getInstance(c).sendBroadcast(intent);
     }
-
 
 }

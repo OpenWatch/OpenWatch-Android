@@ -164,6 +164,15 @@ public class OWMediaRequests {
 		});
 	}
 
+    public static void safeSendHQFile(Context c, String upload_token,
+                                      String recording_id, String filename, int model_id, OWServiceRequests.RequestCallback cb) {
+        safeSendFile(
+                c,
+                setupMediaURL(Constants.OW_MEDIA_HQ_UPLOAD, upload_token,
+                        recording_id), upload_token, recording_id, filename,
+                true, model_id, cb);
+    }
+
 	public static void safeSendHQFile(Context c, String upload_token,
 			String recording_id, String filename, int model_id) {
 		safeSendFile(
@@ -182,6 +191,12 @@ public class OWMediaRequests {
 				false, segment_id);
 	}
 
+    private static void safeSendFile(final Context c, final String urlStr,
+                                     String upload_token, String recording_id, final String filename,
+                                     final boolean is_HQ, final int model_id) {
+        safeSendFile(c, urlStr, upload_token, recording_id, filename, is_HQ, model_id, null);
+    }
+
 	/**
 	 * Raw dog http post avoid reading entire file into memory
 	 * 
@@ -191,7 +206,7 @@ public class OWMediaRequests {
 	 */
 	private static void safeSendFile(final Context c, final String urlStr,
 			String upload_token, String recording_id, final String filename,
-			final boolean is_HQ, final int model_id) {
+			final boolean is_HQ, final int model_id, final OWServiceRequests.RequestCallback cb) {
 		new Thread() {
 
 			@Override
@@ -235,6 +250,8 @@ public class OWMediaRequests {
                             intent.putExtra(Constants.OW_SYNC_STATE_MODEL_ID, server_object_id);
                             LocalBroadcastManager.getInstance(c).sendBroadcast(intent);
                             // END OWServerObject Sync Broadcast
+                            if(cb != null)
+                                cb.onSuccess();
 
 						}
 					}else if(response_string != null && response_string.compareTo(OWMediaRequests.NULL_FILEPATH_ERROR) == 0){
@@ -244,6 +261,9 @@ public class OWMediaRequests {
                                 .get(model_id);
                         local.setSynced(c, true); // set synced because this recording has been deleted from the device
                                                   // don't try to sync each app load
+                    }else if(response_string != null && response_string.contains("error")){
+                        if(cb != null)
+                            cb.onFailure();
                     }
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
