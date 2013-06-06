@@ -1,5 +1,8 @@
 package org.ale.openwatch.http;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 import org.apache.http.entity.StringEntity;
 import org.json.JSONObject;
@@ -19,5 +22,15 @@ public class Utils {
 		}
 		return se;
 	}
+
+    public static boolean isDeviceOnline(Context c) {
+        ConnectivityManager cm =
+                (ConnectivityManager) c.getSystemService(c.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        }
+        return false;
+    }
 
 }

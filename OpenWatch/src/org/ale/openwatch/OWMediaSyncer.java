@@ -47,13 +47,19 @@ public class OWMediaSyncer {
         int numTasks = 0;
         for(OWPhoto photo : unSyncedPhotos){
             //objectsToSync.add(photo);
-            syncTask = new SyncTask(c, photo);
+            syncTask = new SyncTask(c, photo, false);
             syncing_service.submit(syncTask);
             numTasks++;
         }
+        int len = unSyncedRecordings.count();
+        int loopCounter = 0;
         for(OWLocalVideoRecording video : unSyncedRecordings){
             //objectsToSync.add(video);
-            syncTask = new SyncTask(c, video);
+            loopCounter ++;
+            if(len == loopCounter)
+                syncTask = new SyncTask(c, video, true); // mark as last task
+            else
+                syncTask = new SyncTask(c, video, false);
             syncing_service.submit(syncTask);
             numTasks++;
         }
@@ -71,10 +77,12 @@ public class OWMediaSyncer {
 
         OWServerObjectInterface object;
         Context c;
+        boolean finalTask = false;
 
-        public SyncTask(Context c, OWServerObjectInterface object){
+        public SyncTask(Context c, OWServerObjectInterface object, boolean finalTask){
             this.object = object;
             this.c = c;
+            this.finalTask = finalTask;
         }
 
         @Override
@@ -103,6 +111,7 @@ public class OWMediaSyncer {
                                 String public_upload_token = prefs.getString(Constants.PUB_TOKEN, "");
                                 OWMediaRequests.end(c, public_upload_token, ((OWLocalVideoRecording)object).recording.get(c));
                                 OWMediaRequests.safeSendHQFile(c, public_upload_token, object.getUUID(c), object.getMediaFilepath(c), ((Model)object).getId());
+                                OWServiceRequests.syncOWServerObject(c, ((OWLocalVideoRecording)object).recording.get(c).media_object.get(c));
                             }
                         }.start();
 
@@ -155,6 +164,7 @@ public class OWMediaSyncer {
                                 OWMediaRequests.start(c, public_upload_token, object.getUUID(c), "");
                                 OWMediaRequests.end(c, public_upload_token, ((OWLocalVideoRecording)object).recording.get(c));
                                 OWMediaRequests.safeSendHQFile(c, public_upload_token, object.getUUID(c), object.getMediaFilepath(c), ((Model)object).getId());
+                                OWServiceRequests.syncOWServerObject(c, ((OWLocalVideoRecording)object).recording.get(c).media_object.get(c));
                             }
                         }.start();
 
@@ -171,25 +181,11 @@ public class OWMediaSyncer {
             @Override
             public void onFinish() {
                 Log.i(TAG, "getRecording finish");
+                if(finalTask)
+                    broadcastMessage(c, Constants.OW_SYNC_STATUS_END_BULK);
             }
 
         };
-    }
-
-    private static class SyncCompleteTask implements Runnable{
-
-        Context c;
-
-        public SyncCompleteTask(Context c){
-            this.c = c;
-        }
-
-        @Override
-        public void run() {
-            broadcastMessage(c, Constants.OW_SYNC_STATUS_END_BULK);
-        }
-
-
     }
 
     private static void broadcastMessage(Context c, int status){
