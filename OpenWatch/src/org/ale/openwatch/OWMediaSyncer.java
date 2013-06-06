@@ -175,7 +175,7 @@ public class OWMediaSyncer {
             public void onFailure(Throwable e, String response) {
                 e.printStackTrace();
                 Log.i(TAG+"getRecordingFailed", String.format("message: %s . cause: %s",e.getMessage(),e.getCause()));
-                if(e.getMessage().compareTo("NOT FOUND") == 0){
+                if(e.getMessage() != null && e.getMessage().compareTo("NOT FOUND") == 0){
                     Log.i(TAG, String.format("%s with id %d does not exist server-side. creating now", object.getMediaType(c).toString(), ((Model)object).getId()));
                     broadcastMessage(c, Constants.OW_SYNC_STATUS_BEGIN_BULK);
                     if(object.getMediaType(c) == Constants.MEDIA_TYPE.VIDEO){
