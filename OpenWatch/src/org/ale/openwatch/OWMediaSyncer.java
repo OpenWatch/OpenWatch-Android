@@ -137,7 +137,7 @@ public class OWMediaSyncer {
                         }.start();
 
                     }else{ // if object is not video, send media to django
-                        OWServiceRequests.sendOWMobileGeneratedObjectMedia(c, object);
+                        OWServiceRequests.sendOWMobileGeneratedObjectMedia(c, object, mediaSyncRequestCallback);
                     }
                 }else if (response.has("id") && response.has("media_url")) {
                     if(object.getMediaType(c) == Constants.MEDIA_TYPE.VIDEO){
@@ -165,6 +165,8 @@ public class OWMediaSyncer {
                     }else{ // object is not a video, but has media_url set on server
                         Log.i(TAG, String.format("%s with id %d has server-side media_url. mark synced", object.getMediaType(c).toString(), ((Model)object).getId()));
                         object.setSynced(c, true);
+                        if(finalTask)
+                            broadcastMessage(c, Constants.OW_SYNC_STATUS_END_BULK);
                     }
                 }
             }
@@ -191,11 +193,13 @@ public class OWMediaSyncer {
 
                     }else{
                         Log.i(TAG, "creating object via django");
-                        OWServiceRequests.createOWServerObject(c, object, null);
+                        OWServiceRequests.createOWServerObject(c, object, mediaSyncRequestCallback);
                     }
                     e.printStackTrace();
                 }else{
                     //network error
+                    if(finalTask)
+                        broadcastMessage(c, Constants.OW_SYNC_STATUS_END_BULK);
                 }
             }
 

@@ -151,6 +151,7 @@ public class RecorderActivity extends SherlockActivity implements
 		super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         requestWindowFeature(com.actionbarsherlock.view.Window.FEATURE_NO_TITLE);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_recorder);
 		//this.getSupportActionBar().setTitle(getString(R.string.recording));
 		ready_to_record = false;

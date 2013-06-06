@@ -468,8 +468,12 @@ public class OWServiceRequests {
 		http_client.post(app_context, endpointForMediaType(object.getMediaType(app_context)) , Utils
 				.JSONObjectToStringEntity(object.toJsonObject(app_context)), "application/json", post_handler);
 	}
-	
-	public static void sendOWMobileGeneratedObjectMedia(final Context app_context, final OWServerObjectInterface object){
+
+    public static void sendOWMobileGeneratedObjectMedia(final Context app_context, final OWServerObjectInterface object){
+        sendOWMobileGeneratedObjectMedia(app_context, object, null);
+    }
+
+	public static void sendOWMobileGeneratedObjectMedia(final Context app_context, final OWServerObjectInterface object, final RequestCallback cb){
 		new Thread(){
 			public void run(){
 				String file_response;
@@ -494,7 +498,12 @@ public class OWServiceRequests {
                         intent.putExtra("child_model_id", ((Model)object).getId());
                         LocalBroadcastManager.getInstance(app_context).sendBroadcast(intent);
                         // END OWServerObject Sync Broadcast
+                        if(cb != null)
+                            cb.onSuccess();
 
+                    }else{
+                        if(cb != null)
+                            cb.onFailure();
                     }
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
