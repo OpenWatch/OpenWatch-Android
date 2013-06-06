@@ -20,6 +20,7 @@ import com.actionbarsherlock.view.MenuItem;
 
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.http.OWServiceRequests;
+import org.ale.openwatch.http.Utils;
 import org.ale.openwatch.model.OWPhoto;
 import org.ale.openwatch.model.OWServerObject;
 import org.ale.openwatch.share.Share;
@@ -237,6 +238,10 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
 
         LocalBroadcastManager.getInstance(this).registerReceiver(serverObjectSyncStateMessageReceiver,
                 new IntentFilter(Constants.OW_SYNC_STATE_FILTER));
+
+        if(!Utils.isDeviceOnline(this)){
+            findViewById(R.id.sync_progress_container).setVisibility(View.GONE);
+        }
     }
 
 	@Override
