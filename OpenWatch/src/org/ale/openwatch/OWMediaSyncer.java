@@ -106,7 +106,7 @@ public class OWMediaSyncer {
                             }
                         }.start();
 
-                    }else{ // send photo
+                    }else{ // if object is not video, send media to django
                         OWServiceRequests.sendOWMobileGeneratedObjectMedia(c, object);
                     }
                 }else if (response.has("id") && response.has("media_url")) {
@@ -118,6 +118,7 @@ public class OWMediaSyncer {
                                 Log.i(TAG, String.format("%s with id %d is already synced. marking local as such", object.getMediaType(c).toString(), ((Model)object).getId()));
                                 object.setSynced(c, true);
                             }else{
+                                Log.i(TAG, String.format("%s with id %d has server-side media_url (%s), but does not appear to be hq. sending hq", object.getMediaType(c).toString(), ((Model)object).getId(), response.getString("media_url")));
                                 // non hq synced
                                 new Thread(){
                                     public void run(){
@@ -131,7 +132,8 @@ public class OWMediaSyncer {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                    }else{ // object is synced
+                    }else{ // object is not a video, but has media_url set on server
+                        Log.i(TAG, String.format("%s with id %d has server-side media_url. mark synced", object.getMediaType(c).toString(), ((Model)object).getId()));
                         object.setSynced(c, true);
                     }
                 }
@@ -139,15 +141,15 @@ public class OWMediaSyncer {
 
             @Override
             public void onFailure(Throwable e, String response) {
-                Log.i(TAG, "getRecording failed. let's try creating object: " + response);
                 e.printStackTrace();
                 Log.i(TAG+"getRecordingFailed", String.format("message: %s . cause: %s",e.getMessage(),e.getCause()));
-                //TODO: We should confirm the response status code is 404
                 if(e.getMessage().compareTo("NOT FOUND") == 0){
+                    Log.i(TAG, String.format("%s with id %d does not exist server-side. creating now", object.getMediaType(c).toString(), ((Model)object).getId()));
                     broadcastMessage(c, Constants.OW_SYNC_STATUS_BEGIN_BULK);
                     if(object.getMediaType(c) == Constants.MEDIA_TYPE.VIDEO){
                         new Thread(){
                             public void run(){
+                                Log.i(TAG, "uploading video via media server signals");
                                 SharedPreferences prefs = c.getSharedPreferences(Constants.PROFILE_PREFS, c.MODE_PRIVATE);
                                 String public_upload_token = prefs.getString(Constants.PUB_TOKEN, "");
                                 OWMediaRequests.start(c, public_upload_token, object.getUUID(c), "");
@@ -156,8 +158,10 @@ public class OWMediaSyncer {
                             }
                         }.start();
 
-                    }else
+                    }else{
+                        Log.i(TAG, "creating object via django");
                         OWServiceRequests.createOWServerObject(c, object, null);
+                    }
                     e.printStackTrace();
                 }else{
 
