@@ -81,17 +81,16 @@ public class OWLocalVideoRecording extends Model implements OWServerObjectInterf
 		return result;
 	}
 
-    // deprecated
 	public JSONObject toOWMediaServerJSON(Context c){
 		JSONObject result = new JSONObject();
 		try {
-			if(recording.get(c).begin_lat.get() != null){
-				result.put(Constants.OW_START_LOC, new JSONObject().put(Constants.OW_LAT, recording.get(c).begin_lat.get())
-															   	   .put(Constants.OW_LON, recording.get(c).begin_lon.get()));
+			if(recording.get(c).begin_lat.get() != null && recording.get(c).end_lat.get() != null){
+				result.put(Constants.OW_START_LAT, recording.get(c).begin_lat.get());
+                result.put(Constants.OW_START_LON, recording.get(c).begin_lon.get());
 			}
-			if(recording.get(c).end_lat.get() != null){
-				result.put(Constants.OW_END_LOC, new JSONObject().put(Constants.OW_LAT, recording.get(c).end_lat.get())
-					   										     .put(Constants.OW_LON, recording.get(c).end_lon.get()));
+			if(recording.get(c).end_lat.get() != null && recording.get(c).end_lon.get() != null){
+                result.put(Constants.OW_END_LAT, recording.get(c).end_lat.get());
+                result.put(Constants.OW_END_LON, recording.get(c).end_lon.get());
 			}
 			if(recording.get(c).getTitle(c) != null && recording.get(c).getTitle(c).compareTo("") != 0){
 				result.put(Constants.OW_MEDIA_TITLE, recording.get(c).getTitle(c));

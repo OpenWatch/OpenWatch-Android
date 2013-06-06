@@ -16,6 +16,7 @@ import org.ale.openwatch.model.OWVideoRecording;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
@@ -99,17 +100,11 @@ public class OWMediaRequests {
 	public static void end(Context c, String upload_token,
 			OWVideoRecording recording) {
 		AsyncHttpClient client = HttpClient.setupAsyncHttpClient(c);
-		// RequestParams params = initializeRequestParamsWithLocalRecording(c,
-		// recording);
-		// Log.i(TAG, "Sending all files: " +
-		// recording.local.get(c).segmentsToJSONArray(c).toString());
-		// params.put(Constants.OW_ALL_FILES,
-		// recording.local.get(c).segmentsToJSONArray(c).toString() );
 		String url = setupMediaURL(Constants.OW_MEDIA_END, upload_token,
 				recording.uuid.get());
 		Log.i(TAG, "sending end signal to " + url + " request body: "
 				+ recording.local.get(c).toOWMediaServerJSON(c));
-		client.post(c, url, Utils.JSONObjectToStringEntity(recording.toJsonObject(c)), "application/json",
+		client.post(c, url, Utils.JSONObjectToStringEntity(recording.local.get(c).toOWMediaServerJSON(c)), "application/json",
 				new AsyncHttpResponseHandler() {
 
 					@Override
@@ -148,13 +143,11 @@ public class OWMediaRequests {
 	public static void updateMeta(Context c, String upload_token,
 			OWVideoRecording recording) {
 		AsyncHttpClient client = HttpClient.setupAsyncHttpClient(c);
-		RequestParams params = initializeRequestParamsWithLocalRecording(c,
-				recording);
+        StringEntity params = Utils.JSONObjectToStringEntity(recording.toJsonObject(c));
 		Log.i(TAG, "updateMeta: " + params.toString());
 		String url = setupMediaURL(Constants.OW_MEDIA_UPDATE_META,
 				upload_token, recording.uuid.get());
-
-		client.post(url, params, new AsyncHttpResponseHandler() {
+        client.post(c, url, params, "application/json", new AsyncHttpResponseHandler() {
 
 			@Override
 			public void onSuccess(String response) {
@@ -316,45 +309,6 @@ public class OWMediaRequests {
 			String public_upload_token, String recording_id) {
 		return Constants.OW_MEDIA_URL + endpoint + "/" + public_upload_token
 				+ "/" + recording_id;
-	}
-
-	/**
-	 * Deprecated. Use OWLocalVideoRecording.toOWMediaServerJSON
-	 * 
-	 * @param c
-	 * @param recording
-	 * @return
-	 */
-	private static RequestParams initializeRequestParamsWithLocalRecording(
-			Context c, OWVideoRecording recording) {
-		RequestParams params = new RequestParams();
-		if (recording.begin_lat.get() != 0) {
-			Log.i(TAG, "sending START GEO: "
-					+ recording.begin_lat.get().toString() + ", "
-					+ recording.begin_lon.get().toString());
-			params.put(Constants.OW_START_LOC + "[" + Constants.OW_LAT + "]",
-					recording.begin_lat.get().toString());
-			params.put(Constants.OW_START_LOC + "[" + Constants.OW_LON + "]",
-					recording.begin_lon.get().toString());
-
-		}
-		if (recording.end_lat.get() != 0) {
-			Log.i(TAG, "sending END GEO: " + recording.end_lat.get().toString()
-					+ ", " + recording.end_lon.get().toString());
-			params.put(Constants.OW_END_LOC + "[" + Constants.OW_LAT + "]",
-					recording.end_lat.get().toString());
-			params.put(Constants.OW_END_LOC + "[" + Constants.OW_LON + "]",
-					recording.end_lon.get().toString());
-
-		}
-		if (recording.getTitle(c) != null
-				&& recording.getTitle(c).compareTo("") != 0) {
-			params.put(Constants.OW_MEDIA_TITLE, recording.getTitle(c));
-		}
-		if (recording.getDescription(c) != null) {
-			params.put(Constants.OW_DESCRIPTION, recording.getDescription(c));
-		}
-		return params;
 	}
 
 }
