@@ -488,7 +488,7 @@ public class OWServiceRequests {
                         object.setSynced(app_context, true);
                         //if(object.getMediaType(app_context) == MEDIA_TYPE.PHOTO)
                             //(Photo)
-                        Intent intent = new Intent("server_object_sync");
+                        Intent intent = new Intent(Constants.OW_SYNC_STATE_FILTER);
                         // You can also include some extra data.
                         intent.putExtra("status", 1);
                         intent.putExtra("child_model_id", ((Model)object).getId());

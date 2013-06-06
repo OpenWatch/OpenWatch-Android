@@ -183,7 +183,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
         super.onResume();
 
         LocalBroadcastManager.getInstance(this).registerReceiver(serverObjectSyncStateMessageReceiver,
-                new IntentFilter("server_object_sync"));
+                new IntentFilter(Constants.OW_SYNC_STATE_FILTER));
     }
 
 

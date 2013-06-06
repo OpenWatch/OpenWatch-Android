@@ -1,7 +1,9 @@
 package org.ale.openwatch;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.orm.androrm.Filter;
@@ -54,6 +56,15 @@ public class OWMediaSyncer {
             numTasks++;
         }
         syncing_service.shutdown();
+
+        if(numTasks > 0){
+            Log.d(TAG, "Broadcasting background sync begin");
+            Intent intent = new Intent("server_object_sync");
+            // You can also include some extra data.
+            intent.putExtra("status", 1);
+            intent.putExtra("child_model_id", ((Model)object).getId());
+            LocalBroadcastManager.getInstance(app_context).sendBroadcast(intent);
+        }
 
         Log.i(TAG, String.format("Found %d unsynced objects", numTasks));
     }
