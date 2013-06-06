@@ -44,6 +44,18 @@ public class MainActivity extends SherlockActivity {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflator.inflate(R.layout.main_activity_ab, null);
         ab.setCustomView(v);
+
+        /*
+        findViewById(R.id.progress_header_container).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(v.getVisibility() == View.VISIBLE)
+                    v.setVisibility(View.GONE);
+                else
+                    v.setVisibility(View.VISIBLE);
+            }
+        });
+        */
 	}
 	
 	@Override
@@ -53,9 +65,10 @@ public class MainActivity extends SherlockActivity {
                 new IntentFilter(Constants.OW_SYNC_STATE_FILTER));
 
         if(OWMediaSyncer.syncing)
-            findViewById(R.id.sync_progress_container).setVisibility(View.VISIBLE);
+            findViewById(R.id.progress_header_container).setVisibility(View.VISIBLE);
         else
-            findViewById(R.id.sync_progress_container).setVisibility(View.GONE);
+            findViewById(R.id.progress_header_container).setVisibility(View.GONE);
+
 		checkUserStatus();
 	}
 
@@ -200,11 +213,11 @@ public class MainActivity extends SherlockActivity {
             int status = intent.getIntExtra(Constants.OW_SYNC_STATE_STATUS, Constants.OW_SYNC_STATUS_FAILED);
             Log.i("MainActivity", String.format("got broadcastReceiver message %d", status));
             if(status == Constants.OW_SYNC_STATUS_BEGIN_BULK){
-                findViewById(R.id.sync_progress_container).setVisibility(View.VISIBLE);
+                findViewById(R.id.progress_header_container).setVisibility(View.VISIBLE);
                 ((TextView)findViewById(R.id.sync_progress_text)).setText(getString(R.string.syncing_existing_media));
 
             }else if(status == Constants.OW_SYNC_STATUS_END_BULK){
-                (findViewById(R.id.sync_progress_container)).setVisibility(View.GONE);
+                (findViewById(R.id.progress_header_container)).setVisibility(View.GONE);
             }
         }
     };

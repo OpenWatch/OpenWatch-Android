@@ -295,7 +295,11 @@ public class RecorderActivity extends SherlockActivity implements
 			stop_date = new Date();
 			new MediaSignalTask().execute("end", Constants.utc_formatter.format(start_date), Constants.utc_formatter.format(stop_date), new JSONArray(new ArrayList()).toString());
 			new MediaSignalTask().execute("hq", output_filename);
-			mMediaRecorder.stop();
+            try{
+			    mMediaRecorder.stop();
+            }catch( NullPointerException e){
+                Log.i(TAG, "mMediaRecorder was null on stop recording. figure this out");
+            }
 			releaseMediaRecorder();
 			mCamera.lock();
 			Intent i = new Intent(RecorderActivity.this, WhatHappenedActivity.class);

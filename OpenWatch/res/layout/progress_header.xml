@@ -5,9 +5,8 @@ android:id="@+id/sync_progress_container"
 android:layout_alignParentTop="true"
 android:layout_width="match_parent"
 android:layout_height="50dp"
-android:layout_gravity="top"
-android:visibility="gone"
-android:background="#ff9be2ff">
+android:visibility="visible"
+android:background="#eda5a8">
 
     <TextView
             android:id="@+id/sync_progress_text"
