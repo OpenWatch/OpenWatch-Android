@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
+import com.orm.androrm.Filter;
+import com.orm.androrm.QuerySet;
 import org.ale.openwatch.OWApplication;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
@@ -93,8 +95,18 @@ public class Authentication {
                                     + " Priv: "
                                     + server_response
                                     .getString(Constants.PRIV_TOKEN));
+                    // BOO THIS. need to look for existing user, not create new one
                     if (c != null) {
-                        OWUser myself = new OWUser();
+                        OWUser myself = null;
+                        Filter userFilter = new Filter();
+                        userFilter.is(DBConstants.USER_SERVER_ID, server_response.getInt(DBConstants.USER_SERVER_ID));
+                        QuerySet<OWUser> potential_users = OWUser.objects(c, OWUser.class).filter(userFilter);
+                        for(OWUser user : potential_users){
+                            myself = user;
+                            break;
+                        }
+                        if(myself == null)
+                            myself = new OWUser();
                         myself.updateWithJson(c, server_response);
                         Log.i(TAG, "Created user in db with #tags: " + String.valueOf(myself.tags.get(c, myself).count()));
                         editor.putInt(Constants.INTERNAL_USER_ID, myself.getId());
@@ -105,6 +117,7 @@ public class Authentication {
                 }
                 editor.putString(Constants.EMAIL, expectedEmail); // save email even if login unsuccessful
                 editor.commit();
+                // TODO: stop using user_data
                 OWApplication.user_data = c.getSharedPreferences(Constants.PROFILE_PREFS, c.MODE_PRIVATE).getAll();
             } catch (JSONException e) {
                 Log.e(TAG,

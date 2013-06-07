@@ -21,9 +21,11 @@ import org.ale.openwatch.constants.Constants.MEDIA_TYPE;
 import org.ale.openwatch.constants.Constants.OWFeedType;
 import org.ale.openwatch.database.DatabaseManager;
 import org.ale.openwatch.file.FileUtils;
+import org.ale.openwatch.http.OWServiceRequests;
 import org.ale.openwatch.location.DeviceLocation;
 import org.ale.openwatch.model.OWPhoto;
 import org.ale.openwatch.model.OWServerObject;
+import org.ale.openwatch.model.OWUser;
 
 public class MainActivity extends SherlockActivity {
 	
@@ -169,10 +171,17 @@ public class MainActivity extends SherlockActivity {
 		
 		if(authenticated && db_initialized && !((OWApplication) this.getApplicationContext()).per_launch_sync){
 			// TODO: Attempt to login with stored credentials and report back if error
-			// check this application state
-			//OWServiceRequests.onLaunchSync(this.getApplicationContext()); // get list of tags, etc
+
             OWMediaSyncer.syncMedia(getApplicationContext());
             ((OWApplication) getApplicationContext()).per_launch_sync = true;
+            // If we have a User object for the current user, and they've applied as an agent, send their current location
+            if(profile.getInt(Constants.INTERNAL_USER_ID, 0) != 0){
+                OWUser user = OWUser.objects(getApplicationContext(), OWUser.class).get(profile.getInt(Constants.INTERNAL_USER_ID,0));
+                if(user.agent_applicant.get() == true){
+                    Log.i("MainActivity", "Sending agent location");
+                    OWServiceRequests.syncOWUser(getApplicationContext(), user);
+                }
+            }
         }
 		if(debug_fancy || (!authenticated && !this.getIntent().hasExtra(Constants.AUTHENTICATED) ) ){
 			Intent i = new Intent(this, FancyLoginActivity.class	);

@@ -1,7 +1,9 @@
 package org.ale.openwatch;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -75,12 +77,24 @@ import org.ale.openwatch.model.OWUser;
         }
         else{
             // Sync preferences and go to MainActivity
+            SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
+            if(profile.getInt(Constants.INTERNAL_USER_ID,0) != 0){
+                Log.i(TAG, "OnBoardingActivity has internal user id...");
+                OWUser user = OWUser.objects(getApplicationContext(), OWUser.class).get(profile.getInt(Constants.INTERNAL_USER_ID,0));
+                user.agent_applicant.set(agent_applicant);
+                user.save(getApplicationContext());
+                OWServiceRequests.syncOWUser(getApplicationContext(), user);
+            }else{
+                Log.e(TAG, "OnBoardingActivity does not have internal user id...");
+            }
+            /*
             if(OWApplication.user_data != null && OWApplication.user_data.containsKey(Constants.INTERNAL_USER_ID)){
                 OWUser user = OWUser.objects(getApplicationContext(), OWUser.class).get((Integer)OWApplication.user_data.get(Constants.INTERNAL_USER_ID));
                 user.agent_applicant.set(agent_applicant);
                 user.save(getApplicationContext());
                 OWServiceRequests.syncOWUser(getApplicationContext(), user);
             }
+            */
             Intent i = new Intent(OnBoardingActivity.this, MainActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                     | Intent.FLAG_ACTIVITY_CLEAR_TASK);
