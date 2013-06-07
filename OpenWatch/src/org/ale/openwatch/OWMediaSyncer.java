@@ -132,7 +132,7 @@ public class OWMediaSyncer {
                                 String public_upload_token = prefs.getString(Constants.PUB_TOKEN, "");
                                 OWMediaRequests.end(c, public_upload_token, ((OWLocalVideoRecording)object).recording.get(c));
                                 OWMediaRequests.safeSendHQFile(c, public_upload_token, object.getUUID(c), object.getMediaFilepath(c), ((Model)object).getId(), mediaSyncRequestCallback);
-                                OWServiceRequests.syncOWServerObject(c, ((OWLocalVideoRecording)object).recording.get(c).media_object.get(c));
+                                OWServiceRequests.syncOWServerObject(c, ((OWLocalVideoRecording)object).recording.get(c).media_object.get(c), true);
                             }
                         }.start();
 
@@ -187,7 +187,7 @@ public class OWMediaSyncer {
                                 OWMediaRequests.start(c, public_upload_token, object.getUUID(c), "");
                                 OWMediaRequests.end(c, public_upload_token, ((OWLocalVideoRecording)object).recording.get(c));
                                 OWMediaRequests.safeSendHQFile(c, public_upload_token, object.getUUID(c), object.getMediaFilepath(c), ((Model)object).getId(), mediaSyncRequestCallback);
-                                OWServiceRequests.syncOWServerObject(c, ((OWLocalVideoRecording)object).recording.get(c).media_object.get(c));
+                                OWServiceRequests.syncOWServerObject(c, ((OWLocalVideoRecording)object).recording.get(c).media_object.get(c), true);
                             }
                         }.start();
 

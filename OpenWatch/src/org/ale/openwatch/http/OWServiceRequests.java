@@ -537,16 +537,22 @@ public class OWServiceRequests {
 	private static String endpointForMediaType(MEDIA_TYPE type){
 		return Constants.OW_API_URL + Constants.API_ENDPOINT_BY_MEDIA_TYPE.get(type) + "/";
 	}
+
+    public static void syncOWServerObject(final Context app_context,
+                                          final OWServerObjectInterface object) {
+        syncOWServerObject(app_context, object, false);
+    }
 	
 
 	/**
 	 * Fetch server recording data, check last_edited, and push update if
-	 * necessary
+	 * necessary. if forcePushLocalData, push local data even if server's last-edited
+     * is greater than local
 	 * 
 	 * @param app_context
 	 */
 	public static void syncOWServerObject(final Context app_context,
-			 final OWServerObjectInterface object) {
+			 final OWServerObjectInterface object, final boolean forcePushLocalData) {
 		final String METHOD = "syncRecording";
 		final int model_id = ((Model)object).getId();
 		JsonHttpResponseHandler get_handler = new JsonHttpResponseHandler() {
@@ -610,7 +616,7 @@ public class OWServiceRequests {
 						if(child_obj == null)
 							Log.e(TAG, "getChildObject returned null for OWServerObject " + String.valueOf(server_object.getId()));
 
-						if (last_edited_remote.after(last_edited_local)) {
+						if (!forcePushLocalData && last_edited_remote.after(last_edited_local)) {
 							// copy remote data to local
 							Log.i(TAG, "remote recording data is more recent");
 							//server_object.updateWithJson(app_context, object_json);
@@ -619,7 +625,7 @@ public class OWServiceRequests {
 							if(child_obj != null)
 								child_obj.updateWithJson(app_context, response);
 							
-						} else if (last_edited_remote.before(last_edited_local)) {
+						} else if ( forcePushLocalData || last_edited_remote.before(last_edited_local)) {
 							// copy local to remote
 							Log.i(TAG, "local recording data is more recent");
 							if(child_obj != null){
