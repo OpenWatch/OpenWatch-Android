@@ -1,5 +1,7 @@
 package org.ale.openwatch.constants;
 
+import org.ale.openwatch.R;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -143,6 +145,8 @@ public class Constants {
     public static enum OWFeedType{
         TOP, LOCAL, USER, RAW
     }
+
+    public static HashMap<String, Integer> FEED_TO_TITLE = new HashMap<String, Integer>() {{put(OWFeedType.TOP.toString(), R.string.tab_featured); put(OWFeedType.LOCAL.toString(), R.string.tab_local); put(OWFeedType.RAW.toString(), R.string.tab_Raw); put(OWFeedType.USER.toString(), R.string.tab_local_user_recordings); }};
 	
 	private static ArrayList<String> OW_FEEDS = new ArrayList<String>();
 	static{

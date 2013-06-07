@@ -424,10 +424,7 @@ public class LoginActivity extends SherlockActivity {
 						case 405: // email address in use
 							dialog.setTitle(
 									R.string.signup_dialog_email_taken_title)
-									.setMessage(
-											mEmail
-													+ " "
-													+ getString(R.string.signup_dialog_email_taken_msg));
+									.setMessage(getString(R.string.signup_dialog_email_taken_msg) + " " + mEmail);
 							break;
 						default:
 							dialog.setTitle(R.string.signup_dialog_failed_title)

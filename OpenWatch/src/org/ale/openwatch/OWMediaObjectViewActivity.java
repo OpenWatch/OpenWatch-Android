@@ -295,13 +295,16 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
                             }
                         });
                     }else{
-                        mediaErrorDialog .setPositiveButton(getString(R.string.search_for_video_player), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent goToMarket = new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://search?q=" + getString(R.string.video_player_search_query)));
-                                startActivity(goToMarket);
-                            }
-                        });
+                        final Intent goToMarket = new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://search?q=" + getString(R.string.video_player_search_query)));
+                        if(OWUtils.isCallable(OWMediaObjectViewActivity.this, goToMarket)){
+                            mediaErrorDialog .setPositiveButton(getString(R.string.search_for_video_player), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    startActivity(goToMarket);
+                                }
+
+                            });
+                        }
                     }
                     if(is_resumed)
                         mediaErrorDialog.show();

@@ -67,9 +67,9 @@
             android:layout_centerHorizontal="true"
             android:background="@drawable/white_edittext_bg"
             android:padding="5dp"
-            android:hint="@string/Email"
+            android:hint="@string/email"
             android:imeActionId="@+id/login"
-            android:imeActionLabel="@string/action_sign_in_short"
+            android:imeActionLabel="@string/sign_in"
             android:textSize="22sp"
             />
 
@@ -85,9 +85,9 @@
             android:background="@drawable/white_edittext_bg"
             android:padding="5dp"
             android:layout_centerHorizontal="true"
-            android:hint="@string/Password"
+            android:hint="@string/password"
             android:imeActionId="@+id/login"
-            android:imeActionLabel="@string/action_sign_in_short"
+            android:imeActionLabel="@string/sign_in"
             android:textSize="22sp"
             />
 

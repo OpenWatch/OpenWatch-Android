@@ -6,9 +6,9 @@
     <string name="title_activity_main">OpenWatch</string>
 
     <!-- General -->
-    <string name="By">By</string>
-    <string name="Email">Email</string>
-    <string name="Password">Password</string>
+    <string name="by">By</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
 
     <!-- Generic Dialog -->
     <string name="dialog_ok">Ok</string>
@@ -33,6 +33,7 @@
 
     <!-- LoginActivity -->
 
+    <string name="action_sign_in_register"><b>Sign in</b> or register</string>
     <string name="login_dialog_signup">Sign up!</string>
     <string name="logout">Sign out</string>
     <string name="reporter"></string>
@@ -41,10 +42,6 @@
     <string name="take_choose_picture_prompt">How shall we get your fine picture?</string>
     <string name="take_picture">Use camera</string>
     <string name="choose_picture">Browse gallery</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in_register"><b>Sign in</b> or register</string>
-    <string name="action_sign_in_short">Sign in</string>
     <string name="menu_forgot_password">Recover lost password</string>
     <string name="login_progress_signing_in">Signing in&#8230;</string>
     <string name="error_invalid_email">This email address is invalid</string>
@@ -52,7 +49,7 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
 
-    <string name="message_account_stored">You are currently signed in. For security, your password is not stored on this device.</string>
+    <string name="message_account_stored">You are currently signed in. For security, your password is not stored on this device. Log out to use a different account.</string>
 
     <!-- FancyLoginActivity -->
     <string name="fancy_login_welcome_text">Welcome to OpenWatch. Enter your email to get started.</string>
@@ -70,7 +67,7 @@
     <!-- login with new email -->
     <string name="login_dialog_unknown_email_title">Create New Account?</string>
     <!-- email address +  R.string.question_mark will follow the below string -->
-    <string name="login_dialog_unknown_email_msg">The email address you provided is not connected to an OpenWatch account. Would you like to register a new account with </string>
+    <string name="login_dialog_unknown_email_msg">The email address you provided is not connected to an OpenWatch account. Would you like to register a new account with the following account: </string>
     <string name="question_mark">\?</string>
     <!-- problem reaching host -->
     <string name="login_dialog_failed_title">Login Failed</string>
@@ -79,7 +76,7 @@
     <!-- signup with taken email address -->
     <string name="signup_dialog_email_taken_title">Email Already Registered</string>
     <!-- email address will preceed the below string -->
-    <string name="signup_dialog_email_taken_msg">is already registered with OpenWatch.</string>
+    <string name="signup_dialog_email_taken_msg">This email is already registered with OpenWatch: </string>
 
     <!-- generic signup problem -->
     <string name="signup_dialog_failed_title">Signup Failed</string>
@@ -87,12 +84,12 @@
     <string name="title_activity_feed">FeedActivity</string>
 
     <!-- Feed Activity -->
+    <string name="directory">Directory</string>
     <string name="tab_local_user_recordings">Your Media</string>
     <string name="tab_local">Local</string>
     <string name="tab_following">Following</string>
     <string name="tab_featured">Top Stories</string>
     <string name="tab_Raw">Raw</string>
-    <string name="title_activity_ormtest">ORMTestActivity</string>
     <string name="loading_recordings">Loading recordings</string>
     <string name="no_recordings">You have no recordings</string>
     <string name="loading_feed">Loading feed</string>
@@ -116,7 +113,6 @@
 
     <!-- AutoComplete Tag Field -->
     <string name="action_tag">Tag</string>
-    <string name="tag_hint">Add new tags here</string>
 
     <!-- WhatHappenedActivity -->
     <string name="what_happened">What Happened?</string>
