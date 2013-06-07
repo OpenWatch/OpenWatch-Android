@@ -109,12 +109,14 @@ public class MainActivity extends SherlockActivity {
 		Intent i = new Intent(this, RecorderActivity.class);
 		startActivity(i);
 	}
-	
+
+    // #occupygezi
 	public void featuredButtonClick(View v){
 		Intent i = new Intent(this, FeedFragmentActivity.class);
-		i.putExtra(Constants.FEED_TYPE, OWFeedType.TOP);
+		i.putExtra(Constants.FEED_TYPE, Constants.OBLIGATORY_TAG.substring(1));
 		startActivity(i);
 	}
+
 	
 	public void settingsButtonClick(View v){
 		Intent i = new Intent(this, SettingsActivity.class);

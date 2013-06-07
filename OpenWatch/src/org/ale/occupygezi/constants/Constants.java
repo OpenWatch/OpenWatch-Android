@@ -145,10 +145,10 @@ public class Constants {
 	}
 	*/
     public static enum OWFeedType{
-        TOP, LOCAL, USER, RAW
+        LOCAL, USER
     }
 
-    public static HashMap<String, Integer> FEED_TO_TITLE = new HashMap<String, Integer>() {{put(OWFeedType.TOP.toString(), R.string.tab_featured); put(OWFeedType.LOCAL.toString(), R.string.tab_local); put(OWFeedType.RAW.toString(), R.string.tab_Raw); put(OWFeedType.USER.toString(), R.string.tab_local_user_recordings); }};
+    public static HashMap<String, Integer> FEED_TO_TITLE = new HashMap<String, Integer>() {{ put(OWFeedType.LOCAL.toString(), R.string.tab_local);  put(OWFeedType.USER.toString(), R.string.tab_local_user_recordings); }};
 	
 	private static ArrayList<String> OW_FEEDS = new ArrayList<String>();
 	static{
@@ -190,7 +190,7 @@ public class Constants {
 	public static String feedExternalEndpointFromString(String type, int page){
 		String endpoint = "";
 		if(!OW_FEEDS.contains(type) ){
-			endpoint = Constants.OW_API_URL + Constants.OW_TAG + File.separator + "?type="+ type + "&page=" + String.valueOf(page);
+			endpoint = Constants.OW_API_URL + Constants.OW_TAG + File.separator + "?tag="+ type + "&page=" + String.valueOf(page);
 		}else{
             if(type.equals("top")){
                 endpoint = Constants.OW_API_URL + API_ENDPOINT_BY_CONTENT_TYPE.get(CONTENT_TYPE.INVESTIGATION) + "/?page=" + String.valueOf(page);
@@ -210,9 +210,11 @@ public class Constants {
 	public static String feedInternalEndpointFromType(OWFeedType type){
 		String endpoint = "";
 		switch(type){
+        /*
 		case TOP:
 			endpoint = Constants.OW_FEATURED;
 			break;
+		*/
 		case LOCAL:
 			endpoint = Constants.OW_LOCAL;
 			break;
@@ -222,9 +224,11 @@ public class Constants {
 		case USER:
 			endpoint = Constants.OW_RECORDINGS;
 			break;
+        /*
         case RAW:
                 endpoint = Constants.OW_RAW;
                 break;
+        */
 		}
 		return endpoint;
 	}
