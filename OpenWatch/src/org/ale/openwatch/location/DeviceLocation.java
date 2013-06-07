@@ -1,6 +1,7 @@
 package org.ale.openwatch.location;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -223,7 +224,8 @@ public class DeviceLocation {
                     // request to ensure geo data available
                     ((Model) child).save(app_context);
                     if(serverObject.getMediaType(app_context) == Constants.MEDIA_TYPE.VIDEO){
-                        OWMediaRequests.updateMeta(app_context, OWApplication.user_data.get(Constants.PUB_TOKEN).toString(), (OWVideoRecording)child);
+                        SharedPreferences profile = app_context.getSharedPreferences(Constants.PROFILE_PREFS, 0);
+                        OWMediaRequests.updateMeta(app_context, profile.getString(Constants.PUB_TOKEN, ""), (OWVideoRecording)child);
                     }else{
                         OWServiceRequests.syncOWServerObject(app_context, serverObject);
                     }

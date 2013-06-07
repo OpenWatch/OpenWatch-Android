@@ -298,11 +298,11 @@ public class RecorderActivity extends SherlockActivity implements
 			new MediaSignalTask().execute("hq", output_filename);
             try{
 			    mMediaRecorder.stop();
+                releaseMediaRecorder();
+                mCamera.lock();
             }catch( NullPointerException e){
                 Log.i(TAG, "mMediaRecorder was null on stop recording. figure this out");
             }
-			releaseMediaRecorder();
-			mCamera.lock();
 			Intent i = new Intent(RecorderActivity.this, WhatHappenedActivity.class);
 			if(media_object_id > 0){
 				i.putExtra(Constants.INTERNAL_DB_ID,media_object_id);
@@ -353,6 +353,7 @@ public class RecorderActivity extends SherlockActivity implements
 		} catch (IOException e1) {
 			Log.e(TAG, "failed to create output file");
 			e1.printStackTrace();
+            return false;
 		}
 	    mCamera = getCameraInstance();
 	    mMediaRecorder = new MediaRecorder();
