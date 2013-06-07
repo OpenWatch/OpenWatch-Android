@@ -64,6 +64,8 @@ public class FancyLoginActivity extends SherlockActivity {
 
     Animation zoom;
 
+    boolean doAnimate = false;
+
     public static boolean isVisible = false;
 
     long animation_clock = 5000;
@@ -130,7 +132,7 @@ public class FancyLoginActivity extends SherlockActivity {
     public void onResume(){
         super.onResume();
         isVisible = true;
-        if(Build.VERSION.SDK_INT > 11){
+        if(doAnimate && Build.VERSION.SDK_INT > 11){
             timer = new Timer();
             timer.scheduleAtFixedRate(new FadeTimerTask(), animation_clock, animation_clock);
             if(image_2_visible){
@@ -151,7 +153,7 @@ public class FancyLoginActivity extends SherlockActivity {
     public void onPause(){
         super.onPause();
         isVisible = false;
-        if(Build.VERSION.SDK_INT > 11){
+        if(doAnimate && Build.VERSION.SDK_INT > 11){
             timer.cancel();
             timer = null;
         }

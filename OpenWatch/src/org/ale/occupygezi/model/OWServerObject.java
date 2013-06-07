@@ -197,8 +197,10 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
 
 	@Override
 	public void setTitle(Context c, String title) {
-		this.title.set(title);
-		
+        if(title != null && !title.contains(Constants.OBLIGATORY_TAG))
+            this.title.set(title + " " + Constants.OBLIGATORY_TAG);
+        else
+		    this.title.set(title);
 	}
 
 	@Override

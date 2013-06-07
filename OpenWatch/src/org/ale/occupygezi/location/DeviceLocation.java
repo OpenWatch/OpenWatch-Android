@@ -30,7 +30,7 @@ public class DeviceLocation {
     private Location bestLocation;
     private boolean waitForGpsFix;
     
-    private static final float ACCURATE_LOCATION_THRESHOLD_METERS = 20;
+    private static final float ACCURATE_LOCATION_THRESHOLD_METERS = 100;
     
     public interface GPSRequestCallback {
 		public void onSuccess(Location result);

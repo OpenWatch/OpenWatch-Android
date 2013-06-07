@@ -12,7 +12,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/openwatch_splash_syria_peace" />
+            android:src="@drawable/gezisplash" />
 
     <ImageView
             android:id="@+id/image_2"
@@ -20,7 +20,7 @@
             android:layout_height="fill_parent"
             android:scaleType="centerCrop"
             android:alpha="0"
-            android:src="@drawable/openwatch_splash_police_back" />
+            android:src="@drawable/openwatch_splash_hall" />
 
     <ScrollView
         android:id="@+id/scroll_container"
@@ -31,36 +31,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-    <ImageView
-            android:id="@+id/image_logo"
-            android:layout_marginTop="40dp"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/openwatch_white" />
-
-    <TextView
-        android:id="@+id/welcome_text"
-        android:layout_marginTop="30dp"
-        android:layout_below="@id/image_logo"
-        android:fontFamily="sans-serif-bold"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:textColor="@android:color/white"
-        android:shadowColor="#000"
-        android:shadowDy="-2"
-        android:shadowRadius=".1"
-        android:textSize="22sp"
-        android:text="@string/fancy_login_welcome_text"
-        />
 
     <EditText
             android:id="@+id/field_email"
             android:fontFamily="sans-serif-light"
-            android:layout_marginTop="20dp"
-            android:layout_below="@id/welcome_text"
+            android:layout_marginTop="160dp"
+            android:layout_alignParentTop="true"
             android:inputType="textEmailAddress"
             android:layout_width="250dp"
             android:layout_height="50dp"

@@ -19,6 +19,8 @@ import java.util.regex.Pattern;
  */
 public class Constants {
 
+    public static final String OBLIGATORY_TAG = "#occupygezi";
+
     public static final String SUPPORT_EMAIL = "team@openwatch.net";
 	
 	// Set this flag to toggle between production 

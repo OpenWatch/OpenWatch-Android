@@ -113,7 +113,8 @@
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value="org.ale.openwatch.FeedFragmentActivity" />
         </activity>
-        <activity android:name="org.ale.occupygezi.FancyLoginActivity"/>
+        <activity android:name="org.ale.occupygezi.FancyLoginActivity"
+                  android:windowSoftInputMode="adjustPan"/>
         <activity android:name="org.ale.occupygezi.OnBoardingActivity"/>
     </application>
 
