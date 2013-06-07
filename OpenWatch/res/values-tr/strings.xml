@@ -18,8 +18,8 @@
   <string name="feedback_button_text">Geri bildirim Gönder</string>
   <string name="settings_button_text">Ayarlar</string>
   <!--Send Feedback Intent Extras-->
-  <string name="share_email_subject">OpenWatch-Android geribildirim</string>
-  <string name="share_email_text">Merhaba OpenWatch!\n\n</string>
+  <string name="share_email_subject">OccupyGezi-Android geribildirim</string>
+  <string name="share_email_text">Merhaba OccupyGezi!\n\n</string>
   <string name="share_chooser_title">Bize geri gönderin</string>
   <!--Title of choose dialog to select application to share with-->
   <!--LoginActivity-->
@@ -42,12 +42,12 @@
   <string name="error_field_required">Bu alan gereklidir</string>
   <string name="message_account_stored">Şu anda güvenlik için oturum açmış, parolanızı bu cihazda depolanmaz. Farklı bir hesap kullanmak oturumu.</string>
   <!--FancyLoginActivity-->
-  <string name="fancy_login_welcome_text">OpenWatch hoş geldiniz. Başlamak için e-posta girin.</string>
+  <string name="fancy_login_welcome_text">OccupyGezi hoş geldiniz. Başlamak için e-posta girin.</string>
   <string name="login_button_text">Giriş</string>
   <string name="get_started_button_text">Başlarken</string>
   <string name="forgot_password_label">Şifrenizi mi unuttunuz?</string>
   <!--Account creation prompt-->
-  <string name="create_account_prompt">Başlamadan önce bir OpenWatch hesap oluşturmak için bir dakikanızı ayırın. Bu bir saniye sürer ve hemen yayın başlatmak için izin verir sadece.</string>
+  <string name="create_account_prompt">Başlamadan önce bir OccupyGezi hesap oluşturmak için bir dakikanızı ayırın. Bu bir saniye sürer ve hemen yayın başlatmak için izin verir sadece.</string>
   <!--login failed-->
   <string name="login_dialog_denied_title">Giriş Reddedildi</string>
   <string name="login_dialog_denied_msg">Kullanıcı adınızı ve şifrenizi kontrol edin. Eğer bir hesabınız yoksa, kayıt lütfen.</string>
@@ -139,7 +139,7 @@
   <string name="share_dialog_photo_button">Resmi Paylaş</string>
   <string name="share_dialog_video_message">Videonuz canlı! Herkese duyurun ve bir etki yaratmak!</string>
   <string name="share_video">Video paylaş</string>
-  <string name="via_openwatch">\@OpenWatch</string>
+  <string name="via_openwatch">\@OpenWatch #OccupyGezi</string>
   <!--Part of share Intent's EXTRA_TEXT field-->
   <!--ListView-->
   <string name="loading_next_page">Yükleme...</string>
