@@ -29,7 +29,7 @@
 
     <!--
     <TextView
-        style="@style/Theme.openwatch.feedItemStatusText"
+        style="@style/Theme.occupygezi.feedItemStatusText"
         android:id="@+id/status"
         android:visibility="gone"
         android:text="@string/on_device"
