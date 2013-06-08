@@ -80,7 +80,7 @@ public class MapFragment extends SupportMapFragment implements OWMediaObjectBack
         Context app_context = getActivity().getApplicationContext();
         if(server_object.getMediaType(app_context) == Constants.MEDIA_TYPE.VIDEO){
             OWVideoRecording video_object = (OWVideoRecording) server_object.getChildObject(app_context);
-            if(video_object.begin_lat.get() != null && video_object.end_lat.get() != null)
+            if(video_object.begin_lat.get() != 0.0 && video_object.end_lat.get() != 0.0)
                 Log.i(TAG, "recording begin point: " + String.valueOf(video_object.begin_lat.get()) + ", " + String.valueOf(video_object.begin_lon.get()));
             mStartLocation = new LatLng(video_object.begin_lat.get(), video_object.begin_lon.get());
         }
