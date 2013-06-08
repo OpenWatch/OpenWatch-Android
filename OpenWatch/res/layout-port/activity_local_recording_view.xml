@@ -55,7 +55,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="0" />
 
-            <org.ale.openwatch.MapViewPager
+            <org.ale.occupygezi.MapViewPager
                 android:id="@+id/pager"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"

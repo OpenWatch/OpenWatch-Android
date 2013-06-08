@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.ale.openwatch"
-    android:versionCode="7"
+    package="org.ale.occupygezi"
+    android:versionCode="8"
     android:versionName="2.1" >
 
     <uses-sdk
@@ -26,20 +26,20 @@
         android:required="true" />
 
     <application
-        android:name="org.ale.openwatch.OWApplication"
+        android:name="org.ale.occupygezi.OWApplication"
         android:debuggable="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:logo="@drawable/ic_ab_icon"
         android:theme="@style/Theme.openwatch" >
         <provider
-            android:name="org.ale.openwatch.contentprovider.OWContentProvider"
-            android:authorities="org.ale.openwatch.contentprovider.OWContentProvider"
+            android:name="org.ale.occupygezi.contentprovider.OWContentProvider"
+            android:authorities="org.ale.occupygezi.contentprovider.OWContentProvider"
             android:exported="false" >
         </provider>
 
         <activity
-            android:name="org.ale.openwatch.LoginActivity"
+            android:name="org.ale.occupygezi.LoginActivity"
             android:label=""
             android:windowSoftInputMode="adjustResize|stateVisible" >
             <intent-filter>
@@ -49,7 +49,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="org.ale.openwatch.MainActivity"
+            android:name="org.ale.occupygezi.MainActivity"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -58,14 +58,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="org.ale.openwatch.RecorderActivity"
+            android:name="org.ale.occupygezi.RecorderActivity"
             android:keepScreenOn="true"
             android:screenOrientation="landscape" >
         </activity>
-        <activity android:name="org.ale.openwatch.FeedFragmentActivity" >
+        <activity android:name="org.ale.occupygezi.FeedFragmentActivity" >
         </activity>
         <activity
-            android:name="org.ale.openwatch.OWMediaObjectViewActivity"
+            android:name="org.ale.occupygezi.OWMediaObjectViewActivity"
             android:label=""
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" >
@@ -77,16 +77,16 @@
         </meta-data>
 
         <activity
-            android:name="org.ale.openwatch.WhatHappenedActivity"
+            android:name="org.ale.occupygezi.WhatHappenedActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" >
         </activity>
         <activity
-            android:name="org.ale.openwatch.SettingsActivity"
+            android:name="org.ale.occupygezi.SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
         <activity
-            android:name="org.ale.openwatch.OWStoryViewActivity"
+            android:name="org.ale.occupygezi.OWStoryViewActivity"
             android:screenOrientation="portrait"
             android:label="@string/title_activity_story_view"
             android:parentActivityName="org.ale.openwatch.FeedFragmentActivity" >
@@ -95,7 +95,7 @@
                 android:value="org.ale.openwatch.FeedFragmentActivity" />
         </activity>
         <activity
-            android:name="org.ale.openwatch.OWPhotoReviewActivity"
+            android:name="org.ale.occupygezi.OWPhotoReviewActivity"
             android:label="@string/title_activity_picture_review"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
@@ -105,7 +105,7 @@
                 android:value="org.ale.openwatch.MainActivity" />
         </activity>
         <activity
-            android:name="org.ale.openwatch.OWInvestigationViewActivity"
+            android:name="org.ale.occupygezi.OWInvestigationViewActivity"
             android:screenOrientation="portrait"
             android:parentActivityName="org.ale.openwatch.FeedFragmentActivity"
             android:label="" >
@@ -113,8 +113,9 @@
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value="org.ale.openwatch.FeedFragmentActivity" />
         </activity>
-        <activity android:name="org.ale.openwatch.FancyLoginActivity"/>
-        <activity android:name="org.ale.openwatch.OnBoardingActivity"/>
+        <activity android:name="org.ale.occupygezi.FancyLoginActivity"
+                  android:windowSoftInputMode="adjustPan"/>
+        <activity android:name="org.ale.occupygezi.OnBoardingActivity"/>
     </application>
 
 </manifest>

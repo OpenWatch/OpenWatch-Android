@@ -29,7 +29,7 @@
     <!--
     <TextView
         android:id="@+id/action_count"
-        style="@style/Theme.openwatch.feedItemOtherText"
+        style="@style/Theme.occupygezi.feedItemOtherText"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_marginBottom="5dp"
@@ -37,7 +37,7 @@
 
     <ImageView
         android:id="@+id/action_icon"
-        style="@style/Theme.openwatch.feedItemIcon"
+        style="@style/Theme.occupygezi.feedItemIcon"
         android:layout_marginBottom="5dp"
         android:layout_marginRight="5dp"
         android:layout_toLeftOf="@id/action_count"
@@ -45,7 +45,7 @@
 
     <TextView
         android:id="@+id/view_count"
-        style="@style/Theme.openwatch.feedItemOtherText"
+        style="@style/Theme.occupygezi.feedItemOtherText"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="5dp"
         android:layout_marginRight="10dp"
@@ -53,7 +53,7 @@
 
     <ImageView
         android:id="@+id/view_icon"
-        style="@style/Theme.openwatch.feedItemIcon"
+        style="@style/Theme.occupygezi.feedItemIcon"
         android:layout_marginBottom="5dp"
         android:layout_marginRight="5dp"
         android:layout_toLeftOf="@id/view_count"
