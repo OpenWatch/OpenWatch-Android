@@ -159,6 +159,7 @@ public class OWMediaObjectInfoFragment extends SherlockFragment implements
 			doSave = true;
 			media_obj.setTitle(getActivity().getApplicationContext(), title
 					.getText().toString());
+            media_obj.addObligatoryTag(getActivity().getApplicationContext());
             Log.i(TAG, String.format("setting media_obj title: %s", title.getText().toString()));
 		}
 		if (doSave) {

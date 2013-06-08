@@ -197,10 +197,7 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
 
 	@Override
 	public void setTitle(Context c, String title) {
-        if(title != null && !title.contains(Constants.OBLIGATORY_TAG))
-            this.title.set(title + " " + Constants.OBLIGATORY_TAG);
-        else
-		    this.title.set(title);
+        this.title.set(title);
 	}
 
 	@Override
@@ -465,5 +462,11 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
 			return this.video_recording.get(c);
 		return null;
 	}
+
+    public void addObligatoryTag(Context c){
+        if(title.get() != null && !title.get().contains(Constants.OBLIGATORY_TAG)){
+            title.set(title + " " + Constants.OBLIGATORY_TAG);
+        }
+    }
 
 }
