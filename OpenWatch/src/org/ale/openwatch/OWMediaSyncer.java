@@ -32,7 +32,8 @@ public class OWMediaSyncer {
     private static ExecutorService syncing_service = Executors.newSingleThreadExecutor();
 
     public static boolean syncing = false;
-
+    public static int numTasks = 0;
+    public static int finishedTasks = 0;
 
     public static void syncMedia(final Context c){
 
@@ -44,48 +45,29 @@ public class OWMediaSyncer {
         filter.is(DBConstants.LOCAL_RECORDINGS_HQ_SYNCED, 0);
         QuerySet<OWLocalVideoRecording> unSyncedRecordings = OWLocalVideoRecording.objects(c, OWLocalVideoRecording.class).filter(filter);
 
-        ArrayList<Runnable> tasks = new ArrayList<Runnable>();
-        SyncTask syncTask;
         for(OWPhoto photo : unSyncedPhotos){
-            //objectsToSync.add(photo);
-            syncTask = new SyncTask(c, photo, false);
-            tasks.add(syncTask);
+            syncing_service.submit(new SyncTask(c, photo));
+            numTasks++;
         }
         for(OWLocalVideoRecording video : unSyncedRecordings){
-            //objectsToSync.add(video);
-            syncTask = new SyncTask(c, video, false);
-            tasks.add(syncTask);
+            syncing_service.submit(new SyncTask(c, video));
+            numTasks++;
         }
-        if(tasks.size() > 0){
-            ((SyncTask)tasks.get(tasks.size()-1)).finalTask = true;
-            for(Runnable task : tasks){
-                syncing_service.submit(task);
-            }
-        }else
-            syncing = false;
 
         syncing_service.shutdown();
 
-        // set syncing false
-
-        Log.i(TAG, String.format("Found %d unsynced objects", tasks.size()));
+        Log.i(TAG, String.format("Found %d unsynced objects", numTasks));
     }
-
-    // encoding_task = new EncoderTask(ffencoder, video_frame_data, audio_samples);
-    //encoding_service.submit(encoding_task);
-    //encoding_service.shutdown();
 
     private static class SyncTask implements Runnable{
         private static final String TAG = "OWMediaSyncer";
 
         OWServerObjectInterface object;
         Context c;
-        public boolean finalTask = false;
 
-        public SyncTask(Context c, OWServerObjectInterface object, boolean finalTask){
+        public SyncTask(Context c, OWServerObjectInterface object){
             this.object = object;
             this.c = c;
-            this.finalTask = finalTask;
         }
 
         @Override
@@ -100,18 +82,12 @@ public class OWMediaSyncer {
         OWServiceRequests.RequestCallback mediaSyncRequestCallback = new OWServiceRequests.RequestCallback() {
             @Override
             public void onFailure() {
-                if(finalTask){
-                    Log.i(TAG, "broadcasting bulk sync finish (failed)");
-                    broadcastMessage(c, Constants.OW_SYNC_STATUS_END_BULK);
-                }
+                markTaskComplete(c);
             }
 
             @Override
             public void onSuccess() {
-                if(finalTask){
-                    Log.i(TAG, "broadcasting bulk sync finish");
-                    broadcastMessage(c, Constants.OW_SYNC_STATUS_END_BULK);
-                }
+                markTaskComplete(c);
             }
         };
 
@@ -165,8 +141,7 @@ public class OWMediaSyncer {
                     }else{ // object is not a video, but has media_url set on server
                         Log.i(TAG, String.format("%s with id %d has server-side media_url. mark synced", object.getMediaType(c).toString(), ((Model)object).getId()));
                         object.setSynced(c, true);
-                        if(finalTask)
-                            broadcastMessage(c, Constants.OW_SYNC_STATUS_END_BULK);
+                        markTaskComplete(c);
                     }
                 }
             }
@@ -198,8 +173,7 @@ public class OWMediaSyncer {
                     e.printStackTrace();
                 }else{
                     //network error
-                    if(finalTask)
-                        broadcastMessage(c, Constants.OW_SYNC_STATUS_END_BULK);
+                    markTaskComplete(c);
                 }
             }
 
@@ -209,6 +183,14 @@ public class OWMediaSyncer {
             }
 
         };
+    }
+
+    private static void markTaskComplete(Context c){
+        finishedTasks ++;
+        Log.i(TAG, String.format("%d/%d tasks complete", finishedTasks, numTasks));
+        if(numTasks == finishedTasks){
+            broadcastMessage(c, Constants.OW_SYNC_STATUS_END_BULK);
+        }
     }
 
     private static void broadcastMessage(Context c, int status){
