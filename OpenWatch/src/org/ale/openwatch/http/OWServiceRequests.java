@@ -678,6 +678,8 @@ public class OWServiceRequests {
 		AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
 		if(http_get_string == null)
 			http_get_string = "";
+        if(object == null)
+            return;
 		Log.i(TAG, "Commencing Get Recording Meta: " + instanceEndpointForOWMediaObject(app_context, object) + http_get_string);
 		http_client.get(instanceEndpointForOWMediaObject(app_context, object) + http_get_string, response_handler);
 	}

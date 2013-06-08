@@ -1,152 +1,147 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <string name="menu_settings">Ayarlar</string>
-  <!--General-->
-  <string name="By">Tarafından</string>
-  <string name="Email">E-posta</string>
-  <string name="Password">Şifre</string>
-  <!--Generic Dialog-->
-  <string name="dialog_ok">Tamam</string>
-  <string name="dialog_no">Hayır, Teşekkürler</string>
-  <string name="dialog_bummer">çok kötü</string>
-  <!--MainActivity-->
-  <string name="video_button_text">Video Yayın</string>
-  <string name="photo_button_text">Foto Alın</string>
-  <string name="top_stories_button_text">Özellikli bir Öyküler</string>
-  <string name="saved_media_button_text">Sizin Medya</string>
-  <string name="local_button_text">Yerel</string>
-  <string name="feedback_button_text">Geri bildirim Gönder</string>
-  <string name="settings_button_text">Ayarlar</string>
-  <!--Send Feedback Intent Extras-->
-  <string name="share_email_subject">OpenWatch-Android geribildirim</string>
-  <string name="share_email_text">Merhaba OpenWatch!\n\n</string>
-  <string name="share_chooser_title">Bize geri gönderin</string>
-  <!--Title of choose dialog to select application to share with-->
-  <!--LoginActivity-->
-  <string name="action_sign_in_register"><b>Giriş yap</b> veya kayıt</string>
-  <string name="login_dialog_signup">Kayıt ol!</string>
-  <string name="logout">Oturumu Kapat</string>
-  <string name="reporter"></string>
-  <string name="sign_in">Kaydol!</string>
-  <string name="take_choose_picture_title">Sizin avatar ayarlayın</string>
-  <string name="take_choose_picture_prompt">Nasıl resim almalıyım?</string>
-  <string name="take_picture">Kamera Kullanımı</string>
-  <string name="choose_picture">Galeri Gözat</string>
-  <string name="prompt_email">E-posta</string>
-  <string name="prompt_password">Parola</string>
-  <string name="menu_forgot_password">Kayıp şifreyi kurtarmak</string>
-  <string name="login_progress_signing_in">Oturum açılıyor...</string>
-  <string name="error_invalid_email">Bu e-posta adresi geçersiz</string>
-  <string name="error_invalid_password">Bu şifre çok kısa</string>
-  <string name="error_incorrect_password">Bu şifre hatalı</string>
-  <string name="error_field_required">Bu alan gereklidir</string>
-  <string name="message_account_stored">Şu anda güvenlik için oturum açmış, parolanızı bu cihazda depolanmaz. Farklı bir hesap kullanmak oturumu.</string>
-  <!--FancyLoginActivity-->
-  <string name="fancy_login_welcome_text">OpenWatch hoş geldiniz. Başlamak için e-posta girin.</string>
-  <string name="login_button_text">Giriş</string>
-  <string name="get_started_button_text">Başlarken</string>
-  <string name="forgot_password_label">Şifrenizi mi unuttunuz?</string>
-  <!--Account creation prompt-->
-  <string name="create_account_prompt">Başlamadan önce bir OpenWatch hesap oluşturmak için bir dakikanızı ayırın. Bu bir saniye sürer ve hemen yayın başlatmak için izin verir sadece.</string>
-  <!--login failed-->
-  <string name="login_dialog_denied_title">Giriş Reddedildi</string>
-  <string name="login_dialog_denied_msg">Kullanıcı adınızı ve şifrenizi kontrol edin. Eğer bir hesabınız yoksa, kayıt lütfen.</string>
-  <!--login with new email-->
-  <string name="login_dialog_unknown_email_title">Yeni hesap oluştur?</string>
-  <!--email address +  R.string.question_mark will follow the below string-->
-  <string name="login_dialog_unknown_email_msg">Verdiğiniz e-posta adresi bir OpenWatch hesabına bağlı değil. Aşağıdaki hesap ile yeni bir hesap istiyorum:</string>
-  <string name="question_mark">\?</string>
-  <!--problem reaching host-->
-  <string name="login_dialog_failed_title">Başarısız giriş</string>
-  <string name="login_dialog_failed_msg">OpenWatch hizmet ulaşılamadı. Ağ bağlantınızı kontrol edip tekrar deneyin.</string>
-  <!--signup with taken email address-->
-  <string name="signup_dialog_email_taken_title">Zaten Kayıtlı e-posta</string>
-  <!--email address will preceed the below string-->
-  <string name="signup_dialog_email_taken_msg">Bu e-posta zaten OpenWatch ile kayıtlıdır:</string>
-  <!--generic signup problem-->
-  <string name="signup_dialog_failed_title">Kayıt Başarısız</string>
-  <string name="signup_dialog_failed_msg">Kayıt bir sorun var. Daha sonra tekrar deneyiniz.</string>
-  <!--Feed Activity-->
-  <string name="directory">Rehber</string>
-  <string name="tab_local_user_recordings">Sizin Medya</string>
-  <string name="tab_local">Yerel</string>
-  <string name="tab_following">Ardından</string>
-  <string name="tab_featured">En Çok Okunan Haberler</string>
-  <string name="tab_Raw">Ham</string>
-  <string name="loading_recordings">Yükleniyor ...</string>
-  <string name="no_recordings">Hiçbir kayıtları var</string>
-  <string name="loading_feed">Yükleme</string>
-  <string name="feed_empty">Hiç Kayit</string>
-  <string name="login_for_local_recordings">Eğer medya görüntülemek için oturum açmış olmalısınız</string>
-  <!--View Recording Activity-->
-  <string name="tab_map">Harita</string>
-  <string name="tab_info">Bilgi</string>
-  <string name="title">Başlık</string>
-  <string name="description">Tanımlama</string>
-  <string name="tags">Etiketler</string>
-  <!--TagPoolLayout-->
-  <string name="remove_tag_dialog_title">Etiketi kaldır?</string>
-  <string name="remove_tag_dialog_msg">Bu kayıt bu etiketi kaldırmak ister misiniz?</string>
-  <string name="remove_tag_dialog_yes">Etiket çıkarın</string>
-  <string name="remove_tag_dialog_cancel">İptal</string>
-  <!--AutoComplete Tag Field-->
-  <string name="action_tag">Etiket</string>
-  <!--WhatHappenedActivity-->
-  <string name="what_happened">Ne oldu?</string>
-  <string name="submit">Sunmak</string>
-  <string name="share_dialog_title">Pay</string>
-  <string name="share_dialog_no">Hayır, Teşekkürler</string>
-  <string name="sync_video_complete_header_text">Kişisel Video basliyor!</string>
-  <!--Appears above media link after sync complete-->
-  <string name="sync_video_header_text">Openwatch.net video senkronizasyonu</string>
-  <!--RecorderActivity-->
-  <string name="stop_recording_dialog_title">Kaydı Durdur?</string>
-  <string name="stop_recording_dialog_message">Eğer kaydı durdurmak için istediğinizden emin misiniz?</string>
-  <string name="stop_recording_dialog_stop">Dur</string>
-  <string name="stop_recording_dialog_continue">Devam Etmek</string>
-  <string name="recording">Kayıt</string>
-  <!--OWInvestigationViewActivity-->
-  <string name="share_investigation">Hisse Araştırma</string>
-  <!--StoryViewActivity-->
-  <string name="share_story">Hisse Story</string>
-  <string name="title_activity_welcome">Hoşgeldiniz, Yeni Watcher!</string>
-  <!--OWPhotoReviewActivity-->
-  <string name="title_activity_picture_review_ab_title">Resmini açıklayın</string>
-  <string name="sync_photo_complete_header_text">Fotoğrafınızı basliyor!</string>
-  <!--Appears above media link after sync complete-->
-  <string name="sync_photo_header_text">Openwatch.net ile fotoğraf senkronizasyonu</string>
-  <!--SettingsActivity-->
-  <string name="action_settings">Ayarlar</string>
-  <!--OWInvestigationActivity-->
-  <!--OnBoardingActivity-->
-  <string name="continue_button_text">Devam Etmek</string>
-  <string name="get_started_button_text">Başlarken</string>
-  <string name="media_description_hint">Ne oldu? # tamam # etiketleri</string>
-  <!--OWMediaObjectViewActivity-->
-  <string name="share_media_dialog_title">Bu Medya paylaş!</string>
-  <string name="cannot_play_video">Cihazınızı Bu Play Video olamaz</string>
-  <string name="video_error_intro">Ne yazık ki, cihazınız bu video formatı için doğal destek yok.</string>
-  <string name="device_has_external_video_player">Ancak, cihazınız bu videoyu oynatmak mümkün olabilir harici bir uygulama yüklü tespit ettik.</string>
-  <string name="device_lacks_external_video_player">Ancak, harici bir medya oynatıcı cihazınızda bu video oynatabilirsiniz ince bir şans var. Umutlanma alamadım.</string>
-  <string name="play_video_externally">Dış uygulama ile oynayın</string>
-  <string name="search_for_video_player">Dış uygulama ara</string>
-  <string name="video_player_search_query">h264+media+player</string>
-  <!--must be url encoded. i.e: h264+media+player-->
-  <!--Share Dialogs-->
-  <string name="share">Hisse!</string>
-  <string name="share_dialog_generic_title">Medya canlı! Herkese duyurun ve bir etki yaratmak!</string>
-  <string name="share_dialog_photo_title">Fotoğrafınız canlı! Herkese duyurun ve bir etki yaratmak!</string>
-  <string name="share_dialog_photo_button">Resmi Paylaş</string>
-  <string name="share_dialog_video_message">Videonuz canlı! Herkese duyurun ve bir etki yaratmak!</string>
-  <string name="share_video">Video paylaş</string>
-  <string name="via_openwatch">\@OpenWatch</string>
-  <!--Part of share Intent's EXTRA_TEXT field-->
-  <!--ListView-->
-  <string name="loading_next_page">Yükleme...</string>
-  <!--Settings-->
-  <string name="title_activity_settings">Ayarlar</string>
-  <!--Account settings-->
-  <string name="pref_header_account">OpenWatch.net</string>
-  <string name="pref_title_account">Hesap</string>
-  <string name="pref_description_account">Sizin OpenWatch.net kimlik</string>
+    <string name="app_name">OpenWatch</string>
+    <string name="menu_settings">Ayarlar</string>
+    <string name="title_activity_main">OpenWatch</string>
+    <!--General-->
+    <!--Generic Dialog-->
+    <string name="dialog_ok">Tamam</string>
+    <string name="dialog_no">Hayır, teşekkürler</string>
+    <string name="dialog_bummer">çok kötü</string>
+    <!--MainActivity-->
+    <string name="video_button_text">Video Yayınlayın</string>
+    <string name="photo_button_text">Fotoğraf çekin</string>
+    <string name="top_stories_button_text">Öne çıkan</string>
+    <string name="saved_media_button_text">Sizin Medyanız</string>
+    <string name="local_button_text">Yerel</string>
+    <string name="feedback_button_text">Geri bildirim gönder</string>
+    <string name="settings_button_text">Ayarlar</string>
+    <!--Send Feedback Intent Extras-->
+    <string name="share_email_subject">OpenWatch-Android geribildirim</string>
+    <string name="share_email_text">Merhaba OpenWatch!\n\n</string>
+    <string name="share_chooser_title">Bize geri bildirimde bulunun</string>
+    <!--Title of choose dialog to select application to share with-->
+    <!--LoginActivity-->
+    <string name="action_sign_in_register"><b>Giriş yapın</b> ya da kaydolun</string>
+    <string name="login_dialog_signup">Kayıt ol!</string>
+    <string name="logout">Oturumu kapat</string>
+    <string name="reporter"></string>
+    <string name="sign_in">Kaydol!</string>
+    <string name="take_choose_picture_title">Avatarınızı ayarlayın</string>
+    <string name="take_choose_picture_prompt">Nasıl resim almalıyım?</string>
+    <string name="take_picture">Kamera kullanın</string>
+    <string name="choose_picture">Galeriye gözat</string>
+    <string name="menu_forgot_password">Kayıp şifreyi kurtarmak</string>
+    <string name="login_progress_signing_in">Oturum açılıyor...</string>
+    <string name="error_invalid_email">Bu e-posta adresi geçersiz</string>
+    <string name="error_invalid_password">Bu şifre çok kısa</string>
+    <string name="error_incorrect_password">Bu şifre hatalı</string>
+    <string name="error_field_required">Bu alan gereklidir</string>
+    <!--FancyLoginActivity-->
+    <string name="fancy_login_welcome_text">OpenWatch\'a hoş geldiniz. Başlamak için e-posta adresinizi girin.</string>
+    <string name="login_button_text">Giriş</string>
+    <string name="get_started_button_text">Başlarken</string>
+    <string name="forgot_password_label">Şifrenizi mi unuttunuz?</string>
+    <!--Account creation prompt-->
+    <string name="create_account_prompt">Başlamadan önce bir OpenWatch hesabı oluşturmak için bir dakikanızı ayırın. Bu yalnızca bir saniye sürer ve bu sayede yayını hemen başlatabilirsiniz. </string>
+    <!--login failed-->
+    <string name="login_dialog_denied_title">Giriş reddedildi</string>
+    <string name="login_dialog_denied_msg">Kullanıcı adınızı ve şifrenizi kontrol edin. Eğer bir hesabınız yoksa, lütfen kaydolun. </string>
+    <!--login with new email-->
+    <string name="login_dialog_unknown_email_title">Yeni hesap oluştur?</string>
+    <!--email address +  R.string.question_mark will follow the below string-->
+    <string name="question_mark">\?</string>
+    <!--problem reaching host-->
+    <string name="login_dialog_failed_title">Giriş başarısız</string>
+    <string name="login_dialog_failed_msg">OpenWatch hizmetine ulaşılamadı. Ağ bağlantınızı kontrol edip tekrar deneyin.</string>
+    <!--signup with taken email address-->
+    <string name="signup_dialog_email_taken_title">Bu e-posta adresi zaten kayıtlı</string>
+    <!--email address will preceed the below string-->
+    <!--generic signup problem-->
+    <string name="signup_dialog_failed_title">Kayıt başarısız</string>
+    <string name="signup_dialog_failed_msg">Kayıt esnasında bir sorun ortaya çıktı. Lütfen daha sonra tekrar deneyin.</string>
+    <!--Feed Activity-->
+    <string name="tab_local_user_recordings">Sizin Medyanız</string>
+    <string name="tab_local">Yerel</string>
+    <string name="tab_following">Takip ettiğiniz</string>
+    <string name="tab_featured">En Çok Okunan Haberler</string>
+    <string name="tab_Raw">Ham</string>
+    <string name="loading_recordings">Kayıtlar yükleniyor</string>
+    <string name="no_recordings">Hiç kaydınız yok.</string>
+    <string name="loading_feed">Haber kaynağı yükleniyor</string>
+    <string name="feed_empty">Hiç haber kaynağı girişi yok</string>
+    <string name="login_for_local_recordings">Kayıtlarınızı görüntülemek için oturum açmış olmalısınız.</string>
+    <string name="on_device">Cihazda</string>
+    <!--View Recording Activity-->
+    <string name="tab_map">Harita</string>
+    <string name="tab_info">Bilgi</string>
+    <string name="title">Başlık</string>
+    <string name="description">Tanım</string>
+    <string name="tags">Etiketler</string>
+    <!--TagPoolLayout-->
+    <string name="remove_tag_dialog_title">Etiketi kaldır?</string>
+    <string name="remove_tag_dialog_msg">Bu etiketi bu kayıttan kaldırmak ister misiniz?</string>
+    <string name="remove_tag_dialog_yes">Etiketi kaldır</string>
+    <string name="remove_tag_dialog_cancel">İptal et</string>
+    <!--AutoComplete Tag Field-->
+    <string name="action_tag">Etiket</string>
+    <!--WhatHappenedActivity-->
+    <string name="what_happened">Ne oldu?</string>
+    <string name="title_activity_what_happened">OlanBiten</string>
+    <string name="submit">Gönder</string>
+    <string name="share_dialog_title">Paylaş</string>
+    <string name="share_dialog_no">Hayır, teşekkürler</string>
+    <string name="sync_video_complete_header_text">Videonuz yayında!</string>
+    <!--Appears above media link after sync complete-->
+    <string name="sync_video_header_text">Openwatch.net\'le video eşitleniyor</string>
+    <!--RecorderActivity-->
+    <string name="stop_recording_dialog_title">Kaydı Durdur?</string>
+    <string name="stop_recording_dialog_message">Kaydı durdurmak istediğinizden emin misiniz?</string>
+    <string name="stop_recording_dialog_stop">Dur</string>
+    <string name="stop_recording_dialog_continue">Devam et</string>
+    <string name="recording">Kayıt</string>
+    <!--OWInvestigationViewActivity-->
+    <string name="share_investigation">Paylaşım Araştırması</string>
+    <!--StoryViewActivity-->
+    <string name="share_story">Haberi paylaş</string>
+    <string name="title_activity_welcome">Hoşgeldiniz, Yeni Watcher!</string>
+    <!--OWPhotoReviewActivity-->
+    <string name="title_activity_picture_review_ab_title">Resminiz hakkında açıklama yapın</string>
+    <string name="sync_photo_complete_header_text">Fotoğrafınız yayında!</string>
+    <!--Appears above media link after sync complete-->
+    <string name="sync_photo_header_text">Openwatch.net ile fotoğraf senkronizasyonu</string>
+    <!--SettingsActivity-->
+    <string name="action_settings">Ayarlar</string>
+    <!--OWInvestigationActivity-->
+    <!--OnBoardingActivity-->
+    <string name="continue_button_text">Devam et</string>
+    <string name="get_started_button_text">Başlarken</string>
+    <string name="media_description_hint">Ne oldu? #tamam #etiketler</string>
+    <!--OWMediaObjectViewActivity-->
+    <string name="share_media_dialog_title">Bu medyayı paylaş!</string>
+    <string name="cannot_play_video">Cihazınız bu videoyu oynatamaz</string>
+    <string name="video_error_intro">Ne yazık ki, cihazınızın bu video formatı için yerel desteği yok.</string>
+    <string name="device_has_external_video_player">Ancak bu videoyu oynatması mümkün olabilecek harici bir uygulamanın cihazınızda yüklü olduğunu tespit ettik.</string>
+    <string name="device_lacks_external_video_player">Ancak harici bir medya oynatıcının cihazınızda bu video oynatabilmesi oldukça küçük şans var. Umutlanmayın.</string>
+    <string name="play_video_externally">Harici uygulama ile çal</string>
+    <string name="search_for_video_player">Harici uygulama ara</string>
+    <string name="video_player_search_query">h264+medya+oynatıcı</string>
+    <!--must be url encoded. i.e: h264+media+player-->
+    <!--Share Dialogs-->
+    <string name="share">Paylaş!</string>
+    <string name="share_dialog_generic_title">Medyanız yayında! Herkese duyurun ve bir etki yaratın!</string>
+    <string name="share_dialog_photo_title">Fotoğrafınız yayında! Herkese duyurun ve bir etki yaratın!</string>
+    <string name="share_dialog_photo_button">Resmi paylaş</string>
+    <string name="share_dialog_video_message">Videonuz yayında! Herkese duyurun ve bir etki yaratın!</string>
+    <string name="share_video">Video paylaş</string>
+    <string name="via_openwatch">\@OpenWatch aracılığıyla</string>
+    <!--Part of share Intent's EXTRA_TEXT field-->
+    <!--ListView-->
+    <string name="loading_next_page">Yükleniyor...</string>
+    <!--Settings-->
+    <string name="title_activity_settings">Ayarlar</string>
+    <!--Account settings-->
+    <string name="pref_header_account">OpenWatch.net</string>
+    <string name="pref_title_account">Hesap</string>
+    <string name="pref_description_account">OpenWatch.net kimliğiniz</string>
 </resources>
