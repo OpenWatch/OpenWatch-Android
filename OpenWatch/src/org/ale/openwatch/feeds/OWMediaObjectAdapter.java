@@ -14,7 +14,7 @@ import org.ale.openwatch.R;
 public class OWMediaObjectAdapter extends SimpleCursorAdapter {
 
 	public OWMediaObjectAdapter(Context context, Cursor c) {
-		super(context, R.layout.remote_feed_item, c, new String[]{}, new int[]{},0);
+		super(context, R.layout.fancy_remote_feed_item, c, new String[]{}, new int[]{},0);
 	}
 	
 	@Override
@@ -44,8 +44,11 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
             view.setTag(R.id.list_item_cache, view_cache);
             
         }
-        
-        view_cache.title.setText(cursor.getString(view_cache.title_col));
+
+        if(cursor.getString(view_cache.title_col) == null || cursor.getString(view_cache.title_col).compareTo("")==0)
+            view_cache.title.setVisibility(View.GONE);
+        else
+            view_cache.title.setText(cursor.getString(view_cache.title_col));
         view_cache.username.setText(cursor.getString(view_cache.username_col));
         //view_cache.views.setText(cursor.getString(view_cache.views_col));
         //view_cache.actions.setText(cursor.getString(view_cache.actions_col));

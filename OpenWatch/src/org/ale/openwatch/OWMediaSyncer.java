@@ -3,9 +3,11 @@ package org.ale.openwatch;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.orm.androrm.DatabaseAdapter;
 import com.orm.androrm.Filter;
 import com.orm.androrm.Model;
 import com.orm.androrm.QuerySet;
@@ -39,6 +41,7 @@ public class OWMediaSyncer {
 
         Filter filter = new Filter();
         filter.is(DBConstants.SYNCED, 0);
+        filter.is("filepath", "!=", "");
         QuerySet<OWPhoto> unSyncedPhotos = OWPhoto.objects(c, OWPhoto.class).filter(filter);
 
         filter = new Filter();
@@ -179,7 +182,7 @@ public class OWMediaSyncer {
 
             @Override
             public void onFinish() {
-                Log.i(TAG, "getRecording finish");
+                Log.i(TAG, String.format("getRecording finish for object %d", ((Model)object).getId()));
             }
 
         };

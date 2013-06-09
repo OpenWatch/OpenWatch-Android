@@ -121,7 +121,9 @@ public class OWPhoto extends Model implements OWServerObjectInterface{
 				this.setLon(c, json.getDouble("end_lon"));
 			if(json.has(Constants.OW_FIRST_POSTED))
 				this.setFirstPosted(c, json.getString(Constants.OW_FIRST_POSTED));
-			if(json.has(Constants.OW_THUMB_URL))
+            if(json.has("large_thumbnail_url"))
+                this.setThumbnailUrl(c, json.getString("large_thumbnail_url"));
+			else if(json.has(Constants.OW_THUMB_URL))
 				this.setThumbnailUrl(c, json.getString(Constants.OW_THUMB_URL));
 			if(json.has("media_url"))
 				this.media_url.set(json.getString("media_url"));

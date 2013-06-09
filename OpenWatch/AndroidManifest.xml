@@ -62,7 +62,8 @@
             android:keepScreenOn="true"
             android:screenOrientation="landscape" >
         </activity>
-        <activity android:name="org.ale.openwatch.FeedFragmentActivity" >
+        <activity android:name="org.ale.openwatch.FeedFragmentActivity"
+                  android:screenOrientation="portrait">
         </activity>
         <activity
             android:name="org.ale.openwatch.OWMediaObjectViewActivity"
