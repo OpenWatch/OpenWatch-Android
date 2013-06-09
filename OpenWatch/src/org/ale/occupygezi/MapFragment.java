@@ -80,9 +80,10 @@ public class MapFragment extends SupportMapFragment implements OWMediaObjectBack
         Context app_context = getActivity().getApplicationContext();
         if(server_object.getMediaType(app_context) == Constants.MEDIA_TYPE.VIDEO){
             OWVideoRecording video_object = (OWVideoRecording) server_object.getChildObject(app_context);
-            if(video_object.begin_lat.get() != 0.0 && video_object.end_lat.get() != 0.0)
+            if(video_object.begin_lat.get() != 0.0 && video_object.end_lat.get() != 0.0){
                 Log.i(TAG, "recording begin point: " + String.valueOf(video_object.begin_lat.get()) + ", " + String.valueOf(video_object.begin_lon.get()));
-            mStartLocation = new LatLng(video_object.begin_lat.get(), video_object.begin_lon.get());
+                mStartLocation = new LatLng(video_object.begin_lat.get(), video_object.begin_lon.get());
+            }
         }
         if(server_object.getLat(app_context) != 0.0 && server_object.getLon(app_context) != 0.0){
             Log.i(TAG, "recording end point: " + String.valueOf(server_object.getLat(app_context)) + ", " + String.valueOf(server_object.getLon(app_context)));
@@ -106,12 +107,12 @@ public class MapFragment extends SupportMapFragment implements OWMediaObjectBack
                             .icon(BitmapDescriptorFactory
                                     .fromResource(R.drawable.marker_start)));
         }
-        if(mStopLocation != null){
+        if(mStopLocation != null && !(mStopLocation.latitude == 0 && mStopLocation.longitude == 0) ){
             getMap().addMarker(
                     new MarkerOptions().position(mStopLocation)
                             .icon(BitmapDescriptorFactory
                                     .fromResource(R.drawable.marker_stop)));
-            if(mStartLocation == null)
+            if(mStartLocation == null && !(mStartLocation.latitude == 0 && mStartLocation.longitude == 0))
                 getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(mStopLocation, 10));
         }
 

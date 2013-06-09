@@ -483,6 +483,8 @@ public class OWServiceRequests {
                     if(filepath == null){
                         Log.e(TAG, String.format("Error, OWServerobject %d has null filepath", ((Model)object).getId()));
                         object.setSynced(app_context, true); // set object synced, because we have no hope of ever syncing it mobile file deleted
+                        if(cb != null)
+                            cb.onFailure();
                         return;
                     }
 					file_response = OWMediaRequests.ApacheFilePost(app_context, instanceEndpointForOWMediaObject(app_context, object), object.getMediaFilepath(app_context), "file_data");

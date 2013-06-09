@@ -176,7 +176,7 @@
     <string name="share_dialog_photo_button">Share photo</string>
     <string name="share_dialog_video_message">Your video is live! Spread the word and make an impact!</string>
     <string name="share_video">Share video</string>
-    <string name="via_OccupyGezi">via @OpenWatch #OccupyGezi</string> <!-- Part of share Intent's EXTRA_TEXT field -->
+    <string name="via_openwatch">via @OpenWatch #OccupyGezi</string> <!-- Part of share Intent's EXTRA_TEXT field -->
 
     <!-- ListView -->
     <string name="loading_next_page">Loading...</string>
