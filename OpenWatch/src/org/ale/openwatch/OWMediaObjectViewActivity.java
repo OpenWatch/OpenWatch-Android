@@ -355,6 +355,8 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 	public void setupImageView(int view_id, String uri){
         if(uri == null){
             Log.e(TAG, "setupImageView uri is null");
+            showProgress(false);
+            ((ImageView)media_view).setImageResource(R.drawable.thumbnail_placeholder);
             return;
         }
 		if(is_local && !uri.contains("file:\\/\\/"))
@@ -375,7 +377,8 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
+                showProgress(false);
+                ((ImageView)view).setImageResource(R.drawable.thumbnail_placeholder);
             }
 
             @Override
