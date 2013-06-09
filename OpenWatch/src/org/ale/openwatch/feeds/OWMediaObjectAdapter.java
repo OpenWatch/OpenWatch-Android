@@ -47,8 +47,10 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
 
         if(cursor.getString(view_cache.title_col) == null || cursor.getString(view_cache.title_col).compareTo("")==0)
             view_cache.title.setVisibility(View.GONE);
-        else
+        else{
             view_cache.title.setText(cursor.getString(view_cache.title_col));
+            view_cache.title.setVisibility(View.VISIBLE);
+        }
         view_cache.username.setText(cursor.getString(view_cache.username_col));
         //view_cache.views.setText(cursor.getString(view_cache.views_col));
         //view_cache.actions.setText(cursor.getString(view_cache.actions_col));
