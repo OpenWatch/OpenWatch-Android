@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+
+    <FrameLayout
+            android:id="@+id/mapContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="0dp" >
+
+        <fragment
+                android:id="@+id/mapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                class="com.google.android.gms.maps.SupportMapFragment" />
+    </FrameLayout>
+
+    <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+    <VideoView
+            android:id="@+id/videoView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+
+
+        <ImageView
+                android:id="@+id/userThumbnail"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentBottom="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/thumbnail_placeholder" />
+
+        <TextView
+                android:id="@+id/userLabel"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/userThumbnail"
+                android:layout_alignParentBottom="true"
+                android:alpha=".8"
+                android:background="#000000"
+                android:ellipsize="marquee"
+                android:gravity="center"
+                android:textColor="#fff" />
+
+        <TextView
+                android:id="@+id/titleLabel"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/userThumbnail"
+                android:layout_alignBottom="@id/userThumbnail"
+                android:layout_marginLeft="5dp"
+                android:alpha=".8"
+                android:background="#000000"
+                android:ellipsize="marquee"
+                android:gravity="center"
+                android:text=""
+                android:textColor="#fff" />
+
+</RelativeLayout>

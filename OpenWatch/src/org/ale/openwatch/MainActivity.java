@@ -112,9 +112,13 @@ public class MainActivity extends SherlockActivity {
 	}
 	
 	public void featuredButtonClick(View v){
+        /*
 		Intent i = new Intent(this, FeedFragmentActivity.class);
 		i.putExtra(Constants.FEED_TYPE, OWFeedType.TOP);
 		startActivity(i);
+		*/
+        Intent i = new Intent(this, DashboardActivity.class);
+        startActivity(i);
 	}
 	
 	public void settingsButtonClick(View v){
