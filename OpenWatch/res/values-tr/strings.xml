@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-    <string name="app_name">OpenWatch</string>
+    <string name="app_name">OccupyGezi</string>
     <string name="menu_settings">Ayarlar</string>
-    <string name="title_activity_main">OpenWatch</string>
+    <string name="title_activity_main">OccupyGezi</string>
     <!--General-->
     <!--Generic Dialog-->
     <string name="dialog_ok">Tamam</string>
