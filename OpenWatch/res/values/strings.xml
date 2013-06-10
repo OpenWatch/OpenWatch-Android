@@ -131,6 +131,10 @@
     <string name="stop_recording_dialog_stop">Stop</string>
     <string name="stop_recording_dialog_continue">Continue</string>
     <string name="recording">Recording</string>
+    <string name="camera_error_dialog_title">Could not Access Camera</string>
+    <string name="camera_error_dialog_message">If your device does have a camera, we can\'t find it. Please send
+        feedback with your device model
+    </string>
     
     <!-- OWInvestigationViewActivity -->
     <string name="share_investigation">Share Investigation</string>
@@ -188,4 +192,5 @@
     <string name="pref_header_account">OpenWatch.net</string>
     <string name="pref_title_account">Account</string>
     <string name="pref_description_account">Your OpenWatch.net credentials</string>
+
 </resources>

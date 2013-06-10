@@ -198,6 +198,17 @@ public class RecorderActivity extends SherlockActivity implements
 		Camera c = null;
 		try {
 			c = Camera.open(); // attempt to get a Camera instance
+            if (c == null) {
+                // Rear Camera is not available (in use or does not exist)
+                // Try all other cameras
+                int num_cameras = Camera.getNumberOfCameras();
+                for (int x = 0; x < num_cameras; x++) {
+                    c = Camera.open(x);
+                    if (c != null) {
+                        break;
+                    }
+                }
+            }
             Camera.Parameters parameters = c.getParameters();
             List<String> focusModes = parameters.getSupportedFocusModes();
             if(Build.VERSION.SDK_INT >= 14)
@@ -356,6 +367,8 @@ public class RecorderActivity extends SherlockActivity implements
             return false;
 		}
 	    mCamera = getCameraInstance();
+        if(mCamera == null){ showCameraError();return false;}
+
 	    mMediaRecorder = new MediaRecorder();
 
 	    // Step 1: Unlock and set camera to MediaRecorder
@@ -431,6 +444,11 @@ public class RecorderActivity extends SherlockActivity implements
 
     public void onStopRecordingButtonClick(View v){
         showStopRecordingDialog();
+    }
+
+    private void showCameraError(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.camera_error_dialog_title)).setMessage(getString(R.string.camera_error_dialog_message)).show();
     }
 
 }
