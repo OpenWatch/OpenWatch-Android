@@ -60,6 +60,8 @@ public class DashboardActivity extends SherlockFragmentActivity {
 
     boolean isLocal;
 
+    LatLng lastLatLng;
+
     OWServiceRequests.PaginatedRequestCallback cb = new OWServiceRequests.PaginatedRequestCallback(){
 
         @Override
@@ -144,26 +146,16 @@ public class DashboardActivity extends SherlockFragmentActivity {
     }
 
     private void animateToObject(final OWServerObjectInterface object){
+        if(lastLatLng != null && object.getLat(c) == lastLatLng.latitude && object.getLon(c) == lastLatLng.longitude ){
+            setupMediaViewForOWServerObjectInterface(object);
+        }
         LatLng latLng = new LatLng(object.getLat(c), object.getLon(c));
         Log.i(TAG, String.format("animating %s, with id %d to %f, %f", object.getMediaType(c), ((Model)object).getId(), latLng.latitude, latLng.longitude));
-        map.addMarker(
-                new MarkerOptions().position(latLng)
-                        .icon(BitmapDescriptorFactory
-                                .fromResource(R.drawable.marker_stop)));
         GoogleMap.CancelableCallback cb = new GoogleMap.CancelableCallback(){
 
             @Override
             public void onFinish() {
-                if(object.getMediaType(c) == Constants.MEDIA_TYPE.VIDEO){
-                    Log.i(TAG, String.format("animation complete. loading media for %s, with id %d", object.getMediaType(c), ((Model)object).getId()));
-                    setupMediaViewForOWServerObject( ((OWVideoRecording)object).media_object.get(c) );
-
-                }
-                else if(object.getMediaType(c) == Constants.MEDIA_TYPE.PHOTO){
-                    Log.i(TAG, String.format("animation complete. loading media for %s, with id %d", object.getMediaType(c), ((Model)object).getId()));
-                    setupMediaViewForOWServerObject( ((OWPhoto)object).media_object.get(c) );
-
-                }
+                setupMediaViewForOWServerObjectInterface(object);
             }
 
             @Override
@@ -172,8 +164,23 @@ public class DashboardActivity extends SherlockFragmentActivity {
             }
         };
 
+        lastLatLng = latLng;
+
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16), 6*1000, cb);
 
+    }
+
+    private void setupMediaViewForOWServerObjectInterface(OWServerObjectInterface object){
+        if(object.getMediaType(c) == Constants.MEDIA_TYPE.VIDEO){
+            Log.i(TAG, String.format("animation complete. loading media for %s, with id %d", object.getMediaType(c), ((Model)object).getId()));
+            setupMediaViewForOWServerObject( ((OWVideoRecording)object).media_object.get(c) );
+
+        }
+        else if(object.getMediaType(c) == Constants.MEDIA_TYPE.PHOTO){
+            Log.i(TAG, String.format("animation complete. loading media for %s, with id %d", object.getMediaType(c), ((Model)object).getId()));
+            setupMediaViewForOWServerObject( ((OWPhoto)object).media_object.get(c) );
+
+        }
     }
 
     private void mapObject(final OWServerObjectInterface object){
@@ -232,6 +239,7 @@ public class DashboardActivity extends SherlockFragmentActivity {
                 */
                 Log.i(TAG, String.format("Setting up imageView for video %d thumbnail with path %s", ((Model)object).getId(), object.thumbnail_url.get()));
                 this.setupImageView(object.thumbnail_url.get());
+                break;
             case AUDIO:
                 /*
                 media_path = object.audio.get(getApplicationContext()).getMediaFilepath(getApplicationContext());
@@ -247,6 +255,7 @@ public class DashboardActivity extends SherlockFragmentActivity {
                 */
                 Log.i(TAG, String.format("skipping media view for %s, with id %d", object.getMediaType(c), ((Model)object).getId()));
                 timer.schedule(new DashTimerTask(), 5*1000);
+                break;
             case PHOTO:
                 media_path = object.photo.get(getApplicationContext()).getMediaFilepath(getApplicationContext());
                 if(media_path == null || media_path.compareTo("") == 0){

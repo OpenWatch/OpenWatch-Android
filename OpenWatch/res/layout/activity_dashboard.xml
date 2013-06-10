@@ -38,6 +38,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentBottom="true"
                 android:scaleType="centerCrop"
+                android:visibility="gone"
                 android:src="@drawable/thumbnail_placeholder" />
 
         <TextView
