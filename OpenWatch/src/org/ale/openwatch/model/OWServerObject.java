@@ -12,6 +12,7 @@ import com.orm.androrm.field.ForeignKeyField;
 import com.orm.androrm.field.IntegerField;
 import com.orm.androrm.field.ManyToManyField;
 
+import com.orm.androrm.migration.Migrator;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
 import org.ale.openwatch.constants.Constants.CONTENT_TYPE;
@@ -56,11 +57,27 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
 	public ForeignKeyField<OWLocalVideoRecording> local_video_recording = new ForeignKeyField<OWLocalVideoRecording>(OWLocalVideoRecording.class);
 	
 	public ForeignKeyField<OWStory> story = new ForeignKeyField<OWStory>(OWStory.class);
+
+    public ForeignKeyField<OWMission> mission = new ForeignKeyField<OWMission>(OWMission.class);
 	
 	
 	public OWServerObject() {
 		super();
 	}
+
+    @Override
+    protected void migrate(Context context) {
+        /*
+            Migrator automatically keeps track of which migrations have been run.
+            All we do is add a migration for each change that occurs after the initial app release
+         */
+        Migrator<OWServerObject> migrator = new Migrator<OWServerObject>(OWServerObject.class);
+
+        migrator.addField("mission", new ForeignKeyField<OWMission>(OWMission.class));
+
+        // roll out all migrations
+        migrator.migrate(context);
+    }
 	
 	public boolean save(Context context, boolean doNotify){
 		boolean did_it = this.save(context);
@@ -448,6 +465,8 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
 			return CONTENT_TYPE.INVESTIGATION;
 		else if(this.story.get(c) != null)
 			return CONTENT_TYPE.STORY;
+        else if(this.mission.get(c) != null)
+            return CONTENT_TYPE.MISSION;
 		Log.e(TAG, "Unable to determine CONTENT_TYPE for OWServerObject " + String.valueOf(this.getId()));
 		return null;
 	}

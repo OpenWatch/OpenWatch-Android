@@ -9,6 +9,7 @@
     <string name="by">By</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
+    <string name="karma">Karma</string>
 
     <!-- Generic Dialog -->
     <string name="dialog_ok">Ok</string>
@@ -192,5 +193,6 @@
     <string name="pref_header_account">OpenWatch.net</string>
     <string name="pref_title_account">Account</string>
     <string name="pref_description_account">Your OpenWatch.net credentials</string>
+
 
 </resources>

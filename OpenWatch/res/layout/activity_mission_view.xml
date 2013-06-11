@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+    <LinearLayout
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:weightSum="1.0">
+
+        <RelativeLayout
+                android:id="@+id/imageLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight=".4">
+
+            <ImageView
+                    android:id="@+id/missionImage"
+                    android:contentDescription=""
+                    android:scaleType="centerCrop"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+            <TextView
+                    android:id="@+id/bounty"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:textColor="#fff"
+                    android:shadowColor="#264826"
+                    android:shadowDy="-2"
+                    android:shadowRadius=".1"
+                    android:textSize="32sp"
+                    android:background="@drawable/side_banner_green"/>
+
+
+        </RelativeLayout>
+
+
+
+        <RelativeLayout
+                android:id="@+id/contentLayout"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight=".6"
+                android:padding="10dp">
+
+            <TextView
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="5dp"
+                    android:textSize="32sp"/>
+
+            <ImageView
+                    android:id="@+id/userImage"
+                    android:contentDescription=""
+                    android:src="@drawable/thumbnail_placeholder"
+                    android:scaleType="centerCrop"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_below="@+id/title"
+                    android:layout_alignLeft="@+id/title"/>
+
+            <TextView
+                    android:id="@+id/userTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="22sp"
+                    android:layout_marginTop="30dp"
+                    android:layout_alignTop="@+id/userImage"
+                    android:layout_centerHorizontal="true"/>
+
+            <TextView
+                    android:id="@+id/description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="22sp"
+                    android:layout_below="@+id/userImage"
+                    android:layout_alignLeft="@+id/userImage"
+                    android:layout_marginTop="10dp"/>
+
+            <include layout="@layout/media_tools"
+                     android:below="@id/description"
+                     android:id="@+id/mediaTools"
+                     android:layout_width="match_parent"
+                     android:layout_height="50dp"/>
+
+        </RelativeLayout>
+    </LinearLayout>
+</ScrollView>

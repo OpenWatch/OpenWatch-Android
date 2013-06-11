@@ -10,10 +10,12 @@ public class DBConstants {
 
     // Generic
     public static final String SYNCED = "synced";
+    public static final String SERVER_ID = "server_id";
 	
 	// OWMediaObject table
 	public static final String MEDIA_OBJECT_TABLENAME = "owserverobject";
 	public static final String MEDIA_OBJECT_STORY = "story";
+    public static final String MEDIA_OBJECT_MISSION = "mission";
 	public static final String MEDIA_OBJECT_USER = "user";
 	public static final String MEDIA_OBJECT_VIDEO = "video_recording";
 	public static final String MEDIA_OBJECT_AUDIO = "audio";
