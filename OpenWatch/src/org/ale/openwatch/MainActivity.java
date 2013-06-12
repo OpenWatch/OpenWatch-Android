@@ -29,7 +29,6 @@ import org.ale.openwatch.model.OWUser;
 
 public class MainActivity extends SherlockActivity {
 	
-	private static int camera_action_code = 444;
 	private static int owphoto_id = -1;
     private static int owphoto_parent_id = -1;
 
@@ -87,29 +86,29 @@ public class MainActivity extends SherlockActivity {
 	}
 	
 	public void cameraButtonClick(View v) {
+
 		String uuid = OWUtils.generateRecordingIdentifier();
-		File photo_location = FileUtils.prepareOutputLocation(getApplicationContext(), MEDIA_TYPE.PHOTO, uuid ,"photo", ".jpg");
+        OWPhoto photo  = OWPhoto.initializeOWPhoto(getApplicationContext(), uuid);
 		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		takePictureIntent.putExtra("uuid", uuid);
-		Log.i("takePicture", "location " + photo_location.getAbsolutePath() + " exists: " + String.valueOf(photo_location.exists()));
-		takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo_location));
-		
-		OWPhoto photo = new OWPhoto(getApplicationContext());
-		photo.filepath.set(photo_location.getAbsolutePath());
-		photo.directory.set(photo_location.getParentFile().getAbsolutePath());
-		photo.uuid.set(uuid);
-		photo.save(getApplicationContext());
+		takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.parse(photo.filepath.get()));
 		owphoto_id = photo.getId();
         owphoto_parent_id = photo.media_object.get(getApplicationContext()).getId();
 		Log.i("MainActivity-cameraButtonClick", "get owphoto_id: " + String.valueOf(owphoto_id));
         DeviceLocation.setOWServerObjectLocation(getApplicationContext(), owphoto_parent_id, false);
-	    startActivityForResult(takePictureIntent, camera_action_code);
+	    startActivityForResult(takePictureIntent, Constants.CAMERA_ACTION_CODE);
 	}
 	
 	public void microphoneButtonClick(View v) {
 		Intent i = new Intent(this, RecorderActivity.class);
 		startActivity(i);
 	}
+
+    public void missionButtonClick(View v) {
+        Intent i = new Intent(this, FeedFragmentActivity.class);
+        i.putExtra(Constants.FEED_TYPE, OWFeedType.MISSION);
+        startActivity(i);
+    }
 	
 	public void featuredButtonClick(View v){
 		Intent i = new Intent(this, FeedFragmentActivity.class);
@@ -205,7 +204,7 @@ public class MainActivity extends SherlockActivity {
 		Log.i("MainActivity-onActivityResult","got it");
 		if(data == null)
 			Log.i("MainActivity-onActivityResult", "data null");
-		if(requestCode == camera_action_code && resultCode == RESULT_OK){
+		if(requestCode == Constants.CAMERA_ACTION_CODE && resultCode == RESULT_OK){
 			Intent i = new Intent(this, OWPhotoReviewActivity.class);
 			i.putExtra("owphoto_id", owphoto_id);
             i.putExtra(Constants.INTERNAL_DB_ID, owphoto_parent_id); // server object id

@@ -58,6 +58,7 @@ public class DatabaseManager {
 		models.add(OWPhoto.class);
 		models.add(OWAudio.class);
 		models.add(OWInvestigation.class);
+        models.add(OWMission.class);
 		
 		pointToDB();
 		DatabaseAdapter adapter = DatabaseAdapter.getInstance(app_context);

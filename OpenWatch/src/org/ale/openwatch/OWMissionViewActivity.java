@@ -1,10 +1,12 @@
 package org.ale.openwatch;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -14,21 +16,24 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.http.OWServiceRequests;
+import org.ale.openwatch.location.DeviceLocation;
 import org.ale.openwatch.model.OWMission;
+import org.ale.openwatch.model.OWPhoto;
 import org.ale.openwatch.model.OWServerObject;
 import org.ale.openwatch.model.OWUser;
 import org.json.JSONObject;
 
-import java.text.ParseException;
-
 /**
  * Created by davidbrodsky on 6/10/13.
  */
-public class MissionViewActivity extends SherlockActivity implements OWMediaObjectBackedEntity{
-    private static final String TAG = "MissionViewActivity";
+public class OWMissionViewActivity extends SherlockActivity implements OWMediaObjectBackedEntity{
+    private static final String TAG = "OWMissionViewActivity";
 
     int model_id = -1;
     int server_id = -1;
+
+    private static int owphoto_id = -1;
+    private static int owphoto_parent_id = -1;
 
     Context c;
 
@@ -53,8 +58,8 @@ public class MissionViewActivity extends SherlockActivity implements OWMediaObje
                     public void onSuccess(JSONObject response) {
                         Log.i(TAG, " success : " + response.toString());
 
-                        if (OWServerObject.objects(c, OWServerObject.class).get(model_id).story.get(c).body.get() != null) {
-                            MissionViewActivity.this.populateViews(OWServerObject.objects(c, OWServerObject.class).get(model_id), c);
+                        if (OWServerObject.objects(c, OWServerObject.class).get(model_id).mission.get(c).body.get() != null) {
+                            OWMissionViewActivity.this.populateViews(OWServerObject.objects(c, OWServerObject.class).get(model_id), c);
                         }
                     }
 
@@ -68,21 +73,6 @@ public class MissionViewActivity extends SherlockActivity implements OWMediaObje
                     public void onFinish() {
                         Log.i(TAG, " finish: ");
 
-                    }
-
-                });
-                OWServiceRequests.getStory(c, story_server_id, new OWServiceRequests.RequestCallback() {
-
-                    @Override
-                    public void onFailure() {
-
-                    }
-
-                    @Override
-                    public void onSuccess() {
-                        if (OWServerObject.objects(c, OWServerObject.class).get(model_id).story.get(c).body.get() != null) {
-                            MissionViewActivity.this.populateViews(OWServerObject.objects(c, OWServerObject.class).get(model_id), c);
-                        }
                     }
 
                 });
@@ -126,6 +116,42 @@ public class MissionViewActivity extends SherlockActivity implements OWMediaObje
                 }
             }
         });
+
+    }
+
+    public void cameraButtonClick(View v){
+        String uuid = OWUtils.generateRecordingIdentifier();
+        OWPhoto photo  = OWPhoto.initializeOWPhoto(getApplicationContext(), uuid);
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        takePictureIntent.putExtra("uuid", uuid);
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.parse(photo.filepath.get()));
+        owphoto_id = photo.getId();
+        owphoto_parent_id = photo.media_object.get(getApplicationContext()).getId();
+        Log.i("MainActivity-cameraButtonClick", "get owphoto_id: " + String.valueOf(owphoto_id));
+        DeviceLocation.setOWServerObjectLocation(getApplicationContext(), owphoto_parent_id, false);
+        startActivityForResult(takePictureIntent, Constants.CAMERA_ACTION_CODE);
+    }
+
+    public void camcorderButtonClick(View v){
+        Intent i = new Intent(this, RecorderActivity.class);
+        // TODO: Bundle tag to add
+        startActivity(i);
+
+    }
+
+    @Override
+    protected void onActivityResult (int requestCode, int resultCode, Intent data){
+        Log.i("OWMissionViewActivity-onActivityResult","got it");
+        if(data == null)
+            Log.i("OWMissionViewActivity-onActivityResult", "data null");
+        if(requestCode == Constants.CAMERA_ACTION_CODE && resultCode == RESULT_OK){
+            Intent i = new Intent(this, OWPhotoReviewActivity.class);
+            i.putExtra("owphoto_id", owphoto_id);
+            i.putExtra(Constants.INTERNAL_DB_ID, owphoto_parent_id); // server object id
+            // TODO: Bundle tag to add
+            Log.i("OWMissionViewActivity-onActivityResult", String.format("bundling owphoto_id: %d, owserverobject_id: %d",owphoto_id, owphoto_parent_id));
+            startActivity(i);
+        }
 
     }
 }

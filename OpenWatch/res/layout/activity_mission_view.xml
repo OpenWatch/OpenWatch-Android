@@ -14,7 +14,7 @@
         <RelativeLayout
                 android:id="@+id/imageLayout"
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
+                android:layout_height="250dp"
                 android:layout_weight=".4">
 
             <ImageView
@@ -26,11 +26,12 @@
 
             <TextView
                     android:id="@+id/bounty"
-                    android:layout_width="120dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentBottom="true"
                     android:layout_marginBottom="20dp"
+                    android:singleLine="true"
                     android:gravity="center"
                     android:textColor="#fff"
                     android:shadowColor="#264826"
@@ -47,7 +48,7 @@
         <RelativeLayout
                 android:id="@+id/contentLayout"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="fill_parent"
                 android:layout_weight=".6"
                 android:padding="10dp">
 
@@ -88,12 +89,20 @@
                     android:layout_alignLeft="@+id/userImage"
                     android:layout_marginTop="10dp"/>
 
-            <include layout="@layout/media_tools"
-                     android:layout_below="@id/description"
-                     android:id="@+id/mediaTools"
-                     android:layout_width="match_parent"
-                     android:layout_height="50dp"/>
-
         </RelativeLayout>
+        <include layout="@layout/broadcast_video_button"
+                 android:id="@+id/camcorderButton"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_marginLeft="10dp"
+                 android:gravity="center"
+                 android:layout_centerHorizontal="true"/>
+
+        <include layout="@layout/take_photo_button"
+                 android:id="@+id/camcorderButton"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_marginLeft="10dp"
+                 android:layout_centerHorizontal="true"/>
     </LinearLayout>
 </ScrollView>

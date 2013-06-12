@@ -16,10 +16,7 @@
 
 package org.ale.openwatch.feeds;
 
-import org.ale.openwatch.OWInvestigationViewActivity;
-import org.ale.openwatch.OWMediaObjectViewActivity;
-import org.ale.openwatch.OWStoryViewActivity;
-import org.ale.openwatch.R;
+import org.ale.openwatch.*;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
 import org.ale.openwatch.contentprovider.OWContentProvider;
@@ -118,7 +115,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 
             // Give some text to display if there is no data.  In a real
             // application this would come from a resource.
-            setEmptyText(getString(R.string.loading_feed));
+            setEmptyText(getString(R.string.feed_empty));
 
             // We have a menu item to show in action bar.
             setHasOptionsMenu(true);
@@ -256,6 +253,8 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
         		case MEDIA_OBJECT:
         			i = new Intent(this.getActivity(), OWMediaObjectViewActivity.class);
         			break;
+                case MISSION:
+                    i = new Intent(this.getActivity(), OWMissionViewActivity.class);
         		}
 
         		if(i != null){
@@ -321,7 +320,8 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             DBConstants.MEDIA_OBJECT_AUDIO,
             DBConstants.MEDIA_OBJECT_VIDEO,
             DBConstants.MEDIA_OBJECT_PHOTO,
-            DBConstants.MEDIA_OBJECT_INVESTIGATION
+            DBConstants.MEDIA_OBJECT_INVESTIGATION,
+            DBConstants.MEDIA_OBJECT_MISSION
 
 	    };
 

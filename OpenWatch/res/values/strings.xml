@@ -26,6 +26,7 @@
     <string name="feedback_button_text">Send Feedback</string>
     <string name="settings_button_text">Settings</string>
     <string name="syncing_existing_media">Syncing existing media...\nSync will continue in the background</string>
+    <string name="mission_button_text">Missions</string>
 
         <!-- Send Feedback Intent Extras -->
         <string name="share_email_subject">OpenWatch-Android feedback</string>
@@ -194,6 +195,7 @@
     <string name="pref_header_account">OpenWatch.net</string>
     <string name="pref_title_account">Account</string>
     <string name="pref_description_account">Your OpenWatch.net credentials</string>
+
 
 
 </resources>

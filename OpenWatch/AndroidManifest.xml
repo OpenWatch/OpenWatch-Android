@@ -117,7 +117,7 @@
         </activity>
         <activity android:name="org.ale.openwatch.FancyLoginActivity"/>
         <activity android:name="org.ale.openwatch.OnBoardingActivity"/>
-        <activity android:name=".MissionViewActivity"/>
+        <activity android:name=".OWMissionViewActivity"/>
     </application>
 
 </manifest>

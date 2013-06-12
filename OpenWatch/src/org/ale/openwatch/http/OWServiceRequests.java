@@ -351,6 +351,8 @@ public class OWServiceRequests {
                             //obj_start_time = System.currentTimeMillis();
 							OWInvestigation.createOrUpdateOWInvestigationWithJson(c, json_obj, OWFeed.getFeedFromString(c, feed_name));
                             //Log.i("Benchamrk", String.format("createdOrUpdated inv in %d ms", System.currentTimeMillis() - obj_start_time));
+                        }else if(json_obj.getString("type").compareTo("mission") == 0){
+                            OWMission.createOrUpdateOWMissionWithJson(c, json_obj, OWFeed.getFeedFromString(c, feed_name));
                         }
 						
 					}

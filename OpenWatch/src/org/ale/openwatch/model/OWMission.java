@@ -20,9 +20,10 @@ import org.json.JSONObject;
 import java.util.Date;
 
 public class OWMission extends Model implements OWServerObjectInterface{
-	private static final String TAG = "OWStory";
+	private static final String TAG = "OWMission";
 
 	public CharField body = new CharField();
+    public CharField tag = new CharField();
     public BooleanField active = new BooleanField();
     public BooleanField completed = new BooleanField();
     public DoubleField usd = new DoubleField();
@@ -84,6 +85,8 @@ public class OWMission extends Model implements OWServerObjectInterface{
                 completed.set(json.getBoolean(Constants.OW_COMPLETED));
             if(json.has(Constants.OW_MEDIA_BUCKET))
                 media_url.set(json.getString(Constants.OW_MEDIA_BUCKET));
+            if(json.has("primary_tag"))
+                tag.set(json.getString("primary_tag"));
 		}catch(JSONException e){
 			Log.e(TAG, "Error deserializing story");
 			e.printStackTrace();
