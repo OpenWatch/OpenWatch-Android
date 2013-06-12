@@ -89,6 +89,7 @@
     <string name="tab_local">Local</string>
     <string name="tab_following">Following</string>
     <string name="tab_featured">Top Stories</string>
+    <string name="tab_missions">Missions</string>
     <string name="tab_Raw">Raw</string>
     <string name="loading_recordings">Loading recordings</string>
     <string name="no_recordings">You have no recordings</string>
