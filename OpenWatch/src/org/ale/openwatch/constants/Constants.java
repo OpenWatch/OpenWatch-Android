@@ -143,10 +143,10 @@ public class Constants {
 	}
 	*/
     public static enum OWFeedType{
-        TOP, LOCAL, USER, RAW
+        TOP, LOCAL, USER, RAW, MISSION
     }
 
-    public static HashMap<String, Integer> FEED_TO_TITLE = new HashMap<String, Integer>() {{put(OWFeedType.TOP.toString(), R.string.tab_featured); put(OWFeedType.LOCAL.toString(), R.string.tab_local); put(OWFeedType.RAW.toString(), R.string.tab_Raw); put(OWFeedType.USER.toString(), R.string.tab_local_user_recordings); }};
+    public static HashMap<String, Integer> FEED_TO_TITLE = new HashMap<String, Integer>() {{put(OWFeedType.MISSION.toString(), R.string.tab_missions); put(OWFeedType.TOP.toString(), R.string.tab_featured); put(OWFeedType.LOCAL.toString(), R.string.tab_local); put(OWFeedType.RAW.toString(), R.string.tab_Raw); put(OWFeedType.USER.toString(), R.string.tab_local_user_recordings); }};
 	
 	private static ArrayList<String> OW_FEEDS = new ArrayList<String>();
 	static{
@@ -192,6 +192,8 @@ public class Constants {
 		}else{
             if(type.equals("top")){
                 endpoint = Constants.OW_API_URL + API_ENDPOINT_BY_CONTENT_TYPE.get(CONTENT_TYPE.INVESTIGATION) + "/?page=" + String.valueOf(page);
+            }else if(type.equals("mission")){
+                endpoint = Constants.OW_API_URL + API_ENDPOINT_BY_CONTENT_TYPE.get(CONTENT_TYPE.MISSION) + "/?page=" + String.valueOf(page);
             }else
 			    endpoint = Constants.OW_API_URL + Constants.OW_FEED + File.separator + "?type="+ type + "&page=" + String.valueOf(page);
 		}

@@ -89,7 +89,7 @@
                     android:layout_marginTop="10dp"/>
 
             <include layout="@layout/media_tools"
-                     android:below="@id/description"
+                     android:layout_below="@id/description"
                      android:id="@+id/mediaTools"
                      android:layout_width="match_parent"
                      android:layout_height="50dp"/>
