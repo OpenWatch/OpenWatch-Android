@@ -58,6 +58,9 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 		    fetchRecordingFromOW();
 		
 		Log.i(TAG, "sent recordingMeta request");
+
+        // DEMO DAY SPECIAL SAUCE
+        ((TextView) findViewById(R.id.editTitle)).setText("#matter");
 	}
 
 	@Override
