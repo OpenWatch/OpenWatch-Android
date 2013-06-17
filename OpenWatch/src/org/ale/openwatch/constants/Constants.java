@@ -53,11 +53,11 @@ public class Constants {
 
 
     // For view tag
-	public static enum CONTENT_TYPE { MEDIA_OBJECT, STORY, INVESTIGATION };
+	public static enum CONTENT_TYPE { MEDIA_OBJECT, STORY, INVESTIGATION, MISSION };
 	// for fileUtils and OWServiceRequests
 	public static enum MEDIA_TYPE { VIDEO, PHOTO, AUDIO };
 	public static HashMap<MEDIA_TYPE, String> API_ENDPOINT_BY_MEDIA_TYPE = new HashMap<MEDIA_TYPE, String>() {{put(MEDIA_TYPE.VIDEO, "v"); put(MEDIA_TYPE.PHOTO, "p"); put(MEDIA_TYPE.AUDIO, "a"); }};
-	public static HashMap<CONTENT_TYPE, String> API_ENDPOINT_BY_CONTENT_TYPE = new HashMap<CONTENT_TYPE, String>() {{put(CONTENT_TYPE.INVESTIGATION, "i"); put(CONTENT_TYPE.STORY, "s"); }};
+	public static HashMap<CONTENT_TYPE, String> API_ENDPOINT_BY_CONTENT_TYPE = new HashMap<CONTENT_TYPE, String>() {{ put(CONTENT_TYPE.MISSION, "mission"); put(CONTENT_TYPE.INVESTIGATION, "i"); put(CONTENT_TYPE.STORY, "s"); }};
 	public static final String OW_CONTENT_TYPE = "owcontent_type";
 	
 	// Date Formatter for OW server time
@@ -102,6 +102,7 @@ public class Constants {
 	public static final String IS_LOCAL_RECORDING = "is_local";
 	public static final String IS_USER_RECORDING = "is_user_recording";
 	public static final String FEED_TYPE = "feed_type";
+    public static final int CAMERA_ACTION_CODE = 444;
 	
 	// Email REGEX
 	public static final Pattern EMAIL_ADDRESS_PATTERN = Pattern.compile(
@@ -143,10 +144,10 @@ public class Constants {
 	}
 	*/
     public static enum OWFeedType{
-        TOP, LOCAL, USER, RAW
+        TOP, LOCAL, USER, RAW, MISSION
     }
 
-    public static HashMap<String, Integer> FEED_TO_TITLE = new HashMap<String, Integer>() {{put(OWFeedType.TOP.toString(), R.string.tab_featured); put(OWFeedType.LOCAL.toString(), R.string.tab_local); put(OWFeedType.RAW.toString(), R.string.tab_Raw); put(OWFeedType.USER.toString(), R.string.tab_local_user_recordings); }};
+    public static HashMap<String, Integer> FEED_TO_TITLE = new HashMap<String, Integer>() {{put(OWFeedType.MISSION.toString(), R.string.tab_missions); put(OWFeedType.TOP.toString(), R.string.tab_featured); put(OWFeedType.LOCAL.toString(), R.string.tab_local); put(OWFeedType.RAW.toString(), R.string.tab_Raw); put(OWFeedType.USER.toString(), R.string.tab_local_user_recordings); }};
 	
 	private static ArrayList<String> OW_FEEDS = new ArrayList<String>();
 	static{
@@ -192,6 +193,8 @@ public class Constants {
 		}else{
             if(type.equals("top")){
                 endpoint = Constants.OW_API_URL + API_ENDPOINT_BY_CONTENT_TYPE.get(CONTENT_TYPE.INVESTIGATION) + "/?page=" + String.valueOf(page);
+            }else if(type.equals("mission")){
+                endpoint = Constants.OW_API_URL + API_ENDPOINT_BY_CONTENT_TYPE.get(CONTENT_TYPE.MISSION) + "/?page=" + String.valueOf(page);
             }else
 			    endpoint = Constants.OW_API_URL + Constants.OW_FEED + File.separator + "?type="+ type + "&page=" + String.valueOf(page);
 		}
@@ -284,6 +287,11 @@ public class Constants {
 	public static final String OW_END_LON = "end_lon";
 	public static final String OW_LAT = "latitude";
 	public static final String OW_LON = "longitude";
+    public static final String OW_USD = "usd";
+    public static final String OW_KARMA = "karma";
+    public static final String OW_ACTIVE = "active";
+    public static final String OW_COMPLETED = "completed";
+    public static final String OW_MEDIA_BUCKET = "media_url";
 	
 	// Hit counts
 	public static enum HIT_TYPE { VIEW, CLICK };
@@ -304,6 +312,9 @@ public class Constants {
     public static final int OW_SYNC_STATUS_END_BULK = 20;
     public static final int OW_SYNC_STATUS_FAILED = -1;
     public static final int OW_SYNC_STATUS_SUCCESS = 1;
+
+    // General
+    public static final String USD = "$";
 
 
 }

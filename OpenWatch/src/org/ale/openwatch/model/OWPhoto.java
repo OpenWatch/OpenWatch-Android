@@ -1,7 +1,10 @@
 package org.ale.openwatch.model;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Log;
 import com.orm.androrm.DatabaseAdapter;
 import com.orm.androrm.Model;
@@ -11,13 +14,17 @@ import com.orm.androrm.field.CharField;
 import com.orm.androrm.field.DoubleField;
 import com.orm.androrm.field.ForeignKeyField;
 
+import org.ale.openwatch.OWUtils;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
 import org.ale.openwatch.constants.Constants.CONTENT_TYPE;
 import org.ale.openwatch.constants.Constants.MEDIA_TYPE;
+import org.ale.openwatch.file.FileUtils;
+import org.ale.openwatch.location.DeviceLocation;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.Date;
 
 public class OWPhoto extends Model implements OWServerObjectInterface{
@@ -337,6 +344,17 @@ public class OWPhoto extends Model implements OWServerObjectInterface{
 	public CONTENT_TYPE getContentType(Context c) {
 		return CONTENT_TYPE.MEDIA_OBJECT;
 	}
+
+    public static OWPhoto initializeOWPhoto(Context c, String uuid){
+        File photo_location = FileUtils.prepareOutputLocation(c, MEDIA_TYPE.PHOTO, uuid, "photo", ".jpg");
+        OWPhoto photo = new OWPhoto(c);
+        photo.filepath.set(photo_location.getAbsolutePath());
+        photo.directory.set(photo_location.getParentFile().getAbsolutePath());
+        photo.uuid.set(uuid);
+        photo.save(c);
+        DeviceLocation.setOWServerObjectLocation(c, photo.media_object.get(c).getId(), false);
+        return photo;
+    }
 
 
 
