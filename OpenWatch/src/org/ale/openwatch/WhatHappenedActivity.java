@@ -58,9 +58,6 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 		    fetchRecordingFromOW();
 		
 		Log.i(TAG, "sent recordingMeta request");
-
-        // DEMO DAY SPECIAL SAUCE
-        ((TextView) findViewById(R.id.editTitle)).setText("#matter");
 	}
 
 	@Override
@@ -113,7 +110,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 
 	
 	/**
-	 * If a server_id was received, give option to share, else return to MainActivity
+	 * If a server_id was received, give option to share, else return to FeedFragmentActivity
 	 */
 	private void showCompleteDialog(){
 		if(model_id == -1){
@@ -123,7 +120,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 		//final OWVideoRecording recording = OWMediaObject.objects(getApplicationContext(), OWMediaObject.class).get(model_id).video_recording.get(getApplicationContext());
 		if(recording_server_id == -1){
 			Log.i(TAG, "recording does not have a valid server_id. Cannot present share dialog");
-			Intent i = new Intent(WhatHappenedActivity.this, MainActivity.class);
+			Intent i = new Intent(WhatHappenedActivity.this, FeedFragmentActivity.class);
 			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 			startActivity(i);
 			this.finish();
@@ -154,7 +151,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                Intent i = new Intent(WhatHappenedActivity.this, MainActivity.class);
+                Intent i = new Intent(WhatHappenedActivity.this, FeedFragmentActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);
 

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -17,7 +18,10 @@ import java.util.List;
 import java.util.UUID;
 
 import org.ale.openwatch.constants.Constants;
+import org.ale.openwatch.database.DatabaseManager;
+import org.ale.openwatch.http.OWServiceRequests;
 import org.ale.openwatch.model.OWServerObject;
+import org.ale.openwatch.model.OWUser;
 
 public class OWUtils {
 	

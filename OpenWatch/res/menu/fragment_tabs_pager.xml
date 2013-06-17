@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
+    <!-- Directory
     <item
         android:id="@+id/tab_directory"
         android:showAsAction="always"
@@ -8,6 +9,13 @@
         <menu>
 
         </menu>
+    </item>
+    -->
+
+    <item
+        android:id="@+id/tab_record"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_record">
     </item>
 
 </menu>

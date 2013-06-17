@@ -87,6 +87,7 @@
 
     <!-- Feed Activity -->
     <string name="directory">Directory</string>
+    <string name="record">Record</string>
     <string name="tab_local_user_recordings">Your Media</string>
     <string name="tab_local">Local</string>
     <string name="tab_following">Following</string>

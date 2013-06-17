@@ -17,6 +17,7 @@ package org.ale.openwatch;
  */
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -45,8 +46,11 @@ import java.util.Locale;
 
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.Constants.OWFeedType;
+import org.ale.openwatch.database.DatabaseManager;
 import org.ale.openwatch.feeds.MyFeedFragmentActivity;
 import org.ale.openwatch.feeds.RemoteFeedFragmentActivity;
+import org.ale.openwatch.http.OWServiceRequests;
+import org.ale.openwatch.model.OWUser;
 
 /**
  * Demonstrates combining a TabHost with a ViewPager to implement a tab UI
@@ -109,6 +113,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         }
         
         onCreateWon = true;
+        checkUserStatus();
 
     }
     
@@ -201,20 +206,22 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     	//feed_id_map.clear();
     	//tag_id_map.clear();
 		getSupportMenuInflater().inflate(R.menu.fragment_tabs_pager, menu);
-		
+
+        /*
 		MenuItem directory = menu.findItem(R.id.tab_directory);
     	if(directory != null){
     		    		
     		for(String feed_name : feeds){
     		    directory.getSubMenu().add(R.id.feeds, mTitleToTabId.get(feed_name), Menu.NONE, getString(Constants.FEED_TO_TITLE.get(feed_name)));
     		}
-    		   /* 		
+
     		for(String tag_name : tags){
     			directory.getSubMenu().add(R.id.tags, mTitleToTabId.get(tag_name), Menu.NONE, "#"+tag_name);
     		}
-    		*/
+
     		
     	}
+        */
 		return true;
 	}
     
@@ -231,9 +238,13 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     		mTitleIndicator.setCurrentItem(item.getItemId());
     	}
 		switch (item.getItemId()) {
-		case android.R.id.home:
-			finish();
-			return true;
+            case R.id.tab_record:
+                Intent i = new Intent(this, RecorderActivity.class);
+                startActivity(i);
+                return true;
+            case android.R.id.home:
+                finish();
+                return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -362,5 +373,51 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     private void getDisplayWidth(){
     	Display display = getWindowManager().getDefaultDisplay();
         display_width = display.getWidth();
+    }
+
+    public void checkUserStatus(){
+
+        boolean debug_fancy = false;
+
+        SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, 0);
+        boolean authenticated = profile.getBoolean(Constants.AUTHENTICATED, false);
+        boolean db_initialized = profile.getBoolean(Constants.DB_READY, false);
+
+        if(!db_initialized){
+            DatabaseManager.setupDB(getApplicationContext()); // do this every time to auto handle migrations
+            //DatabaseManager.testDB(this);
+        }else{
+            DatabaseManager.registerModels(getApplicationContext()); // ensure androrm is set to our custom Database name.
+        }
+
+        if(authenticated && db_initialized && !((OWApplication) this.getApplicationContext()).per_launch_sync){
+            // TODO: Attempt to login with stored credentials and report back if error
+
+            OWMediaSyncer.syncMedia(getApplicationContext());
+            ((OWApplication) getApplicationContext()).per_launch_sync = true;
+            // If we have a User object for the current user, and they've applied as an agent, send their current location
+            if(profile.getInt(Constants.INTERNAL_USER_ID, 0) != 0){
+                OWUser user = OWUser.objects(getApplicationContext(), OWUser.class).get(profile.getInt(Constants.INTERNAL_USER_ID,0));
+                if(user.agent_applicant.get() == true){
+                    Log.i("MainActivity", "Sending agent location");
+                    OWServiceRequests.syncOWUser(getApplicationContext(), user);
+                }
+            }
+        }
+        if(debug_fancy || (!authenticated && !this.getIntent().hasExtra(Constants.AUTHENTICATED) ) ){
+            Intent i = new Intent(this, FancyLoginActivity.class	);
+            //Intent i = new Intent(this, LoginActivity.class	);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            String email = profile.getString(Constants.EMAIL, null);
+            if(email != null)
+                i.putExtra(Constants.EMAIL, email);
+            startActivity(i);
+            // This will set OWApplication.user_data
+        }
+        else if(authenticated){
+            // If the user state is stored, load user_data into memory
+            OWApplication.user_data = getApplicationContext().getSharedPreferences(Constants.PROFILE_PREFS, getApplicationContext().MODE_PRIVATE).getAll();
+        }
+
     }
 }
