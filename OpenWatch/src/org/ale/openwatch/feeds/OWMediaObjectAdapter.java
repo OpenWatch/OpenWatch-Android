@@ -1,5 +1,6 @@
 package org.ale.openwatch.feeds;
 
+import android.text.util.Linkify;
 import android.widget.ProgressBar;
 import org.ale.openwatch.constants.DBConstants;
 
@@ -11,6 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import org.ale.openwatch.R;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class OWMediaObjectAdapter extends SimpleCursorAdapter {
 
@@ -56,6 +60,7 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
             view_cache.title.setVisibility(View.GONE);
         else{
             view_cache.title.setText(cursor.getString(view_cache.title_col));
+            Linkify.addLinks(view_cache.title, pattern, scheme, null, mentionFilter);
             view_cache.title.setVisibility(View.VISIBLE);
         }
         view_cache.username.setText(cursor.getString(view_cache.username_col));
@@ -117,5 +122,17 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         int investigation_col;
         int mission_col;
     }
+
+    // A transform filter that simply returns just the text captured by the
+    // first regular expression group.
+    Linkify.TransformFilter mentionFilter = new Linkify.TransformFilter() {
+        public final String transformUrl(final Matcher match, String url) {
+            return match.group(1);
+        }
+    };
+
+    // Match @mentions and capture just the username portion of the text.
+    Pattern pattern = Pattern.compile("#([A-Za-z0-9_-]+)");
+    String scheme = "openwatch://tag/";
 
 }
