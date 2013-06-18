@@ -19,22 +19,23 @@ package org.ale.openwatch;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
-import android.view.Display;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TabHost;
-import android.widget.TabWidget;
-import android.widget.TextView;
+import android.view.*;
+import android.widget.*;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.ActionProvider;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.SubMenu;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import org.ale.openwatch.R;
@@ -78,13 +79,17 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     
     boolean onCreateWon = false;
 
+    // Temporary drawer items
+    private String[] mPlanetTitles = new String[] {"Settings", "Profile"};
+    DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.fragment_tabs_pager);
         this.getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getDisplayWidth();
         mTabHost = (TabHost)findViewById(android.R.id.tabhost);
@@ -114,6 +119,35 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         
         onCreateWon = true;
         checkUserStatus();
+
+        // Drawer
+
+        ListView mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+        // Set the adapter for the list view
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.drawer_list_item, mPlanetTitles));
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+                R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                getActionBar().setTitle("");
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                getActionBar().setTitle("");
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+
+        // Set the drawer toggle as the DrawerListener
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
     }
     
@@ -233,6 +267,11 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     
     @Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
+        if (mDrawerToggle.onOptionsItemSelected(getMenuItem(item))) {
+            return true;
+        }
     	Log.i("ItemSelected", String.valueOf(item.getItemId()));
     	if(item.getGroupId() == R.id.feeds || item.getGroupId() == R.id.tags){
     		mTitleIndicator.setCurrentItem(item.getItemId());
@@ -241,9 +280,6 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
             case R.id.tab_record:
                 Intent i = new Intent(this, RecorderActivity.class);
                 startActivity(i);
-                return true;
-            case android.R.id.home:
-                finish();
                 return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -419,5 +455,271 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
             OWApplication.user_data = getApplicationContext().getSharedPreferences(Constants.PROFILE_PREFS, getApplicationContext().MODE_PRIVATE).getAll();
         }
 
+    }
+
+    private android.view.MenuItem getMenuItem(final MenuItem item) {
+        return new android.view.MenuItem() {
+            @Override
+            public int getItemId() {
+                return item.getItemId();
+            }
+
+            public boolean isEnabled() {
+                return true;
+            }
+
+            @Override
+            public boolean collapseActionView() {
+                // TODO Auto-generated method stub
+                return false;
+            }
+
+            @Override
+            public boolean expandActionView() {
+                // TODO Auto-generated method stub
+                return false;
+            }
+            /*
+            @Override
+            public ActionProvider getActionProvider() {
+                // TODO Auto-generated method stub
+                return null;
+            }*/
+
+            @Override
+            public View getActionView() {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public android.view.MenuItem setActionProvider(android.view.ActionProvider actionProvider) {
+                return null;
+            }
+
+            @Override
+            public android.view.ActionProvider getActionProvider() {
+                return null;
+            }
+
+            @Override
+            public char getAlphabeticShortcut() {
+                // TODO Auto-generated method stub
+                return 0;
+            }
+
+            @Override
+            public int getGroupId() {
+                // TODO Auto-generated method stub
+                return 0;
+            }
+
+            @Override
+            public Drawable getIcon() {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public Intent getIntent() {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public ContextMenu.ContextMenuInfo getMenuInfo() {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public char getNumericShortcut() {
+                // TODO Auto-generated method stub
+                return 0;
+            }
+
+            @Override
+            public int getOrder() {
+                // TODO Auto-generated method stub
+                return 0;
+            }
+
+
+            @Override
+            public CharSequence getTitle() {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public CharSequence getTitleCondensed() {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public boolean hasSubMenu() {
+                // TODO Auto-generated method stub
+                return false;
+            }
+
+            @Override
+            public android.view.SubMenu getSubMenu() {
+                return null;
+            }
+
+            @Override
+            public boolean isActionViewExpanded() {
+                // TODO Auto-generated method stub
+                return false;
+            }
+
+            @Override
+            public boolean isCheckable() {
+                // TODO Auto-generated method stub
+                return false;
+            }
+
+            @Override
+            public boolean isChecked() {
+                // TODO Auto-generated method stub
+                return false;
+            }
+
+            @Override
+            public boolean isVisible() {
+                // TODO Auto-generated method stub
+                return false;
+            }
+
+
+            @Override
+            public android.view.MenuItem setActionView(View view) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public android.view.MenuItem setActionView(int resId) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public android.view.MenuItem setAlphabeticShortcut(char alphaChar) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public android.view.MenuItem setCheckable(boolean checkable) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public android.view.MenuItem setChecked(boolean checked) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public android.view.MenuItem setEnabled(boolean enabled) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public android.view.MenuItem setIcon(Drawable icon) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public android.view.MenuItem setIcon(int iconRes) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public android.view.MenuItem setIntent(Intent intent) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public android.view.MenuItem setNumericShortcut(char numericChar) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public android.view.MenuItem setOnActionExpandListener(OnActionExpandListener listener) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public android.view.MenuItem setOnMenuItemClickListener(OnMenuItemClickListener menuItemClickListener) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public android.view.MenuItem setShortcut(char numericChar, char alphaChar) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public void setShowAsAction(int actionEnum) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public android.view.MenuItem setShowAsActionFlags(int actionEnum) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public android.view.MenuItem setTitle(CharSequence title) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public android.view.MenuItem setTitle(int title) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public android.view.MenuItem setTitleCondensed(CharSequence title) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public android.view.MenuItem setVisible(boolean visible) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+        };
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Pass any configuration change to the drawer toggls
+        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 }

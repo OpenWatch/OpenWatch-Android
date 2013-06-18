@@ -196,7 +196,8 @@
     <string name="pref_header_account">OpenWatch.net</string>
     <string name="pref_title_account">Account</string>
     <string name="pref_description_account">Your OpenWatch.net credentials</string>
-
+    <string name="drawer_open"/>
+    <string name="drawer_close"/>
 
 
 </resources>
