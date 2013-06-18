@@ -40,6 +40,7 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
             view_cache.photo_col = cursor.getColumnIndexOrThrow(DBConstants.MEDIA_OBJECT_PHOTO);
             view_cache.video_col = cursor.getColumnIndexOrThrow(DBConstants.MEDIA_OBJECT_VIDEO);
             view_cache.investigation_col = cursor.getColumnIndexOrThrow(DBConstants.MEDIA_OBJECT_INVESTIGATION);
+            view_cache.mission_col = cursor.getColumnIndexOrThrow(DBConstants.MEDIA_OBJECT_MISSION);
             view_cache._id_col = cursor.getColumnIndexOrThrow(DBConstants.ID);
             view.setTag(R.id.list_item_cache, view_cache);
             
@@ -63,12 +64,14 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
 
         if(!cursor.isNull(view_cache.audio_col))
             view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.microphone_icon));
-        if(!cursor.isNull(view_cache.investigation_col))
+        else if(!cursor.isNull(view_cache.investigation_col))
             view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.investigation_icon));
-        if(!cursor.isNull(view_cache.photo_col))
+        else if(!cursor.isNull(view_cache.photo_col))
             view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.camera_icon));
-        if(!cursor.isNull(view_cache.video_col))
+        else if(!cursor.isNull(view_cache.video_col))
             view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.camcorder_icon));
+        else if(!cursor.isNull(view_cache.mission_col))
+            view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.mission_icon));
 
 
         view.setTag(R.id.list_item_model, cursor.getInt(view_cache._id_col));
@@ -98,6 +101,7 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         int photo_col;
         int video_col;
         int investigation_col;
+        int mission_col;
     }
 
 }
