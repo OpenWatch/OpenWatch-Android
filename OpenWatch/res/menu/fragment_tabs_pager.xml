@@ -14,7 +14,8 @@
 
     <item
         android:id="@+id/tab_record"
-        android:showAsAction="always"
+        android:showAsAction="always|withText"
+        android:title="@string/broadcast"
         android:icon="@drawable/ic_record">
     </item>
 
