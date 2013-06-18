@@ -1,5 +1,6 @@
 package org.ale.openwatch.feeds;
 
+import android.widget.ProgressBar;
 import org.ale.openwatch.constants.DBConstants;
 
 import android.content.Context;
@@ -30,6 +31,8 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         	//view_cache.views = (TextView) view.findViewById(R.id.view_count);
         	//view_cache.actions = (TextView) view.findViewById(R.id.action_count);
             view_cache.typeIcon = (ImageView) view.findViewById(R.id.type_icon);
+            view_cache.playButton = (ImageView) view.findViewById(R.id.playButton);
+            view_cache.progressBar = (ProgressBar) view.findViewById(R.id.videoProgress);
             
         	view_cache.title_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_TITLE);   
         	view_cache.username_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_USERNAME);   
@@ -45,6 +48,9 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
             view.setTag(R.id.list_item_cache, view_cache);
             
         }
+
+        if(view_cache.progressBar != null)
+            view_cache.progressBar.setVisibility(View.GONE);
 
         if(cursor.getString(view_cache.title_col) == null || cursor.getString(view_cache.title_col).compareTo("")==0)
             view_cache.title.setVisibility(View.GONE);
@@ -62,16 +68,22 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         	view_cache.thumbnail.setImageResource(R.drawable.thumbnail_placeholder);
         }
 
-        if(!cursor.isNull(view_cache.audio_col))
+        if(!cursor.isNull(view_cache.audio_col)){
             view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.microphone_icon));
-        else if(!cursor.isNull(view_cache.investigation_col))
+            view_cache.playButton.setVisibility(View.GONE);
+        }else if(!cursor.isNull(view_cache.investigation_col)){
             view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.investigation_icon));
-        else if(!cursor.isNull(view_cache.photo_col))
+            view_cache.playButton.setVisibility(View.GONE);
+        }else if(!cursor.isNull(view_cache.photo_col)){
             view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.camera_icon));
-        else if(!cursor.isNull(view_cache.video_col))
+            view_cache.playButton.setVisibility(View.GONE);
+        }else if(!cursor.isNull(view_cache.video_col)){
             view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.camcorder_icon));
-        else if(!cursor.isNull(view_cache.mission_col))
+            view_cache.playButton.setVisibility(View.VISIBLE);
+        }else if(!cursor.isNull(view_cache.mission_col)){
             view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.mission_icon));
+            view_cache.playButton.setVisibility(View.GONE);
+        }
 
 
         view.setTag(R.id.list_item_model, cursor.getInt(view_cache._id_col));
@@ -85,6 +97,8 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         TextView username;
         ImageView thumbnail;
         ImageView typeIcon;
+        ImageView playButton;
+        ProgressBar progressBar;
         //TextView views;
         //TextView actions;
         

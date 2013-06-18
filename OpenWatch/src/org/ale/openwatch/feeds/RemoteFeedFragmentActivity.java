@@ -16,6 +16,7 @@
 
 package org.ale.openwatch.feeds;
 
+import android.widget.*;
 import org.ale.openwatch.*;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
@@ -40,9 +41,8 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.SearchViewCompat.OnQueryTextListenerCompat;
 import android.util.Log;
 import android.view.*;
-import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
-import android.widget.ListView;
+import org.ale.openwatch.model.OWVideoRecording;
 
 /**
  * Demonstration of the implementation of a custom Loader.
@@ -85,6 +85,11 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 
         // If non-null, this is the current filter the user has provided.
         String mCurFilter;
+
+        VideoView videoView;
+        ProgressBar progressBar;
+        ViewGroup videoViewParent;
+        int videoViewListIndex;
 
         OnQueryTextListenerCompat mOnQueryTextListenerCompat;
         
@@ -138,7 +143,27 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 				@Override
 				public void onScroll(AbsListView view, int firstVisibleItem,
 						int visibleItemCount, int totalItemCount) {
-					
+
+                    if(videoViewListIndex != -1 && !(videoViewListIndex >= firstVisibleItem && videoViewListIndex <= firstVisibleItem + visibleItemCount)){
+
+                        if(progressBar != null){
+                            progressBar.setVisibility(View.GONE);
+                            videoViewParent.removeView(progressBar);
+                            //progressBar = null;
+                            //Log.i(TAG, "progressBar is hidden");
+                        }else{
+                            //Log.i(TAG, "progressBar is null");
+                        }
+                        if(videoView != null){
+                            Log.i(TAG, "Removing VideoView from list");
+                            videoView.setVisibility(View.GONE);
+                            videoView.stopPlayback();
+                            videoViewParent.removeView(videoView);
+                            //videoView = null;
+                            //videoViewParent = null;
+                        }
+                    }
+
 					if(!RemoteRecordingsListFragment.this.has_next_page)
 						return;
 					
@@ -235,6 +260,30 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             */
         }
 
+        OWUtils.VideoViewCallback videoViewCallback = new OWUtils.VideoViewCallback() {
+            @Override
+            public void onPlaybackComplete(ViewGroup parent) {
+                Log.i(TAG, "playbackComplete");
+                parent.removeView(parent.findViewById(R.id.videoView));
+                //parent.removeView(parent.findViewById(R.id.videoProgress));
+                parent.findViewById(R.id.thumbnail).setVisibility(View.VISIBLE);
+                parent.findViewById(R.id.playButton).setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onPrepared(ViewGroup parent) {
+                Log.i(TAG, "onPrepared");
+                //parent.findViewById(R.id.videoProgress).setVisibility(View.GONE);
+                //progressBar.setVisibility(View.GONE);
+                parent.removeView(parent.findViewById(R.id.videoProgress));
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        };
+
         @Override public void onListItemClick(ListView l, View v, int position, long id) {
             Log.i("LoaderCustom", "Item clicked: " + id);
         	try{
@@ -251,7 +300,33 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
         			i = new Intent(this.getActivity(), OWInvestigationViewActivity.class);
         			break;
         		case MEDIA_OBJECT:
-        			i = new Intent(this.getActivity(), OWMediaObjectViewActivity.class);
+                    if(server_object.getMediaType(getActivity().getApplicationContext()) == Constants.MEDIA_TYPE.VIDEO){
+                        // play video inline
+                        v.findViewById(R.id.playButton).setVisibility(View.GONE);
+                        LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
+                        //videoViewParent = (ViewGroup) v;
+                        videoViewParent = (ViewGroup) layoutInflater.inflate(R.layout.feed_video_view, (ViewGroup) v, true);
+                        videoView = (VideoView) videoViewParent.findViewById(R.id.videoView);
+                        progressBar = (ProgressBar) videoViewParent.findViewById(R.id.videoProgress);
+                        progressBar.setVisibility(View.VISIBLE);
+                        /*
+                        videoViewParent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                            @Override
+                            public void onGlobalLayout() {
+
+                                progressBar.setVisibility(View.VISIBLE);
+
+                            }
+                        });
+                        */
+
+                        Log.i(TAG, progressBar.toString());
+                        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)videoView.getLayoutParams();
+                        String url = ((OWVideoRecording) server_object.getChildObject(getActivity().getApplicationContext())).getMediaFilepath(getActivity().getApplicationContext());
+                        OWUtils.setupVideoView(getActivity(), v.findViewById(R.id.thumbnail), videoView, url, videoViewCallback, progressBar);
+                        videoViewListIndex = position;
+                    }else
+        			    i = new Intent(this.getActivity(), OWMediaObjectViewActivity.class);
         			break;
                 case MISSION:
                     i = new Intent(this.getActivity(), OWMissionViewActivity.class);
@@ -263,6 +338,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
                 }
         	}catch(Exception e){
         		Log.e(TAG, "failed to load list item model tag");
+                e.printStackTrace();
         		return;
         	}
         	

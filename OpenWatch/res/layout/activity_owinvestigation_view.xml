@@ -16,7 +16,7 @@
         tools:context=".OWInvestigationViewActivity" />
 
     <ProgressBar
-            android:id="@+id/progress"
+            android:id="@+id/videoProgress"
             android:layout_alignTop="@id/media_object_media_view"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="100dp"

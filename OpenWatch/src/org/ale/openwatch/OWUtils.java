@@ -10,13 +10,20 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import java.util.List;
 import java.util.UUID;
 
+import android.widget.MediaController;
+import android.widget.ProgressBar;
+import android.widget.VideoView;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.database.DatabaseManager;
 import org.ale.openwatch.http.OWServiceRequests;
@@ -102,6 +109,127 @@ public class OWUtils {
         List<ResolveInfo> list = c.getPackageManager().queryIntentActivities(intent,
                 PackageManager.MATCH_DEFAULT_ONLY);
         return list.size() > 0;
+    }
+
+    public interface VideoViewCallback{
+        public void onPlaybackComplete(ViewGroup parent);
+        public void onPrepared(ViewGroup parent);
+        public void onError();
+    }
+    /**
+     * Setup a VideoView. Context c should not be an Activity Context for showing AlertDialogs
+     * @param c
+     * @param videoView
+     * @param filepath
+     */
+    public static void setupVideoView(final Context c, final View thumbnailView, final VideoView videoView, final String filepath, final VideoViewCallback cb, final ProgressBar progressBar) {
+        final String TAG = "setupVideoView";
+        if(filepath == null){
+            Log.e(TAG, "setupVideoView uri is null");
+            return;
+        }
+        videoView.setVideoURI(Uri.parse(filepath));
+        videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+                if (extra == -2147483648) { // General error
+                    String message = c.getString(R.string.video_error_intro);
+                    boolean canPlayExternally = false;
+                    //final Intent playVideoExternally = new Intent(Intent.ACTION_VIEW, Uri.parse(filepath));
+                    final Intent playVideoExternally = new Intent(Intent.ACTION_VIEW);
+                    playVideoExternally.setDataAndType(Uri.parse(filepath), "video/mp4");
+                    if (OWUtils.isCallable(c, playVideoExternally)) {
+                        canPlayExternally = true;
+                        message += " " + c.getString(R.string.device_has_external_video_player);
+                    } else {
+                        message = " " + c.getString(R.string.device_lacks_external_video_player);
+                    }
+                    AlertDialog.Builder mediaErrorDialog = new AlertDialog.Builder(c)
+                            .setTitle(c.getString(R.string.cannot_play_video))
+                            .setMessage(message)
+                            .setNegativeButton(c.getString(R.string.dialog_bummer), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    if (canPlayExternally) {
+                        mediaErrorDialog.setPositiveButton(c.getString(R.string.play_video_externally), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                c.startActivity(playVideoExternally);
+                            }
+                        });
+                    } else {
+                        final Intent goToMarket = new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://search?q=" + c.getString(R.string.video_player_search_query)));
+                        if (OWUtils.isCallable(c, goToMarket)) {
+                            mediaErrorDialog.setPositiveButton(c.getString(R.string.search_for_video_player), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    c.startActivity(goToMarket);
+                                }
+
+                            });
+                        }
+                    }
+                    // TODO make this safe
+                    //if (is_resumed)
+                        mediaErrorDialog.show();
+                }
+                Log.i(TAG, String.format("what %d extra %d", what, extra));
+                return true;
+            }
+        });
+        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                //showProgress(false);
+                /*
+                MediaController mc = new MediaController(
+                        c);
+                videoView.setMediaController(mc);
+                mc.setAnchorView(videoView);
+                */
+                videoView.requestFocus();
+                videoView.start();
+                //((ViewGroup) videoView.getParent()).findViewById(R.id.videoProgress).setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
+                if(cb != null)
+                    cb.onPrepared((ViewGroup) videoView.getParent());
+                mp.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
+                    @Override
+                    public void onVideoSizeChanged(MediaPlayer mp, int width,
+                                                   int height) {
+                        //video_view.setVisibility(View.VISIBLE);
+
+                        //video_view.setLayoutParams( new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+                        /*
+                        MediaController mc = new MediaController(
+                                c);
+                        videoView.setMediaController(mc);
+                        mc.setAnchorView(videoView);
+                        */
+                        videoView.requestFocus();
+                        videoView.start();
+                        progressBar.setVisibility(View.GONE);
+                        //((ViewGroup) videoView.getParent()).findViewById(R.id.videoProgress).setVisibility(View.GONE);
+                        if(cb != null)
+                            cb.onPrepared((ViewGroup) videoView.getParent());
+                        //video_playing = true;
+                    }
+                });
+            }
+        });
+        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                //video_playing = false;
+                if(cb != null)
+                    cb.onPlaybackComplete((ViewGroup)videoView.getParent());
+
+            }
+        });
+        //video_view.start();
     }
 
 }

@@ -426,7 +426,10 @@ public class OWVideoRecording extends Model implements OWServerObjectInterface{
 
 	@Override
 	public String getMediaFilepath(Context c) {
-		return this.local.get(c).hq_filepath.get();
+        if(this.local.get(c) != null)
+		    return this.local.get(c).hq_filepath.get();
+        else
+            return this.media_url.get();
 	}
 
 	@Override

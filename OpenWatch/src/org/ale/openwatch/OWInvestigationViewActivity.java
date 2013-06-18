@@ -38,7 +38,7 @@ public class OWInvestigationViewActivity extends SherlockActivity implements OWM
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		web_view = (WebView)findViewById(R.id.web_view);
-        progress = findViewById(R.id.progress);
+        progress = findViewById(R.id.videoProgress);
 		
 		model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
 		OWServerObject object = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);

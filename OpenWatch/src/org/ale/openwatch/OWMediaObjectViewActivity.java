@@ -31,7 +31,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
-import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 
 
 import org.ale.openwatch.FeedFragmentActivity.TabsAdapter;
@@ -573,9 +572,9 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 
     public void showProgress(boolean doShow){
         if(doShow){
-            findViewById(R.id.progress).setVisibility(View.VISIBLE);
+            findViewById(R.id.videoProgress).setVisibility(View.VISIBLE);
         }else{
-            findViewById(R.id.progress).setVisibility(View.GONE);
+            findViewById(R.id.videoProgress).setVisibility(View.GONE);
         }
 
     }
