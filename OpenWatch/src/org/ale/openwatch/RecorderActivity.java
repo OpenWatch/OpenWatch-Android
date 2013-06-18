@@ -315,6 +315,9 @@ public class RecorderActivity extends SherlockActivity implements
                 Log.i(TAG, "mMediaRecorder was null on stop recording. figure this out");
             }
 			Intent i = new Intent(RecorderActivity.this, WhatHappenedActivity.class);
+            if(this.getIntent().hasExtra(Constants.OBLIGATORY_TAG)){
+                i.putExtra(Constants.OBLIGATORY_TAG, this.getIntent().getStringExtra(Constants.OBLIGATORY_TAG));
+            }
 			if(media_object_id > 0){
 				i.putExtra(Constants.INTERNAL_DB_ID,media_object_id);
 				Log.i(TAG, "Bundling media_obj_id: " + String.valueOf(media_object_id));

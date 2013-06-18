@@ -115,7 +115,12 @@
         </activity>
         <activity android:name="org.ale.openwatch.FancyLoginActivity"/>
         <activity android:name="org.ale.openwatch.OnBoardingActivity"/>
-        <activity android:name=".OWMissionViewActivity"/>
+        <activity android:name=".OWMissionViewActivity">
+            android:parentActivityName="org.ale.openwatch.FeedFragmentActivity" >
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="org.ale.openwatch.FeedFragmentActivity" />
+        </activity>
     </application>
 
 </manifest>

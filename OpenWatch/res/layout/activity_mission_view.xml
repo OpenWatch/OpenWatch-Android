@@ -24,13 +24,14 @@
                     android:layout_alignParentRight="true"
                     android:layout_alignBottom="@id/missionImage"
                     android:layout_marginBottom="20dp"
+                    android:visibility="invisible"
                     android:singleLine="true"
                     android:gravity="center"
                     android:textColor="#fff"
                     android:shadowColor="#264826"
                     android:shadowDy="-2"
                     android:shadowRadius=".1"
-                    android:textSize="32sp"
+                    android:textSize="28sp"
                     android:background="@drawable/side_banner_green"/>
 
             <TextView
@@ -57,9 +58,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="22sp"
+                    android:layout_marginLeft="10dp"
                     android:layout_marginTop="30dp"
-                    android:layout_alignTop="@+id/userImage"
-                    android:layout_centerHorizontal="true"/>
+                    android:layout_toRightOf="@id/userImage"
+                    android:layout_alignTop="@+id/userImage"/>
 
             <TextView
                     android:id="@+id/description"

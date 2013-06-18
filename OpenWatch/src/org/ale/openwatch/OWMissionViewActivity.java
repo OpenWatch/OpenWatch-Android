@@ -5,13 +5,16 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.MenuItem;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import org.ale.openwatch.constants.Constants;
@@ -21,6 +24,7 @@ import org.ale.openwatch.model.OWMission;
 import org.ale.openwatch.model.OWPhoto;
 import org.ale.openwatch.model.OWServerObject;
 import org.ale.openwatch.model.OWUser;
+import org.ale.openwatch.share.Share;
 import org.json.JSONObject;
 
 /**
@@ -35,12 +39,15 @@ public class OWMissionViewActivity extends SherlockActivity implements OWMediaOb
     private static int owphoto_id = -1;
     private static int owphoto_parent_id = -1;
 
+    private String missionTag;
+
     Context c;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mission_view);
         c = getApplicationContext();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         try{
             model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
@@ -88,15 +95,25 @@ public class OWMissionViewActivity extends SherlockActivity implements OWMediaOb
     @Override
     public void populateViews(OWServerObject serverObject, Context c) {
         OWMission mission = serverObject.mission.get(c);
+        missionTag = mission.tag.get();
         this.getSupportActionBar().setTitle(serverObject.getTitle(c));
         ((TextView) this.findViewById(R.id.title)).setText(serverObject.getTitle(c));
         if(mission.media_url.get() != null)
             ImageLoader.getInstance().displayImage(mission.media_url.get(), (ImageView) findViewById(R.id.missionImage));
 
-        if(mission.usd.get() != null && mission.usd.get() != 0.0)
-            ((TextView) this.findViewById(R.id.bounty)).setText(Constants.USD + mission.usd.get().toString());
-        else if(mission.usd.get() != null && mission.karma.get() != 0.0)
-            ((TextView) this.findViewById(R.id.bounty)).setText(mission.karma.get().toString() + getString(R.string.karma));
+        boolean bounty = false;
+        if(mission.usd.get() != null && mission.usd.get() != 0.0){
+            ((TextView) this.findViewById(R.id.bounty)).setText(Constants.USD + String.format("%.2f",mission.usd.get()));
+            bounty = true;
+        } else if(mission.usd.get() != null && mission.karma.get() != 0.0){
+            ((TextView) this.findViewById(R.id.bounty)).setText(String.format("%.0f",mission.karma.get()) + " " + getString(R.string.karma));
+            bounty = true;
+        }
+        if(bounty){
+            this.findViewById(R.id.bounty).startAnimation(AnimationUtils.loadAnimation(c, R.anim.slide_left));
+            this.findViewById(R.id.bounty).setVisibility(View.VISIBLE);
+        }
+
 
         OWUser user = serverObject.user.get(c);
         if(user != null){
@@ -118,7 +135,7 @@ public class OWMissionViewActivity extends SherlockActivity implements OWMediaOb
         });
 
     }
-
+/*
     public void cameraButtonClick(View v){
         String uuid = OWUtils.generateRecordingIdentifier();
         OWPhoto photo  = OWPhoto.initializeOWPhoto(getApplicationContext(), uuid);
@@ -131,9 +148,10 @@ public class OWMissionViewActivity extends SherlockActivity implements OWMediaOb
         DeviceLocation.setOWServerObjectLocation(getApplicationContext(), owphoto_parent_id, false);
         startActivityForResult(takePictureIntent, Constants.CAMERA_ACTION_CODE);
     }
-
+*/
     public void camcorderButtonClick(View v){
         Intent i = new Intent(this, RecorderActivity.class);
+        i.putExtra(Constants.OBLIGATORY_TAG, missionTag);
         // TODO: Bundle tag to add
         startActivity(i);
 
@@ -153,5 +171,22 @@ public class OWMissionViewActivity extends SherlockActivity implements OWMediaOb
             startActivity(i);
         }
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+            case R.id.menu_share:
+                if(server_id > 0){
+                    OWServerObject object = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
+                    Share.showShareDialogWithInfo(this, getString(R.string.share_investigation), object.getTitle(getApplicationContext()), OWUtils.urlForOWServerObject(object, getApplicationContext()));
+                    OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, Constants.CONTENT_TYPE.INVESTIGATION, null, Constants.HIT_TYPE.CLICK);
+                }
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

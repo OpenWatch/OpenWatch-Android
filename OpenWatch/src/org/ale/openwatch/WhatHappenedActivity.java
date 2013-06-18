@@ -56,6 +56,9 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 		}
         if(model_id != -1)
 		    fetchRecordingFromOW();
+
+        if(getIntent().getStringExtra(Constants.OBLIGATORY_TAG) != null)
+            ((TextView)this.findViewById(R.id.editTitle)).setText("#" + getIntent().getStringExtra(Constants.OBLIGATORY_TAG));
 		
 		Log.i(TAG, "sent recordingMeta request");
 	}

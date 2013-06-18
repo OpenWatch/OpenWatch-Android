@@ -722,4 +722,5 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         // Pass any configuration change to the drawer toggls
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
+
 }
