@@ -16,6 +16,7 @@
 
 package org.ale.openwatch.feeds;
 
+import android.os.Build;
 import android.widget.*;
 import org.ale.openwatch.*;
 import org.ale.openwatch.constants.Constants;
@@ -276,6 +277,8 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
                 //parent.findViewById(R.id.videoProgress).setVisibility(View.GONE);
                 //progressBar.setVisibility(View.GONE);
                 parent.removeView(parent.findViewById(R.id.videoProgress));
+                if(Build.VERSION.SDK_INT >= 11)
+                    videoView.setAlpha(1);
             }
 
             @Override
@@ -307,6 +310,8 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
                         //videoViewParent = (ViewGroup) v;
                         videoViewParent = (ViewGroup) layoutInflater.inflate(R.layout.feed_video_view, (ViewGroup) v, true);
                         videoView = (VideoView) videoViewParent.findViewById(R.id.videoView);
+                        if(Build.VERSION.SDK_INT >= 11)
+                            videoView.setAlpha(0);
                         progressBar = (ProgressBar) videoViewParent.findViewById(R.id.videoProgress);
                         progressBar.setVisibility(View.VISIBLE);
                         /*
