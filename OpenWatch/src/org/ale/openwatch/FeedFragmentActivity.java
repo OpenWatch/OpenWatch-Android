@@ -23,10 +23,7 @@ import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -319,7 +316,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
      * care of switch to the correct paged in the ViewPager whenever the selected
      * tab changes.
      */
-    public static class TabsAdapter extends FragmentPagerAdapter
+    public static class TabsAdapter extends FragmentStatePagerAdapter
             implements TabHost.OnTabChangeListener, ViewPager.OnPageChangeListener {
         private final Context mContext;
         private final TabHost mTabHost;

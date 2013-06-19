@@ -190,7 +190,8 @@ public class Constants {
 	public static String feedExternalEndpointFromString(String type, int page){
 		String endpoint = "";
 		if(!OW_FEEDS.contains(type) ){
-			endpoint = Constants.OW_API_URL + Constants.OW_TAG + File.separator + "?type="+ type + "&page=" + String.valueOf(page);
+            // tag feed
+			endpoint = Constants.OW_API_URL + Constants.OW_TAG + File.separator + "?tag="+ type + "&page=" + String.valueOf(page);
 		}else{
             if(type.equals("top")){
                 endpoint = Constants.OW_API_URL + API_ENDPOINT_BY_CONTENT_TYPE.get(CONTENT_TYPE.INVESTIGATION) + "/?page=" + String.valueOf(page);
