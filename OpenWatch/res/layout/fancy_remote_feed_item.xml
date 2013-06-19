@@ -93,19 +93,28 @@
         android:textColor="@color/text_light"
         android:layout_alignLeft="@+id/thumbnail"/> -->
 
+    <ImageView
+            android:id="@+id/userImage"
+            android:layout_below="@id/title"
+            android:layout_alignLeft="@+id/thumbnail"
+            android:layout_width="50dp"
+            android:layout_height="50dp"/>
     <TextView
         android:id="@+id/username"
         style="@style/Theme.openwatch.feedItemOtherText"
         android:text=""
         android:textColor="@color/text_light"
         android:layout_below="@id/title"
-        android:layout_alignLeft="@+id/thumbnail"/>
+        android:layout_marginLeft="5dp"
+        android:layout_alignBaseline="@id/userImage"
+        android:layout_toRightOf="@id/userImage"/>
 
     <ImageView
             android:id="@+id/type_icon"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_alignTop="@id/username"
+            android:layout_toLeftOf="@id/username"
             android:layout_alignParentRight="true"
             android:layout_marginBottom="5dp"
             android:layout_marginRight="5dp"

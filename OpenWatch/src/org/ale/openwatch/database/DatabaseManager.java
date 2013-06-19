@@ -17,7 +17,7 @@ public class DatabaseManager {
 	
 	private static final String TAG = "DatabaseManager";
 	
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 	private static boolean models_registered = false; // ensure this is only called once per app launch
 	
 	public static void setupDB(final Context app_context){

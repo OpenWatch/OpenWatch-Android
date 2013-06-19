@@ -402,7 +402,8 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             DBConstants.MEDIA_OBJECT_VIDEO,
             DBConstants.MEDIA_OBJECT_PHOTO,
             DBConstants.MEDIA_OBJECT_INVESTIGATION,
-            DBConstants.MEDIA_OBJECT_MISSION
+            DBConstants.MEDIA_OBJECT_MISSION,
+            DBConstants.MEDIA_OBJECT_USER_THUMBNAIL
 
 	    };
 

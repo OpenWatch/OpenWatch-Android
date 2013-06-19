@@ -453,16 +453,18 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
 
         SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, 0);
         boolean authenticated = profile.getBoolean(Constants.AUTHENTICATED, false);
-        boolean db_initialized = profile.getBoolean(Constants.DB_READY, false);
-
+        //boolean db_initialized = profile.getBoolean(Constants.DB_READY, false);
+        /*
         if(!db_initialized){
-            DatabaseManager.setupDB(getApplicationContext()); // do this every time to auto handle migrations
+            //DatabaseManager.setupDB(getApplicationContext()); // do this every time to auto handle migrations
             //DatabaseManager.testDB(this);
         }else{
             DatabaseManager.registerModels(getApplicationContext()); // ensure androrm is set to our custom Database name.
         }
+        */
+        DatabaseManager.registerModels(getApplicationContext()); // ensure migrations are run.
 
-        if(authenticated && db_initialized && !((OWApplication) this.getApplicationContext()).per_launch_sync){
+        if(authenticated /*&& db_initialized*/ && !((OWApplication) this.getApplicationContext()).per_launch_sync){
             // TODO: Attempt to login with stored credentials and report back if error
 
             OWMediaSyncer.syncMedia(getApplicationContext());

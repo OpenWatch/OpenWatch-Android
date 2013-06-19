@@ -35,6 +35,7 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
 	public IntegerField server_id = new IntegerField();
 	public CharField description = new CharField();
 	public CharField thumbnail_url = new CharField();
+    public CharField user_thumbnail_url = new CharField();
 	public CharField username = new CharField();
 	public CharField first_posted = new CharField();
 	public CharField last_edited = new CharField();
@@ -74,6 +75,8 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
         Migrator<OWServerObject> migrator = new Migrator<OWServerObject>(OWServerObject.class);
 
         migrator.addField("mission", new ForeignKeyField<OWMission>(OWMission.class));
+
+        migrator.addField("user_thumbnail_url", new CharField());
 
         // roll out all migrations
         migrator.migrate(context);
@@ -178,14 +181,16 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
 				}
 				if(user == null){
 					user = new OWUser();
-					if(json_user.has(Constants.OW_USERNAME))
-						user.username.set(json_user.getString(Constants.OW_USERNAME));
-					if(json_user.has(Constants.OW_SERVER_ID))
-						user.server_id.set(json_user.getInt(Constants.OW_SERVER_ID));
-					if(json_user.has(Constants.OW_THUMB_URL))
-						user.thumbnail_url.set(json_user.getString(Constants.OW_THUMB_URL));
-					user.save(app_context);
 				}
+                if(json_user.has(Constants.OW_USERNAME))
+                    user.username.set(json_user.getString(Constants.OW_USERNAME));
+                if(json_user.has(Constants.OW_SERVER_ID))
+                    user.server_id.set(json_user.getInt(Constants.OW_SERVER_ID));
+                if(json_user.has(Constants.OW_THUMB_URL)){
+                    user.thumbnail_url.set(json_user.getString(Constants.OW_THUMB_URL));
+                    user_thumbnail_url.set(json_user.getString(Constants.OW_THUMB_URL));
+                }
+                user.save(app_context);
 				//this.username.set(user.username.get());
 				//this.user.set(user.getId());
 				this.setUser(app_context, user);

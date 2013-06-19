@@ -37,6 +37,7 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
             view_cache.typeIcon = (ImageView) view.findViewById(R.id.type_icon);
             view_cache.playButton = (ImageView) view.findViewById(R.id.playButton);
             view_cache.progressBar = (ProgressBar) view.findViewById(R.id.videoProgress);
+            view_cache.userThumbnail = (ImageView) view.findViewById(R.id.userImage);
             
         	view_cache.title_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_TITLE);   
         	view_cache.username_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_USERNAME);   
@@ -48,6 +49,7 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
             view_cache.video_col = cursor.getColumnIndexOrThrow(DBConstants.MEDIA_OBJECT_VIDEO);
             view_cache.investigation_col = cursor.getColumnIndexOrThrow(DBConstants.MEDIA_OBJECT_INVESTIGATION);
             view_cache.mission_col = cursor.getColumnIndexOrThrow(DBConstants.MEDIA_OBJECT_MISSION);
+            view_cache.user_thumbnail_col = cursor.getColumnIndexOrThrow(DBConstants.MEDIA_OBJECT_USER_THUMBNAIL);
             view_cache._id_col = cursor.getColumnIndexOrThrow(DBConstants.ID);
             view.setTag(R.id.list_item_cache, view_cache);
             
@@ -65,6 +67,9 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
             view_cache.title.setMovementMethod(null); // We're using a custom TextView to only intercept touches on links
         }
         view_cache.username.setText(cursor.getString(view_cache.username_col));
+        if(cursor.getString(view_cache.user_thumbnail_col) != null && cursor.getString(view_cache.user_thumbnail_col).compareTo("") != 0){
+            ImageLoader.getInstance().displayImage(cursor.getString(view_cache.user_thumbnail_col), view_cache.userThumbnail);
+        }
         //view_cache.views.setText(cursor.getString(view_cache.views_col));
         //view_cache.actions.setText(cursor.getString(view_cache.actions_col));
         
@@ -104,6 +109,7 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         ImageView thumbnail;
         ImageView typeIcon;
         ImageView playButton;
+        ImageView userThumbnail;
         ProgressBar progressBar;
         //TextView views;
         //TextView actions;
@@ -113,6 +119,7 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         int title_col; 
         int thumbnail_col;
         int username_col;
+        int user_thumbnail_col;
         //int views_col;
         //int actions_col;
         int _id_col;
