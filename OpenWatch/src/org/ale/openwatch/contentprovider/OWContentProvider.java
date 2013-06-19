@@ -151,9 +151,9 @@ public class OWContentProvider extends ContentProvider {
 		String query;
 		switch(uriType){
 			case MEDIA_OBJS_BY_USER:
-				Log.i(TAG, "MediaObjs by user");
+				//Log.i(TAG, "MediaObjs by user");
 				query = select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " WHERE " + DBConstants.MEDIA_OBJECT_USER + " = " + uri.getLastPathSegment() + " AND (" + DBConstants.MEDIA_OBJECT_VIDEO + " IS NOT NULL" + " OR " + DBConstants.MEDIA_OBJECT_AUDIO + " IS NOT NULL OR " + DBConstants.MEDIA_OBJECT_PHOTO + " IS NOT NULL ) " + sortby;
-				Log.i(TAG, query);
+				//Log.i(TAG, query);
 				result = adapter.open().query(query);
 				break;
 			case LOCAL_RECORDINGS:

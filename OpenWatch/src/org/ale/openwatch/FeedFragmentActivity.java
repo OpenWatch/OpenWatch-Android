@@ -175,7 +175,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     	Bundle feedBundle;
     	    		
     	for(String feed : feeds){
-    		if(feed.compareTo(OWFeedType.USER.toString()) == 0){
+    		if(feed.compareTo(OWFeedType.USER.toString().toLowerCase()) == 0){
     			//TODO: Merge MyFeedFragmentActivity and RemoteFeedFragmentActivity
     			mTabsAdapter.addTab(mTabHost.newTabSpec(getString(Constants.FEED_TO_TITLE.get(feed))).setIndicator(inflateCustomTab(getString(Constants.FEED_TO_TITLE.get(feed)))),
     	                MyFeedFragmentActivity.LocalRecordingsListFragment.class, null);
