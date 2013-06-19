@@ -30,14 +30,10 @@ import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.ActionProvider;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SubMenu;
 import com.orm.androrm.QuerySet;
 import com.viewpagerindicator.TitlePageIndicator;
-
-import org.ale.openwatch.R;
 
 import java.util.*;
 
@@ -160,12 +156,13 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
 
     private boolean checkIntentForUri(Intent intent){
         Uri data = intent.getData();
-        if(data != null && data.getHost().compareTo("tag") == 0){
+        if(data != null){
             //String scheme = data.getScheme(); // "openwatch"
             List<String> params = data.getPathSegments();
-            String tag = params.get(0); // "police"
+            String tag = params.get(1); // "police"
+            Log.i(TAG, "got tag from url: " + tag);
             if(!mTitleToTabId.containsKey(tag)){
-                addTag(tag);
+                addTagOrFeed(tag);
             }
             mTitleIndicator.setCurrentItem(mTitleToTabId.get(tag));
             return true;
@@ -204,12 +201,18 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
 
     }
 
-    private void addTag(String tag){
+    private void addTagOrFeed(String name){
+        name = name.toLowerCase();
         Bundle feedBundle = new Bundle(1);
-        feedBundle.putString(Constants.OW_FEED, tag);
-        mTabsAdapter.addTab(mTabHost.newTabSpec("#"+tag).setIndicator(inflateCustomTab("#"+tag)),
+        feedBundle.putString(Constants.OW_FEED, name);
+        String tabTitle;
+        if(Constants.OW_FEEDS.contains(name))
+            tabTitle = getString(Constants.FEED_TO_TITLE.get(name));
+        else
+            tabTitle = "#" + name;
+        mTabsAdapter.addTab(mTabHost.newTabSpec(tabTitle).setIndicator(inflateCustomTab(tabTitle)),
                 RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, feedBundle);
-        mTitleToTabId.put(tag, nextPagerViewId);
+        mTitleToTabId.put(name, nextPagerViewId);
         nextPagerViewId ++;
     }
     
@@ -222,7 +225,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
 		OWFeedType[] feed_types = OWFeedType.values();
 		for(int x=0; x < feed_types.length;x++){
 			if(!feeds.contains(feed_types[x])){
-    			feeds.add(feed_types[x].toString());
+    			feeds.add(feed_types[x].toString().toLowerCase());
 			}
 		}
 		Collections.sort(feeds);

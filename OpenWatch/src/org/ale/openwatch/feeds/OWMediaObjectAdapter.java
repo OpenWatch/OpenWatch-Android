@@ -134,6 +134,6 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
 
     // Match @mentions and capture just the username portion of the text.
     Pattern pattern = Pattern.compile("#([A-Za-z0-9_-]+)");
-    String scheme = "openwatch://tag/";
+    String scheme = "openwatch://openwatch.net/w/";
 
 }

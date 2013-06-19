@@ -148,9 +148,9 @@ public class Constants {
         TOP, LOCAL, USER, RAW, MISSION
     }
 
-    public static HashMap<String, Integer> FEED_TO_TITLE = new HashMap<String, Integer>() {{put(OWFeedType.MISSION.toString(), R.string.tab_missions); put(OWFeedType.TOP.toString(), R.string.tab_featured); put(OWFeedType.LOCAL.toString(), R.string.tab_local); put(OWFeedType.RAW.toString(), R.string.tab_Raw); put(OWFeedType.USER.toString(), R.string.tab_local_user_recordings); }};
+    public static HashMap<String, Integer> FEED_TO_TITLE = new HashMap<String, Integer>() {{put(OWFeedType.MISSION.toString().toLowerCase(), R.string.tab_missions); put(OWFeedType.TOP.toString().toLowerCase(), R.string.tab_featured); put(OWFeedType.LOCAL.toString().toLowerCase(), R.string.tab_local); put(OWFeedType.RAW.toString().toLowerCase(), R.string.tab_Raw); put(OWFeedType.USER.toString().toLowerCase(), R.string.tab_local_user_recordings); }};
 	
-	private static ArrayList<String> OW_FEEDS = new ArrayList<String>();
+	public static ArrayList<String> OW_FEEDS = new ArrayList<String>();
 	static{
 		OWFeedType[] feed_types = OWFeedType.values();
 		for(int x=0; x< feed_types.length; x++){
