@@ -16,7 +16,7 @@
         android:id="@+id/tab_record"
         android:showAsAction="always|withText"
         android:title="@string/broadcast"
-        android:icon="@drawable/ic_record">
+        android:icon="@drawable/ic_camcorder">
     </item>
 
 </menu>

@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -36,14 +37,12 @@ import com.actionbarsherlock.view.ActionProvider;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SubMenu;
+import com.orm.androrm.QuerySet;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import org.ale.openwatch.R;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Locale;
+import java.util.*;
 
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.Constants.OWFeedType;
@@ -51,6 +50,7 @@ import org.ale.openwatch.database.DatabaseManager;
 import org.ale.openwatch.feeds.MyFeedFragmentActivity;
 import org.ale.openwatch.feeds.RemoteFeedFragmentActivity;
 import org.ale.openwatch.http.OWServiceRequests;
+import org.ale.openwatch.model.OWTag;
 import org.ale.openwatch.model.OWUser;
 
 /**
@@ -64,6 +64,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     ViewPager  mViewPager;
     TabsAdapter mTabsAdapter;
     TitlePageIndicator mTitleIndicator;
+    int nextPagerViewId;
     
     HashMap<String, Integer> mTitleToTabId = new HashMap<String, Integer>();
     
@@ -73,7 +74,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     
     int internal_user_id = -1;
     
-    //ArrayList<String> tags = new ArrayList<String>();
+    ArrayList<String> tags = new ArrayList<String>();
     ArrayList<String> feeds = new ArrayList<String>(); // tags and feeds are lowercase
     int nextDirectoryMenuId = 1;
     
@@ -90,6 +91,8 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
 
         setContentView(R.layout.fragment_tabs_pager);
         this.getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        checkUserStatus();
 
         getDisplayWidth();
         mTabHost = (TabHost)findViewById(android.R.id.tabhost);
@@ -110,7 +113,17 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         populateTabsFromMaps();
         
         // See if initiating intent specified a tab
-        if(getIntent().getExtras() != null && getIntent().getExtras().containsKey(Constants.FEED_TYPE) )
+        Uri data = getIntent().getData();
+        if(data != null && data.getHost().compareTo("tag") == 0){
+            //String scheme = data.getScheme(); // "openwatch"
+            List<String> params = data.getPathSegments();
+            String tag = params.get(0); // "police"
+            if(!mTitleToTabId.containsKey(tag)){
+                addTag(tag);
+            }
+            mTitleIndicator.setCurrentItem(mTitleToTabId.get(tag));
+
+        }else if(getIntent().getExtras() != null && getIntent().getExtras().containsKey(Constants.FEED_TYPE) )
         	mTitleIndicator.setCurrentItem(mTitleToTabId.get(((OWFeedType)getIntent().getExtras().getSerializable(Constants.FEED_TYPE)).toString() ));
         // Try to restore last tab state
         if (savedInstanceState != null) {
@@ -118,7 +131,6 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         }
         
         onCreateWon = true;
-        checkUserStatus();
 
         // Drawer
 
@@ -152,7 +164,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     }
     
     private void populateTabsFromMaps(){
-    	int nextPagerViewId = 0;
+    	nextPagerViewId = 0;
     	Bundle feedBundle;
     	    		
     	for(String feed : feeds){
@@ -170,7 +182,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     		}
     		nextPagerViewId ++;
     	}
-    	   /* 	
+
     	for(String tag : tags){
     		feedBundle = new Bundle(1);
 			feedBundle.putString(Constants.OW_FEED, tag);
@@ -179,7 +191,16 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
 	        mTitleToTabId.put(tag, nextPagerViewId);
 	        nextPagerViewId ++;
     	}
-    	    */
+
+    }
+
+    private void addTag(String tag){
+        Bundle feedBundle = new Bundle(1);
+        feedBundle.putString(Constants.OW_FEED, tag);
+        mTabsAdapter.addTab(mTabHost.newTabSpec("#"+tag).setIndicator(inflateCustomTab("#"+tag)),
+                RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, feedBundle);
+        mTitleToTabId.put(tag, nextPagerViewId);
+        nextPagerViewId ++;
     }
     
     private void setupFeedAndTagMaps(){
@@ -209,9 +230,11 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
 			}
 		}
 		*/
-		/*
+
 		if(internal_user_id > 0){
-			QuerySet<OWTag> tag_set = OWUser.objects(getApplicationContext(), OWUser.class).get(internal_user_id).tags.get(getApplicationContext(), OWUser.objects(getApplicationContext(), OWUser.class).get(internal_user_id));
+            OWUser user = OWUser.objects(getApplicationContext(), OWUser.class).get(internal_user_id);
+            QuerySet<OWTag> tag_set = user.tags.get(getApplicationContext(), user);
+			//QuerySet<OWTag> tag_set = OWUser.objects(getApplicationContext(), OWUser.class).get(internal_user_id).tags.get(getApplicationContext(), OWUser.objects(getApplicationContext(), OWUser.class).get(internal_user_id));
 			for(OWTag tag : tag_set){
 				if(!tags.contains(tag.name.get())){
 	    			tags.add(tag.name.get());
@@ -219,7 +242,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
 			}
 			Collections.sort(tags);
 		}
-		*/
+
     }
     
     private String capitalizeFirstChar(String in){
