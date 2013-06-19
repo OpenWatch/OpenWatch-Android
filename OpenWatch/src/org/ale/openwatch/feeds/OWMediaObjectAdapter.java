@@ -62,6 +62,7 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
             view_cache.title.setText(cursor.getString(view_cache.title_col));
             Linkify.addLinks(view_cache.title, pattern, scheme, null, mentionFilter);
             view_cache.title.setVisibility(View.VISIBLE);
+            view_cache.title.setMovementMethod(null); // We're using a custom TextView to only intercept touches on links
         }
         view_cache.username.setText(cursor.getString(view_cache.username_col));
         //view_cache.views.setText(cursor.getString(view_cache.views_col));
