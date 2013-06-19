@@ -84,28 +84,28 @@
             android:layout_below="@+id/thumbnail"
             android:layout_alignLeft="@+id/by"/>
 
+    <!--
     <TextView
         android:id="@+id/by"
         style="@style/Theme.openwatch.feedItemOtherText"
         android:layout_below="@id/title"
         android:text="@string/by"
         android:textColor="@color/text_light"
-        android:layout_alignLeft="@+id/thumbnail"/>
+        android:layout_alignLeft="@+id/thumbnail"/> -->
 
     <TextView
         android:id="@+id/username"
         style="@style/Theme.openwatch.feedItemOtherText"
-        android:layout_marginLeft="5dp"
         android:text=""
         android:textColor="@color/text_light"
-        android:layout_alignTop="@+id/by"
-        android:layout_toRightOf="@+id/by"/>
+        android:layout_below="@id/title"
+        android:layout_alignLeft="@+id/thumbnail"/>
 
     <ImageView
             android:id="@+id/type_icon"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:layout_alignTop="@id/by"
+            android:layout_alignTop="@id/username"
             android:layout_alignParentRight="true"
             android:layout_marginBottom="5dp"
             android:layout_marginRight="5dp"

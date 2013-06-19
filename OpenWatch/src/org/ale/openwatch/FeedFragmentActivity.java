@@ -56,6 +56,7 @@ import org.ale.openwatch.model.OWUser;
  * flicks to move between the tabs.
  */
 public class FeedFragmentActivity extends SherlockFragmentActivity {
+    private static String TAG = "FeedFragmentActivity";
 
     TabHost mTabHost;
     ViewPager  mViewPager;
@@ -110,16 +111,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         populateTabsFromMaps();
         
         // See if initiating intent specified a tab
-        Uri data = getIntent().getData();
-        if(data != null && data.getHost().compareTo("tag") == 0){
-            //String scheme = data.getScheme(); // "openwatch"
-            List<String> params = data.getPathSegments();
-            String tag = params.get(0); // "police"
-            if(!mTitleToTabId.containsKey(tag)){
-                addTag(tag);
-            }
-            mTitleIndicator.setCurrentItem(mTitleToTabId.get(tag));
-
+        if(checkIntentForUri(getIntent())){
         }else if(getIntent().getExtras() != null && getIntent().getExtras().containsKey(Constants.FEED_TYPE) )
         	mTitleIndicator.setCurrentItem(mTitleToTabId.get(((OWFeedType)getIntent().getExtras().getSerializable(Constants.FEED_TYPE)).toString() ));
         // Try to restore last tab state
@@ -159,7 +151,28 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
 
     }
-    
+
+    @Override
+    protected void onNewIntent (Intent intent){
+        Log.i(TAG, "onNewIntent");
+        checkIntentForUri(intent);
+    }
+
+    private boolean checkIntentForUri(Intent intent){
+        Uri data = intent.getData();
+        if(data != null && data.getHost().compareTo("tag") == 0){
+            //String scheme = data.getScheme(); // "openwatch"
+            List<String> params = data.getPathSegments();
+            String tag = params.get(0); // "police"
+            if(!mTitleToTabId.containsKey(tag)){
+                addTag(tag);
+            }
+            mTitleIndicator.setCurrentItem(mTitleToTabId.get(tag));
+            return true;
+
+        }
+        return false;
+    }
     private void populateTabsFromMaps(){
     	nextPagerViewId = 0;
     	Bundle feedBundle;
