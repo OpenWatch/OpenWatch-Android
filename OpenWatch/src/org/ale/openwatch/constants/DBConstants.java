@@ -11,6 +11,7 @@ public class DBConstants {
     // Generic
     public static final String SYNCED = "synced";
     public static final String SERVER_ID = "server_id";
+    public static final String LAST_EDITED = "last_edited";
 	
 	// OWMediaObject table
 	public static final String MEDIA_OBJECT_TABLENAME = "owserverobject";

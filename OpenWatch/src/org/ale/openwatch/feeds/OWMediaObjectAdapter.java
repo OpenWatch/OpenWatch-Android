@@ -34,10 +34,11 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         	view_cache.thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
         	//view_cache.views = (TextView) view.findViewById(R.id.view_count);
         	//view_cache.actions = (TextView) view.findViewById(R.id.action_count);
-            view_cache.typeIcon = (ImageView) view.findViewById(R.id.type_icon);
+            //view_cache.typeIcon = (ImageView) view.findViewById(R.id.type_icon);
             view_cache.playButton = (ImageView) view.findViewById(R.id.playButton);
             view_cache.progressBar = (ProgressBar) view.findViewById(R.id.videoProgress);
             view_cache.userThumbnail = (ImageView) view.findViewById(R.id.userImage);
+            view_cache.lastEdited = (TextView) view.findViewById(R.id.date);
             
         	view_cache.title_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_TITLE);   
         	view_cache.username_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_USERNAME);   
@@ -50,6 +51,7 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
             view_cache.investigation_col = cursor.getColumnIndexOrThrow(DBConstants.MEDIA_OBJECT_INVESTIGATION);
             view_cache.mission_col = cursor.getColumnIndexOrThrow(DBConstants.MEDIA_OBJECT_MISSION);
             view_cache.user_thumbnail_col = cursor.getColumnIndexOrThrow(DBConstants.MEDIA_OBJECT_USER_THUMBNAIL);
+            view_cache.last_edited_col = cursor.getColumnIndexOrThrow(DBConstants.LAST_EDITED);
             view_cache._id_col = cursor.getColumnIndexOrThrow(DBConstants.ID);
             view.setTag(R.id.list_item_cache, view_cache);
             
@@ -69,6 +71,8 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         view_cache.username.setText(cursor.getString(view_cache.username_col));
         if(cursor.getString(view_cache.user_thumbnail_col) != null && cursor.getString(view_cache.user_thumbnail_col).compareTo("") != 0){
             ImageLoader.getInstance().displayImage(cursor.getString(view_cache.user_thumbnail_col), view_cache.userThumbnail);
+        }else{
+            view_cache.userThumbnail.setImageResource(R.drawable.thumbnail_placeholder);
         }
         //view_cache.views.setText(cursor.getString(view_cache.views_col));
         //view_cache.actions.setText(cursor.getString(view_cache.actions_col));
@@ -80,19 +84,19 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         }
 
         if(!cursor.isNull(view_cache.audio_col)){
-            view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.microphone_icon));
+            //view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.microphone_icon));
             view_cache.playButton.setVisibility(View.GONE);
         }else if(!cursor.isNull(view_cache.investigation_col)){
-            view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.investigation_icon));
+            //view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.investigation_icon));
             view_cache.playButton.setVisibility(View.GONE);
         }else if(!cursor.isNull(view_cache.photo_col)){
-            view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.camera_icon));
+            //view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.camera_icon));
             view_cache.playButton.setVisibility(View.GONE);
         }else if(!cursor.isNull(view_cache.video_col)){
-            view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.camcorder_icon));
+            //view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.camcorder_icon));
             view_cache.playButton.setVisibility(View.VISIBLE);
         }else if(!cursor.isNull(view_cache.mission_col)){
-            view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.mission_icon));
+            //view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.mission_icon));
             view_cache.playButton.setVisibility(View.GONE);
         }
 
@@ -107,7 +111,9 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         TextView title;
         TextView username;
         ImageView thumbnail;
-        ImageView typeIcon;
+        TextView lastEdited;
+        //TextView location;
+        //ImageView typeIcon;
         ImageView playButton;
         ImageView userThumbnail;
         ProgressBar progressBar;
@@ -120,6 +126,7 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         int thumbnail_col;
         int username_col;
         int user_thumbnail_col;
+        int last_edited_col;
         //int views_col;
         //int actions_col;
         int _id_col;

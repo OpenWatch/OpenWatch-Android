@@ -134,7 +134,9 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             loading_footer.setVisibility(View.GONE);
             getListView().addFooterView(loading_footer);
             setListAdapter(mAdapter);
-            
+            getListView().setDivider(null);
+            getListView().setDividerHeight(0);
+
             this.getListView().setOnScrollListener(new OnScrollListener(){
 
 				@Override
@@ -403,7 +405,8 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             DBConstants.MEDIA_OBJECT_PHOTO,
             DBConstants.MEDIA_OBJECT_INVESTIGATION,
             DBConstants.MEDIA_OBJECT_MISSION,
-            DBConstants.MEDIA_OBJECT_USER_THUMBNAIL
+            DBConstants.MEDIA_OBJECT_USER_THUMBNAIL,
+            DBConstants.LAST_EDITED
 
 	    };
 

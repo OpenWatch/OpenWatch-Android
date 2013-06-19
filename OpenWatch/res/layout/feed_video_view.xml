@@ -8,9 +8,9 @@
        android:layout_alignParentLeft="true"
        android:layout_alignParentRight="true"
        android:layout_alignBottom="@id/thumbnail"
-       android:layout_marginRight="5dp"
-       android:layout_marginLeft="5dp"
-       android:layout_marginTop="5dp"
+       android:layout_marginRight="0dp"
+       android:layout_marginLeft="0dp"
+       android:layout_marginTop="0dp"
        android:visibility="visible" />
 
     <ProgressBar

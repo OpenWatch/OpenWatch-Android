@@ -3,14 +3,15 @@
     android:id="@+id/container"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="3dp" >
+    android:layout_margin="0dp"
+    android:paddingBottom="12dp">
 
     <ImageView
         android:id="@+id/thumbnail"
         android:layout_width="match_parent"
         android:layout_height="240dp"
         android:layout_alignParentTop="true"
-        android:layout_margin="5dp"
+        android:layout_marginBottom="5dp"
         android:scaleType="centerCrop"
         android:src="@drawable/thumbnail_placeholder" />
 
@@ -73,42 +74,82 @@
         android:src="@drawable/eye_icon" />
 
         -->
-
+<!--
     <org.ale.openwatch.view.LinkedTextView
             android:id="@+id/title"
             style="@style/Theme.openwatch.feedItemTitleText"
+            android:fontFamily="sans-serif"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:text=""
             android:layout_below="@+id/thumbnail"
-            android:layout_alignLeft="@+id/by"/>
-
-    <!--
-    <TextView
-        android:id="@+id/by"
-        style="@style/Theme.openwatch.feedItemOtherText"
-        android:layout_below="@id/title"
-        android:text="@string/by"
-        android:textColor="@color/text_light"
-        android:layout_alignLeft="@+id/thumbnail"/> -->
+            android:layout_alignLeft="@+id/by"/> -->
 
     <ImageView
             android:id="@+id/userImage"
-            android:layout_below="@id/title"
+            android:layout_below="@id/thumbnail"
             android:layout_alignLeft="@+id/thumbnail"
+            android:scaleType="fitCenter"
+            android:layout_marginLeft="5dp"
             android:layout_width="50dp"
             android:layout_height="50dp"/>
-    <TextView
-        android:id="@+id/username"
-        style="@style/Theme.openwatch.feedItemOtherText"
-        android:text=""
-        android:textColor="@color/text_light"
-        android:layout_below="@id/title"
-        android:layout_marginLeft="5dp"
-        android:layout_alignBaseline="@id/userImage"
-        android:layout_toRightOf="@id/userImage"/>
 
+    <TextView
+            android:id="@+id/location"
+            style="@style/Theme.openwatch.feedItemOtherText"
+            android:text="Waco, TX"
+            android:textColor="@color/text_light"
+            android:layout_below="@id/thumbnail"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"/>
+
+    <TextView
+            android:id="@+id/username"
+            style="@style/Theme.openwatch.feedItemOtherText"
+            android:fontFamily="sans-serif"
+            android:textColor="#ffeb1d1d"
+            android:textStyle="bold"
+            android:layout_below="@id/thumbnail"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/userImage"
+            android:layout_toLeftOf="@id/location"/>
+
+    <org.ale.openwatch.view.LinkedTextView
+            android:id="@+id/title"
+            style="@style/Theme.openwatch.feedItemTitleText"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:layout_marginLeft="0dp"
+            android:paddingLeft="0dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:layout_below="@+id/username"
+            android:layout_marginTop="0dp"
+            android:layout_alignLeft="@+id/username"/>
+
+
+    <TextView
+            android:id="@+id/date"
+            style="@style/Theme.openwatch.feedItemOtherText"
+            android:text="4 days ago"
+            android:textColor="@color/text_light"
+            android:layout_below="@id/title"
+            android:layout_marginBottom="5dp"
+            android:layout_alignLeft="@id/username"/>
+
+    <ImageView
+            android:id="@+id/menu"
+            android:layout_width="50dp"
+            android:layout_height="25dp"
+            android:layout_below="@id/title"
+            android:layout_alignParentRight="true"
+            android:layout_alignBottom="@id/date"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/threedots" />
+
+    <!--
     <ImageView
             android:id="@+id/type_icon"
             android:layout_width="25dp"
@@ -119,7 +160,7 @@
             android:layout_marginBottom="5dp"
             android:layout_marginRight="5dp"
             android:src="@drawable/camcorder_icon" />
-
+    -->
 
 
 </RelativeLayout>
