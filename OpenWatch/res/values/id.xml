@@ -9,5 +9,8 @@
     <item name="feeds" type="id"></item>
     <item name="tags" type="id"></item>
 
+    <!-- ListItem subView action type -->
+    <item name="subView" type="id"></item>
+
         
 </resources>

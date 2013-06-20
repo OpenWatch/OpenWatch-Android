@@ -39,6 +39,7 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
             view_cache.progressBar = (ProgressBar) view.findViewById(R.id.videoProgress);
             view_cache.userThumbnail = (ImageView) view.findViewById(R.id.userImage);
             view_cache.lastEdited = (TextView) view.findViewById(R.id.date);
+            view_cache.location = (TextView) view.findViewById(R.id.location);
             
         	view_cache.title_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_TITLE);   
         	view_cache.username_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_USERNAME);   
@@ -52,6 +53,7 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
             view_cache.mission_col = cursor.getColumnIndexOrThrow(DBConstants.MEDIA_OBJECT_MISSION);
             view_cache.user_thumbnail_col = cursor.getColumnIndexOrThrow(DBConstants.MEDIA_OBJECT_USER_THUMBNAIL);
             view_cache.last_edited_col = cursor.getColumnIndexOrThrow(DBConstants.LAST_EDITED);
+            view_cache.location_col = cursor.getColumnIndexOrThrow(DBConstants.MEDIA_OBJECT_METRO_CODE);
             view_cache._id_col = cursor.getColumnIndexOrThrow(DBConstants.ID);
             view.setTag(R.id.list_item_cache, view_cache);
             
@@ -73,6 +75,16 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
             ImageLoader.getInstance().displayImage(cursor.getString(view_cache.user_thumbnail_col), view_cache.userThumbnail);
         }else{
             view_cache.userThumbnail.setImageResource(R.drawable.thumbnail_placeholder);
+        }
+
+        view_cache.thumbnail.bringToFront();
+        view_cache.playButton.bringToFront();
+
+        if(cursor.getString(view_cache.location_col) != null && cursor.getString(view_cache.location_col).compareTo("") != 0){
+            view_cache.location.setVisibility(View.VISIBLE);
+            view_cache.location.setText(cursor.getString(view_cache.location_col));
+        }else{
+            view_cache.location.setVisibility(View.INVISIBLE);
         }
         //view_cache.views.setText(cursor.getString(view_cache.views_col));
         //view_cache.actions.setText(cursor.getString(view_cache.actions_col));
@@ -112,7 +124,7 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         TextView username;
         ImageView thumbnail;
         TextView lastEdited;
-        //TextView location;
+        TextView location;
         //ImageView typeIcon;
         ImageView playButton;
         ImageView userThumbnail;
@@ -127,6 +139,7 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         int username_col;
         int user_thumbnail_col;
         int last_edited_col;
+        int location_col;
         //int views_col;
         //int actions_col;
         int _id_col;

@@ -16,6 +16,7 @@
 
 package org.ale.openwatch.feeds;
 
+import android.app.AlertDialog;
 import android.os.Build;
 import android.widget.*;
 import org.ale.openwatch.*;
@@ -294,6 +295,13 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
         	try{
         		int media_object_server_id = (Integer)v.getTag(R.id.list_item_model);
         		OWServerObject server_object = OWServerObject.objects(getActivity().getApplicationContext(), OWServerObject.class).get(media_object_server_id);
+
+                if(v.getTag(R.id.subView) != null && v.getTag(R.id.subView).toString().compareTo("menu") == 0){
+                    Log.i(TAG, "menu click!");
+                    new AlertDialog.Builder(getActivity()).setTitle("Options").show();
+                    return;
+                }else
+                    Log.i(TAG, "non menu click!");
         		
         		Intent i = null;
         		switch(server_object.getContentType(getActivity().getApplicationContext())){
@@ -406,7 +414,8 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             DBConstants.MEDIA_OBJECT_INVESTIGATION,
             DBConstants.MEDIA_OBJECT_MISSION,
             DBConstants.MEDIA_OBJECT_USER_THUMBNAIL,
-            DBConstants.LAST_EDITED
+            DBConstants.LAST_EDITED,
+            DBConstants.MEDIA_OBJECT_METRO_CODE
 
 	    };
 

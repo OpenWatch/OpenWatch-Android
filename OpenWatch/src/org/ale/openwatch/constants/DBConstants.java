@@ -24,6 +24,7 @@ public class DBConstants {
     public static final String MEDIA_OBJECT_INVESTIGATION = "investigation";
 	public static final String MEDIA_OBJECT_LOCAL_VIDEO = "local_video_recording";
     public static final String MEDIA_OBJECT_USER_THUMBNAIL = "user_thumbnail_url";
+    public static final String MEDIA_OBJECT_METRO_CODE = "metro_code";
 	
 	// Local Video Recordings Table
 	public static final String LOCAL_RECORDINGS_TABLENAME = "owlocalvideorecording";

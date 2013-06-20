@@ -39,6 +39,7 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
 	public CharField username = new CharField();
 	public CharField first_posted = new CharField();
 	public CharField last_edited = new CharField();
+    public CharField metro_code = new CharField();
 	
 	public ForeignKeyField<OWUser> user = new ForeignKeyField<OWUser>(
 			OWUser.class);
@@ -77,6 +78,8 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
         migrator.addField("mission", new ForeignKeyField<OWMission>(OWMission.class));
 
         migrator.addField("user_thumbnail_url", new CharField());
+
+        migrator.addField("metro_code", new CharField());
 
         // roll out all migrations
         migrator.migrate(context);
@@ -159,6 +162,8 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
 				this.last_edited.set(json.getString(Constants.OW_LAST_EDITED));
 			if(json.has(Constants.OW_FIRST_POSTED))
 				this.first_posted.set(json.getString(Constants.OW_FIRST_POSTED));
+            if(json.has(DBConstants.MEDIA_OBJECT_METRO_CODE))
+                this.metro_code.set(json.getString(DBConstants.MEDIA_OBJECT_METRO_CODE));
 
 			
 			if(json.has(Constants.OW_THUMB_URL) && json.getString(Constants.OW_THUMB_URL).compareTo(Constants.OW_NO_VALUE)!= 0)
