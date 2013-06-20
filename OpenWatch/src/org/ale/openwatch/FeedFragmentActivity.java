@@ -277,7 +277,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     	//tag_id_map.clear();
 		getSupportMenuInflater().inflate(R.menu.fragment_tabs_pager, menu);
 
-        /*
+
 		MenuItem directory = menu.findItem(R.id.tab_directory);
     	if(directory != null){
     		    		
@@ -291,7 +291,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
 
     		
     	}
-        */
+
 		return true;
 	}
     

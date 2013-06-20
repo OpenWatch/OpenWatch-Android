@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/container"
+              android:padding="10dp"
+              android:orientation="vertical"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:gravity="center_horizontal"
+              android:animateLayoutChanges="true">
+
+    <Button
+            android:id="@+id/shareButton"
+            android:background="@drawable/green_button_bg"
+            android:layout_width="250dp"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:fontFamily="sans-serif-condensed"
+            android:layout_centerHorizontal="true"
+            android:onClick="onShareButtonClick"
+            android:textColor="#fff"
+            android:shadowColor="#264826"
+            android:shadowDy="-2"
+            android:shadowRadius=".1"
+            android:text="@string/share"
+            android:textSize="25sp"
+        />
+
+    <Button
+            android:id="@+id/mapButton"
+            android:background="@drawable/map_button_bg"
+            android:layout_below="@id/shareButton"
+            android:layout_marginTop="20dp"
+            android:layout_width="250dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="20dp"
+            android:fontFamily="sans-serif-condensed"
+            android:layout_centerHorizontal="true"
+            android:onClick="onMapButtonClick"
+            android:textColor="#fff"
+            android:shadowColor="#264826"
+            android:shadowDy="-2"
+            android:shadowRadius=".1"
+            android:text="@string/tab_map"
+            android:textSize="25sp"
+            />
+
+</RelativeLayout>

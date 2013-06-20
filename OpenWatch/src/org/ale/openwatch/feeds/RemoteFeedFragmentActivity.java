@@ -17,6 +17,7 @@
 package org.ale.openwatch.feeds;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.os.Build;
 import android.widget.*;
 import org.ale.openwatch.*;
@@ -45,11 +46,13 @@ import android.util.Log;
 import android.view.*;
 import android.widget.AbsListView.OnScrollListener;
 import org.ale.openwatch.model.OWVideoRecording;
+import org.ale.openwatch.share.Share;
 
 /**
  * Demonstration of the implementation of a custom Loader.
  */
 public class RemoteFeedFragmentActivity extends FragmentActivity {
+    private static final String TAG = "RemoteFeedFragmentActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -293,12 +296,37 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
         @Override public void onListItemClick(ListView l, View v, int position, long id) {
             Log.i("LoaderCustom", "Item clicked: " + id);
         	try{
-        		int media_object_server_id = (Integer)v.getTag(R.id.list_item_model);
-        		OWServerObject server_object = OWServerObject.objects(getActivity().getApplicationContext(), OWServerObject.class).get(media_object_server_id);
+        		final int model_id = (Integer)v.getTag(R.id.list_item_model);
+        		final OWServerObject server_object = OWServerObject.objects(getActivity().getApplicationContext(), OWServerObject.class).get(model_id);
 
                 if(v.getTag(R.id.subView) != null && v.getTag(R.id.subView).toString().compareTo("menu") == 0){
                     Log.i(TAG, "menu click!");
-                    new AlertDialog.Builder(getActivity()).setTitle("Options").show();
+                    final Context c = getActivity();
+                    LayoutInflater inflater = (LayoutInflater)
+                            getActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
+                    View layout = inflater.inflate(R.layout.media_menu_popup,
+                            (ViewGroup) getActivity().findViewById(R.id.content_frame), false);
+                    final AlertDialog dialog =  new AlertDialog.Builder(getActivity()).setView(layout).create();
+                    layout.findViewById(R.id.shareButton).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                            Share.showShareDialogWithInfo(c, getString(R.string.share_video), server_object.getTitle(c), OWUtils.urlForOWServerObject(server_object, c));
+                            OWServiceRequests.increaseHitCount(c, server_object.getServerId(c), model_id, server_object.getContentType(c), server_object.getMediaType(c), Constants.HIT_TYPE.CLICK);
+                            getActivity().finish();
+                        }
+                    });
+                    layout.findViewById(R.id.mapButton).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                            Intent i = new Intent(getActivity(), FeedFragmentActivity.class);
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(i);
+
+                        }
+                    });
+                    new AlertDialog.Builder(getActivity()).setView(layout).show();
                     return;
                 }else
                     Log.i(TAG, "non menu click!");
@@ -430,5 +458,6 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 			return new CursorLoader(getActivity(), baseUri, PROJECTION, selection, selectionArgs, order);
 		}
     }
+
 
 }

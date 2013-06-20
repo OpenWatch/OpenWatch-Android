@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Thanks! http://android.onyou.ch/2011/01/25/simple-custom-button-using-a-selector-xml-layout/ -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/blurry_map_pressed" android:state_pressed="true"/>
+    <item android:drawable="@drawable/blurry_map" android:state_hovered="true"/>
+    <item android:drawable="@drawable/blurry_map" />
+
+</selector>
