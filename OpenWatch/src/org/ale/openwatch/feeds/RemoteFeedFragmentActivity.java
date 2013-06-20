@@ -320,13 +320,13 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
                         @Override
                         public void onClick(View v) {
                             dialog.dismiss();
-                            Intent i = new Intent(getActivity(), FeedFragmentActivity.class);
-                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            Intent i = new Intent(getActivity(), MapActivity.class);
+                            i.putExtra(Constants.INTERNAL_DB_ID, model_id);
                             startActivity(i);
 
                         }
                     });
-                    new AlertDialog.Builder(getActivity()).setView(layout).show();
+                    dialog.show();
                     return;
                 }else
                     Log.i(TAG, "non menu click!");
