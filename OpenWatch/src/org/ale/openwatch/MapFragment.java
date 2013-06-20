@@ -102,16 +102,10 @@ public class MapFragment extends SupportMapFragment implements OWMediaObjectBack
         getMap().clear();
         if(mStartLocation != null){
             getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(mStartLocation, 10));
-            getMap().addMarker(
-                    new MarkerOptions().position(mStartLocation)
-                            .icon(BitmapDescriptorFactory
-                                    .fromResource(R.drawable.marker_start)));
+            getMap().addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).position(mStartLocation));
         }
         if(mStopLocation != null){
-            getMap().addMarker(
-                    new MarkerOptions().position(mStopLocation)
-                            .icon(BitmapDescriptorFactory
-                                    .fromResource(R.drawable.marker_stop)));
+            getMap().addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).position(mStopLocation));
         }
 
         if(mStartLocation != null )

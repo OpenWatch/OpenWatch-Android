@@ -16,11 +16,16 @@
 
 package org.ale.openwatch.feeds;
 
+import android.*;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.widget.*;
 import org.ale.openwatch.*;
+import org.ale.openwatch.R;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
 import org.ale.openwatch.contentprovider.OWContentProvider;
@@ -45,6 +50,7 @@ import android.support.v4.widget.SearchViewCompat.OnQueryTextListenerCompat;
 import android.util.Log;
 import android.view.*;
 import android.widget.AbsListView.OnScrollListener;
+import org.ale.openwatch.model.OWServerObjectInterface;
 import org.ale.openwatch.model.OWVideoRecording;
 import org.ale.openwatch.share.Share;
 
@@ -316,16 +322,18 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
                             getActivity().finish();
                         }
                     });
-                    layout.findViewById(R.id.mapButton).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog.dismiss();
-                            Intent i = new Intent(getActivity(), MapActivity.class);
-                            i.putExtra(Constants.INTERNAL_DB_ID, model_id);
-                            startActivity(i);
-
-                        }
-                    });
+                    if(((OWServerObjectInterface) server_object.getChildObject(c)).getLat(c) != 0.0 ){
+                        layout.findViewById(R.id.mapButton).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                                Intent i = new Intent(getActivity(), MapActivity.class);
+                                i.putExtra(Constants.INTERNAL_DB_ID, model_id);
+                                startActivity(i);
+                            }
+                        });
+                    }else
+                        layout.findViewById(R.id.mapButton).setVisibility(View.GONE);
                     dialog.show();
                     return;
                 }else
