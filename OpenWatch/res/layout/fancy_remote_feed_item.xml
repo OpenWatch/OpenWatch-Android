@@ -90,19 +90,10 @@
             android:id="@+id/userImage"
             android:layout_below="@id/thumbnail"
             android:layout_alignLeft="@+id/thumbnail"
-            android:scaleType="fitCenter"
+            android:scaleType="centerCrop"
             android:layout_marginLeft="5dp"
             android:layout_width="50dp"
             android:layout_height="50dp"/>
-
-    <TextView
-            android:id="@+id/location"
-            style="@style/Theme.openwatch.feedItemOtherText"
-            android:textColor="@color/text_light"
-            android:layout_below="@id/thumbnail"
-            android:layout_alignParentRight="true"
-            android:layout_gravity="right"
-            android:layout_marginRight="5dp"/>
 
     <TextView
             android:id="@+id/username"
@@ -112,10 +103,20 @@
             android:textStyle="bold"
             android:layout_below="@id/thumbnail"
             android:layout_marginLeft="5dp"
-            android:layout_toLeftOf="@id/location"
             android:textSize="7pt"
             android:layout_toRightOf="@id/userImage"/>
 
+
+    <TextView
+            android:id="@+id/location"
+            style="@style/Theme.openwatch.feedItemOtherText"
+            android:textColor="@color/text_light"
+            android:layout_below="@id/thumbnail"
+            android:layout_alignParentRight="true"
+            android:layout_alignBaseline="@id/username"
+            android:layout_toRightOf="@id/username"
+            android:gravity="right"
+            android:layout_marginRight="5dp"/>
 
 
     <org.ale.openwatch.view.LinkedTextView

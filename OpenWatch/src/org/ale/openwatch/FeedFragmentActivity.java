@@ -75,7 +75,8 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     boolean onCreateWon = false;
 
     // Temporary drawer items
-    private ArrayList<String> mPlanetTitles = new ArrayList<String>() {{ add("Settings"); add("Profile");}};
+    private ArrayList<String> mDrawerItems = new ArrayList<String>() {{/* add("Profile"); */add("Settings");  add("Send Feedback");}};
+    private HashMap<String, Integer> drawerTitleToIcon = new HashMap<String, Integer>() {{put("Settings", R.drawable.settings); put("Profile", R.drawable.user_placeholder); put("Send Feedback", R.drawable.heart);}};
     DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private ListView mDrawerList;
@@ -130,10 +131,12 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         ListView mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
         // Set the adapter for the list view
-        mPlanetTitles.addAll(feeds);
-        mPlanetTitles.addAll(tags);
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, mPlanetTitles));
+        mDrawerItems.add("divider");
+        mDrawerItems.addAll(feeds);
+        mDrawerItems.add("divider");
+        mDrawerItems.addAll(tags);
+        mDrawerList.setAdapter(new DrawerItemAdapter(this,
+                mDrawerItems, drawerTitleToIcon, feeds));
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
@@ -509,7 +512,25 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     private void selectItem(View v, int position) {
         // Highlight the selected item, update the title, and close the drawer
         mDrawerList.setItemChecked(position, true);
-        mTitleIndicator.setCurrentItem(mTitleToTabId.get(((TextView)v).getText()));
+        String tag = ((TextView) v.findViewById(R.id.title)).getText().toString().replace("# ","");
+        if(mTitleToTabId.containsKey(tag)){
+            mTitleIndicator.setCurrentItem(mTitleToTabId.get(tag));
+        }else if(v.getTag(R.id.list_item_model) != null && ((String)v.getTag(R.id.list_item_model)).compareTo("divider")==0){
+            return;
+        }else if(mTitleToTabId.containsKey(v.getTag(R.id.list_item_model))){
+            mTitleIndicator.setCurrentItem(mTitleToTabId.get((String) v.getTag(R.id.list_item_model)));
+        }else{
+            if(tag.compareTo("Settings")==0){
+                Intent i = new Intent(this, SettingsActivity.class);
+                startActivity(i);
+            }else if(tag.compareTo("Send Feedback")==0){
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                        "mailto",Constants.SUPPORT_EMAIL, null));
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT,getString(R.string.share_email_subject));
+                emailIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_email_text) + OWUtils.getPackageVersion(getApplicationContext()));
+                startActivity(Intent.createChooser(emailIntent, getString(R.string.share_chooser_title)));
+            }
+        }
 
         mDrawerLayout.closeDrawer(mDrawerList);
     }

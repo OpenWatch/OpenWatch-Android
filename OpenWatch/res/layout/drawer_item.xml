@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp">
+
+
+    <ImageView
+            android:id="@+id/icon"
+            android:layout_alignParentRight="true"
+            android:scaleType="fitCenter"
+            android:layout_marginRight="10dp"
+            android:alpha=".8"
+            android:layout_width="50dp"
+            android:layout_height="50dp"/>
+
+
+    <TextView
+            android:id="@+id/title"
+            style="@style/Theme.openwatch.feedItemOtherText"
+            android:layout_height="50dp"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center_vertical"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:textColor="#ffebdfe3"
+            android:layout_marginLeft="10dp"
+            android:textSize="24sp"/>
+
+    <View
+          android:id="@+id/divider"
+          android:background="#262626"
+          android:layout_alignParentBottom="true"
+          android:layout_height="1pt"
+          android:layout_marginLeft="5dp"
+          android:layout_marginRight="5dp"
+          android:layout_width="match_parent"
+          android:layout_centerInParent="true"
+          android:visibility="gone"/>
+</RelativeLayout>

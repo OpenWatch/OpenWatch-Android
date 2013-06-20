@@ -24,7 +24,7 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
 	
 	@Override
 	public void bindView(View view, Context context, Cursor cursor){
-		super.bindView(view, context, cursor);
+		//super.bindView(view, context, cursor);
 		
 		ViewCache view_cache = (ViewCache) view.getTag(R.id.list_item_cache);
         if (view_cache == null) {
@@ -74,7 +74,7 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         if(cursor.getString(view_cache.user_thumbnail_col) != null && cursor.getString(view_cache.user_thumbnail_col).compareTo("") != 0){
             ImageLoader.getInstance().displayImage(cursor.getString(view_cache.user_thumbnail_col), view_cache.userThumbnail);
         }else{
-            view_cache.userThumbnail.setImageResource(R.drawable.thumbnail_placeholder);
+            view_cache.userThumbnail.setImageResource(R.drawable.user_placeholder);
         }
 
         view_cache.thumbnail.bringToFront();
