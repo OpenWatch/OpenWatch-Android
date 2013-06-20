@@ -76,7 +76,7 @@ import org.ale.openwatch.model.OWUser;
             }
         }
         else{
-            // Sync preferences and go to MainActivity
+            // Sync preferences and go to FeedFragmentActivity
             SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
             if(profile.getInt(Constants.INTERNAL_USER_ID,0) != 0){
                 Log.i(TAG, "OnBoardingActivity has internal user id...");
@@ -95,12 +95,12 @@ import org.ale.openwatch.model.OWUser;
                 OWServiceRequests.syncOWUser(getApplicationContext(), user);
             }
             */
-            Intent i = new Intent(OnBoardingActivity.this, MainActivity.class);
+            Intent i = new Intent(OnBoardingActivity.this, FeedFragmentActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                     | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
             // It's possible the sharedPreference setting won't be written by the
-            // time MainActivity
+            // time FeedFragmentActivity
             // checks its state, causing an erroneous redirect back to LoginActivity
             if (didLogin)
                 i.putExtra(Constants.AUTHENTICATED, true);

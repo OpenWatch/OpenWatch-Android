@@ -75,9 +75,10 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     boolean onCreateWon = false;
 
     // Temporary drawer items
-    private String[] mPlanetTitles = new String[] {"Settings", "Profile"};
+    private ArrayList<String> mPlanetTitles = new ArrayList<String>() {{ add("Settings"); add("Profile");}};
     DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
+    private ListView mDrawerList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +90,13 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         checkUserStatus();
 
         getDisplayWidth();
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selectItem(view, position);
+            }
+        });
         mTabHost = (TabHost)findViewById(android.R.id.tabhost);
         mTabHost.setup();
         mViewPager = (ViewPager)findViewById(R.id.pager);
@@ -122,6 +130,8 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         ListView mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
         // Set the adapter for the list view
+        mPlanetTitles.addAll(feeds);
+        mPlanetTitles.addAll(tags);
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
                 R.layout.drawer_list_item, mPlanetTitles));
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -277,7 +287,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     	//tag_id_map.clear();
 		getSupportMenuInflater().inflate(R.menu.fragment_tabs_pager, menu);
 
-
+        /*
 		MenuItem directory = menu.findItem(R.id.tab_directory);
     	if(directory != null){
     		    		
@@ -291,6 +301,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
 
     		
     	}
+    	*/
 
 		return true;
 	}
@@ -494,6 +505,15 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         }
 
     }
+
+    private void selectItem(View v, int position) {
+        // Highlight the selected item, update the title, and close the drawer
+        mDrawerList.setItemChecked(position, true);
+        mTitleIndicator.setCurrentItem(mTitleToTabId.get(((TextView)v).getText()));
+
+        mDrawerLayout.closeDrawer(mDrawerList);
+    }
+
 
     private android.view.MenuItem getMenuItem(final MenuItem item) {
         return new android.view.MenuItem() {

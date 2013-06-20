@@ -505,7 +505,7 @@ public class LoginActivity extends SherlockActivity {
 	};
 
 	private void returnToMainActivity(boolean didLogin) {
-		Intent i = new Intent(LoginActivity.this, MainActivity.class);
+		Intent i = new Intent(LoginActivity.this, FeedFragmentActivity.class);
 		i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
 				| Intent.FLAG_ACTIVITY_CLEAR_TASK);
 		// It's possible the sharedPreference setting won't be written by the
