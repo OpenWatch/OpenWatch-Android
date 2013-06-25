@@ -10970,7 +10970,7 @@ org.ale.openwatch.OWMediaObjectInfoFragment$1 -> org.ale.openwatch.ai:
     void beforeTextChanged(java.lang.CharSequence,int,int,int) -> beforeTextChanged
     void onTextChanged(java.lang.CharSequence,int,int,int) -> onTextChanged
 org.ale.openwatch.OWMediaObjectViewActivity -> org.ale.openwatch.OWMediaObjectViewActivity:
-    java.util.ArrayList attached_fragments -> C
+    java.util.ArrayList attached_fragments -> B
     android.widget.TabHost mTabHost -> n
     android.support.v4.view.ViewPager mViewPager -> o
     org.ale.openwatch.FeedFragmentActivity$TabsAdapter mTabsAdapter -> p
@@ -10984,8 +10984,7 @@ org.ale.openwatch.OWMediaObjectViewActivity -> org.ale.openwatch.OWMediaObjectVi
     boolean media_view_inflated -> x
     boolean is_resumed -> y
     org.ale.openwatch.constants.Constants$CONTENT_TYPE content_type -> z
-    org.ale.openwatch.constants.Constants$MEDIA_TYPE media_type -> A
-    android.view.LayoutInflater inflater -> B
+    android.view.LayoutInflater inflater -> A
     void onCreate(android.os.Bundle) -> onCreate
     void onResume() -> onResume
     void onPause() -> onPause
@@ -11056,7 +11055,7 @@ org.ale.openwatch.OWMediaObjectViewActivity$6$2 -> org.ale.openwatch.au:
     void onLoadingComplete(java.lang.String,android.view.View,android.graphics.Bitmap) -> a
     void onLoadingCancelled(java.lang.String,android.view.View) -> b
 org.ale.openwatch.OWMediaObjectViewActivity$7 -> org.ale.openwatch.av:
-    int[] $SwitchMap$org$ale$openwatch$constants$Constants$MEDIA_TYPE -> a
+    int[] $SwitchMap$org$ale$openwatch$constants$Constants$CONTENT_TYPE -> a
 org.ale.openwatch.OWMediaSyncer -> org.ale.openwatch.aw:
     java.util.concurrent.ExecutorService syncing_service -> d
     boolean syncing -> a
@@ -11377,42 +11376,35 @@ org.ale.openwatch.constants.Constants -> org.ale.openwatch.b.a:
     java.lang.String OW_MEDIA_URL -> a
     java.lang.String OW_API_URL -> b
     java.lang.String OW_URL -> c
-    java.util.HashMap API_ENDPOINT_BY_MEDIA_TYPE -> d
-    java.util.HashMap API_ENDPOINT_BY_CONTENT_TYPE -> e
-    java.text.SimpleDateFormat utc_formatter -> f
-    java.text.SimpleDateFormat user_date_formatter -> g
-    java.text.SimpleDateFormat user_datetime_formatter -> h
-    java.text.SimpleDateFormat user_time_formatter -> i
-    java.util.regex.Pattern EMAIL_ADDRESS_PATTERN -> j
-    java.util.HashMap FEED_TO_TITLE -> k
-    java.util.ArrayList OW_FEEDS -> l
+    java.util.HashMap API_ENDPOINT_BY_CONTENT_TYPE -> d
+    java.text.SimpleDateFormat utc_formatter -> e
+    java.text.SimpleDateFormat user_date_formatter -> f
+    java.text.SimpleDateFormat user_datetime_formatter -> g
+    java.text.SimpleDateFormat user_time_formatter -> h
+    java.util.regex.Pattern EMAIL_ADDRESS_PATTERN -> i
+    java.util.HashMap FEED_TO_TITLE -> j
+    java.util.ArrayList OW_FEEDS -> k
     boolean isOWFeedTypeGeoSensitive(java.lang.String) -> a
     java.lang.String feedExternalEndpointFromString(java.lang.String,int) -> a
 org.ale.openwatch.constants.Constants$1 -> org.ale.openwatch.b.b:
 org.ale.openwatch.constants.Constants$2 -> org.ale.openwatch.b.c:
-org.ale.openwatch.constants.Constants$3 -> org.ale.openwatch.b.d:
-org.ale.openwatch.constants.Constants$CONTENT_TYPE -> org.ale.openwatch.b.e:
-    org.ale.openwatch.constants.Constants$CONTENT_TYPE MEDIA_OBJECT -> a
-    org.ale.openwatch.constants.Constants$CONTENT_TYPE STORY -> b
-    org.ale.openwatch.constants.Constants$CONTENT_TYPE INVESTIGATION -> c
-    org.ale.openwatch.constants.Constants$CONTENT_TYPE MISSION -> d
-    org.ale.openwatch.constants.Constants$CONTENT_TYPE[] $VALUES -> e
+org.ale.openwatch.constants.Constants$CONTENT_TYPE -> org.ale.openwatch.b.d:
+    org.ale.openwatch.constants.Constants$CONTENT_TYPE VIDEO -> a
+    org.ale.openwatch.constants.Constants$CONTENT_TYPE PHOTO -> b
+    org.ale.openwatch.constants.Constants$CONTENT_TYPE AUDIO -> c
+    org.ale.openwatch.constants.Constants$CONTENT_TYPE STORY -> d
+    org.ale.openwatch.constants.Constants$CONTENT_TYPE INVESTIGATION -> e
+    org.ale.openwatch.constants.Constants$CONTENT_TYPE MISSION -> f
+    org.ale.openwatch.constants.Constants$CONTENT_TYPE[] $VALUES -> g
     org.ale.openwatch.constants.Constants$CONTENT_TYPE[] values() -> values
     org.ale.openwatch.constants.Constants$CONTENT_TYPE valueOf(java.lang.String) -> valueOf
-org.ale.openwatch.constants.Constants$HIT_TYPE -> org.ale.openwatch.b.f:
+org.ale.openwatch.constants.Constants$HIT_TYPE -> org.ale.openwatch.b.e:
     org.ale.openwatch.constants.Constants$HIT_TYPE VIEW -> a
     org.ale.openwatch.constants.Constants$HIT_TYPE CLICK -> b
     org.ale.openwatch.constants.Constants$HIT_TYPE[] $VALUES -> c
     org.ale.openwatch.constants.Constants$HIT_TYPE[] values() -> values
     org.ale.openwatch.constants.Constants$HIT_TYPE valueOf(java.lang.String) -> valueOf
-org.ale.openwatch.constants.Constants$MEDIA_TYPE -> org.ale.openwatch.b.g:
-    org.ale.openwatch.constants.Constants$MEDIA_TYPE VIDEO -> a
-    org.ale.openwatch.constants.Constants$MEDIA_TYPE PHOTO -> b
-    org.ale.openwatch.constants.Constants$MEDIA_TYPE AUDIO -> c
-    org.ale.openwatch.constants.Constants$MEDIA_TYPE[] $VALUES -> d
-    org.ale.openwatch.constants.Constants$MEDIA_TYPE[] values() -> values
-    org.ale.openwatch.constants.Constants$MEDIA_TYPE valueOf(java.lang.String) -> valueOf
-org.ale.openwatch.constants.Constants$OWFeedType -> org.ale.openwatch.b.h:
+org.ale.openwatch.constants.Constants$OWFeedType -> org.ale.openwatch.b.f:
     org.ale.openwatch.constants.Constants$OWFeedType TOP -> a
     org.ale.openwatch.constants.Constants$OWFeedType LOCAL -> b
     org.ale.openwatch.constants.Constants$OWFeedType USER -> c
@@ -11594,9 +11586,9 @@ org.ale.openwatch.file.FileUtils -> org.ale.openwatch.e.a:
     java.io.File getRootStorageDirectory(android.content.Context,java.lang.String) -> a
     java.io.File getStorageDirectory(java.io.File,java.lang.String) -> a
     android.graphics.Bitmap decodeUri(android.content.Context,android.net.Uri,int) -> a
-    java.io.File prepareOutputLocation(android.content.Context,org.ale.openwatch.constants.Constants$MEDIA_TYPE,java.lang.String,java.lang.String,java.lang.String) -> a
+    java.io.File prepareOutputLocation(android.content.Context,org.ale.openwatch.constants.Constants$CONTENT_TYPE,java.lang.String,java.lang.String,java.lang.String) -> a
 org.ale.openwatch.file.FileUtils$1 -> org.ale.openwatch.e.b:
-    int[] $SwitchMap$org$ale$openwatch$constants$Constants$MEDIA_TYPE -> a
+    int[] $SwitchMap$org$ale$openwatch$constants$Constants$CONTENT_TYPE -> a
 org.ale.openwatch.http.HttpClient -> org.ale.openwatch.f.a:
     java.lang.String USER_AGENT -> a
     com.loopj.android.http.AsyncHttpClient asyncHttpClient -> b
@@ -11638,7 +11630,7 @@ org.ale.openwatch.http.OWMediaRequests$4 -> org.ale.openwatch.f.f:
 org.ale.openwatch.http.OWServiceRequests -> org.ale.openwatch.f.g:
     java.lang.String last_feed_name -> a
     long last_request_time -> b
-    void increaseHitCount(android.content.Context,int,int,org.ale.openwatch.constants.Constants$CONTENT_TYPE,org.ale.openwatch.constants.Constants$MEDIA_TYPE,org.ale.openwatch.constants.Constants$HIT_TYPE) -> a
+    void increaseHitCount(android.content.Context,int,int,org.ale.openwatch.constants.Constants$CONTENT_TYPE,org.ale.openwatch.constants.Constants$HIT_TYPE) -> a
     void getStory(android.content.Context,int,org.ale.openwatch.http.OWServiceRequests$RequestCallback) -> a
     void getGeoFeed(android.content.Context,android.location.Location,java.lang.String,int,org.ale.openwatch.http.OWServiceRequests$PaginatedRequestCallback) -> a
     void getFeed(android.content.Context,java.lang.String,int,org.ale.openwatch.http.OWServiceRequests$PaginatedRequestCallback) -> a
@@ -11648,7 +11640,7 @@ org.ale.openwatch.http.OWServiceRequests -> org.ale.openwatch.f.g:
     void sendOWMobileGeneratedObjectMedia(android.content.Context,org.ale.openwatch.model.OWServerObjectInterface,org.ale.openwatch.http.OWServiceRequests$RequestCallback) -> b
     java.lang.String instanceEndpointForOWUser(android.content.Context,org.ale.openwatch.model.OWUser) -> c
     java.lang.String instanceEndpointForOWMediaObject(android.content.Context,org.ale.openwatch.model.OWServerObjectInterface) -> d
-    java.lang.String endpointForMediaType(org.ale.openwatch.constants.Constants$MEDIA_TYPE) -> a
+    java.lang.String endpointForContentType(org.ale.openwatch.constants.Constants$CONTENT_TYPE) -> a
     void syncOWServerObject(android.content.Context,org.ale.openwatch.model.OWServerObjectInterface) -> b
     void syncOWServerObject(android.content.Context,org.ale.openwatch.model.OWServerObjectInterface,boolean) -> a
     void getOWServerObjectMeta(android.content.Context,org.ale.openwatch.model.OWServerObjectInterface,java.lang.String,com.loopj.android.http.JsonHttpResponseHandler) -> a
@@ -11801,15 +11793,14 @@ org.ale.openwatch.model.OWAudio -> org.ale.openwatch.h.a:
     java.lang.String getMediaFilepath(android.content.Context) -> g
     void updateWithJson(android.content.Context,org.json.JSONObject) -> b
     org.json.JSONObject toJsonObject(android.content.Context) -> h
-    org.ale.openwatch.constants.Constants$MEDIA_TYPE getMediaType(android.content.Context) -> i
     void setTitle(android.content.Context,java.lang.String) -> b
     void setThumbnailUrl(android.content.Context,java.lang.String) -> c
-    java.lang.String getTitle(android.content.Context) -> j
-    java.lang.Integer getServerId(android.content.Context) -> k
+    java.lang.String getTitle(android.content.Context) -> i
+    java.lang.Integer getServerId(android.content.Context) -> j
     void addToFeed(android.content.Context,org.ale.openwatch.model.OWFeed) -> a
-    java.lang.String getFirstPosted(android.content.Context) -> l
+    java.lang.String getFirstPosted(android.content.Context) -> k
     void setFirstPosted(android.content.Context,java.lang.String) -> d
-    org.ale.openwatch.constants.Constants$CONTENT_TYPE getContentType(android.content.Context) -> m
+    org.ale.openwatch.constants.Constants$CONTENT_TYPE getContentType(android.content.Context) -> l
 org.ale.openwatch.model.OWFeed -> org.ale.openwatch.h.b:
     com.orm.androrm.field.CharField name -> b
     org.ale.openwatch.model.OWFeed getFeedFromString(android.content.Context,java.lang.String) -> a
@@ -11825,8 +11816,8 @@ org.ale.openwatch.model.OWInvestigation -> org.ale.openwatch.h.c:
     org.ale.openwatch.model.OWInvestigation createOrUpdateOWInvestigationWithJson(android.content.Context,org.json.JSONObject,org.ale.openwatch.model.OWFeed) -> a
     org.ale.openwatch.model.OWInvestigation createOrUpdateOWInvestigationWithJson(android.content.Context,org.json.JSONObject) -> a
     void setThumbnailUrl(android.content.Context,java.lang.String) -> a
-    java.lang.Integer getServerId(android.content.Context) -> k
-    java.lang.String getThumbnailUrl(android.content.Context) -> j
+    java.lang.Integer getServerId(android.content.Context) -> j
+    java.lang.String getThumbnailUrl(android.content.Context) -> i
     void addToFeed(android.content.Context,org.ale.openwatch.model.OWFeed) -> a
     org.json.JSONObject toJsonObject(android.content.Context) -> h
     java.lang.String getUUID(android.content.Context) -> d
@@ -11834,9 +11825,8 @@ org.ale.openwatch.model.OWInvestigation -> org.ale.openwatch.h.c:
     double getLat(android.content.Context) -> e
     void setLon(android.content.Context,double) -> b
     double getLon(android.content.Context) -> f
-    org.ale.openwatch.constants.Constants$MEDIA_TYPE getMediaType(android.content.Context) -> i
     java.lang.String getMediaFilepath(android.content.Context) -> g
-    org.ale.openwatch.constants.Constants$CONTENT_TYPE getContentType(android.content.Context) -> m
+    org.ale.openwatch.constants.Constants$CONTENT_TYPE getContentType(android.content.Context) -> l
 org.ale.openwatch.model.OWLocalVideoRecording -> org.ale.openwatch.h.d:
     com.orm.androrm.field.CharField recording_end_time -> b
     com.orm.androrm.field.CharField filepath -> c
@@ -11845,17 +11835,16 @@ org.ale.openwatch.model.OWLocalVideoRecording -> org.ale.openwatch.h.d:
     com.orm.androrm.field.BooleanField lq_synced -> f
     com.orm.androrm.field.OneToManyField segments -> g
     com.orm.androrm.field.ForeignKeyField recording -> h
-    boolean areSegmentsSynced(android.content.Context) -> j
-    org.json.JSONArray segmentsToJSONArray(android.content.Context) -> l
-    org.json.JSONObject toOWMediaServerJSON(android.content.Context) -> n
-    java.lang.Integer getServerId(android.content.Context) -> k
+    boolean areSegmentsSynced(android.content.Context) -> i
+    org.json.JSONArray segmentsToJSONArray(android.content.Context) -> k
+    org.json.JSONObject toOWMediaServerJSON(android.content.Context) -> m
+    java.lang.Integer getServerId(android.content.Context) -> j
     java.lang.String getUUID(android.content.Context) -> d
     void setLat(android.content.Context,double) -> a
     double getLat(android.content.Context) -> e
     void setLon(android.content.Context,double) -> b
     double getLon(android.content.Context) -> f
-    org.ale.openwatch.constants.Constants$MEDIA_TYPE getMediaType(android.content.Context) -> i
-    org.ale.openwatch.constants.Constants$CONTENT_TYPE getContentType(android.content.Context) -> m
+    org.ale.openwatch.constants.Constants$CONTENT_TYPE getContentType(android.content.Context) -> l
     java.lang.String getMediaFilepath(android.content.Context) -> g
     void updateWithJson(android.content.Context,org.json.JSONObject) -> b
     org.json.JSONObject toJsonObject(android.content.Context) -> h
@@ -11883,9 +11872,9 @@ org.ale.openwatch.model.OWMission -> org.ale.openwatch.h.f:
     org.ale.openwatch.model.OWMission createOrUpdateOWMissionWithJson(android.content.Context,org.json.JSONObject,org.ale.openwatch.model.OWFeed) -> a
     org.ale.openwatch.model.OWMission createOrUpdateOWMissionWithJson(android.content.Context,org.json.JSONObject) -> a
     void setThumbnailUrl(android.content.Context,java.lang.String) -> a
-    java.lang.String getTitle(android.content.Context) -> j
-    java.lang.Integer getServerId(android.content.Context) -> k
-    java.lang.String getThumbnailUrl(android.content.Context) -> l
+    java.lang.String getTitle(android.content.Context) -> i
+    java.lang.Integer getServerId(android.content.Context) -> j
+    java.lang.String getThumbnailUrl(android.content.Context) -> k
     void addToFeed(android.content.Context,org.ale.openwatch.model.OWFeed) -> a
     void setLastEdited(android.content.Context,java.lang.String) -> b
     org.json.JSONObject toJsonObject(android.content.Context) -> h
@@ -11894,9 +11883,8 @@ org.ale.openwatch.model.OWMission -> org.ale.openwatch.h.f:
     double getLat(android.content.Context) -> e
     void setLon(android.content.Context,double) -> b
     double getLon(android.content.Context) -> f
-    org.ale.openwatch.constants.Constants$MEDIA_TYPE getMediaType(android.content.Context) -> i
     java.lang.String getMediaFilepath(android.content.Context) -> g
-    org.ale.openwatch.constants.Constants$CONTENT_TYPE getContentType(android.content.Context) -> m
+    org.ale.openwatch.constants.Constants$CONTENT_TYPE getContentType(android.content.Context) -> l
 org.ale.openwatch.model.OWPhoto -> org.ale.openwatch.h.g:
     com.orm.androrm.field.CharField uuid -> b
     com.orm.androrm.field.CharField directory -> c
@@ -11917,17 +11905,16 @@ org.ale.openwatch.model.OWPhoto -> org.ale.openwatch.h.g:
     java.lang.String getMediaFilepath(android.content.Context) -> g
     void updateWithJson(android.content.Context,org.json.JSONObject) -> b
     org.json.JSONObject toJsonObject(android.content.Context) -> h
-    org.ale.openwatch.constants.Constants$MEDIA_TYPE getMediaType(android.content.Context) -> i
     org.ale.openwatch.model.OWPhoto createOrUpdateOWPhotoWithJson(android.content.Context,org.json.JSONObject,org.ale.openwatch.model.OWFeed) -> a
     org.ale.openwatch.model.OWPhoto createOrUpdateOWPhotoWithJson(android.content.Context,org.json.JSONObject) -> a
-    java.lang.Integer getServerId(android.content.Context) -> k
+    java.lang.Integer getServerId(android.content.Context) -> j
     void addToFeed(android.content.Context,org.ale.openwatch.model.OWFeed) -> a
-    java.lang.String getFirstPosted(android.content.Context) -> j
+    java.lang.String getFirstPosted(android.content.Context) -> i
     void setFirstPosted(android.content.Context,java.lang.String) -> b
     void setThumbnailUrl(android.content.Context,java.lang.String) -> c
-    java.lang.String getTitle(android.content.Context) -> l
+    java.lang.String getTitle(android.content.Context) -> k
     void setTitle(android.content.Context,java.lang.String) -> d
-    org.ale.openwatch.constants.Constants$CONTENT_TYPE getContentType(android.content.Context) -> m
+    org.ale.openwatch.constants.Constants$CONTENT_TYPE getContentType(android.content.Context) -> l
     org.ale.openwatch.model.OWPhoto initializeOWPhoto(android.content.Context,java.lang.String) -> e
 org.ale.openwatch.model.OWServerObject -> org.ale.openwatch.h.h:
     com.orm.androrm.field.CharField title -> b
@@ -11955,6 +11942,7 @@ org.ale.openwatch.model.OWServerObject -> org.ale.openwatch.h.h:
     boolean save(android.content.Context,boolean) -> b
     boolean save(android.content.Context) -> b
     void setSynced(android.content.Context,boolean) -> a
+    void createOrUpdateWithJson(android.content.Context,org.json.JSONObject,org.ale.openwatch.model.OWFeed,com.orm.androrm.DatabaseAdapter) -> a
     void updateWithJson(android.content.Context,org.json.JSONObject) -> b
     void setTitle(android.content.Context,java.lang.String) -> a
     void setViews(android.content.Context,int) -> a
@@ -11963,20 +11951,20 @@ org.ale.openwatch.model.OWServerObject -> org.ale.openwatch.h.h:
     void setDescription(android.content.Context,java.lang.String) -> b
     void setThumbnailUrl(android.content.Context,java.lang.String) -> c
     void setUser(android.content.Context,org.ale.openwatch.model.OWUser) -> a
-    void resetTags(android.content.Context) -> j
+    void resetTags(android.content.Context) -> i
     void addTag(android.content.Context,org.ale.openwatch.model.OWTag) -> a
-    java.lang.String getTitle(android.content.Context) -> l
-    java.lang.String getDescription(android.content.Context) -> n
-    com.orm.androrm.QuerySet getTags(android.content.Context) -> o
-    java.lang.Integer getViews(android.content.Context) -> p
-    java.lang.Integer getActions(android.content.Context) -> q
-    java.lang.Integer getServerId(android.content.Context) -> k
-    java.lang.String getThumbnailUrl(android.content.Context) -> r
-    org.ale.openwatch.model.OWUser getUser(android.content.Context) -> s
+    java.lang.String getTitle(android.content.Context) -> k
+    java.lang.String getDescription(android.content.Context) -> m
+    com.orm.androrm.QuerySet getTags(android.content.Context) -> n
+    java.lang.Integer getViews(android.content.Context) -> o
+    java.lang.Integer getActions(android.content.Context) -> p
+    java.lang.Integer getServerId(android.content.Context) -> j
+    java.lang.String getThumbnailUrl(android.content.Context) -> q
+    org.ale.openwatch.model.OWUser getUser(android.content.Context) -> r
     void addToFeed(android.content.Context,org.ale.openwatch.model.OWFeed) -> a
-    java.lang.String getFirstPosted(android.content.Context) -> t
+    java.lang.String getFirstPosted(android.content.Context) -> s
     void setFirstPosted(android.content.Context,java.lang.String) -> d
-    java.lang.String getLastEdited(android.content.Context) -> u
+    java.lang.String getLastEdited(android.content.Context) -> t
     void setLastEdited(android.content.Context,java.lang.String) -> e
     org.json.JSONObject toJsonObject(android.content.Context) -> h
     java.lang.String getUUID(android.content.Context) -> d
@@ -11984,22 +11972,20 @@ org.ale.openwatch.model.OWServerObject -> org.ale.openwatch.h.h:
     double getLat(android.content.Context) -> e
     void setLon(android.content.Context,double) -> b
     double getLon(android.content.Context) -> f
-    org.ale.openwatch.constants.Constants$MEDIA_TYPE getMediaType(android.content.Context) -> i
     java.lang.String getMediaFilepath(android.content.Context) -> g
-    void saveAndSync(android.content.Context) -> v
-    org.ale.openwatch.constants.Constants$CONTENT_TYPE getContentType(android.content.Context) -> m
-    java.lang.Object getChildObject(android.content.Context) -> w
+    void saveAndSync(android.content.Context) -> u
+    org.ale.openwatch.constants.Constants$CONTENT_TYPE getContentType(android.content.Context) -> l
+    java.lang.Object getChildObject(android.content.Context) -> v
 org.ale.openwatch.model.OWServerObject$1 -> org.ale.openwatch.h.i:
-    int[] $SwitchMap$org$ale$openwatch$constants$Constants$MEDIA_TYPE -> a
+    int[] $SwitchMap$org$ale$openwatch$constants$Constants$CONTENT_TYPE -> a
 org.ale.openwatch.model.OWServerObjectInterface -> org.ale.openwatch.h.j:
-    java.lang.Integer getServerId(android.content.Context) -> k
+    java.lang.Integer getServerId(android.content.Context) -> j
     java.lang.String getUUID(android.content.Context) -> d
     void setLat(android.content.Context,double) -> a
     double getLat(android.content.Context) -> e
     void setLon(android.content.Context,double) -> b
     double getLon(android.content.Context) -> f
-    org.ale.openwatch.constants.Constants$MEDIA_TYPE getMediaType(android.content.Context) -> i
-    org.ale.openwatch.constants.Constants$CONTENT_TYPE getContentType(android.content.Context) -> m
+    org.ale.openwatch.constants.Constants$CONTENT_TYPE getContentType(android.content.Context) -> l
     java.lang.String getMediaFilepath(android.content.Context) -> g
     void updateWithJson(android.content.Context,org.json.JSONObject) -> b
     org.json.JSONObject toJsonObject(android.content.Context) -> h
@@ -12015,9 +12001,9 @@ org.ale.openwatch.model.OWStory -> org.ale.openwatch.h.k:
     org.ale.openwatch.model.OWStory createOrUpdateOWStoryWithJson(android.content.Context,org.json.JSONObject,org.ale.openwatch.model.OWFeed) -> a
     org.ale.openwatch.model.OWStory createOrUpdateOWStoryWithJson(android.content.Context,org.json.JSONObject) -> a
     void setThumbnailUrl(android.content.Context,java.lang.String) -> a
-    java.lang.String getTitle(android.content.Context) -> j
-    java.lang.Integer getServerId(android.content.Context) -> k
-    java.lang.String getThumbnailUrl(android.content.Context) -> l
+    java.lang.String getTitle(android.content.Context) -> i
+    java.lang.Integer getServerId(android.content.Context) -> j
+    java.lang.String getThumbnailUrl(android.content.Context) -> k
     void addToFeed(android.content.Context,org.ale.openwatch.model.OWFeed) -> a
     void setLastEdited(android.content.Context,java.lang.String) -> b
     org.json.JSONObject toJsonObject(android.content.Context) -> h
@@ -12027,9 +12013,8 @@ org.ale.openwatch.model.OWStory -> org.ale.openwatch.h.k:
     double getLat(android.content.Context) -> e
     void setLon(android.content.Context,double) -> b
     double getLon(android.content.Context) -> f
-    org.ale.openwatch.constants.Constants$MEDIA_TYPE getMediaType(android.content.Context) -> i
     java.lang.String getMediaFilepath(android.content.Context) -> g
-    org.ale.openwatch.constants.Constants$CONTENT_TYPE getContentType(android.content.Context) -> m
+    org.ale.openwatch.constants.Constants$CONTENT_TYPE getContentType(android.content.Context) -> l
 org.ale.openwatch.model.OWTag -> org.ale.openwatch.h.l:
     com.orm.androrm.field.CharField name -> b
     com.orm.androrm.field.BooleanField is_featured -> c
@@ -12062,25 +12047,22 @@ org.ale.openwatch.model.OWVideoRecording -> org.ale.openwatch.h.n:
     com.orm.androrm.field.ForeignKeyField media_object -> i
     com.orm.androrm.field.ForeignKeyField local -> j
     void initializeRecording(android.content.Context,java.lang.String,java.lang.String,double,double) -> a
-    org.ale.openwatch.model.OWVideoRecording createOrUpdateOWRecordingWithJson(android.content.Context,org.json.JSONObject,org.ale.openwatch.model.OWFeed) -> a
-    org.ale.openwatch.model.OWVideoRecording createOrUpdateOWRecordingWithJson(android.content.Context,org.json.JSONObject) -> a
+    org.ale.openwatch.model.OWVideoRecording createOrUpdateOWRecordingWithJson(android.content.Context,org.json.JSONObject,org.ale.openwatch.model.OWFeed,com.orm.androrm.DatabaseAdapter) -> a
     void updateWithJson(android.content.Context,org.json.JSONObject) -> b
     org.json.JSONObject toJsonObject(android.content.Context) -> h
     boolean save(android.content.Context) -> b
     void setSynced(android.content.Context,boolean) -> a
-    java.lang.String getTitle(android.content.Context) -> j
-    java.lang.String getDescription(android.content.Context) -> l
-    java.lang.Integer getServerId(android.content.Context) -> k
-    void addToFeed(android.content.Context,org.ale.openwatch.model.OWFeed) -> a
+    java.lang.String getTitle(android.content.Context) -> i
+    java.lang.String getDescription(android.content.Context) -> k
+    java.lang.Integer getServerId(android.content.Context) -> j
     void setLastEdited(android.content.Context,java.lang.String) -> a
     java.lang.String getUUID(android.content.Context) -> d
     void setLat(android.content.Context,double) -> a
     double getLat(android.content.Context) -> e
     void setLon(android.content.Context,double) -> b
     double getLon(android.content.Context) -> f
-    org.ale.openwatch.constants.Constants$MEDIA_TYPE getMediaType(android.content.Context) -> i
     java.lang.String getMediaFilepath(android.content.Context) -> g
-    org.ale.openwatch.constants.Constants$CONTENT_TYPE getContentType(android.content.Context) -> m
+    org.ale.openwatch.constants.Constants$CONTENT_TYPE getContentType(android.content.Context) -> l
 org.ale.openwatch.share.Share -> org.ale.openwatch.i.a:
     void showShareDialogWithInfo(android.content.Context,java.lang.String,java.lang.String,java.lang.String) -> a
 org.ale.openwatch.view.LinkedTextView -> org.ale.openwatch.view.LinkedTextView:

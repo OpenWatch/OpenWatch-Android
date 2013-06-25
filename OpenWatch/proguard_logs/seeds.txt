@@ -11098,8 +11098,6 @@ org.ale.openwatch.constants.Constants$CONTENT_TYPE: org.ale.openwatch.constants.
 org.ale.openwatch.constants.Constants$CONTENT_TYPE: org.ale.openwatch.constants.Constants$CONTENT_TYPE valueOf(java.lang.String)
 org.ale.openwatch.constants.Constants$HIT_TYPE: org.ale.openwatch.constants.Constants$HIT_TYPE[] values()
 org.ale.openwatch.constants.Constants$HIT_TYPE: org.ale.openwatch.constants.Constants$HIT_TYPE valueOf(java.lang.String)
-org.ale.openwatch.constants.Constants$MEDIA_TYPE: org.ale.openwatch.constants.Constants$MEDIA_TYPE[] values()
-org.ale.openwatch.constants.Constants$MEDIA_TYPE: org.ale.openwatch.constants.Constants$MEDIA_TYPE valueOf(java.lang.String)
 org.ale.openwatch.constants.Constants$OWFeedType: org.ale.openwatch.constants.Constants$OWFeedType[] values()
 org.ale.openwatch.constants.Constants$OWFeedType: org.ale.openwatch.constants.Constants$OWFeedType valueOf(java.lang.String)
 org.ale.openwatch.contentprovider.OWContentProvider

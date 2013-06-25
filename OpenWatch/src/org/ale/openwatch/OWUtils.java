@@ -112,7 +112,7 @@ public class OWUtils {
     public interface VideoViewCallback{
         public void onPlaybackComplete(ViewGroup parent);
         public void onPrepared(ViewGroup parent);
-        public void onError();
+        public void onError(ViewGroup parent);
     }
     /**
      * Setup a VideoView. Context c should not be an Activity Context for showing AlertDialogs
@@ -173,6 +173,9 @@ public class OWUtils {
                     // TODO make this safe
                     //if (is_resumed)
                         mediaErrorDialog.show();
+                        progressBar.setVisibility(View.GONE);
+                        if(cb != null)
+                            cb.onError((ViewGroup) videoView.getParent());
                 }
                 Log.i(TAG, String.format("what %d extra %d", what, extra));
                 return true;

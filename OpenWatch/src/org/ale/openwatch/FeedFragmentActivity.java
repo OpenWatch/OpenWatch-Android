@@ -148,13 +148,13 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
 
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
-                getActionBar().setTitle("");
+                getSupportActionBar().setTitle("");
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
-                getActionBar().setTitle("");
+                getSupportActionBar().setTitle("");
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };

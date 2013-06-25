@@ -294,8 +294,8 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             }
 
             @Override
-            public void onError() {
-
+            public void onError(ViewGroup parent) {
+                this.onPlaybackComplete(parent);
             }
         };
 
