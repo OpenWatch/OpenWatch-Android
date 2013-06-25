@@ -128,9 +128,6 @@ public class OWVideoRecording extends Model implements OWServerObjectInterface{
 
 	public static OWVideoRecording createOrUpdateOWRecordingWithJson(Context app_context, JSONObject json_obj, OWFeed feed, DatabaseAdapter adapter) throws JSONException{
 		//OWVideoRecording rec = createOrUpdateOWRecordingWithJson(app_context, json_obj);
-        // Create OWServerObject record
-        OWServerObject.createOrUpdateWithJson(app_context, json_obj, feed, adapter);
-
         // Parse video json for insert into video table
         int feedId = feed.getId();
         Where where = new Where();
@@ -160,13 +157,16 @@ public class OWVideoRecording extends Model implements OWServerObjectInterface{
         // Insert video row
         adapter.doInsertOrUpdate(DBConstants.RECORDINGS_TABLENAME, values, where);
 
-        // Associate OWServerObject with this video
         int videoId = 0;
         Cursor cursor = adapter.query(String.format("SELECT _id FROM %s WHERE uuid =\"%s\"", DBConstants.RECORDINGS_TABLENAME, json_obj.getString(Constants.OW_UUID)));
         if(cursor != null && cursor.moveToFirst()){
             videoId = cursor.getInt(0);
         }
         cursor.close();
+
+        // Create OWServerObject record
+        json_obj.put("video_recording", videoId);
+        OWServerObject.createOrUpdateWithJson(app_context, json_obj, feed, adapter);
 
 		// add recording to feed if not null
         cursor = adapter.query(String.format("SELECT _id FROM %s WHERE server_id =\"%s\" and video_recording IS NOT NULL", DBConstants.MEDIA_OBJECT_TABLENAME, json_obj.getString(Constants.OW_SERVER_ID)));
@@ -182,17 +182,10 @@ public class OWVideoRecording extends Model implements OWServerObjectInterface{
                 feedWhere.and("owfeed", feedId);
                 adapter.doInsertOrUpdate("owfeed_owserverobject", values, feedWhere);
             }
-            // Associate OWServerObject with video
+            // Associate video with OWServerObject
             values = new ContentValues();
             values.put("media_object", serverObjectId);
             adapter.doInsertOrUpdate(DBConstants.RECORDINGS_TABLENAME, values, where);
-
-            // Associate OWServerObject with video
-            values = new ContentValues();
-            values.put(DBConstants.MEDIA_OBJECT_VIDEO, videoId);
-            Where serverObjectWhere = new Where();
-            serverObjectWhere.and(DBConstants.ID, serverObjectId);
-            adapter.doInsertOrUpdate(DBConstants.MEDIA_OBJECT_TABLENAME, values, serverObjectWhere);
         }
         cursor.close();
 

@@ -32,6 +32,7 @@ import android.widget.*;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.bugsense.trace.BugSenseHandler;
 import com.orm.androrm.QuerySet;
 import com.viewpagerindicator.TitlePageIndicator;
 
@@ -87,6 +88,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
 
         setContentView(R.layout.fragment_tabs_pager);
         this.getSupportActionBar().setDisplayShowTitleEnabled(false);
+        BugSenseHandler.initAndStartSession(getApplicationContext(), SECRETS.BUGSENSE_API_KEY);
 
         checkUserStatus();
 
@@ -117,11 +119,14 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         
         // See if initiating intent specified a tab
         if(checkIntentForUri(getIntent())){
-        }else if(getIntent().getExtras() != null && getIntent().getExtras().containsKey(Constants.FEED_TYPE) )
+        }else if(getIntent().getExtras() != null && getIntent().getExtras().containsKey(Constants.FEED_TYPE) ){
         	mTitleIndicator.setCurrentItem(mTitleToTabId.get(((OWFeedType)getIntent().getExtras().getSerializable(Constants.FEED_TYPE)).toString() ));
         // Try to restore last tab state
-        if (savedInstanceState != null) {
+        }else if (savedInstanceState != null) {
             mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
+        }else{
+            // set default tab to Top Stories
+            mTitleIndicator.setCurrentItem(1);
         }
         
         onCreateWon = true;

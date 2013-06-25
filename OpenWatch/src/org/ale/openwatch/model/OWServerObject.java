@@ -170,6 +170,8 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
             serverObjectValues.put(DBConstants.FIRST_POSTED, json.getString(Constants.OW_FIRST_POSTED));
         if(json.has(DBConstants.MEDIA_OBJECT_METRO_CODE))
             serverObjectValues.put(DBConstants.MEDIA_OBJECT_METRO_CODE, json.getString(DBConstants.MEDIA_OBJECT_METRO_CODE));
+        if(json.has("video_recording"))
+            serverObjectValues.put("video_recording", json.getInt("video_recording"));
 
         if(json.has(Constants.OW_THUMB_URL) && json.getString(Constants.OW_THUMB_URL).compareTo(Constants.OW_NO_VALUE)!= 0)
             serverObjectValues.put(DBConstants.THUMBNAIL_URL, json.getString(Constants.OW_THUMB_URL));
@@ -185,9 +187,10 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
             Where userWhere = new Where();
             userWhere.and(DBConstants.USER_SERVER_ID, jsonUser.getInt(Constants.OW_SERVER_ID));
 
-            if(jsonUser.has(Constants.OW_USERNAME))
+            if(jsonUser.has(Constants.OW_USERNAME)){
                 userValues.put(DBConstants.USERNAME, jsonUser.getString(Constants.OW_USERNAME));
-            if(jsonUser.has(Constants.OW_SERVER_ID))
+                serverObjectValues.put("username", jsonUser.getString(Constants.OW_USERNAME));
+            }if(jsonUser.has(Constants.OW_SERVER_ID))
                 userValues.put(DBConstants.SERVER_ID, jsonUser.getInt(Constants.OW_SERVER_ID));
             if(jsonUser.has(Constants.OW_THUMB_URL)){
                 userValues.put(DBConstants.THUMBNAIL_URL, jsonUser.getString(Constants.OW_THUMB_URL));

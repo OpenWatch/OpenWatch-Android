@@ -22,8 +22,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/image"
-                android:padding="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="10dp"
                 android:textSize="32sp"
+                android:tag="custom_font"
+                style="@style/Theme.openwatch.storyBodyText"/>
+
+        <TextView
+                android:id="@+id/blurb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_below="@+id/title"
+                android:layout_marginTop="0dp"
                 android:tag="custom_font"
                 style="@style/Theme.openwatch.storyBodyText"/>
 
@@ -35,8 +49,8 @@
                 android:scaleType="centerCrop"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_below="@+id/title"
-                android:layout_alignLeft="@+id/title"/>
+                android:layout_below="@+id/blurb"
+                android:layout_alignLeft="@+id/blurb"/>
 
         <TextView
                 android:id="@+id/userTitle"
@@ -51,16 +65,6 @@
                 android:layout_toRightOf="@id/userImage"
                 android:layout_alignTop="@+id/userImage"/>
 
-        <TextView
-                android:id="@+id/blurb"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="22sp"
-                android:padding="10dp"
-                android:layout_below="@+id/userImage"
-                android:layout_marginTop="10dp"
-                android:tag="custom_font"
-                style="@style/Theme.openwatch.storyBodyText"/>
 
         <TextView
                 android:id="@+id/questions"
@@ -68,7 +72,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="22sp"
                 android:padding="10dp"
-                android:layout_below="@+id/blurb"
+                android:layout_below="@+id/userImage"
                 android:layout_marginTop="10dp"
                 android:tag="custom_font"
                 style="@style/Theme.openwatch.storyBodyText"/>

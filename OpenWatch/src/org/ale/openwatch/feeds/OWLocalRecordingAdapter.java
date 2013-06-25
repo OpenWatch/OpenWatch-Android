@@ -1,5 +1,7 @@
 package org.ale.openwatch.feeds;
 
+import android.text.format.DateUtils;
+import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
 
 import android.content.Context;
@@ -10,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import org.ale.openwatch.R;
+
+import java.text.ParseException;
 
 public class OWLocalRecordingAdapter extends SimpleCursorAdapter {
 
@@ -46,8 +50,17 @@ public class OWLocalRecordingAdapter extends SimpleCursorAdapter {
         	view_cache._id_col = cursor.getColumnIndexOrThrow(DBConstants.ID);
             view.setTag(R.id.list_item_cache, view_cache);
         }
-        
-        view_cache.title.setText(cursor.getString(view_cache.title_col));
+        if(!cursor.isNull(view_cache.title_col))
+            view_cache.title.setText(cursor.getString(view_cache.title_col));
+        else if(cursor.getString(view_cache.date_col) != null){
+            try {
+                view_cache.title.setText(DateUtils.getRelativeTimeSpanString(Constants.utc_formatter.parse(cursor.getString(view_cache.date_col)).getTime()) );
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }else
+            view_cache.title.setText("");
+        //view_cache.lastEdited.setText(DateUtils.getRelativeTimeSpanString(Constants.utc_formatter.parse(cursor.getString(view_cache.last_edited_col)).getTime()) );
         //view_cache.views.setText(cursor.getString(view_cache.views_col));
         //view_cache.actions.setText(cursor.getString(view_cache.actions_col));
 
