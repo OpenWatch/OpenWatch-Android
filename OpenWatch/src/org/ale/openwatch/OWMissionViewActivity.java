@@ -117,13 +117,14 @@ public class OWMissionViewActivity extends SherlockActivity implements OWMediaOb
             this.findViewById(R.id.bounty).setVisibility(View.VISIBLE);
         }
 
-
+        /*
         OWUser user = serverObject.user.get(c);
         if(user != null){
             ((TextView) this.findViewById(R.id.userTitle)).setText(user.username.get());
             if(user.thumbnail_url.get() != null && user.thumbnail_url.get().compareTo("") != 0)
                 ImageLoader.getInstance().displayImage(user.thumbnail_url.get(), (ImageView) findViewById(R.id.userImage));
         }
+        */
         ((TextView) this.findViewById(R.id.description)).setText(mission.body.get());
 
 
@@ -155,7 +156,6 @@ public class OWMissionViewActivity extends SherlockActivity implements OWMediaOb
     public void camcorderButtonClick(View v){
         Intent i = new Intent(this, RecorderActivity.class);
         i.putExtra(Constants.OBLIGATORY_TAG, missionTag);
-        // TODO: Bundle tag to add
         startActivity(i);
 
     }

@@ -124,15 +124,15 @@
             style="@style/Theme.openwatch.feedItemTitleText"
             android:fontFamily="sans-serif"
             android:textStyle="normal"
-            android:layout_marginLeft="0dp"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/userImage"
             android:paddingLeft="0dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColorLink="#ffeb1d1d"
             android:text=""
             android:layout_below="@+id/username"
-            android:layout_marginTop="0dp"
-            android:layout_alignLeft="@+id/username"/>
+            android:layout_marginTop="0dp"/>
 
 
     <TextView
@@ -141,8 +141,9 @@
             android:text="n days ago"
             android:textColor="@color/text_light"
             android:layout_below="@id/title"
+            android:layout_toRightOf="@id/userImage"
             android:layout_marginBottom="5dp"
-            android:layout_alignLeft="@id/username"/>
+            android:layout_marginLeft="5dp"/>
 
     <ImageView
             android:id="@+id/menu"

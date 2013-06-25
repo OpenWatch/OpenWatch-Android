@@ -319,7 +319,6 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
                             dialog.dismiss();
                             Share.showShareDialogWithInfo(c, getString(R.string.share_video), server_object.getTitle(c), OWUtils.urlForOWServerObject(server_object, c));
                             OWServiceRequests.increaseHitCount(c, server_object.getServerId(c), model_id, server_object.getContentType(c), Constants.HIT_TYPE.CLICK);
-                            getActivity().finish();
                         }
                     });
                     if(((OWServerObjectInterface) server_object.getChildObject(c)).getLat(c) != 0.0 ){
@@ -334,6 +333,13 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
                         });
                     }else
                         layout.findViewById(R.id.mapButton).setVisibility(View.GONE);
+                    layout.findViewById(R.id.reportButton).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                            OWServiceRequests.flagOWServerObjet(getActivity().getApplicationContext(), server_object);
+                        }
+                    });
                     dialog.show();
                     return;
                 }else

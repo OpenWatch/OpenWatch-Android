@@ -1,14 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:id="@+id/container"
               android:padding="10dp"
-              android:orientation="vertical"
+              android:orientation="horizontal"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:gravity="center_horizontal"
               android:background="#80ffffff"
+              android:weightSum="1.0"
               android:animateLayoutChanges="true">
 
+    <Button
+            android:id="@+id/mapButton"
+            android:layout_weight=".33"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:background="@android:color/transparent"
+            android:drawableTop="@drawable/local_button"
+            android:drawablePadding="10dp"
+            android:text="@string/tab_map"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/shareButton"
+        android:layout_weight=".33"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:gravity="center"
+        android:background="@android:color/transparent"
+        android:drawableTop="@drawable/share_button"
+        android:drawablePadding="10dp"
+        android:text="@string/share"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <Button
+            android:id="@+id/reportButton"
+            android:layout_weight=".33"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:background="@android:color/transparent"
+            android:drawableTop="@drawable/flag_button"
+            android:drawablePadding="10dp"
+            android:text="@string/report"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+    <!--
     <Button
             android:id="@+id/shareButton"
             android:background="@drawable/green_button_bg"
@@ -45,4 +93,6 @@
             android:textSize="25sp"
             />
 
-</RelativeLayout>
+            -->
+
+</LinearLayout>

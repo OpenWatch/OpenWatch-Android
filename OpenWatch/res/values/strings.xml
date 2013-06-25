@@ -10,6 +10,7 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="karma">Karma</string>
+    <string name="report">Report</string>
 
     <!-- Generic Dialog -->
     <string name="dialog_ok">Ok</string>

@@ -700,6 +700,33 @@ public class OWServiceRequests {
 				"application/json", response_handler);
 	}
 
+    public static void flagOWServerObjet(Context app_context, OWServerObjectInterface object){
+        AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
+        JSONObject json = new JSONObject();
+        try {
+            json.put("flagged", true);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        http_client.post(app_context, instanceEndpointForOWMediaObject(app_context, object), Utils.JSONObjectToStringEntity(json), "application/json", new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(JSONObject response) {
+                Log.i(TAG, "flag object success " + response.toString());
+            }
+            @Override
+            public void onFailure(Throwable e, String response) {
+                Log.i(TAG, "flag object failure: " + response);
+
+            }
+
+            @Override
+            public void onFinish() {
+                Log.i(TAG, "flag object finish: ");
+
+            }
+        });
+    }
+
 	public static void setTags(final Context app_context, QuerySet<OWTag> tags) {
 		final String METHOD = "setTags";
 		JSONObject result = new JSONObject();

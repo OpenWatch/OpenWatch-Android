@@ -115,18 +115,28 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         if(!cursor.isNull(view_cache.audio_col)){
             //view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.microphone_icon));
             view_cache.playButton.setVisibility(View.GONE);
+            view_cache.userThumbnail.setVisibility(View.VISIBLE);
+            view_cache.username.setVisibility(View.VISIBLE);
         }else if(!cursor.isNull(view_cache.investigation_col)){
             //view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.investigation_icon));
             view_cache.playButton.setVisibility(View.GONE);
+            view_cache.userThumbnail.setVisibility(View.VISIBLE);
+            view_cache.username.setVisibility(View.VISIBLE);
         }else if(!cursor.isNull(view_cache.photo_col)){
             //view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.camera_icon));
             view_cache.playButton.setVisibility(View.GONE);
+            view_cache.userThumbnail.setVisibility(View.VISIBLE);
+            view_cache.username.setVisibility(View.VISIBLE);
         }else if(!cursor.isNull(view_cache.video_col)){
             //view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.camcorder_icon));
             view_cache.playButton.setVisibility(View.VISIBLE);
+            view_cache.userThumbnail.setVisibility(View.VISIBLE);
+            view_cache.username.setVisibility(View.VISIBLE);
         }else if(!cursor.isNull(view_cache.mission_col)){
             //view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.mission_icon));
             view_cache.playButton.setVisibility(View.GONE);
+            view_cache.userThumbnail.setVisibility(View.GONE);
+            view_cache.username.setVisibility(View.GONE);
         }
         try{
             if(!cursor.isNull(view_cache.last_edited_col))
