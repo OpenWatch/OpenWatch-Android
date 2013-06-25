@@ -163,9 +163,10 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
             serverObjectValues.put(DBConstants.ACTIONS, json.getInt(Constants.OW_CLICKS));
         if(json.has(Constants.OW_SERVER_ID))
             serverObjectValues.put(DBConstants.SERVER_ID, json.getInt(Constants.OW_SERVER_ID));
-        if(json.has(Constants.OW_LAST_EDITED))
+        if(json.has(Constants.OW_LAST_EDITED)){
             serverObjectValues.put(DBConstants.LAST_EDITED, json.getString(Constants.OW_LAST_EDITED));
-        if(json.has(Constants.OW_FIRST_POSTED))
+            //Log.i("LastEdited", String.format("id %d last_edited %s",json.getInt(Constants.OW_SERVER_ID), json.getString(Constants.OW_LAST_EDITED) ));
+        }if(json.has(Constants.OW_FIRST_POSTED))
             serverObjectValues.put(DBConstants.FIRST_POSTED, json.getString(Constants.OW_FIRST_POSTED));
         if(json.has(DBConstants.MEDIA_OBJECT_METRO_CODE))
             serverObjectValues.put(DBConstants.MEDIA_OBJECT_METRO_CODE, json.getString(DBConstants.MEDIA_OBJECT_METRO_CODE));
