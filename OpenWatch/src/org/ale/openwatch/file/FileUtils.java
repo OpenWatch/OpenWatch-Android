@@ -12,7 +12,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.ale.openwatch.constants.Constants;
-import org.ale.openwatch.constants.Constants.MEDIA_TYPE;
 
 public class FileUtils {
 	
@@ -55,8 +54,7 @@ public class FileUtils {
 	 * within the given location. 
 	 *
 	 * @param parent_directory a File representing the directory in which the new child will reside
-	 * @param directory_name the name of the desired directory
-	 * @return a File pointing to the desired directory, or null if a file with conflicting name 
+	 * @return a File pointing to the desired directory, or null if a file with conflicting name
 	 * exists or if getRootStorageDirectory was not called first
 	 */
 	public static File getStorageDirectory(File parent_directory, String new_child_directory_name){
@@ -82,7 +80,6 @@ public class FileUtils {
 	 * minimize memory usage
 	 * @param c
 	 * @param selectedImage
-	 * @param desired_size
 	 * @return
 	 * @throws FileNotFoundException
 	 */
@@ -120,15 +117,18 @@ public class FileUtils {
 	 * @param filename
 	 * @return
 	 */
-	public static File prepareOutputLocation(Context c, MEDIA_TYPE type, String uuid, String filename, String extension){
+	public static File prepareOutputLocation(Context c, Constants.CONTENT_TYPE type, String uuid, String filename, String extension){
 		String media_dir = "";
 		switch(type){
 		case VIDEO:
 			media_dir = Constants.VIDEO_OUTPUT_DIR;
+            break;
 		case AUDIO:
 			media_dir = Constants.AUDIO_OUTPUT_DIR;
+            break;
 		case PHOTO:
 			media_dir = Constants.PHOTO_OUTPUT_DIR;
+            break;
 		}
 		File output = FileUtils.getStorageDirectory(
 				FileUtils.getRootStorageDirectory(c,

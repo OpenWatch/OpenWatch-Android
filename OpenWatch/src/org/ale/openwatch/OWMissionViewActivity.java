@@ -2,12 +2,14 @@ package org.ale.openwatch;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -48,6 +50,7 @@ public class OWMissionViewActivity extends SherlockActivity implements OWMediaOb
         setContentView(R.layout.activity_mission_view);
         c = getApplicationContext();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        OWUtils.setReadingFontOnChildren((ViewGroup) findViewById(R.id.relativeLayout));
 
         try{
             model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
@@ -85,7 +88,7 @@ public class OWMissionViewActivity extends SherlockActivity implements OWMediaOb
                 });
             }
             OWServerObject server_object = OWServerObject.objects(this, OWServerObject.class).get(server_id);
-            OWServiceRequests.increaseHitCount(c, server_id , model_id, server_object.getContentType(c), server_object.getMediaType(c), Constants.HIT_TYPE.VIEW);
+            OWServiceRequests.increaseHitCount(c, server_id , model_id, server_object.getContentType(c), Constants.HIT_TYPE.VIEW);
         }catch(Exception e){
             Log.e(TAG, "Error retrieving model");
             e.printStackTrace();
@@ -183,7 +186,7 @@ public class OWMissionViewActivity extends SherlockActivity implements OWMediaOb
                 if(server_id > 0){
                     OWServerObject object = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
                     Share.showShareDialogWithInfo(this, getString(R.string.share_investigation), object.getTitle(getApplicationContext()), OWUtils.urlForOWServerObject(object, getApplicationContext()));
-                    OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, Constants.CONTENT_TYPE.INVESTIGATION, null, Constants.HIT_TYPE.CLICK);
+                    OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, Constants.CONTENT_TYPE.INVESTIGATION, Constants.HIT_TYPE.CLICK);
                 }
                 break;
         }

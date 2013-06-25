@@ -230,13 +230,8 @@ public class OWLocalVideoRecording extends Model implements OWServerObjectInterf
     }
 
     @Override
-    public Constants.MEDIA_TYPE getMediaType(Context c) {
-        return Constants.MEDIA_TYPE.VIDEO;
-    }
-
-    @Override
     public Constants.CONTENT_TYPE getContentType(Context c) {
-        return Constants.CONTENT_TYPE.MEDIA_OBJECT;
+        return Constants.CONTENT_TYPE.VIDEO;
     }
 
     @Override

@@ -11,7 +11,14 @@ public class DBConstants {
     // Generic
     public static final String SYNCED = "synced";
     public static final String SERVER_ID = "server_id";
+    public static final String TITLE = "title";
+    public static final String USERNAME = "username";
+    public static final String THUMBNAIL_URL = "thumbnail_url";
+    public static final String DESCRIPTION = "description";
     public static final String LAST_EDITED = "last_edited";
+    public static final String FIRST_POSTED = "first_posted";
+    public static final String ACTIONS = "actions";
+    public static final String VIEWS = "views";
 	
 	// OWMediaObject table
 	public static final String MEDIA_OBJECT_TABLENAME = "owserverobject";
@@ -48,8 +55,6 @@ public class DBConstants {
 	public static final String RECORDINGS_TABLE_BEGIN_LON = "begin_lon";
 	public static final String RECORDINGS_TABLE_END_LAT = "end_lat";
 	public static final String RECORDINGS_TABLE_END_LON = "end_lon";
-	public static final String RECORDINGS_TABLE_VIEWS = "views";
-	public static final String RECORDINGS_TABLE_ACTIONS = "actions";
 	public static final String RECORDINGS_TABLE_LOCAL = "local";
 	
 	// Tag table

@@ -9,10 +9,10 @@ import com.orm.androrm.QuerySet;
 import com.orm.androrm.field.CharField;
 import com.orm.androrm.field.ForeignKeyField;
 
+import com.orm.androrm.migration.Migrator;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
 import org.ale.openwatch.constants.Constants.CONTENT_TYPE;
-import org.ale.openwatch.constants.Constants.MEDIA_TYPE;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,6 +22,7 @@ public class OWInvestigation extends Model implements OWServerObjectInterface{
 	private static final String TAG = "OWInvestigation";
 	
 	public CharField blurb = new CharField();
+    public CharField questions = new CharField();
 	public CharField big_logo_url = new CharField();
 	
 	public ForeignKeyField<OWServerObject> media_object = new ForeignKeyField<OWServerObject> ( OWServerObject.class );
@@ -39,12 +40,26 @@ public class OWInvestigation extends Model implements OWServerObjectInterface{
 		this.media_object.set(media_object);
 		this.save(c);
 	}
+
+    @Override
+    protected void migrate(Context context) {
+        /*
+            Migrator automatically keeps track of which migrations have been run.
+            All we do is add a migration for each change that occurs after the initial app release
+         */
+        Migrator<OWInvestigation> migrator = new Migrator<OWInvestigation>(OWInvestigation.class);
+
+        migrator.addField("questions", new CharField());
+
+        // roll out all migrations
+        migrator.migrate(context);
+    }
 	
 	@Override
 	public boolean save(Context context) {
 		// notify the ContentProvider that the dataset has changed
 		if(media_object.get() != null){ // this is called once in <init> to get db id before medi_object created
-			setLastEdited(context, Constants.utc_formatter.format(new Date()));
+			//setLastEdited(context, Constants.utc_formatter.format(new Date()));
 			//context.getContentResolver().notifyChange(OWContentProvider.getMediaObjectUri(media_object.get(context).getId()), null);
 		}
 		return super.save(context);
@@ -64,8 +79,10 @@ public class OWInvestigation extends Model implements OWServerObjectInterface{
 				blurb.set(json.getString(Constants.OW_BLURB));
 			if(json.has("big_logo"))
 				big_logo_url.set(json.getString("big_logo"));
+            if(json.has("questions"))
+                questions.set(json.getString("questions"));
 		}catch(JSONException e){
-			Log.e(TAG, "Error deserializing story");
+			Log.e(TAG, "Error deserializing investigation");
 			e.printStackTrace();
 		}
 		// If story has no thumbnail_url, try using user's thumbnail
@@ -287,12 +304,6 @@ public class OWInvestigation extends Model implements OWServerObjectInterface{
 	public double getLon(Context c) {
 		// TODO Auto-generated method stub
 		return 0;
-	}
-
-	@Override
-	public MEDIA_TYPE getMediaType(Context c) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

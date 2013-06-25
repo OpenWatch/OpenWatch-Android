@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger>
+
+    <dataSet config="main" >
+        <source path="/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/HLSTestProject/HLSTest/src/main/assets" />
+    </dataSet>
+    <dataSet config="debug" >
+        <source path="/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/HLSTestProject/HLSTest/src/debug/assets" />
+    </dataSet>
+
+</merger>

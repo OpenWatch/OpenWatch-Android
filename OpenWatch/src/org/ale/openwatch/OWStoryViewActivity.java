@@ -67,7 +67,7 @@ public class OWStoryViewActivity extends SherlockActivity implements OWMediaObje
 				});
 			}
 			OWServerObject server_object = OWServerObject.objects(this, OWServerObject.class).get(server_id);
-			OWServiceRequests.increaseHitCount(getApplicationContext(), server_id , model_id, server_object.getContentType(getApplicationContext()), server_object.getMediaType(getApplicationContext()), HIT_TYPE.VIEW);
+			OWServiceRequests.increaseHitCount(getApplicationContext(), server_id , model_id, server_object.getContentType(getApplicationContext()), HIT_TYPE.VIEW);
 		}catch(Exception e){
 			Log.e(TAG, "Error retrieving model");
 			e.printStackTrace();
@@ -109,7 +109,7 @@ public class OWStoryViewActivity extends SherlockActivity implements OWMediaObje
 			if(server_id > 0){
                 OWServerObject server_object = OWServerObject.objects(this, OWServerObject.class).get(server_id);
 				Share.showShareDialogWithInfo(this, getString(R.string.share_story), server_object.getTitle(getApplicationContext()), OWStory.getUrlFromId(server_id));
-				OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, server_object.getContentType(getApplicationContext()), server_object.getMediaType(getApplicationContext()), HIT_TYPE.CLICK);
+				OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, server_object.getContentType(getApplicationContext()), HIT_TYPE.CLICK);
 			}
 			break;
 		}

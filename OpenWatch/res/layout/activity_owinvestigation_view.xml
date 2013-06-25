@@ -1,32 +1,83 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+    <RelativeLayout
+            android:id="@+id/relativeLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        <ImageView
+                android:id="@+id/image"
+                android:contentDescription=""
+                android:scaleType="centerCrop"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context=".OWInvestigationViewActivity" >
+                android:layout_height="250dp"/>
 
-    <WebView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/web_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        tools:context=".OWInvestigationViewActivity" />
+        <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/image"
+                android:padding="10dp"
+                android:textSize="32sp"
+                android:tag="custom_font"
+                style="@style/Theme.openwatch.storyBodyText"/>
 
-    <ProgressBar
-            android:id="@+id/videoProgress"
-            android:layout_alignTop="@id/media_object_media_view"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="100dp"
-            android:layout_marginRight="15dp"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_centerInParent="true"
-            android:indeterminate="true"
-            android:indeterminateBehavior="cycle"
-            android:visibility="visible"
-            />
+        <ImageView
+                android:id="@+id/userImage"
+                android:contentDescription=""
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/thumbnail_placeholder"
+                android:scaleType="centerCrop"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_below="@+id/title"
+                android:layout_alignLeft="@+id/title"/>
 
-</RelativeLayout>
+        <TextView
+                android:id="@+id/userTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:fontFamily="sans-serif"
+                android:textColor="#ffeb1d1d"
+                android:textStyle="bold"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="30dp"
+                android:layout_toRightOf="@id/userImage"
+                android:layout_alignTop="@+id/userImage"/>
+
+        <TextView
+                android:id="@+id/blurb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:padding="10dp"
+                android:layout_below="@+id/userImage"
+                android:layout_marginTop="10dp"
+                android:tag="custom_font"
+                style="@style/Theme.openwatch.storyBodyText"/>
+
+        <TextView
+                android:id="@+id/questions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:padding="10dp"
+                android:layout_below="@+id/blurb"
+                android:layout_marginTop="10dp"
+                android:tag="custom_font"
+                style="@style/Theme.openwatch.storyBodyText"/>
+
+
+        <View
+                android:layout_below="@id/questions"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"/>
+
+    </RelativeLayout>
+</ScrollView>

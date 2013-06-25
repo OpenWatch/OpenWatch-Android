@@ -1,7 +1,10 @@
 package org.ale.openwatch.feeds;
 
+import android.text.format.DateUtils;
 import android.text.util.Linkify;
 import android.widget.ProgressBar;
+import org.ale.openwatch.R;
+import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
 
 import android.content.Context;
@@ -11,12 +14,26 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import org.ale.openwatch.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class OWMediaObjectAdapter extends SimpleCursorAdapter {
+
+    // A transform filter that simply returns just the text captured by the
+    // first regular expression group.
+    Linkify.TransformFilter mentionFilter = new Linkify.TransformFilter() {
+        public final String transformUrl(final Matcher match, String url) {
+            return match.group(1);
+        }
+    };
+
+    // Match @mentions and capture just the username portion of the text.
+    Pattern pattern = Pattern.compile("#([A-Za-z0-9_-]+)");
+    String scheme = "openwatch://openwatch.net/w/";
 
 	public OWMediaObjectAdapter(Context context, Cursor c) {
 		super(context, R.layout.fancy_remote_feed_item, c, new String[]{}, new int[]{},0);
@@ -111,6 +128,12 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
             //view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.mission_icon));
             view_cache.playButton.setVisibility(View.GONE);
         }
+        try{
+            if(!cursor.isNull(view_cache.last_edited_col))
+                view_cache.lastEdited.setText(DateUtils.getRelativeTimeSpanString(Constants.utc_formatter.parse(cursor.getString(view_cache.last_edited_col)).getTime()) );
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
 
         view.setTag(R.id.list_item_model, cursor.getInt(view_cache._id_col));
@@ -150,17 +173,5 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         int investigation_col;
         int mission_col;
     }
-
-    // A transform filter that simply returns just the text captured by the
-    // first regular expression group.
-    Linkify.TransformFilter mentionFilter = new Linkify.TransformFilter() {
-        public final String transformUrl(final Matcher match, String url) {
-            return match.group(1);
-        }
-    };
-
-    // Match @mentions and capture just the username portion of the text.
-    Pattern pattern = Pattern.compile("#([A-Za-z0-9_-]+)");
-    String scheme = "openwatch://openwatch.net/w/";
 
 }

@@ -12,7 +12,6 @@ import com.orm.androrm.field.ForeignKeyField;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
 import org.ale.openwatch.constants.Constants.CONTENT_TYPE;
-import org.ale.openwatch.constants.Constants.MEDIA_TYPE;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -292,12 +291,6 @@ public class OWStory extends Model implements OWServerObjectInterface{
 	public double getLon(Context c) {
 		// TODO Auto-generated method stub
 		return 0;
-	}
-
-	@Override
-	public MEDIA_TYPE getMediaType(Context c) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

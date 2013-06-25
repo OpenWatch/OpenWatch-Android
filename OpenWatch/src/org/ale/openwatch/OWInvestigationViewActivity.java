@@ -1,21 +1,29 @@
 package org.ale.openwatch;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.ImageView;
+import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.Constants.CONTENT_TYPE;
 import org.ale.openwatch.constants.Constants.HIT_TYPE;
 import org.ale.openwatch.http.OWServiceRequests;
+import org.ale.openwatch.model.OWInvestigation;
 import org.ale.openwatch.model.OWServerObject;
+import org.ale.openwatch.model.OWUser;
 import org.ale.openwatch.share.Share;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,8 +33,7 @@ import java.net.URLEncoder;
 public class OWInvestigationViewActivity extends SherlockActivity implements OWMediaObjectBackedEntity {
 	private static final String TAG = "OWInvestigationViewActivity";
 	
-	private WebView web_view;
-    private View progress;
+    //private View progress;
 
 	private int model_id;
 	private int server_id;
@@ -36,10 +43,8 @@ public class OWInvestigationViewActivity extends SherlockActivity implements OWM
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_owinvestigation_view);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		
-		web_view = (WebView)findViewById(R.id.web_view);
-        progress = findViewById(R.id.videoProgress);
-		
+        OWUtils.setReadingFontOnChildren((ViewGroup) findViewById(R.id.relativeLayout));
+
 		model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
 		OWServerObject object = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
 		server_id = object.getServerId(getApplicationContext());
@@ -56,21 +61,32 @@ public class OWInvestigationViewActivity extends SherlockActivity implements OWM
 
 	@Override
 	public void populateViews(OWServerObject media_object, Context app_context) {
-		OWServiceRequests.getOWServerObjectMeta(getApplicationContext(), media_object, "?html=true", new JsonHttpResponseHandler() {
+		OWServiceRequests.getOWServerObjectMeta(getApplicationContext(), media_object, "", new JsonHttpResponseHandler() {
 
 			@Override
 			public void onSuccess(JSONObject response) {
 				Log.i(TAG, "get i success : " + response.toString());
-				if(response.has("html"))
-					try {
-						//web_view.loadData(response.getString("html"), "text/html", null); // Didn't work on 2.2 test device
-                        web_view.loadData( URLEncoder.encode(response.getString("html")).replaceAll("\\+"," "), "text/html", "utf-8" );  // Of course!
-                        showProgress(false);
-                        // http://stackoverflow.com/questions/8421670/webpage-not-available-with-webview-loaddata-only-in-emulator
-                    } catch (JSONException e) {
-						Log.e(TAG, "unable to load html from investigation response: " + response.toString());
-						e.printStackTrace();
-					}
+                try {
+                    //populate views
+                    showProgress(false);
+                    OWInvestigation.createOrUpdateOWInvestigationWithJson(getApplicationContext(), response);
+                    OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
+                    OWInvestigation investigation = serverObject.investigation.get(getApplicationContext());
+                    ((TextView) findViewById(R.id.title)).setText(serverObject.title.get());
+                    ((TextView) findViewById(R.id.blurb)).setText(investigation.blurb.get());
+                    ((TextView) findViewById(R.id.questions)).setText(Html.fromHtml(investigation.questions.get()));
+                    ImageLoader.getInstance().displayImage(investigation.big_logo_url.get(), (ImageView) findViewById(R.id.image));
+                    OWUser user = serverObject.user.get(getApplicationContext());
+                    if(user != null){
+                        ((TextView) findViewById(R.id.userTitle)).setText(user.username.get());
+                        if(user.thumbnail_url.get() != null && user.thumbnail_url.get().compareTo("") != 0)
+                            ImageLoader.getInstance().displayImage(user.thumbnail_url.get(), (ImageView) findViewById(R.id.userImage));
+                    }
+                    // http://stackoverflow.com/questions/8421670/webpage-not-available-with-webview-loaddata-only-in-emulator
+                } catch (JSONException e) {
+                    Log.e(TAG, "unable to load html from investigation response: " + response.toString());
+                    e.printStackTrace();
+                }
 			}
 
 			@Override
@@ -104,7 +120,7 @@ public class OWInvestigationViewActivity extends SherlockActivity implements OWM
 			if(server_id > 0){
 				OWServerObject object = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
 				Share.showShareDialogWithInfo(this, getString(R.string.share_investigation), object.getTitle(getApplicationContext()),OWUtils.urlForOWServerObject(object, getApplicationContext()));
-				OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, CONTENT_TYPE.INVESTIGATION, null, HIT_TYPE.CLICK);
+				OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, CONTENT_TYPE.INVESTIGATION, HIT_TYPE.CLICK);
 			}
 			break;
 		}
@@ -112,12 +128,16 @@ public class OWInvestigationViewActivity extends SherlockActivity implements OWM
 	}
 
     private void showProgress(boolean show){
+        /*
         if(show){
             progress.setVisibility(View.VISIBLE);
         }else{
             progress.setVisibility(View.GONE);
         }
+        */
     }
+
+
 
 
 }

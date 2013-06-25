@@ -17,7 +17,6 @@ import com.bugsense.trace.BugSenseHandler;
 import java.io.File;
 
 import org.ale.openwatch.constants.Constants;
-import org.ale.openwatch.constants.Constants.MEDIA_TYPE;
 import org.ale.openwatch.constants.Constants.OWFeedType;
 import org.ale.openwatch.database.DatabaseManager;
 import org.ale.openwatch.file.FileUtils;

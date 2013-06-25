@@ -1,5 +1,6 @@
 package org.ale.openwatch;
 
+import org.ale.openwatch.R;
 import android.app.AlertDialog;
 import android.content.*;
 import android.net.Uri;
@@ -167,7 +168,7 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
                 dialog.dismiss();
                 OWServerObject server_obj = OWServerObject.objects(c, OWServerObject.class).get(ow_server_obj_id);
                 Share.showShareDialogWithInfo(c, getString(R.string.share_dialog_photo_button), server_obj.getTitle(getApplicationContext()), OWUtils.urlForOWServerObject(server_obj, getApplicationContext()));
-                OWServiceRequests.increaseHitCount(getApplicationContext(), server_obj.getServerId(getApplicationContext()), ow_server_obj_id, server_obj.getContentType(getApplicationContext()), server_obj.getMediaType(getApplicationContext()), Constants.HIT_TYPE.CLICK);
+                OWServiceRequests.increaseHitCount(getApplicationContext(), server_obj.getServerId(getApplicationContext()), ow_server_obj_id, server_obj.getContentType(getApplicationContext()), Constants.HIT_TYPE.CLICK);
                 OWPhotoReviewActivity.this.finish();
             }
         });

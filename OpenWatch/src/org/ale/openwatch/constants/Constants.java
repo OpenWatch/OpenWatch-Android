@@ -53,11 +53,11 @@ public class Constants {
 
 
     // For view tag
-	public static enum CONTENT_TYPE { MEDIA_OBJECT, STORY, INVESTIGATION, MISSION };
-	// for fileUtils and OWServiceRequests
-	public static enum MEDIA_TYPE { VIDEO, PHOTO, AUDIO };
-	public static HashMap<MEDIA_TYPE, String> API_ENDPOINT_BY_MEDIA_TYPE = new HashMap<MEDIA_TYPE, String>() {{put(MEDIA_TYPE.VIDEO, "v"); put(MEDIA_TYPE.PHOTO, "p"); put(MEDIA_TYPE.AUDIO, "a"); }};
-	public static HashMap<CONTENT_TYPE, String> API_ENDPOINT_BY_CONTENT_TYPE = new HashMap<CONTENT_TYPE, String>() {{ put(CONTENT_TYPE.MISSION, "mission"); put(CONTENT_TYPE.INVESTIGATION, "i"); put(CONTENT_TYPE.STORY, "s"); }};
+	public static enum CONTENT_TYPE { VIDEO, PHOTO, AUDIO, STORY, INVESTIGATION, MISSION };
+	// for fileUtils and OWServiceRequests. TODO Delete following
+	//public static enum MEDIA_TYPE { VIDEO, PHOTO, AUDIO };
+	//public static HashMap<MEDIA_TYPE, String> API_ENDPOINT_BY_MEDIA_TYPE = new HashMap<MEDIA_TYPE, String>() {{put(MEDIA_TYPE.VIDEO, "v"); put(MEDIA_TYPE.PHOTO, "p"); put(MEDIA_TYPE.AUDIO, "a"); }};
+	public static HashMap<CONTENT_TYPE, String> API_ENDPOINT_BY_CONTENT_TYPE = new HashMap<CONTENT_TYPE, String>() {{ put(CONTENT_TYPE.VIDEO, "v"); put(CONTENT_TYPE.PHOTO, "p"); put(CONTENT_TYPE.AUDIO, "a");put(CONTENT_TYPE.MISSION, "mission"); put(CONTENT_TYPE.INVESTIGATION, "i"); put(CONTENT_TYPE.STORY, "s"); }};
 	public static final String OW_CONTENT_TYPE = "owcontent_type";
 	
 	// Date Formatter for OW server time

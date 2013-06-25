@@ -76,7 +76,7 @@ public class OWMediaSyncer {
         @Override
         public void run() {
             if(object != null){
-                Log.i(TAG, String.format("Syncing %s with id %d", object.getMediaType(c).toString(), ((Model)object).getId()));
+                Log.i(TAG, String.format("Syncing %s with id %d", object.getContentType(c).toString(), ((Model)object).getId()));
                 OWServiceRequests.getOWServerObjectMeta(c, object, "", get_handler);
             }
 
@@ -102,8 +102,8 @@ public class OWMediaSyncer {
                     broadcastMessage(c, Constants.OW_SYNC_STATUS_BEGIN_BULK);
                 if (response.has("id") && !response.has("media_url")) {
                     // send binary media
-                    Log.i(TAG, String.format("sending %s media with id %d", object.getMediaType(c).toString(), ((Model)object).getId()));
-                    if(object.getMediaType(c) == Constants.MEDIA_TYPE.VIDEO){
+                    Log.i(TAG, String.format("sending %s media with id %d", object.getContentType(c).toString(), ((Model)object).getId()));
+                    if(object.getContentType(c) == Constants.CONTENT_TYPE.VIDEO){
                         Log.i(TAG, "Object is type Video");
                         new Thread(){
                             public void run(){
@@ -119,19 +119,19 @@ public class OWMediaSyncer {
                         OWServiceRequests.sendOWMobileGeneratedObjectMedia(c, object, mediaSyncRequestCallback);
                     }
                 }else if (response.has("id") && response.has("media_url")) {
-                    if(object.getMediaType(c) == Constants.MEDIA_TYPE.VIDEO){
+                    if(object.getContentType(c) == Constants.CONTENT_TYPE.VIDEO){
                         // server has media_url. if it's not hq, send hq. if it is, set local recording as synced
                         try {
                             if(response.getString("media_url").contains(Constants.OW_HQ_FILENAME)){
                                 // hq is already synced
-                                Log.i(TAG, String.format("%s with id %d is already synced. marking local as such", object.getMediaType(c).toString(), ((Model)object).getId()));
+                                Log.i(TAG, String.format("%s with id %d is already synced. marking local as such", object.getContentType(c).toString(), ((Model)object).getId()));
                                 object.setSynced(c, true);
                             }else{
-                                Log.i(TAG, String.format("%s with id %d has server-side media_url (%s), but does not appear to be hq. sending hq", object.getMediaType(c).toString(), ((Model)object).getId(), response.getString("media_url")));
+                                Log.i(TAG, String.format("%s with id %d has server-side media_url (%s), but does not appear to be hq. sending hq", object.getContentType(c).toString(), ((Model)object).getId(), response.getString("media_url")));
                                 // non hq synced
                                 new Thread(){
                                     public void run(){
-                                        Log.i(TAG, String.format("sending %s hq media with id %d", object.getMediaType(c).toString(), ((Model)object).getId()));
+                                        Log.i(TAG, String.format("sending %s hq media with id %d", object.getContentType(c).toString(), ((Model)object).getId()));
                                         SharedPreferences prefs = c.getSharedPreferences(Constants.PROFILE_PREFS, c.MODE_PRIVATE);
                                         String public_upload_token = prefs.getString(Constants.PUB_TOKEN, "");
                                         OWMediaRequests.safeSendHQFile(c, public_upload_token, object.getUUID(c), object.getMediaFilepath(c), ((Model)object).getId(), mediaSyncRequestCallback);
@@ -142,7 +142,7 @@ public class OWMediaSyncer {
                             e.printStackTrace();
                         }
                     }else{ // object is not a video, but has media_url set on server
-                        Log.i(TAG, String.format("%s with id %d has server-side media_url. mark synced", object.getMediaType(c).toString(), ((Model)object).getId()));
+                        Log.i(TAG, String.format("%s with id %d has server-side media_url. mark synced", object.getContentType(c).toString(), ((Model)object).getId()));
                         object.setSynced(c, true);
                         markTaskComplete(c);
                     }
@@ -154,9 +154,9 @@ public class OWMediaSyncer {
                 e.printStackTrace();
                 Log.i(TAG+"getRecordingFailed", String.format("message: %s . cause: %s",e.getMessage(),e.getCause()));
                 if(e.getMessage() != null && e.getMessage().compareTo("NOT FOUND") == 0){
-                    Log.i(TAG, String.format("%s with id %d does not exist server-side. creating now", object.getMediaType(c).toString(), ((Model)object).getId()));
+                    Log.i(TAG, String.format("%s with id %d does not exist server-side. creating now", object.getContentType(c).toString(), ((Model)object).getId()));
                     broadcastMessage(c, Constants.OW_SYNC_STATUS_BEGIN_BULK);
-                    if(object.getMediaType(c) == Constants.MEDIA_TYPE.VIDEO){
+                    if(object.getContentType(c) == Constants.CONTENT_TYPE.VIDEO){
                         new Thread(){
                             public void run(){
                                 Log.i(TAG, "uploading video via media server signals");

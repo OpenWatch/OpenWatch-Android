@@ -146,7 +146,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
                 dialog.dismiss();
                 OWServerObject server_obj = OWServerObject.objects(c, OWServerObject.class).get(model_id);
                 Share.showShareDialogWithInfo(c, getString(R.string.share_video), server_obj.getTitle(getApplicationContext()), OWUtils.urlForOWServerObject(server_obj, getApplicationContext()));
-                OWServiceRequests.increaseHitCount(getApplicationContext(), server_obj.getServerId(getApplicationContext()), model_id, server_obj.getContentType(getApplicationContext()), server_obj.getMediaType(getApplicationContext()), Constants.HIT_TYPE.CLICK);
+                OWServiceRequests.increaseHitCount(getApplicationContext(), server_obj.getServerId(getApplicationContext()), model_id, server_obj.getContentType(getApplicationContext()), Constants.HIT_TYPE.CLICK);
                 WhatHappenedActivity.this.finish();
             }
         });

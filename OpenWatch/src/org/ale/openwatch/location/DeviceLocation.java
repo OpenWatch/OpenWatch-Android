@@ -201,7 +201,7 @@ public class DeviceLocation {
                 Object child = serverObject.getChildObject(app_context);
                 if (location != null) {
                     Log.i(TAG, "gotLocation");
-                    if(serverObject.getMediaType(app_context) == Constants.MEDIA_TYPE.VIDEO){
+                    if(serverObject.getContentType(app_context) == Constants.CONTENT_TYPE.VIDEO){
                         if(isStart){
                             ((OWVideoRecording)child).begin_lat.set(location.getLatitude());
                             ((OWVideoRecording)child).begin_lon.set(location.getLongitude());
@@ -223,7 +223,7 @@ public class DeviceLocation {
                     // server_id has been retrieved. If so, send another updateMetadata
                     // request to ensure geo data available
                     ((Model) child).save(app_context);
-                    if(serverObject.getMediaType(app_context) == Constants.MEDIA_TYPE.VIDEO){
+                    if(serverObject.getContentType(app_context) == Constants.CONTENT_TYPE.VIDEO){
                         SharedPreferences profile = app_context.getSharedPreferences(Constants.PROFILE_PREFS, 0);
                         OWMediaRequests.updateMeta(app_context, profile.getString(Constants.PUB_TOKEN, ""), (OWVideoRecording)child);
                     }else{

@@ -23,7 +23,6 @@ import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
 import org.ale.openwatch.constants.Constants.CONTENT_TYPE;
 import org.ale.openwatch.constants.Constants.HIT_TYPE;
-import org.ale.openwatch.constants.Constants.MEDIA_TYPE;
 import org.ale.openwatch.constants.Constants.OWFeedType;
 import org.ale.openwatch.contentprovider.OWContentProvider;
 import org.ale.openwatch.location.DeviceLocation;
@@ -62,7 +61,7 @@ public class OWServiceRequests {
 	}
 	
 	
-	public static void increaseHitCount(final Context app_context, int server_id, final int media_obj_id, final CONTENT_TYPE content_type, final MEDIA_TYPE media_type, final HIT_TYPE hit_type){
+	public static void increaseHitCount(final Context app_context, int server_id, final int media_obj_id, final CONTENT_TYPE content_type, final HIT_TYPE hit_type){
 		final String METHOD = "increaseHitCount";
 		JsonHttpResponseHandler post_handler = new JsonHttpResponseHandler(){
 			@Override
@@ -94,10 +93,7 @@ public class OWServiceRequests {
 		JSONObject params = new JSONObject();
 		try {
 			params.put(Constants.OW_HIT_SERVER_ID, server_id);
-			if(content_type == CONTENT_TYPE.MEDIA_OBJECT)
-				params.put(Constants.OW_HIT_MEDIA_TYPE, media_type.toString().toLowerCase());
-			else
-				params.put(Constants.OW_HIT_MEDIA_TYPE, content_type.toString().toLowerCase());
+			params.put(Constants.OW_HIT_MEDIA_TYPE, content_type.toString().toLowerCase());
 			params.put(Constants.OW_HIT_TYPE, hit_type.toString().toLowerCase());
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -331,7 +327,7 @@ public class OWServiceRequests {
 					if(json_obj.has("type")){
 						if(json_obj.getString("type").compareTo("video") == 0){
                             //obj_start_time = System.currentTimeMillis();
-							OWVideoRecording.createOrUpdateOWRecordingWithJson(c, json_obj, OWFeed.getFeedFromString(c, feed_name));
+							OWVideoRecording.createOrUpdateOWRecordingWithJson(c, json_obj, OWFeed.getFeedFromString(c, feed_name), adapter);
                             //Log.i("Benchamrk", String.format("createdOrUpdated video in %d ms", System.currentTimeMillis() - obj_start_time));
                         }
 						else if(json_obj.getString("type").compareTo("story") == 0){
@@ -354,7 +350,7 @@ public class OWServiceRequests {
                         }else if(json_obj.getString("type").compareTo("mission") == 0){
                             OWMission.createOrUpdateOWMissionWithJson(c, json_obj, OWFeed.getFeedFromString(c, feed_name));
                         }
-						
+
 					}
 				}
 				adapter.commitTransaction();
@@ -464,11 +460,11 @@ public class OWServiceRequests {
 		};
 		
 		AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
-		Log.i(TAG, String.format("Commencing Create OWServerObject: %s with json: %s", endpointForMediaType(object.getMediaType(app_context)), object.toJsonObject(app_context) ));
+		Log.i(TAG, String.format("Commencing Create OWServerObject: %s with json: %s", endpointForContentType(object.getContentType(app_context)), object.toJsonObject(app_context) ));
 		//Log.i(TAG, object.getType().toString());
 		//Log.i(TAG, object.toJsonObject(app_context).toString());
 		//Log.i(TAG, Utils.JSONObjectToStringEntity(object.toJsonObject(app_context)).toString());
-		http_client.post(app_context, endpointForMediaType(object.getMediaType(app_context)) , Utils
+		http_client.post(app_context, endpointForContentType(object.getContentType(app_context)) , Utils
 				.JSONObjectToStringEntity(object.toJsonObject(app_context)), "application/json", post_handler);
 	}
 
@@ -531,14 +527,15 @@ public class OWServiceRequests {
     }
 	
 	private static String instanceEndpointForOWMediaObject(Context c, OWServerObjectInterface object){
-		if(object.getMediaType(c) != null)
-			return Constants.OW_API_URL + Constants.API_ENDPOINT_BY_MEDIA_TYPE.get(object.getMediaType(c)) + "/" + object.getUUID(c) +"/";
+		CONTENT_TYPE contentType = object.getContentType(c);
+        if(contentType == CONTENT_TYPE.VIDEO || contentType == CONTENT_TYPE.AUDIO || contentType == CONTENT_TYPE.PHOTO)
+			return Constants.OW_API_URL + Constants.API_ENDPOINT_BY_CONTENT_TYPE.get(contentType) + "/" + object.getUUID(c) +"/";
 		else
-			return Constants.OW_API_URL + Constants.API_ENDPOINT_BY_CONTENT_TYPE.get(object.getContentType(c)) + "/" + object.getServerId(c) +"/";
+			return Constants.OW_API_URL + Constants.API_ENDPOINT_BY_CONTENT_TYPE.get(contentType) + "/" + object.getServerId(c) +"/";
 	}
 	
-	private static String endpointForMediaType(MEDIA_TYPE type){
-		return Constants.OW_API_URL + Constants.API_ENDPOINT_BY_MEDIA_TYPE.get(type) + "/";
+	private static String endpointForContentType(CONTENT_TYPE type){
+		return Constants.OW_API_URL + Constants.API_ENDPOINT_BY_CONTENT_TYPE.get(type) + "/";
 	}
 
     public static void syncOWServerObject(final Context app_context,

@@ -2,11 +2,11 @@
 package org.ale.openwatch.model;
 
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.util.Log;
-import com.orm.androrm.Filter;
-import com.orm.androrm.Model;
-import com.orm.androrm.QuerySet;
+import com.orm.androrm.*;
 import com.orm.androrm.field.CharField;
 import com.orm.androrm.field.ForeignKeyField;
 import com.orm.androrm.field.IntegerField;
@@ -16,7 +16,6 @@ import com.orm.androrm.migration.Migrator;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
 import org.ale.openwatch.constants.Constants.CONTENT_TYPE;
-import org.ale.openwatch.constants.Constants.MEDIA_TYPE;
 import org.ale.openwatch.constants.Constants.OWFeedType;
 import org.ale.openwatch.contentprovider.OWContentProvider;
 import org.ale.openwatch.http.OWServiceRequests;
@@ -108,11 +107,16 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
 		
 		return did_it;
 	}
-	
+
+    public boolean saveAndSetEdited(Context context) {
+        setLastEdited(context, Constants.utc_formatter.format(new Date()));
+        return save(context);
+    }
+
 	@Override
 	public boolean save(Context context) {
 		context = context.getApplicationContext();
-		setLastEdited(context, Constants.utc_formatter.format(new Date()));
+		//setLastEdited(context, Constants.utc_formatter.format(new Date()));
 		boolean super_save =  super.save(context);
 		//Log.i(TAG, String.format("setLastEdited: %s", getLastEdited(context)));
 		// notify the ContentProvider that the dataset has changed
@@ -143,7 +147,64 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
 		filter.is(DBConstants.TAG_TABLE_NAME, tag_name);
 		return (tags.get(context, this).filter(filter).count() > 0);
 	}
-	
+
+    public static void createOrUpdateWithJson(Context c, JSONObject json, OWFeed feed, DatabaseAdapter adapter) throws JSONException {
+        int feedId = feed.getId();
+        Where where = new Where();
+        where.and(DBConstants.SERVER_ID, json.getInt(Constants.OW_SERVER_ID));
+        ContentValues serverObjectValues = new ContentValues();
+        if(json.has(Constants.OW_TITLE))
+            serverObjectValues.put(DBConstants.TITLE, json.getString(Constants.OW_TITLE));
+        if(json.has(Constants.OW_DESCRIPTION))
+            serverObjectValues.put(DBConstants.DESCRIPTION,  json.getString(Constants.OW_DESCRIPTION));
+        if(json.has(Constants.OW_VIEWS))
+            serverObjectValues.put(DBConstants.VIEWS,  json.getInt(Constants.OW_VIEWS));
+        if(json.has(Constants.OW_CLICKS))
+            serverObjectValues.put(DBConstants.ACTIONS, json.getInt(Constants.OW_CLICKS));
+        if(json.has(Constants.OW_SERVER_ID))
+            serverObjectValues.put(DBConstants.SERVER_ID, json.getInt(Constants.OW_SERVER_ID));
+        if(json.has(Constants.OW_LAST_EDITED))
+            serverObjectValues.put(DBConstants.LAST_EDITED, json.getString(Constants.OW_LAST_EDITED));
+        if(json.has(Constants.OW_FIRST_POSTED))
+            serverObjectValues.put(DBConstants.FIRST_POSTED, json.getString(Constants.OW_FIRST_POSTED));
+        if(json.has(DBConstants.MEDIA_OBJECT_METRO_CODE))
+            serverObjectValues.put(DBConstants.MEDIA_OBJECT_METRO_CODE, json.getString(DBConstants.MEDIA_OBJECT_METRO_CODE));
+
+        if(json.has(Constants.OW_THUMB_URL) && json.getString(Constants.OW_THUMB_URL).compareTo(Constants.OW_NO_VALUE)!= 0)
+            serverObjectValues.put(DBConstants.THUMBNAIL_URL, json.getString(Constants.OW_THUMB_URL));
+
+        //investigations are weird
+        if(json.has("logo"))
+            serverObjectValues.put(DBConstants.THUMBNAIL_URL, json.getString("logo"));
+
+        int userId = -1;
+        if(json.has(Constants.OW_USER)){
+            JSONObject jsonUser = json.getJSONObject(Constants.OW_USER);
+            ContentValues userValues = new ContentValues();
+            Where userWhere = new Where();
+            userWhere.and(DBConstants.USER_SERVER_ID, jsonUser.getInt(Constants.OW_SERVER_ID));
+
+            if(jsonUser.has(Constants.OW_USERNAME))
+                userValues.put(DBConstants.USERNAME, jsonUser.getString(Constants.OW_USERNAME));
+            if(jsonUser.has(Constants.OW_SERVER_ID))
+                userValues.put(DBConstants.SERVER_ID, jsonUser.getInt(Constants.OW_SERVER_ID));
+            if(jsonUser.has(Constants.OW_THUMB_URL)){
+                userValues.put(DBConstants.THUMBNAIL_URL, jsonUser.getString(Constants.OW_THUMB_URL));
+                serverObjectValues.put("user_thumbnail_url", jsonUser.getString(Constants.OW_THUMB_URL));
+                //user_thumbnail_url.set(jsonUser.getString(Constants.OW_THUMB_URL));
+            }
+            adapter.doInsertOrUpdate(DBConstants.USER_TABLENAME, userValues, userWhere);
+            Cursor cursor = adapter.query(String.format("SELECT _id FROM owuser WHERE server_id = %d",jsonUser.getInt(Constants.OW_SERVER_ID)));
+            if(cursor != null && cursor.moveToFirst())
+                userId = cursor.getInt(0);
+        }
+
+        if(userId != -1)
+            serverObjectValues.put("user", userId);
+
+        // Skip saving tags for now
+        adapter.doInsertOrUpdate(DBConstants.MEDIA_OBJECT_TABLENAME, serverObjectValues, where);
+    }
 
 	@Override
 	public void updateWithJson(Context app_context, JSONObject json) {
@@ -390,7 +451,7 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
 
 	@Override
 	public String getUUID(Context c) {
-		MEDIA_TYPE type = getMediaType(c);
+		CONTENT_TYPE type = getContentType(c);
 		switch(type){
 		case VIDEO:
 			return this.video_recording.get(c).getUUID(c);
@@ -439,18 +500,6 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
 	}
 
 	@Override
-	public MEDIA_TYPE getMediaType(Context c) {
-		if(this.video_recording.get(c) != null)
-			return MEDIA_TYPE.VIDEO;
-		else if(this.audio.get(c) != null)
-			return MEDIA_TYPE.AUDIO;
-		else if(this.photo.get(c) != null)
-			return MEDIA_TYPE.PHOTO;
-		Log.e(TAG, "Unable to determine type for OWServerObject " + String.valueOf(this.getId()));
-		return null;
-	}
-
-	@Override
 	public void setMediaFilepath(Context c, String filepath) {
 
 		// TODO Auto-generated method stub
@@ -470,8 +519,12 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
 
 	@Override
 	public CONTENT_TYPE getContentType(Context c) {
-		if(getMediaType(c) != null)
-			return CONTENT_TYPE.MEDIA_OBJECT;
+		if(this.video_recording.get(c) != null)
+			return CONTENT_TYPE.VIDEO;
+        else if(this.audio.get(c) != null)
+            return CONTENT_TYPE.AUDIO;
+        else if(this.photo.get(c) != null)
+            return CONTENT_TYPE.PHOTO;
 		else if(this.investigation.get(c) != null)
 			return CONTENT_TYPE.INVESTIGATION;
 		else if(this.story.get(c) != null)

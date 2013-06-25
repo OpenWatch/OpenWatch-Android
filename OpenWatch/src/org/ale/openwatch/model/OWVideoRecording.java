@@ -1,12 +1,10 @@
 package org.ale.openwatch.model;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
-import com.orm.androrm.DatabaseAdapter;
-import com.orm.androrm.Filter;
-import com.orm.androrm.Model;
-import com.orm.androrm.QuerySet;
+import com.orm.androrm.*;
 import com.orm.androrm.field.CharField;
 import com.orm.androrm.field.DoubleField;
 import com.orm.androrm.field.ForeignKeyField;
@@ -14,7 +12,6 @@ import com.orm.androrm.field.ForeignKeyField;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
 import org.ale.openwatch.constants.Constants.CONTENT_TYPE;
-import org.ale.openwatch.constants.Constants.MEDIA_TYPE;
 import org.ale.openwatch.contentprovider.OWContentProvider;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -129,17 +126,86 @@ public class OWVideoRecording extends Model implements OWServerObjectInterface{
 	}
 	
 
-	public static OWVideoRecording createOrUpdateOWRecordingWithJson(Context app_context, JSONObject json_obj, OWFeed feed) throws JSONException{
-		OWVideoRecording rec = createOrUpdateOWRecordingWithJson(app_context, json_obj);
+	public static OWVideoRecording createOrUpdateOWRecordingWithJson(Context app_context, JSONObject json_obj, OWFeed feed, DatabaseAdapter adapter) throws JSONException{
+		//OWVideoRecording rec = createOrUpdateOWRecordingWithJson(app_context, json_obj);
+        // Create OWServerObject record
+        OWServerObject.createOrUpdateWithJson(app_context, json_obj, feed, adapter);
+
+        // Parse video json for insert into video table
+        int feedId = feed.getId();
+        Where where = new Where();
+        where.and(DBConstants.RECORDINGS_TABLE_UUID, json_obj.getString(Constants.OW_UUID));
+        ContentValues values = new ContentValues();
+        if(json_obj.has(Constants.OW_CREATION_TIME))
+            values.put(DBConstants.RECORDINGS_TABLE_CREATION_TIME, json_obj.getString(Constants.OW_CREATION_TIME));
+
+        if(json_obj.has("media_url")){
+            values.put("media_url", json_obj.getString("media_url"));
+        }
+
+        if(json_obj.has("start_lat") && json_obj.has("start_lon")){
+            values.put("begin_lat", json_obj.getString("start_lat"));
+            values.put("begin_lon", json_obj.getString("start_lon"));
+            //Log.i(TAG, String.format("got start_location. Lat: %f Lon: %f", begin_lat.get(), begin_lon.get()));
+        }
+        if(json_obj.has("end_lat") && json_obj.has("end_lon") ){
+            values.put("end_lat", json_obj.getString("end_lat"));
+            values.put("end_lon", json_obj.getString("end_lon"));
+            //Log.i(TAG, String.format("got end_location. Lat: %f Lon: %f", end_lat.get(), end_lon.get()));
+        }
+
+        if(json_obj.has(Constants.OW_UUID))
+            values.put("uuid", json_obj.getString("uuid"));
+
+        // Insert video row
+        adapter.doInsertOrUpdate(DBConstants.RECORDINGS_TABLENAME, values, where);
+
+        // Associate OWServerObject with this video
+        int videoId = 0;
+        Cursor cursor = adapter.query(String.format("SELECT _id FROM %s WHERE uuid =\"%s\"", DBConstants.RECORDINGS_TABLENAME, json_obj.getString(Constants.OW_UUID)));
+        if(cursor != null && cursor.moveToFirst()){
+            videoId = cursor.getInt(0);
+        }
+        cursor.close();
+
 		// add recording to feed if not null
+        cursor = adapter.query(String.format("SELECT _id FROM %s WHERE server_id =\"%s\" and video_recording IS NOT NULL", DBConstants.MEDIA_OBJECT_TABLENAME, json_obj.getString(Constants.OW_SERVER_ID)));
+        if(cursor != null && cursor.moveToFirst()){
+            int serverObjectId = cursor.getInt(0);
+            if(feed != null){
+                // Associate OWServerObject with feed
+                values = new ContentValues();
+                values.put("owserverobject", serverObjectId);
+                values.put("owfeed", feedId);
+                Where feedWhere = new Where();
+                feedWhere.and("owserverobject", serverObjectId);
+                feedWhere.and("owfeed", feedId);
+                adapter.doInsertOrUpdate("owfeed_owserverobject", values, feedWhere);
+            }
+            // Associate OWServerObject with video
+            values = new ContentValues();
+            values.put("media_object", serverObjectId);
+            adapter.doInsertOrUpdate(DBConstants.RECORDINGS_TABLENAME, values, where);
+
+            // Associate OWServerObject with video
+            values = new ContentValues();
+            values.put(DBConstants.MEDIA_OBJECT_VIDEO, videoId);
+            Where serverObjectWhere = new Where();
+            serverObjectWhere.and(DBConstants.ID, serverObjectId);
+            adapter.doInsertOrUpdate(DBConstants.MEDIA_OBJECT_TABLENAME, values, serverObjectWhere);
+        }
+        cursor.close();
+
+        /*
 		if(feed != null){
 			//Log.i(TAG, String.format("Adding recording %s to feed %s", rec.uuid.get(), feed.name.get()));
 			rec.addToFeed(app_context, feed);
 			rec.save(app_context);
 			//Log.i(TAG, String.format("Feed %s now has %d items", feed.name.get(), feed.video_recordings.get(app_context, feed).count()) );
 		}
-		
-		return rec;
+		*/
+		return null;
+		//return rec;
 	}
 	
 
@@ -414,10 +480,6 @@ public class OWVideoRecording extends Model implements OWServerObjectInterface{
 		return this.end_lon.get();
 	}
 
-	@Override
-	public MEDIA_TYPE getMediaType(Context c) {
-		return MEDIA_TYPE.VIDEO;
-	}
 
 	@Override
 	public void setMediaFilepath(Context c, String filepath) {
@@ -434,7 +496,7 @@ public class OWVideoRecording extends Model implements OWServerObjectInterface{
 
 	@Override
 	public CONTENT_TYPE getContentType(Context c) {
-		return CONTENT_TYPE.MEDIA_OBJECT;
+		return CONTENT_TYPE.VIDEO;
 	}
 
 }

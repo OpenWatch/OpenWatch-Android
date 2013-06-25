@@ -4,7 +4,6 @@ import android.content.Context;
 import com.orm.androrm.QuerySet;
 
 import org.ale.openwatch.constants.Constants.CONTENT_TYPE;
-import org.ale.openwatch.constants.Constants.MEDIA_TYPE;
 import org.json.JSONObject;
 
 public interface OWServerObjectInterface {
@@ -45,7 +44,6 @@ public interface OWServerObjectInterface {
 	public void setLon(Context c, double lon);
 	public double getLon(Context c);
 	
-	public MEDIA_TYPE getMediaType(Context c);
 	public CONTENT_TYPE getContentType(Context c);
 	
 	public void setMediaFilepath(Context c, String filepath);

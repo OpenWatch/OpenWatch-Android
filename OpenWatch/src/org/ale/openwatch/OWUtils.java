@@ -10,20 +10,18 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.*;
 
 import java.util.List;
 import java.util.UUID;
 
-import android.widget.MediaController;
-import android.widget.ProgressBar;
-import android.widget.VideoView;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.database.DatabaseManager;
 import org.ale.openwatch.http.OWServiceRequests;
@@ -31,6 +29,7 @@ import org.ale.openwatch.model.OWServerObject;
 import org.ale.openwatch.model.OWUser;
 
 public class OWUtils {
+    private static final String TAG = "OWUtils";
 	
 	public static String generateRecordingIdentifier()
 	{
@@ -64,11 +63,10 @@ public class OWUtils {
 	
 	public static String urlForOWServerObject(OWServerObject obj, Context c){
 		String url = Constants.OW_URL;
-		if(obj.getMediaType(c) != null)
-			url += Constants.API_ENDPOINT_BY_MEDIA_TYPE.get(obj.getMediaType(c));
-		else if(obj.getContentType(c) != null)
+		if(obj.getContentType(c) != null)
 			url += Constants.API_ENDPOINT_BY_CONTENT_TYPE.get(obj.getContentType(c));
-		
+		else
+        Log.e(TAG, String.format("Unable to determine contentType for owserverobject %d", obj.getId()));
 		url += "/" + String.valueOf(obj.getServerId(c)) + "/";
 		return url;
 	}
@@ -230,6 +228,23 @@ public class OWUtils {
             }
         });
         //video_view.start();
+    }
+
+    public static void setReadingFontOnChildren(ViewGroup container){
+        Typeface font = Typeface.createFromAsset(container.getContext().getAssets(), "Palatino.ttc");
+        View this_view;
+        for (int x = 0; x < container.getChildCount(); x++) {
+            this_view = container.getChildAt(x);
+            if(this_view.getTag() != null){
+                if(this_view.getTag().toString().compareTo("custom_font") == 0){
+                    ((TextView)this_view).setTypeface(font, Typeface.NORMAL);
+                }else if(this_view.getTag().toString().compareTo("custom_font_bold") == 0){
+                    ((TextView)this_view).setTypeface(font, Typeface.BOLD);
+                }else if(this_view.getTag().toString().compareTo("custom_font_italic") == 0){
+                    ((TextView)this_view).setTypeface(font, Typeface.ITALIC);
+                }
+            }
+        }
     }
 
 }

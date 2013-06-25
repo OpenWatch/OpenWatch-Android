@@ -12,7 +12,6 @@ import com.orm.androrm.field.DoubleField;
 import com.orm.androrm.field.ForeignKeyField;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.Constants.CONTENT_TYPE;
-import org.ale.openwatch.constants.Constants.MEDIA_TYPE;
 import org.ale.openwatch.constants.DBConstants;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -321,11 +320,6 @@ public class OWMission extends Model implements OWServerObjectInterface{
 		return 0;
 	}
 
-	@Override
-	public MEDIA_TYPE getMediaType(Context c) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public void setMediaFilepath(Context c, String filepath) {
@@ -341,7 +335,7 @@ public class OWMission extends Model implements OWServerObjectInterface{
 
 	@Override
 	public CONTENT_TYPE getContentType(Context c) {
-		return CONTENT_TYPE.STORY;
+		return CONTENT_TYPE.MISSION;
 	}
 
 }

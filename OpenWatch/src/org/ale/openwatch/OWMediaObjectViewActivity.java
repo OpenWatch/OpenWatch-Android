@@ -38,7 +38,6 @@ import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
 import org.ale.openwatch.constants.Constants.CONTENT_TYPE;
 import org.ale.openwatch.constants.Constants.HIT_TYPE;
-import org.ale.openwatch.constants.Constants.MEDIA_TYPE;
 import org.ale.openwatch.http.OWServiceRequests;
 import org.ale.openwatch.model.OWServerObject;
 import org.ale.openwatch.model.OWServerObjectInterface;
@@ -68,8 +67,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
     boolean is_resumed = false;
 	
 	CONTENT_TYPE content_type;
-	MEDIA_TYPE media_type;
-	
+
 	LayoutInflater inflater;
 
 	@Override
@@ -93,7 +91,6 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 			model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
 			OWServerObject media_obj = OWServerObject.objects(this, OWServerObject.class).get(model_id);
 			content_type = media_obj.getContentType(getApplicationContext());
-			media_type = media_obj.getMediaType(getApplicationContext());
 			server_id = media_obj.server_id.get();
 			setupMediaViewForOWServerObject(media_obj);
 
@@ -120,7 +117,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 			}
 			*/
 			if(server_id > 0)
-				OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, media_obj.getContentType(getApplicationContext()), media_obj.getMediaType(getApplicationContext()), HIT_TYPE.VIEW);
+				OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, media_obj.getContentType(getApplicationContext()),  HIT_TYPE.VIEW);
 			// Log.i(TAG, "got model_id : " + String.valueOf(model_id));
 		} catch (Exception e) {
 			Log.e(TAG, "Could not load Intent extras");
@@ -196,7 +193,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 			if(server_id > 0){
                 OWServerObject server_obj = OWServerObject.objects(this, OWServerObject.class).get(model_id);
 				Share.showShareDialogWithInfo(this, getString(R.string.share_media_dialog_title), server_obj.getTitle(getApplicationContext()), OWUtils.urlForOWServerObject(server_obj, getApplicationContext()));
-				OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, content_type, media_type, HIT_TYPE.CLICK);
+				OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, content_type, HIT_TYPE.CLICK);
 			}
 			break;
         /*
@@ -484,7 +481,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 	public void setupMediaViewForOWServerObject(OWServerObject object){
 		String media_path = "";
         Log.i(TAG, String.format("setupMediaView. lat:%f, lon:%f", object.getLat(getApplicationContext()), object.getLon(getApplicationContext()) ));
-		switch(object.getMediaType(getApplicationContext())){
+		switch(object.getContentType(getApplicationContext())){
 		case VIDEO:
             if(!video_playing){
                 if( object.local_video_recording.get(getApplicationContext()) != null ){

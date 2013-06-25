@@ -318,7 +318,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
                         public void onClick(View v) {
                             dialog.dismiss();
                             Share.showShareDialogWithInfo(c, getString(R.string.share_video), server_object.getTitle(c), OWUtils.urlForOWServerObject(server_object, c));
-                            OWServiceRequests.increaseHitCount(c, server_object.getServerId(c), model_id, server_object.getContentType(c), server_object.getMediaType(c), Constants.HIT_TYPE.CLICK);
+                            OWServiceRequests.increaseHitCount(c, server_object.getServerId(c), model_id, server_object.getContentType(c), Constants.HIT_TYPE.CLICK);
                             getActivity().finish();
                         }
                     });
@@ -348,37 +348,28 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
         			//TODO: InvestigationViewActivity
         			i = new Intent(this.getActivity(), OWInvestigationViewActivity.class);
         			break;
-        		case MEDIA_OBJECT:
-                    if(server_object.getMediaType(getActivity().getApplicationContext()) == Constants.MEDIA_TYPE.VIDEO){
-                        // play video inline
-                        v.findViewById(R.id.playButton).setVisibility(View.GONE);
-                        LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
-                        //videoViewParent = (ViewGroup) v;
-                        videoViewParent = (ViewGroup) layoutInflater.inflate(R.layout.feed_video_view, (ViewGroup) v, true);
-                        videoView = (VideoView) videoViewParent.findViewById(R.id.videoView);
-                        if(Build.VERSION.SDK_INT >= 11)
-                            videoView.setAlpha(0);
-                        progressBar = (ProgressBar) videoViewParent.findViewById(R.id.videoProgress);
-                        progressBar.setVisibility(View.VISIBLE);
-                        /*
-                        videoViewParent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                            @Override
-                            public void onGlobalLayout() {
+        		case VIDEO:
+                    // play video inline
+                    v.findViewById(R.id.playButton).setVisibility(View.GONE);
+                    LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
+                    //videoViewParent = (ViewGroup) v;
+                    videoViewParent = (ViewGroup) layoutInflater.inflate(R.layout.feed_video_view, (ViewGroup) v, true);
+                    videoView = (VideoView) videoViewParent.findViewById(R.id.videoView);
+                    if(Build.VERSION.SDK_INT >= 11)
+                        videoView.setAlpha(0);
+                    progressBar = (ProgressBar) videoViewParent.findViewById(R.id.videoProgress);
+                    progressBar.setVisibility(View.VISIBLE);
 
-                                progressBar.setVisibility(View.VISIBLE);
-
-                            }
-                        });
-                        */
-
-                        Log.i(TAG, progressBar.toString());
-                        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)videoView.getLayoutParams();
-                        String url = ((OWVideoRecording) server_object.getChildObject(getActivity().getApplicationContext())).getMediaFilepath(getActivity().getApplicationContext());
-                        OWUtils.setupVideoView(getActivity(), v.findViewById(R.id.thumbnail), videoView, url, videoViewCallback, progressBar);
-                        videoViewListIndex = position;
-                    }else
-        			    i = new Intent(this.getActivity(), OWMediaObjectViewActivity.class);
+                    Log.i(TAG, progressBar.toString());
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)videoView.getLayoutParams();
+                    String url = ((OWVideoRecording) server_object.getChildObject(getActivity().getApplicationContext())).getMediaFilepath(getActivity().getApplicationContext());
+                    OWUtils.setupVideoView(getActivity(), v.findViewById(R.id.thumbnail), videoView, url, videoViewCallback, progressBar);
+                    videoViewListIndex = position;
         			break;
+                case AUDIO:
+                case PHOTO:
+                    i = new Intent(this.getActivity(), OWMediaObjectViewActivity.class);
+                    break;
                 case MISSION:
                     i = new Intent(this.getActivity(), OWMissionViewActivity.class);
         		}
@@ -439,8 +430,8 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 		static final String[] PROJECTION = new String[] {
 			DBConstants.ID,
 			DBConstants.RECORDINGS_TABLE_TITLE,
-			DBConstants.RECORDINGS_TABLE_VIEWS,
-			DBConstants.RECORDINGS_TABLE_ACTIONS,
+			DBConstants.VIEWS,
+			DBConstants.ACTIONS,
 			DBConstants.RECORDINGS_TABLE_THUMB_URL,
 			DBConstants.RECORDINGS_TABLE_USERNAME,
             DBConstants.MEDIA_OBJECT_STORY,

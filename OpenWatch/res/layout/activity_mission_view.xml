@@ -40,7 +40,8 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/missionImage"
                     android:padding="10dp"
-                    android:textSize="32sp"/>
+                    android:textSize="32sp"
+                    android:tag="custom_font_bold"/>
 
             <ImageView
                     android:id="@+id/userImage"
@@ -58,6 +59,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="22sp"
+                    android:fontFamily="sans-serif"
+                    android:textColor="#ffeb1d1d"
+                    android:textStyle="bold"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="30dp"
                     android:layout_toRightOf="@id/userImage"
@@ -70,7 +74,8 @@
                     android:textSize="22sp"
                     android:padding="10dp"
                     android:layout_below="@+id/userImage"
-                    android:layout_marginTop="10dp"/>
+                    android:layout_marginTop="10dp"
+                    android:tag="custom_font_bold"/>
 
             <Button
                     android:id="@+id/camcorderButton"

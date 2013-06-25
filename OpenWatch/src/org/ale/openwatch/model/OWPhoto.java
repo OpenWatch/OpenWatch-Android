@@ -1,10 +1,7 @@
 package org.ale.openwatch.model;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.util.Log;
 import com.orm.androrm.DatabaseAdapter;
 import com.orm.androrm.Model;
@@ -13,12 +10,9 @@ import com.orm.androrm.field.BooleanField;
 import com.orm.androrm.field.CharField;
 import com.orm.androrm.field.DoubleField;
 import com.orm.androrm.field.ForeignKeyField;
-
-import org.ale.openwatch.OWUtils;
 import org.ale.openwatch.constants.Constants;
-import org.ale.openwatch.constants.DBConstants;
 import org.ale.openwatch.constants.Constants.CONTENT_TYPE;
-import org.ale.openwatch.constants.Constants.MEDIA_TYPE;
+import org.ale.openwatch.constants.DBConstants;
 import org.ale.openwatch.file.FileUtils;
 import org.ale.openwatch.location.DeviceLocation;
 import org.json.JSONException;
@@ -184,10 +178,7 @@ public class OWPhoto extends Model implements OWServerObjectInterface{
 
 	}
 */
-	@Override
-	public MEDIA_TYPE getMediaType(Context c) {
-		return Constants.MEDIA_TYPE.PHOTO;
-	}
+
 	
 	public static OWPhoto createOrUpdateOWPhotoWithJson(Context app_context, JSONObject json_obj, OWFeed feed) throws JSONException{
 		OWPhoto photo = createOrUpdateOWPhotoWithJson(app_context, json_obj);
@@ -342,11 +333,11 @@ public class OWPhoto extends Model implements OWServerObjectInterface{
 
 	@Override
 	public CONTENT_TYPE getContentType(Context c) {
-		return CONTENT_TYPE.MEDIA_OBJECT;
+		return CONTENT_TYPE.PHOTO;
 	}
 
     public static OWPhoto initializeOWPhoto(Context c, String uuid){
-        File photo_location = FileUtils.prepareOutputLocation(c, MEDIA_TYPE.PHOTO, uuid, "photo", ".jpg");
+        File photo_location = FileUtils.prepareOutputLocation(c, CONTENT_TYPE.PHOTO, uuid, "photo", ".jpg");
         OWPhoto photo = new OWPhoto(c);
         photo.filepath.set(photo_location.getAbsolutePath());
         photo.directory.set(photo_location.getParentFile().getAbsolutePath());
@@ -355,7 +346,5 @@ public class OWPhoto extends Model implements OWServerObjectInterface{
         DeviceLocation.setOWServerObjectLocation(c, photo.media_object.get(c).getId(), false);
         return photo;
     }
-
-
 
 }

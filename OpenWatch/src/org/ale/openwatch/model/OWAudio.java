@@ -14,7 +14,6 @@ import com.orm.androrm.field.ForeignKeyField;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
 import org.ale.openwatch.constants.Constants.CONTENT_TYPE;
-import org.ale.openwatch.constants.Constants.MEDIA_TYPE;
 import org.ale.openwatch.contentprovider.OWContentProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -208,10 +207,6 @@ public class OWAudio extends Model implements OWServerObjectInterface{
 
 	} */
 
-	@Override
-	public MEDIA_TYPE getMediaType(Context c) {
-		return Constants.MEDIA_TYPE.AUDIO;
-	}
 
 	@Override
 	public void setTitle(Context c, String title) {
@@ -325,7 +320,7 @@ public class OWAudio extends Model implements OWServerObjectInterface{
 
 	@Override
 	public CONTENT_TYPE getContentType(Context c) {
-		return CONTENT_TYPE.MEDIA_OBJECT;
+		return CONTENT_TYPE.AUDIO;
 	}
 
 }
