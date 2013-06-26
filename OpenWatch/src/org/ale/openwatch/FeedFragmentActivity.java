@@ -41,7 +41,6 @@ import java.util.*;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.Constants.OWFeedType;
 import org.ale.openwatch.database.DatabaseManager;
-import org.ale.openwatch.feeds.MyFeedFragmentActivity;
 import org.ale.openwatch.feeds.RemoteFeedFragmentActivity;
 import org.ale.openwatch.http.OWServiceRequests;
 import org.ale.openwatch.model.OWTag;

@@ -74,7 +74,7 @@ public class OWContentProvider extends ContentProvider {
 	    mUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.LOCAL_RECORDINGS_TABLENAME, LOCAL_RECORDINGS);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.LOCAL_RECORDINGS_TABLENAME + "/#", LOCAL_RECORDING_ID);
-	    mUriMatcher.addURI(AUTHORITY, DBConstants.MEDIA_OBJECT_TABLENAME + "/user/#", MEDIA_OBJS_BY_USER);
+	    //mUriMatcher.addURI(AUTHORITY, DBConstants.MEDIA_OBJECT_TABLENAME + "/user/#", MEDIA_OBJS_BY_USER);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.MEDIA_OBJECT_TABLENAME + "/*", MEDIA_OBJS_BY_FEED);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.TAG_TABLENAME, TAGS);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.TAG_TABLENAME + "/#", TAG_ID);
@@ -153,7 +153,7 @@ public class OWContentProvider extends ContentProvider {
 			case MEDIA_OBJS_BY_USER:
 				//Log.i(TAG, "MediaObjs by user");
 				query = select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " WHERE " + DBConstants.MEDIA_OBJECT_USER + " = " + uri.getLastPathSegment() + " AND (" + DBConstants.MEDIA_OBJECT_VIDEO + " IS NOT NULL" + " OR " + DBConstants.MEDIA_OBJECT_AUDIO + " IS NOT NULL OR " + DBConstants.MEDIA_OBJECT_PHOTO + " IS NOT NULL )" ;
-				Log.i(TAG, query);
+				//Log.i(TAG, query);
 				result = adapter.open().query(query);
 				break;
 			case LOCAL_RECORDINGS:
@@ -169,6 +169,8 @@ public class OWContentProvider extends ContentProvider {
 				//Log.i("URI"+uri.getLastPathSegment(), "Query CP for Feed ");
 				int feed_id = -1;
 				//Log.i(TAG, "get feed _id query:" + " SELECT " + DBConstants.ID + " from owfeed where NAME = \"" + uri.getLastPathSegment() + "\"");
+                String queryString = "SELECT " + DBConstants.ID + "  from " + DBConstants.FEED_TABLENAME +" WHERE " + DBConstants.FEED_NAME+ "= \"" + uri.getLastPathSegment() + "\"";
+                Log.i(TAG, String.format("getFeed query: %s",queryString));
 				Cursor feed_cursor = adapter.open().query("SELECT " + DBConstants.ID + "  from " + DBConstants.FEED_TABLENAME +" WHERE " + DBConstants.FEED_NAME+ "= \"" + uri.getLastPathSegment() + "\""); // empty
 				if(feed_cursor.moveToFirst()){
 					feed_id = feed_cursor.getInt(0);
@@ -180,8 +182,10 @@ public class OWContentProvider extends ContentProvider {
 					return null;
 				}			
 				//Log.i(TAG, String.format("fetching feed id: %d", feed_id));
+
 				query = select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " JOIN " + DBConstants.FEED_MEDIA_OBJ_TABLENAME + " ON " + DBConstants.FEED_MEDIA_OBJ_TABLENAME+"."+DBConstants.MEDIA_OBJECT_TABLENAME + "=" + DBConstants.MEDIA_OBJECT_TABLENAME+"." + DBConstants.ID + " WHERE " + DBConstants.FEED_MEDIA_OBJ_TABLENAME + "." + DBConstants.FEED_TABLENAME + "=" + String.valueOf(feed_id);
 				//Log.i(TAG, "Query: " + query);
+                Log.i(TAG, String.format("getFeedItems query: %s",query));
 				result = adapter.open().query(query);
 				if(result == null)
 					Log.i(TAG, "Feed query was null!");

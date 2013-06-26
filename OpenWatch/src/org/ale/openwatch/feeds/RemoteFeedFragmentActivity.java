@@ -222,8 +222,11 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 	            	fetchNextFeedPage();
 	            }
         	}
+            /*
             if(feed.compareTo(Constants.OWFeedType.USER.toString().toLowerCase()) == 0)
                 checkUserState();
+
+             */
 
         }
         
@@ -463,10 +466,12 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 		@Override
 		public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
             Uri baseUri = null;
+            /*
             if(feed.compareTo(Constants.OWFeedType.USER.toString().toLowerCase()) == 0)
                 baseUri = OWContentProvider.getUserRecordingsUri(internal_user_id);
             else
-                baseUri = OWContentProvider.getFeedUri(feed);
+            */
+            baseUri = OWContentProvider.getFeedUri(feed);
 			this_uri = baseUri;
 			String selection = null;
             String[] selectionArgs = null;
@@ -475,6 +480,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 			return new CursorLoader(getActivity(), baseUri, PROJECTION, selection, selectionArgs, order);
 		}
 
+        /*
         public void checkUserState(){
             SharedPreferences profile = getActivity().getSharedPreferences(Constants.PROFILE_PREFS, 0);
             boolean authenticated = profile.getBoolean(Constants.AUTHENTICATED, false);
@@ -501,6 +507,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
                     setEmptyText(getString(R.string.login_for_local_recordings));
             }
         }
+        */
     }
 
 

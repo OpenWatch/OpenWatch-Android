@@ -356,11 +356,14 @@ public class OWServiceRequests {
 				}
 				adapter.commitTransaction();
 				Uri baseUri;
+                /*
 				if(feed_name.compareTo(OWFeedType.USER.toString().toLowerCase()) == 0){
 					baseUri = OWContentProvider.getUserRecordingsUri(user_id);
 				}else{
 					baseUri = OWContentProvider.getFeedUri(feed_name);
 				}
+				*/
+                baseUri = OWContentProvider.getFeedUri(feed_name);
 				Log.i("URI" + feed_name, "notify change on uri: " + baseUri.toString());
 				c.getContentResolver().notifyChange(baseUri, null);   
 	
