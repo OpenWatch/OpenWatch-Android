@@ -241,14 +241,22 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     	
     	// Currently no way to poll server for list of feeds
     	// so start with hard-coded feeds
+        /*
 		OWFeedType[] feed_types = OWFeedType.values();
 		for(int x=0; x < feed_types.length;x++){
 			if(!feeds.contains(feed_types[x])){
     			feeds.add(feed_types[x].toString().toLowerCase());
 			}
 		}
-		Collections.sort(feeds);
-		Collections.reverse(feeds);
+		*/
+        feeds.add(OWFeedType.USER.toString().toLowerCase());
+        feeds.add(OWFeedType.TOP.toString().toLowerCase());
+        feeds.add(OWFeedType.MISSION.toString().toLowerCase());
+        feeds.add(OWFeedType.LOCAL.toString().toLowerCase());
+        feeds.add(OWFeedType.RAW.toString().toLowerCase());
+
+		//Collections.sort(feeds);
+		//Collections.reverse(feeds);
 		
 		// Once we start polling feeds from the server, we'll add them as well
 		// Will have to resolve the issue where tags are added as feeds
