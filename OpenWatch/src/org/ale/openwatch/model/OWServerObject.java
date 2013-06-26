@@ -518,7 +518,7 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
 	
 	public void saveAndSync(Context c){
 		this.save(c);
-		OWServiceRequests.syncOWServerObject(c, this);
+		OWServiceRequests.syncOWServerObject(c, this, true);
 	}
 
 	@Override
