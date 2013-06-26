@@ -200,6 +200,9 @@
     <string name="pref_description_account">Your OpenWatch.net credentials</string>
     <string name="drawer_open"/>
     <string name="drawer_close"/>
+    <string name="mission_header">Missions are a way for you to get actively involved in stories that matter to you.
+    </string>
+    <string name="tap_to_dismiss">Touch to dismiss</string>
 
 
 </resources>

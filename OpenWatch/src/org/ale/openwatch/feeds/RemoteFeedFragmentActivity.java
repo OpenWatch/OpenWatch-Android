@@ -24,6 +24,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.*;
 import android.widget.Filter;
 import com.orm.androrm.*;
@@ -142,6 +144,8 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             // We have a menu item to show in action bar.
             setHasOptionsMenu(true);
 
+            feed = this.getArguments().getString(Constants.OW_FEED);
+
             // Initialize adapter without cursor. Let loader provide it when ready
             mAdapter = new OWMediaObjectAdapter(getActivity(), null);
             // Add footer loading view
@@ -149,6 +153,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             loading_footer = layoutInflater.inflate(R.layout.list_view_loading_footer, (ViewGroup) getActivity().findViewById(android.R.id.list), false);
             loading_footer.setVisibility(View.GONE);
             getListView().addFooterView(loading_footer);
+            addListViewHeader();
             setListAdapter(mAdapter);
             getListView().setDivider(null);
             getListView().setDividerHeight(0);
@@ -198,13 +203,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 
             // Start out with a progress indicator.
             setListShown(false);
-            
-            feed = this.getArguments().getString(Constants.OW_FEED);
-            Log.i(TAG, "got feed name: " +  feed.toString() );
-            
-            // Prepare the loader.  Either re-connect with an existing one,
-            // or start a new one.
-           
+
             // Refresh the feed view
             if(!didRefreshFeed){
 	            // If our feed demands device location and we haven't cached it
@@ -222,12 +221,51 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 	            	fetchNextFeedPage();
 	            }
         	}
-            /*
-            if(feed.compareTo(Constants.OWFeedType.USER.toString().toLowerCase()) == 0)
-                checkUserState();
 
-             */
+        }
 
+        private void addListViewHeader(){
+            if(feed.compareTo(Constants.OWFeedType.MISSION.toString().toLowerCase()) == 0){
+                if(getActivity() == null)
+                    return;
+                LayoutInflater inflater = (LayoutInflater)
+                        getActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
+                View missionHeader = inflater.inflate(R.layout.mission_header,
+                        (ViewGroup) getListView(), false);
+                if(missionHeader != null){
+                    missionHeader.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            final View missionHeader = v;
+                            //v.findViewById(R.id.missionBadge).startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.fadeout));
+                            //v.findViewById(R.id.missionText).startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.fadeout));
+                            //v.findViewById(R.id.tapToDismiss).startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.fadeout));
+                            Animation fadeOut = AnimationUtils.loadAnimation(v.getContext(), R.anim.fadeout);
+                            fadeOut.setAnimationListener(new Animation.AnimationListener() {
+                                @Override
+                                public void onAnimationStart(Animation animation) {
+
+                                }
+
+                                @Override
+                                public void onAnimationEnd(Animation animation) {
+                                    missionHeader.findViewById(R.id.missionBadge).setVisibility(View.GONE);
+                                    missionHeader.findViewById(R.id.missionText).setVisibility(View.GONE);
+                                    missionHeader.findViewById(R.id.tapToDismiss).setVisibility(View.GONE);
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animation animation) {
+
+                                }
+                            });
+
+                            v.startAnimation(fadeOut);
+                        }
+                    });
+                }
+                this.getListView().addHeaderView(missionHeader);
+            }
         }
         
         private void fetchNextFeedPage(){
