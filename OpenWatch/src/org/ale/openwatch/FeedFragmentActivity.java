@@ -193,18 +193,20 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     	Bundle feedBundle;
     	    		
     	for(String feed : feeds){
+            /*
     		if(feed.compareTo(OWFeedType.USER.toString().toLowerCase()) == 0){
     			//TODO: Merge MyFeedFragmentActivity and RemoteFeedFragmentActivity
     			mTabsAdapter.addTab(mTabHost.newTabSpec(getString(Constants.FEED_TO_TITLE.get(feed))).setIndicator(inflateCustomTab(getString(Constants.FEED_TO_TITLE.get(feed)))),
     	                MyFeedFragmentActivity.LocalRecordingsListFragment.class, null);
     			mTitleToTabId.put(feed, nextPagerViewId);
     		}else{
-    			feedBundle = new Bundle(1);
-    			feedBundle.putString(Constants.OW_FEED, feed);
-                mTabsAdapter.addTab(mTabHost.newTabSpec(getString(Constants.FEED_TO_TITLE.get(feed))).setIndicator(inflateCustomTab(getString(Constants.FEED_TO_TITLE.get(feed)))),
-    	                RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, feedBundle);
-    	        mTitleToTabId.put(feed, nextPagerViewId);
-    		}
+    		*/
+            feedBundle = new Bundle(1);
+            feedBundle.putString(Constants.OW_FEED, feed);
+            mTabsAdapter.addTab(mTabHost.newTabSpec(getString(Constants.FEED_TO_TITLE.get(feed))).setIndicator(inflateCustomTab(getString(Constants.FEED_TO_TITLE.get(feed)))),
+                    RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, feedBundle);
+            mTitleToTabId.put(feed, nextPagerViewId);
+    		//}
     		nextPagerViewId ++;
     	}
 

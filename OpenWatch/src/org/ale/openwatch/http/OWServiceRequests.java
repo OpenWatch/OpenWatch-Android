@@ -238,7 +238,8 @@ public class OWServiceRequests {
     		public void onSuccess(JSONObject response){
 				if(response.has("objects")){
 					int internal_user_id = 0;
-					Log.i(TAG, String.format("got %s feed response: %s ",feed_name, response.toString()) );
+                    Log.i(TAG, String.format("got %s feed response: ",feed_name) );
+					//Log.i(TAG, String.format("got %s feed response: %s ",feed_name, response.toString()) );
 					if(feed_name.compareTo(OWFeedType.USER.toString().toLowerCase()) == 0){
 						SharedPreferences profile = app_context.getSharedPreferences(Constants.PROFILE_PREFS, 0);
 				        internal_user_id = profile.getInt(Constants.INTERNAL_USER_ID, 0);

@@ -19,11 +19,14 @@ package org.ale.openwatch.feeds;
 import android.*;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.widget.*;
+import android.widget.Filter;
+import com.orm.androrm.*;
 import org.ale.openwatch.*;
 import org.ale.openwatch.R;
 import org.ale.openwatch.constants.Constants;
@@ -51,6 +54,7 @@ import android.util.Log;
 import android.view.*;
 import android.widget.AbsListView.OnScrollListener;
 import org.ale.openwatch.model.OWServerObjectInterface;
+import org.ale.openwatch.model.OWUser;
 import org.ale.openwatch.model.OWVideoRecording;
 import org.ale.openwatch.share.Share;
 
@@ -83,6 +87,8 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
     	int page = 0;
     	boolean has_next_page = false;
         boolean fetching_next_page = false;
+
+        int internal_user_id = -1;
 
         View loading_footer;
     	
@@ -216,6 +222,8 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 	            	fetchNextFeedPage();
 	            }
         	}
+            if(feed.compareTo(Constants.OWFeedType.USER.toString().toLowerCase()) == 0)
+                checkUserState();
 
         }
         
@@ -454,7 +462,11 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 
 		@Override
 		public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
-			Uri baseUri = OWContentProvider.getFeedUri(feed);
+            Uri baseUri = null;
+            if(feed.compareTo(Constants.OWFeedType.USER.toString().toLowerCase()) == 0)
+                baseUri = OWContentProvider.getUserRecordingsUri(internal_user_id);
+            else
+                baseUri = OWContentProvider.getFeedUri(feed);
 			this_uri = baseUri;
 			String selection = null;
             String[] selectionArgs = null;
@@ -462,6 +474,33 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 			Log.i("URI"+feed.toString(), "createLoader on uri: " + baseUri.toString());
 			return new CursorLoader(getActivity(), baseUri, PROJECTION, selection, selectionArgs, order);
 		}
+
+        public void checkUserState(){
+            SharedPreferences profile = getActivity().getSharedPreferences(Constants.PROFILE_PREFS, 0);
+            boolean authenticated = profile.getBoolean(Constants.AUTHENTICATED, false);
+            if(authenticated){
+                int user_server_id = profile.getInt(DBConstants.USER_SERVER_ID, 0);
+                //int user_server_id = (Integer) OWApplication.user_data.get(DBConstants.USER_SERVER_ID);
+                com.orm.androrm.Filter filter = new com.orm.androrm.Filter();
+                filter.is(DBConstants.USER_SERVER_ID, user_server_id);
+                QuerySet<OWUser> users = OWUser.objects(getActivity().getApplicationContext(), OWUser.class).filter(filter);
+                for(OWUser user : users){
+                    internal_user_id = user.getId();
+                    break;
+                }
+                if(internal_user_id > 0){
+                    setEmptyText(getString(R.string.loading_recordings));
+                    setListShown(false); // start with a progress indicator
+                    getLoaderManager().initLoader(0, null, this);
+                }
+            }else{
+                // It's possible the sharedpreferences haven't finished being written to, but the user has logged in
+                if( OWApplication.user_data != null && OWApplication.user_data.containsKey(Constants.AUTHENTICATED)){
+                    setEmptyText(getString(R.string.loading_recordings));
+                }else
+                    setEmptyText(getString(R.string.login_for_local_recordings));
+            }
+        }
     }
 
 
