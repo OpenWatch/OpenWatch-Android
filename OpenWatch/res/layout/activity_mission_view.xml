@@ -21,6 +21,7 @@
                     android:id="@+id/bounty"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-black"
                     android:layout_alignParentRight="true"
                     android:layout_alignBottom="@id/missionImage"
                     android:layout_marginBottom="20dp"
@@ -36,12 +37,12 @@
 
             <TextView
                     android:id="@+id/title"
+                    android:fontFamily="sans-serif-black"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/missionImage"
                     android:padding="10dp"
-                    android:textSize="32sp"
-                    android:tag="custom_font_bold"/>
+                    android:textSize="32sp"/>
 <!--
             <ImageView
                     android:id="@+id/userImage"
@@ -71,11 +72,10 @@
                     android:id="@+id/description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="22sp"
                     android:padding="10dp"
                     android:layout_below="@+id/title"
-                    android:layout_marginTop="10dp"
-                    android:tag="custom_font_bold"/>
+                    style="@style/Theme.openwatch.storyBodyText"
+                    android:layout_marginTop="10dp"/>
 
             <Button
                     android:id="@+id/camcorderButton"

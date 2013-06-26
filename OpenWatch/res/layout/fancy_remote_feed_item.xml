@@ -26,65 +26,6 @@
             android:visibility="gone"
             android:src="@drawable/play_btn" />
 
-    <!--
-    <VideoView
-            android:id="@+id/videoView"
-            android:layout_width="match_parent"
-            android:layout_height="240dp"
-            android:layout_alignParentTop="true"
-            android:visibility="gone"
-            android:layout_margin="5dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/thumbnail_placeholder" />
-            -->
-
-    <!-- Multiline textview ellipsize is broken in Android -->
-
-    <!--
-    <TextView
-        android:id="@+id/action_count"
-        style="@style/Theme.openwatch.feedItemOtherText"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="5dp"
-        android:layout_marginRight="5dp" />
-
-    <ImageView
-        android:id="@+id/action_icon"
-        style="@style/Theme.openwatch.feedItemIcon"
-        android:layout_marginBottom="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_toLeftOf="@id/action_count"
-        android:src="@drawable/action_icon" />
-
-    <TextView
-        android:id="@+id/view_count"
-        style="@style/Theme.openwatch.feedItemOtherText"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="5dp"
-        android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@id/action_icon" />
-
-    <ImageView
-        android:id="@+id/view_icon"
-        style="@style/Theme.openwatch.feedItemIcon"
-        android:layout_marginBottom="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_toLeftOf="@id/view_count"
-        android:src="@drawable/eye_icon" />
-
-        -->
-<!--
-    <org.ale.openwatch.view.LinkedTextView
-            android:id="@+id/title"
-            style="@style/Theme.openwatch.feedItemTitleText"
-            android:fontFamily="sans-serif"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:text=""
-            android:layout_below="@+id/thumbnail"
-            android:layout_alignLeft="@+id/by"/> -->
 
     <ImageView
             android:id="@+id/userImage"
@@ -98,7 +39,7 @@
     <TextView
             android:id="@+id/username"
             style="@style/Theme.openwatch.feedItemOtherText"
-            android:fontFamily="sans-serif"
+            android:fontFamily="sans-serif-black"
             android:textColor="#ffeb1d1d"
             android:textStyle="bold"
             android:layout_below="@id/thumbnail"
@@ -122,7 +63,7 @@
     <org.ale.openwatch.view.LinkedTextView
             android:id="@+id/title"
             style="@style/Theme.openwatch.feedItemTitleText"
-            android:fontFamily="sans-serif"
+            android:fontFamily="sans-serif-light"
             android:textStyle="normal"
             android:layout_marginLeft="5dp"
             android:layout_toRightOf="@id/userImage"
