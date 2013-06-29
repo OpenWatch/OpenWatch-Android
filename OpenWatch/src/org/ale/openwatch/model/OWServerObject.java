@@ -13,6 +13,7 @@ import com.orm.androrm.field.IntegerField;
 import com.orm.androrm.field.ManyToManyField;
 
 import com.orm.androrm.migration.Migrator;
+import com.orm.androrm.statement.Statement;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
 import org.ale.openwatch.constants.Constants.CONTENT_TYPE;
@@ -152,6 +153,23 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
         int feedId = feed.getId();
         Where where = new Where();
         where.and(DBConstants.SERVER_ID, json.getInt(Constants.OW_SERVER_ID));
+        String type = json.getString("type");
+        String notNullColumn = null;
+        if(type.compareTo("video") == 0){
+            notNullColumn = DBConstants.MEDIA_OBJECT_VIDEO;
+        }else if(type.compareTo("investigation") == 0){
+            notNullColumn = DBConstants.MEDIA_OBJECT_INVESTIGATION;
+        }else if(type.compareTo("mission") == 0){
+            notNullColumn = DBConstants.MEDIA_OBJECT_MISSION;
+        }else if(type.compareTo("photo") == 0){
+            notNullColumn = DBConstants.MEDIA_OBJECT_PHOTO;
+        }else if(type.compareTo("audio") == 0){
+            notNullColumn = DBConstants.MEDIA_OBJECT_AUDIO;
+        }
+        if(notNullColumn != null)
+            where.and(new Statement(notNullColumn, "!=", "NULL"));
+        else
+            Log.e(TAG, "cannot recognize type of this json object");
         ContentValues serverObjectValues = new ContentValues();
         if(json.has(Constants.OW_TITLE))
             serverObjectValues.put(DBConstants.TITLE, json.getString(Constants.OW_TITLE));
@@ -197,7 +215,9 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
                 serverObjectValues.put("user_thumbnail_url", jsonUser.getString(Constants.OW_THUMB_URL));
                 //user_thumbnail_url.set(jsonUser.getString(Constants.OW_THUMB_URL));
             }
-            adapter.doInsertOrUpdate(DBConstants.USER_TABLENAME, userValues, userWhere);
+            int transactionId = adapter.doInsertOrUpdate(DBConstants.USER_TABLENAME, userValues, userWhere);
+            Log.i("DBA", jsonUser.toString());
+            Log.i("DBA", String.format("update user w/ server_id %d and insortOrUpdate response: %d", jsonUser.getInt(Constants.OW_SERVER_ID),transactionId));
             Cursor cursor = adapter.query(String.format("SELECT _id FROM owuser WHERE server_id = %d",jsonUser.getInt(Constants.OW_SERVER_ID)));
             if(cursor != null && cursor.moveToFirst())
                 userId = cursor.getInt(0);
@@ -207,7 +227,9 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
             serverObjectValues.put("user", userId);
 
         // Skip saving tags for now
-        adapter.doInsertOrUpdate(DBConstants.MEDIA_OBJECT_TABLENAME, serverObjectValues, where);
+        int transactionId = adapter.doInsertOrUpdate(DBConstants.MEDIA_OBJECT_TABLENAME, serverObjectValues, where);
+        Log.i("DBA", json.toString());
+        Log.i("DBA", String.format("update mediaObject with server_id %s and insertOrUpdate response: %d", json.getString(Constants.OW_SERVER_ID) , transactionId));
     }
 
 	@Override

@@ -181,6 +181,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
             if(!mTitleToTabId.containsKey(tag)){
                 addTagOrFeed(tag);
             }
+            // TODO: NPE here
             mTitleIndicator.setCurrentItem(mTitleToTabId.get(tag));
             return true;
 
