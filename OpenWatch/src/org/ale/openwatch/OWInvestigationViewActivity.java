@@ -74,7 +74,8 @@ public class OWInvestigationViewActivity extends SherlockActivity implements OWM
                     OWInvestigation investigation = serverObject.investigation.get(getApplicationContext());
                     ((TextView) findViewById(R.id.title)).setText(serverObject.title.get());
                     ((TextView) findViewById(R.id.blurb)).setText(investigation.blurb.get());
-                    ((TextView) findViewById(R.id.questions)).setText(Html.fromHtml(investigation.questions.get()));
+                    if(investigation.questions.get() != null)
+                        ((TextView) findViewById(R.id.questions)).setText(Html.fromHtml(investigation.questions.get()));
                     ImageLoader.getInstance().displayImage(investigation.big_logo_url.get(), (ImageView) findViewById(R.id.image));
                     OWUser user = serverObject.user.get(getApplicationContext());
                     if(user != null){
