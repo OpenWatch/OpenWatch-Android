@@ -59,8 +59,8 @@ public class OWServiceRequests {
 		public void onSuccess(int page, int object_count, int total_pages);
 		public void onFailure(int page);
 	}
-	
-	
+
+
 	public static void increaseHitCount(final Context app_context, int server_id, final int media_obj_id, final CONTENT_TYPE content_type, final HIT_TYPE hit_type){
 		final String METHOD = "increaseHitCount";
 		JsonHttpResponseHandler post_handler = new JsonHttpResponseHandler(){

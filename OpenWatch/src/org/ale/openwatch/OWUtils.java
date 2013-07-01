@@ -120,12 +120,15 @@ public class OWUtils {
      * @param videoView
      * @param filepath
      */
-    public static void setupVideoView(final Context c, final View thumbnailView, final VideoView videoView, final String filepath, final VideoViewCallback cb, final ProgressBar progressBar) {
+    public static void setupVideoView(final Context c, final VideoView videoView, final String filepath, final VideoViewCallback cb, final ProgressBar progressBar) {
         final String TAG = "setupVideoView";
         if(filepath == null){
             Log.e(TAG, "setupVideoView uri is null");
             return;
         }
+        if(videoView.isPlaying())
+            videoView.stopPlayback();
+
         videoView.setVideoURI(Uri.parse(filepath));
         videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
