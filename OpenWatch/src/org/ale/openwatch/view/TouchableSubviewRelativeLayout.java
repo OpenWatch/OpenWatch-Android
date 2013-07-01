@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
+import org.ale.openwatch.OWUtils;
 import org.ale.openwatch.R;
 
 public class TouchableSubviewRelativeLayout extends RelativeLayout {
@@ -37,7 +38,7 @@ public class TouchableSubviewRelativeLayout extends RelativeLayout {
             //Log.d("TouchableSubviewRelativeLayout",this.getTag(R.id.view_related_timelapse).toString());
             // If the touch occurs in the area of the camera icon, go to picture
 
-            if(isPointInsideView(me.getRawX(), me.getRawY(), this.findViewById(R.id.menu))){
+            if(OWUtils.isPointInsideView(me.getRawX(), me.getRawY(), this.findViewById(R.id.menu))){
                 //Log.d("TouchableSubviewRelativeLayout","camera");
                 this.setTag(R.id.subView,"menu");
             }
@@ -55,28 +56,6 @@ public class TouchableSubviewRelativeLayout extends RelativeLayout {
     public boolean onTouchEvent(MotionEvent me){
         return false;
 
-    }
-
-    /**
-     * Determines if given points are inside view
-     * @param x - x coordinate of point
-     * @param y - y coordinate of point
-     * @param view - view object to compare
-     * @return true if the points are within view bounds, false otherwise
-     */
-    private boolean isPointInsideView(float x, float y, View view){
-        int location[] = new int[2];
-        view.getLocationOnScreen(location);
-        int viewX = location[0];
-        int viewY = location[1];
-
-        //point is inside view bounds
-        if(( x > viewX && x < (viewX + view.getWidth())) &&
-                ( y > viewY && y < (viewY + view.getHeight()))){
-            return true;
-        } else {
-            return false;
-        }
     }
 
 }

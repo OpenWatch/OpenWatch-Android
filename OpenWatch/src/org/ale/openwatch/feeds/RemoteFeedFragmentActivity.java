@@ -331,13 +331,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             @Override
             public void onPlaybackComplete(ViewGroup parent) {
                 Log.i(TAG, "playbackComplete");
-                //parent.removeView(parent.findViewById(R.id.videoView));
-                //videoView = null;
                 removeVideoView();
-                //((ViewGroup)parent.getParent()).removeView(parent);
-                //parent.removeView(parent.findViewById(R.id.videoProgress));
-                //parent.findViewById(R.id.thumbnail).setVisibility(View.VISIBLE);
-                //parent.findViewById(R.id.playButton).setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -357,7 +351,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
         };
 
         @Override public void onListItemClick(ListView l, View v, int position, long id) {
-            Log.i("LoaderCustom", "Item clicked: " + id);
+            Log.i(TAG, "Item clicked: " + id);
         	try{
         		final int model_id = (Integer)v.getTag(R.id.list_item_model);
         		final OWServerObject server_object = OWServerObject.objects(getActivity().getApplicationContext(), OWServerObject.class).get(model_id);
@@ -428,7 +422,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
                     progressBar = (ProgressBar) videoViewParent.findViewById(R.id.videoProgress);
                     progressBar.setVisibility(View.VISIBLE);
 
-                    Log.i(TAG, progressBar.toString());
+                    //Log.i(TAG, progressBar.toString());
                     //RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)videoView.getLayoutParams();
                     String url = ((OWVideoRecording) server_object.getChildObject(getActivity().getApplicationContext())).getMediaFilepath(getActivity().getApplicationContext());
                     OWUtils.setupVideoView(getActivity(), videoView, url, videoViewCallback, progressBar);

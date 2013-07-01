@@ -11,6 +11,8 @@
        android:layout_marginRight="0dp"
        android:layout_marginLeft="0dp"
        android:layout_marginTop="0dp"
+       android:focusable="false"
+       android:focusableInTouchMode="false"
        android:visibility="visible" />
 
     <ProgressBar

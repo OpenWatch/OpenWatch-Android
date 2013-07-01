@@ -15,6 +15,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
@@ -114,6 +115,26 @@ public class OWUtils {
         public void onPrepared(ViewGroup parent);
         public void onError(ViewGroup parent);
     }
+
+    public static View.OnTouchListener videoOnClickListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+
+            if(event.getAction() == MotionEvent.ACTION_DOWN){
+                Log.i(TAG, "videoView touched");
+                if( ((VideoView)v).isPlaying() ){
+                    ((ViewGroup) v.getParent()).findViewById(R.id.playButton).setVisibility(View.VISIBLE);
+                    ((ViewGroup) v.getParent()).findViewById(R.id.playButton).bringToFront();
+                    ((VideoView)v).pause();
+                }else{
+                    ((VideoView)v).start();
+                    ((ViewGroup) v.getParent()).findViewById(R.id.playButton).setVisibility(View.GONE);
+                }
+            }
+            return true;
+        }
+    };
+
     /**
      * Setup a VideoView. Context c should not be an Activity Context for showing AlertDialogs
      * @param c
@@ -195,6 +216,7 @@ public class OWUtils {
                 mc.setAnchorView(videoView);
                 */
                 videoView.requestFocus();
+                videoView.setOnTouchListener(videoOnClickListener);
                 videoView.start();
                 //((ViewGroup) videoView.getParent()).findViewById(R.id.videoProgress).setVisibility(View.GONE);
                 progressBar.setVisibility(View.GONE);
@@ -214,6 +236,7 @@ public class OWUtils {
                         mc.setAnchorView(videoView);
                         */
                         videoView.requestFocus();
+                        videoView.setOnTouchListener(videoOnClickListener);
                         videoView.start();
                         progressBar.setVisibility(View.GONE);
                         //((ViewGroup) videoView.getParent()).findViewById(R.id.videoProgress).setVisibility(View.GONE);
@@ -234,6 +257,7 @@ public class OWUtils {
             }
         });
         //video_view.start();
+        //((ViewGroup) videoView.getParent()).requestFocus();
     }
 
     public static void setReadingFontOnChildren(ViewGroup container){
@@ -250,6 +274,28 @@ public class OWUtils {
                     ((TextView)this_view).setTypeface(font, Typeface.ITALIC);
                 }
             }
+        }
+    }
+
+    /**
+     * Determines if given points are inside view
+     * @param x - x coordinate of point
+     * @param y - y coordinate of point
+     * @param view - view object to compare
+     * @return true if the points are within view bounds, false otherwise
+     */
+    public static boolean isPointInsideView(float x, float y, View view){
+        int location[] = new int[2];
+        view.getLocationOnScreen(location);
+        int viewX = location[0];
+        int viewY = location[1];
+
+        //point is inside view bounds
+        if(( x > viewX && x < (viewX + view.getWidth())) &&
+                ( y > viewY && y < (viewY + view.getHeight()))){
+            return true;
+        } else {
+            return false;
         }
     }
 
