@@ -215,6 +215,7 @@ public class OWUtils {
                 videoView.setMediaController(mc);
                 mc.setAnchorView(videoView);
                 */
+
                 videoView.requestFocus();
                 videoView.setOnTouchListener(videoOnClickListener);
                 videoView.start();
@@ -229,12 +230,7 @@ public class OWUtils {
                         //video_view.setVisibility(View.VISIBLE);
 
                         //video_view.setLayoutParams( new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-                        /*
-                        MediaController mc = new MediaController(
-                                c);
-                        videoView.setMediaController(mc);
-                        mc.setAnchorView(videoView);
-                        */
+
                         videoView.requestFocus();
                         videoView.setOnTouchListener(videoOnClickListener);
                         videoView.start();
