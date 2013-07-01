@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import org.ale.openwatch.constants.Constants;
 
@@ -70,15 +69,17 @@ public class DrawerItemAdapter extends ArrayAdapter {
             viewCache.title.setText(data.get(position));
             viewCache.icon.setVisibility(View.VISIBLE);
             viewCache.icon.setImageResource((Integer)dataToIcon.get(data.get(position)));
+            //view.setTag(R.id.list_item_model, data.get(position));
         }else if(feeds.contains(data.get(position))){
             viewCache.title.setText(Constants.FEED_TO_TITLE.get(data.get(position)));
-            view.setTag(R.id.list_item_model, data.get(position));
+            //view.setTag(R.id.list_item_model, data.get(position));
             viewCache.icon.setVisibility(View.GONE);
 
         }else{
             viewCache.title.setText("# " + data.get(position));
             viewCache.icon.setVisibility(View.GONE);
         }
+        view.setTag(R.id.list_item_model, data.get(position));
         return view;
     }
 
