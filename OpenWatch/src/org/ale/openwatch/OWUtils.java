@@ -64,10 +64,13 @@ public class OWUtils {
 	
 	public static String urlForOWServerObject(OWServerObject obj, Context c){
 		String url = Constants.OW_URL;
-		if(obj.getContentType(c) != null)
-			url += Constants.API_ENDPOINT_BY_CONTENT_TYPE.get(obj.getContentType(c));
-		else
-        Log.e(TAG, String.format("Unable to determine contentType for owserverobject %d", obj.getId()));
+		if(obj.getContentType(c) != null){
+            if(obj.getContentType(c) == Constants.CONTENT_TYPE.MISSION)
+                url += "missions"; // api/mission/10/ BUT /mission/10/ . Whoooops
+            else
+			    url += Constants.API_ENDPOINT_BY_CONTENT_TYPE.get(obj.getContentType(c));
+        }else
+            Log.e(TAG, String.format("Unable to determine contentType for owserverobject %d", obj.getId()));
 		url += "/" + String.valueOf(obj.getServerId(c)) + "/";
 		return url;
 	}

@@ -216,8 +216,8 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
                 //user_thumbnail_url.set(jsonUser.getString(Constants.OW_THUMB_URL));
             }
             int transactionId = adapter.doInsertOrUpdate(DBConstants.USER_TABLENAME, userValues, userWhere);
-            Log.i("DBA", jsonUser.toString());
-            Log.i("DBA", String.format("update user w/ server_id %d and insortOrUpdate response: %d", jsonUser.getInt(Constants.OW_SERVER_ID),transactionId));
+            //Log.i("DBA", jsonUser.toString());
+            //Log.i("DBA", String.format("update user w/ server_id %d and insortOrUpdate response: %d", jsonUser.getInt(Constants.OW_SERVER_ID),transactionId));
             Cursor cursor = adapter.query(String.format("SELECT _id FROM owuser WHERE server_id = %d",jsonUser.getInt(Constants.OW_SERVER_ID)));
             if(cursor != null && cursor.moveToFirst())
                 userId = cursor.getInt(0);
@@ -228,8 +228,8 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
 
         // Skip saving tags for now
         int transactionId = adapter.doInsertOrUpdate(DBConstants.MEDIA_OBJECT_TABLENAME, serverObjectValues, where);
-        Log.i("DBA", json.toString());
-        Log.i("DBA", String.format("update mediaObject with server_id %s and insertOrUpdate response: %d", json.getString(Constants.OW_SERVER_ID) , transactionId));
+        //Log.i("DBA", json.toString());
+        //Log.i("DBA", String.format("update mediaObject with server_id %s and insertOrUpdate response: %d", json.getString(Constants.OW_SERVER_ID) , transactionId));
     }
 
 	@Override
@@ -570,6 +570,8 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
 			return this.audio.get(c);
 		else if(this.video_recording.get(c) != null)
 			return this.video_recording.get(c);
+        else if(this.mission.get(c) != null)
+            return this.mission.get(c);
 		return null;
 	}
 
