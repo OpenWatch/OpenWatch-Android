@@ -19,6 +19,7 @@ package org.ale.openwatch.feeds;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
@@ -147,7 +148,9 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             loading_footer = layoutInflater.inflate(R.layout.list_view_loading_footer, (ViewGroup) getActivity().findViewById(android.R.id.list), false);
             loading_footer.setVisibility(View.GONE);
             getListView().addFooterView(loading_footer);
-            addListViewHeader();
+            SharedPreferences profile = getActivity().getSharedPreferences(Constants.PROFILE_PREFS, 0);
+            if(!profile.getBoolean(Constants.MISSION_TIP, false))
+                addListViewHeader();
             setListAdapter(mAdapter);
             getListView().setDivider(null);
             getListView().setDividerHeight(0);
@@ -235,6 +238,9 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
                         @Override
                         public void onClick(View v) {
                             final View missionHeader = v;
+                            SharedPreferences.Editor profile = getActivity().getSharedPreferences(Constants.PROFILE_PREFS, 0).edit();
+                            profile.putBoolean(Constants.MISSION_TIP, true);
+                            profile.commit();
                             //v.findViewById(R.id.missionBadge).startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.fadeout));
                             //v.findViewById(R.id.missionText).startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.fadeout));
                             //v.findViewById(R.id.tapToDismiss).startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.fadeout));

@@ -106,6 +106,7 @@ public class Constants {
 	public static final String IS_USER_RECORDING = "is_user_recording";
 	public static final String FEED_TYPE = "feed_type";
     public static final String OBLIGATORY_TAG = "tag";
+    public static final String MISSION_TIP = "mtip";
     public static final int CAMERA_ACTION_CODE = 444;
 	
 	// Email REGEX

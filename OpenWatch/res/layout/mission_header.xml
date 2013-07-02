@@ -5,7 +5,6 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:padding="0dp"
-              android:background="#ff82cce6"
               android:animateLayoutChanges="true"
               android:gravity="center">
 
@@ -24,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-light"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:padding="10dp"
             android:layout_toRightOf="@id/missionBadge"
             android:text="@string/mission_header"/>
@@ -33,7 +32,6 @@
             android:id="@+id/tapToDismiss"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_light"
             android:fontFamily="sans-serif-light"
             android:textStyle="italic"
             android:gravity="center_horizontal"
