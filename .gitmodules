@@ -19,3 +19,6 @@
 [submodule "TouchImageView"]
 	path = TouchImageView
 	url = https://github.com/OpenWatch/TouchImageView.git
+[submodule "facebook-android-sdk"]
+	path = facebook-android-sdk
+	url = git@github.com:facebook/facebook-android-sdk.git
