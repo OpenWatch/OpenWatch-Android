@@ -59,16 +59,35 @@
 
 
     <FrameLayout
+        android:id="@+id/infoFragmentLayout"
+        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-         android:layout_margin="5dp" >
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp" >
 
         <fragment
             android:id="@+id/media_object_info"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             class="org.ale.openwatch.OWMediaObjectInfoFragment" />
     </FrameLayout>
+
+        <TextView
+            android:id="@+id/fbText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/infoFragmentLayout"
+            android:text="@string/post_to_fb"
+            android:layout_alignParentLeft="true"/>
+
+        <Switch
+            android:id="@+id/fbSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/infoFragmentLayout"
+            android:layout_alignParentRight="true"
+            tools:ignore="NewApi"/>
+
     <!--
     <ImageView
         android:layout_width="wrap_content"

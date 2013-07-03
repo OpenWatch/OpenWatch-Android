@@ -10,18 +10,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.MediaController;
-import android.widget.TextView;
-import android.widget.VideoView;
+import android.widget.*;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.facebook.Session;
+import com.facebook.SessionState;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
 import org.ale.openwatch.contentprovider.OWContentProvider;
+import org.ale.openwatch.fb.FBUtils;
 import org.ale.openwatch.http.OWServiceRequests;
 import org.ale.openwatch.http.Utils;
 import org.ale.openwatch.model.OWServerObject;
@@ -29,7 +29,7 @@ import org.ale.openwatch.model.OWVideoRecording;
 import org.ale.openwatch.share.Share;
 import org.json.JSONObject;
 
-public class WhatHappenedActivity extends SherlockFragmentActivity {
+public class WhatHappenedActivity extends SherlockFragmentActivity implements FBUtils.FaceBookSessionActivity {
 
 	private static final String TAG = "WhatHappenedActivity";
 	static int model_id = -1;
@@ -39,11 +39,32 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 
     boolean video_playing = false;
 
+    // Facebook
+    static final String PENDING_REQUEST_BUNDLE_KEY = "org.ale.openwatch.WhatHappenedActivity:PendingRequest";
+    Session session;
+    boolean pendingRequest;
+
+    CompoundButton fbToggle;
+    CompoundButton twitterToggle;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_what_happened);
 		this.getSupportActionBar().setTitle(getString(R.string.what_happened));
+
+        fbToggle = (CompoundButton) findViewById(R.id.fbSwitch);
+        fbToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    Log.i(TAG, "posting to FB");
+                    if(model_id > 0)
+                        FBUtils.createVideoAction(WhatHappenedActivity.this, model_id);
+                }
+            }
+        });
+
 		Log.i(TAG, "onCreate");
 		try{
 			model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
@@ -61,7 +82,35 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
             ((TextView)this.findViewById(R.id.editTitle)).setText("#" + getIntent().getStringExtra(Constants.OBLIGATORY_TAG));
 		
 		Log.i(TAG, "sent recordingMeta request");
+
+        // Facebook
+        this.session = FBUtils.createSession(this, Constants.FB_APP_ID);
 	}
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i("FBUtils", String.format("onActivityResult requestCode: %d , resultCode: %d", requestCode, resultCode));
+        if (this.session.onActivityResult(this, requestCode, resultCode, data) &&
+                pendingRequest &&
+                this.session.getState().isOpened()) {
+            Log.i("FBUtils", "onActivityResult create videoAction");
+            FBUtils.createVideoAction(this, model_id);
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        pendingRequest = savedInstanceState.getBoolean(PENDING_REQUEST_BUNDLE_KEY, pendingRequest);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putBoolean(PENDING_REQUEST_BUNDLE_KEY, pendingRequest);
+    }
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -88,6 +137,8 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
 						recording.updateWithJson(app_context, response);
 						recording_server_id = response.getInt(Constants.OW_SERVER_ID);
 						Log.i(TAG, "recording updated with server meta response");
+                        if(fbToggle.isChecked())
+                            FBUtils.createVideoAction(WhatHappenedActivity.this, model_id);
 						return;
 					} catch(Exception e){
 						Log.e(TAG, "Error processing getRecording response");
@@ -281,4 +332,23 @@ public class WhatHappenedActivity extends SherlockFragmentActivity {
         }
     };
 
+    @Override
+    public boolean getPendingRequest() {
+        return pendingRequest;
+    }
+
+    @Override
+    public Session getSession() {
+        return session;
+    }
+
+    @Override
+    public void setSession(Session session) {
+        this.session = session;
+    }
+
+    @Override
+    public void setPendingRequest(boolean pendingRequest) {
+        this.pendingRequest = pendingRequest;
+    }
 }

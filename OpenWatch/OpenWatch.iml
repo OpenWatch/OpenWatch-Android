@@ -38,6 +38,7 @@
     <orderEntry type="module" module-name="ActionBarSherlock" exported="" />
     <orderEntry type="module" module-name="Android-Universal-Image-Loader" exported="" />
     <orderEntry type="module" module-name="Android-ViewPagerIndicator" exported="" />
+    <orderEntry type="module" module-name="facebook" exported="" />
   </component>
 </module>
 

@@ -20,6 +20,9 @@ import java.util.regex.Pattern;
 public class Constants {
 
     public static final String SUPPORT_EMAIL = "team@openwatch.net";
+
+    // Facebook
+    public static final String FB_APP_ID = "297496017037529";
 	
 	// Set this flag to toggle between production 
 	// and development endpoint addresses
