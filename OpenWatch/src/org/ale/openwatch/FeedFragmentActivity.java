@@ -253,6 +253,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         feeds.add(OWFeedType.USER.toString().toLowerCase());
         feeds.add(OWFeedType.TOP.toString().toLowerCase());
         feeds.add(OWFeedType.MISSION.toString().toLowerCase());
+        feeds.add(OWFeedType.FEATURED_MEDIA.toString().toLowerCase());
         feeds.add(OWFeedType.LOCAL.toString().toLowerCase());
         feeds.add(OWFeedType.RAW.toString().toLowerCase());
 

@@ -58,6 +58,7 @@ public class Constants {
 
 
 
+
     // For view tag
 	public static enum CONTENT_TYPE { VIDEO, PHOTO, AUDIO, STORY, INVESTIGATION, MISSION };
 	// for fileUtils and OWServiceRequests. TODO Delete following
@@ -134,6 +135,7 @@ public class Constants {
 	public static final String OW_REGISTER = "register_app";
 	public static final String OW_RECORDING = "recording";
 	public static final String OW_RECORDINGS = "recordings";
+    public static final String OW_FEATURED_MEDIA = "featured_media";
 	public static final String OW_STORY = "story";
 	public static final String OW_TAGS = "tags";
 	public static final String OW_TAG = "tag";
@@ -152,10 +154,10 @@ public class Constants {
 	}
 	*/
     public static enum OWFeedType{
-        TOP, LOCAL, USER, RAW, MISSION
+        TOP, LOCAL, USER, RAW, MISSION, FEATURED_MEDIA
     }
 
-    public static HashMap<String, Integer> FEED_TO_TITLE = new HashMap<String, Integer>() {{put(OWFeedType.MISSION.toString().toLowerCase(), R.string.tab_missions); put(OWFeedType.TOP.toString().toLowerCase(), R.string.tab_featured); put(OWFeedType.LOCAL.toString().toLowerCase(), R.string.tab_local); put(OWFeedType.RAW.toString().toLowerCase(), R.string.tab_Raw); put(OWFeedType.USER.toString().toLowerCase(), R.string.tab_local_user_recordings); }};
+    public static HashMap<String, Integer> FEED_TO_TITLE = new HashMap<String, Integer>() {{put(OWFeedType.FEATURED_MEDIA.toString().toLowerCase(), R.string.tab_featured_media); put(OWFeedType.MISSION.toString().toLowerCase(), R.string.tab_missions); put(OWFeedType.TOP.toString().toLowerCase(), R.string.tab_featured); put(OWFeedType.LOCAL.toString().toLowerCase(), R.string.tab_local); put(OWFeedType.RAW.toString().toLowerCase(), R.string.tab_Raw); put(OWFeedType.USER.toString().toLowerCase(), R.string.tab_local_user_recordings); }};
 	
 	public static ArrayList<String> OW_FEEDS = new ArrayList<String>();
 	static{
@@ -232,6 +234,9 @@ public class Constants {
 		case USER:
 			endpoint = Constants.OW_RECORDINGS;
 			break;
+        case FEATURED_MEDIA:
+            endpoint = Constants.OW_FEATURED_MEDIA;
+            break;
         case RAW:
                 endpoint = Constants.OW_RAW;
                 break;
