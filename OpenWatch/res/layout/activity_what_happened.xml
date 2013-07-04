@@ -1,14 +1,16 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".WhatHappenedActivity" >
 
-    <RelativeLayout
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/sync_progress_container"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_marginBottom="5dp"
             android:background="#eda5a8">
 
         <TextView
@@ -49,44 +51,115 @@
 
     <VideoView
             android:id="@+id/videoview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_below="@id/sync_progress_container"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="5dp"
+            android:layout_width="144dp"
+            android:layout_height="96dp"
             android:layout_gravity="center" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
 
     <FrameLayout
         android:id="@+id/infoFragmentLayout"
-        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@id/videoview"
+        android:layout_alignBottom="@id/videoview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp" >
+        android:layout_height="wrap_content" >
 
         <fragment
             android:id="@+id/media_object_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             class="org.ale.openwatch.OWMediaObjectInfoFragment" />
+
     </FrameLayout>
 
-        <TextView
-            android:id="@+id/fbText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/infoFragmentLayout"
-            android:text="@string/post_to_fb"
-            android:layout_alignParentLeft="true"/>
+    <TextView
+        android:id="@+id/fbText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="sans-serif-condensed"
+        android:layout_below="@id/infoFragmentLayout"
+        android:text="@string/post_to"
+        android:textSize="20sp"
+        android:layout_alignParentLeft="true"/>
 
-        <Switch
-            android:id="@+id/fbSwitch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/infoFragmentLayout"
-            android:layout_alignParentRight="true"
-            tools:ignore="NewApi"/>
+    <ImageView
+            android:id="@+id/fbImage"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/fbText"
+            android:layout_alignBottom="@id/fbText"
+            android:src="@drawable/fb" />
+
+    <Switch
+        android:id="@+id/fbSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOn="@string/yes"
+        android:textOff="@string/no"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="20dp"
+        android:textSize="20sp"
+        android:layout_below="@id/infoFragmentLayout"
+        android:layout_alignParentRight="true"
+        tools:ignore="NewApi"/>
+
+    <TextView
+        android:id="@+id/twitterText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-condensed"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/fbText"
+        android:text="@string/post_to"
+        android:textSize="20sp"
+        android:layout_alignParentLeft="true"/>
+
+    <ImageView
+            android:id="@+id/twitterImage"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/twitterText"
+            android:layout_alignBottom="@id/twitterText"
+            android:src="@drawable/twitter" />
+
+    <Switch
+        android:id="@+id/twitterSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/fbSwitch"
+        android:textSize="20sp"
+        android:textOn="@string/yes"
+        android:textOff="@string/no"
+        android:layout_alignParentRight="true"
+        tools:ignore="NewApi"/>
+
+
+    <Button
+            android:id="@+id/doneButton"
+            android:background="@drawable/green_button_bg"
+            android:layout_below="@id/twitterSwitch"
+            android:layout_marginTop="20dp"
+            android:layout_width="250dp"
+            android:layout_height="50dp"
+            android:fontFamily="sans-serif-condensed"
+            android:layout_centerHorizontal="true"
+            android:onClick="onDoneButtonClick"
+            android:textColor="#fff"
+            android:shadowColor="#264826"
+            android:shadowDy="-2"
+            android:shadowRadius=".1"
+            android:text="@string/done"
+            android:textSize="25sp"
+            />
 
     <!--
     <ImageView
@@ -96,7 +169,5 @@
         android:layout_alignParentRight="true"
         android:src="@drawable/coffee_ring" />
         -->
-    
-    </RelativeLayout>
 
-</LinearLayout>
+</RelativeLayout>

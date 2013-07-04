@@ -116,7 +116,8 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_submit:
-			showCompleteDialog();
+            this.finish();
+			//showCompleteDialog();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -162,10 +163,15 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 		});
 	}
 
+    public void onDoneButtonClick(View v){
+        this.finish();
+    }
+
 	
 	/**
 	 * If a server_id was received, give option to share, else return to FeedFragmentActivity
 	 */
+    /*
 	private void showCompleteDialog(){
 		if(model_id == -1){
 			Log.e(TAG, "model_id not set. aborting showCompleteDialog");
@@ -219,6 +225,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
         });
         dialog.show();
 	}
+	*/
 
     @Override
     public void onResume(){
@@ -274,11 +281,12 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
                             VideoView video_view = (VideoView) findViewById(R.id.videoview);
                             //video_view.setVisibility(View.VISIBLE);
                             //(findViewById(R.id.progress_container)).setVisibility(View.GONE);
-                            video_view.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                            /*
                             MediaController mc = new MediaController(
                                     WhatHappenedActivity.this);
                             video_view.setMediaController(mc);
                             mc.setAnchorView(video_view);
+                            */
                             video_view.requestFocus();
                             video_view.start();
                             video_playing = true;

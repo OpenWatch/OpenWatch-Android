@@ -1,44 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="5dp" >
+    android:orientation="vertical" >
 
-    <RelativeLayout
+    <EditText
+        android:id="@+id/editTitle"
+        android:fontFamily="sans-serif-condensed"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:hint="@string/media_description_hint"
+        android:maxLength="254"
+        android:ems="10"
+        android:singleLine="true" />
 
-        <TextView
-            android:id="@+id/titleLabel"
-            android:fontFamily="sans-serif-light"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title" />
-        
-        <TextView
+
+    <TextView
             android:id="@+id/editTitleLengthWarning"
             android:fontFamily="sans-serif-condensed"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
+            android:layout_alignTop="@id/editTitle"
             android:gravity="right"
-            android:layout_toRightOf="@id/titleLabel"
+            android:layout_alignRight="@id/editTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <EditText
-            android:id="@+id/editTitle"
-            android:fontFamily="sans-serif-condensed"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/titleLabel"
-            android:hint="@string/media_description_hint"
-            android:maxLength="254"
-            android:ems="10"
-            android:singleLine="true" />
 
-    </RelativeLayout>
-
-</ScrollView>
+</RelativeLayout>

@@ -167,7 +167,7 @@
     <string name="continue_button_text">Continue</string>
     <string name="get_started_button_text">Get Started</string>
 
-    <string name="media_description_hint">What Happened? #tags #okay</string>
+    <string name="media_description_hint">What Happened? #tags</string>
 
     <!-- OWMediaObjectViewActivity -->
     <string name="share_media_dialog_title">Share This Media!</string>
@@ -206,6 +206,11 @@
     <string name="login_failed_dialog_title">We couldn\'t successfully authenticate your account with Facebook. Sorry!
     </string>
     <string name="post_to_fb">Post to Facebook</string>
+    <string name="post_to_twitter">Post to Twitter</string>
+    <string name="post_to">Post to</string>
+    <string name="done">Done!</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
 
 </resources>
