@@ -1,23 +1,20 @@
 package org.ale.openwatch;
 
-import android.app.AlertDialog;
 import android.content.*;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.CompoundButton;
+import android.widget.TextView;
+import android.widget.VideoView;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.facebook.Session;
-import com.facebook.SessionState;
 import com.loopj.android.http.JsonHttpResponseHandler;
-
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
 import org.ale.openwatch.contentprovider.OWContentProvider;
@@ -26,7 +23,6 @@ import org.ale.openwatch.http.OWServiceRequests;
 import org.ale.openwatch.http.Utils;
 import org.ale.openwatch.model.OWServerObject;
 import org.ale.openwatch.model.OWVideoRecording;
-import org.ale.openwatch.share.Share;
 import org.json.JSONObject;
 
 public class WhatHappenedActivity extends SherlockFragmentActivity implements FBUtils.FaceBookSessionActivity {
@@ -60,7 +56,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
                 if(isChecked){
                     Log.i(TAG, "posting to FB");
                     if(model_id > 0)
-                        FBUtils.createVideoAction(WhatHappenedActivity.this, model_id);
+                        postToFB();
                 }
             }
         });
@@ -87,6 +83,27 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
         this.session = FBUtils.createSession(this, Constants.FB_APP_ID);
 	}
 
+    public void postToFB(){
+        // If a description has been entered, sync that before posting to FB
+        TextView editTitle = (TextView) this.getSupportFragmentManager().findFragmentById(R.id.media_object_info).getView().findViewById(R.id.editTitle);
+        if(editTitle.getText().toString().compareTo("") != 0){
+            OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
+            OWServiceRequests.syncOWServerObject(getApplicationContext(), serverObject, true, new OWServiceRequests.RequestCallback() {
+                @Override
+                public void onFailure() {
+                    // If somehow the ow metadata request fails, post anyway...
+                    FBUtils.createVideoAction(WhatHappenedActivity.this, model_id);
+                }
+
+                @Override
+                public void onSuccess() {
+                    FBUtils.createVideoAction(WhatHappenedActivity.this, model_id);
+                }
+            });
+        }else
+            FBUtils.createVideoAction(WhatHappenedActivity.this, model_id);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.i("FBUtils", String.format("onActivityResult requestCode: %d , resultCode: %d", requestCode, resultCode));
@@ -94,7 +111,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
                 pendingRequest &&
                 this.session.getState().isOpened()) {
             Log.i("FBUtils", "onActivityResult create videoAction");
-            FBUtils.createVideoAction(this, model_id);
+            postToFB();
         }
     }
 
@@ -139,7 +156,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 						recording_server_id = response.getInt(Constants.OW_SERVER_ID);
 						Log.i(TAG, "recording updated with server meta response");
                         if(fbToggle.isChecked())
-                            FBUtils.createVideoAction(WhatHappenedActivity.this, model_id);
+                            postToFB();
 						return;
 					} catch(Exception e){
 						Log.e(TAG, "Error processing getRecording response");
