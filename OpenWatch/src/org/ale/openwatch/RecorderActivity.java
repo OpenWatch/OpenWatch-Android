@@ -198,7 +198,7 @@ public class RecorderActivity extends SherlockActivity implements
 		Camera c = null;
 		try {
 			c = Camera.open(); // attempt to get a Camera instance
-            if (c == null) {
+            if (c == null && Build.VERSION.SDK_INT > 8) {
                 // Rear Camera is not available (in use or does not exist)
                 // Try all other cameras
                 int num_cameras = Camera.getNumberOfCameras();
