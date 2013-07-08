@@ -23,6 +23,9 @@ public class Constants {
 
     // Facebook
     public static final String FB_APP_ID = "297496017037529";
+
+    // Twitter
+    public static final String TWITTER_CONSUMER_KEY = "rRMW0cVIED799WgbeoA";
 	
 	// Set this flag to toggle between production 
 	// and development endpoint addresses
@@ -329,6 +332,5 @@ public class Constants {
 
     // General
     public static final String USD = "$";
-
 
 }

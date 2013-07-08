@@ -1,7 +1,6 @@
 package org.ale.openwatch.fb;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,7 +8,6 @@ import android.util.Log;
 import com.facebook.*;
 import com.facebook.model.GraphObject;
 import org.ale.openwatch.OWUtils;
-import org.ale.openwatch.R;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.model.OWServerObject;
 
@@ -34,26 +32,28 @@ public class FBUtils {
         return activeSession;
     }
 
-    public static void createVideoAction(final FaceBookSessionActivity act, final int serverObjectId){
-        //createVideoAction(act, OWServerObject.objects(((Activity)act), OWServerObject.class).get(serverObjectId));
+    public static void postVideoAction(final FaceBookSessionActivity act, final int serverObjectId){
+        //postVideoAction(act, OWServerObject.objects(((Activity)act), OWServerObject.class).get(serverObjectId));
         if (act.getSession().isOpened()) {
             Log.i(TAG, "Session is Open");
-            FBUtils.createVideoAction(act, OWServerObject.objects(((Activity)act), OWServerObject.class).get(serverObjectId));
+            FBUtils.postVideoAction(act, OWServerObject.objects(((Activity) act), OWServerObject.class).get(serverObjectId));
         } else {
             Log.i(TAG, "Session is not Open, Doing that now");
             Session.StatusCallback callback = new Session.StatusCallback() {
                 public void call(Session session, SessionState state, Exception exception) {
                     if (exception != null) {
+                        /*
                         new AlertDialog.Builder(((Activity)act))
                                 .setTitle(R.string.login_failed_dialog_title)
                                 .setMessage(exception.getMessage())
                                 .setPositiveButton(R.string.dialog_ok, null)
                                 .show();
+                        */
                         act.setSession(FBUtils.createSession((Activity)act, Constants.FB_APP_ID));
                     }
                     else if(session.isOpened()){
                         Log.i(TAG, "Opened Session successfully!");
-                        FBUtils.createVideoAction(act, OWServerObject.objects(((Activity)act), OWServerObject.class).get(serverObjectId));
+                        FBUtils.postVideoAction(act, OWServerObject.objects(((Activity) act), OWServerObject.class).get(serverObjectId));
                     }else{
                         Log.e(TAG, "session not opened");
                     }
@@ -65,7 +65,7 @@ public class FBUtils {
         }
     }
 
-    private static void createVideoAction(final FaceBookSessionActivity act, final OWServerObject serverObject){
+    private static void postVideoAction(final FaceBookSessionActivity act, final OWServerObject serverObject){
         act.setPendingRequest(false);
         //requestPublishPermissions((Activity) act, Session.getActiveSession());
 
@@ -89,7 +89,7 @@ public class FBUtils {
                 params.putBoolean("fb:explicitly_shared", true);
                 //params.putString("url", "https://openwatch.net/v/1074/");
                 params.putString("other", OWUtils.urlForOWServerObject(serverObject, ((Activity) act).getApplicationContext()));
-                //params.putString("title", "Client Posted video");
+                //params.putString("title", serverObject.title.get());
                 params.putString("description", "");
 
                 Request request = new Request(

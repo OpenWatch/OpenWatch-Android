@@ -22,3 +22,6 @@
 [submodule "facebook-android-sdk"]
 	path = facebook-android-sdk
 	url = git@github.com:facebook/facebook-android-sdk.git
+[submodule "twitter4j"]
+	path = twitter4j
+	url = https://github.com/yusuke/twitter4j

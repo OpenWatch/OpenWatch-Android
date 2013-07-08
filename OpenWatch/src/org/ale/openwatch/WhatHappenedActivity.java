@@ -1,13 +1,19 @@
 package org.ale.openwatch;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.*;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.VideoView;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -23,10 +29,12 @@ import org.ale.openwatch.http.OWServiceRequests;
 import org.ale.openwatch.http.Utils;
 import org.ale.openwatch.model.OWServerObject;
 import org.ale.openwatch.model.OWVideoRecording;
+import org.ale.openwatch.twitter.TwitterUtils;
 import org.json.JSONObject;
 
 public class WhatHappenedActivity extends SherlockFragmentActivity implements FBUtils.FaceBookSessionActivity {
 
+    public static enum SOCIAL_TYPE {FB, TWITTER};
 	private static final String TAG = "WhatHappenedActivity";
 	static int model_id = -1;
 	int recording_server_id = -1;
@@ -43,6 +51,9 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
     CompoundButton fbToggle;
     CompoundButton twitterToggle;
 
+    // Keep track of OW-Sync before Sharing to FB / Twitter
+    boolean syncedWithOW = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -54,9 +65,27 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    Log.i(TAG, "posting to FB");
-                    if(model_id > 0)
-                        postToFB();
+                    if(model_id > 0){
+                        Log.i(TAG, "posting to FB");
+                        syncAndPostSocial(SOCIAL_TYPE.FB);
+                    }
+                }
+            }
+        });
+
+        twitterToggle = (CompoundButton) findViewById(R.id.twitterSwitch);
+        twitterToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    if(model_id > 0){
+                        Log.i(TAG, "Tweetin'");
+                        syncAndPostSocial(SOCIAL_TYPE.TWITTER);
+                    }
+                    //TwitterUtils.twitterLogin(WhatHappenedActivity.this);
+                    //TwitterUtils.updateStatus(WhatHappenedActivity.this, "test updateStatus");
+                    //TwitterUtils.getOauthToken();
+
                 }
             }
         });
@@ -79,39 +108,109 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 		
 		Log.i(TAG, "sent recordingMeta request");
 
+        this.findViewById(R.id.editTitle).requestFocus();
+        ((EditText)this.findViewById(R.id.editTitle)).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                syncedWithOW = false;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
         // Facebook
         this.session = FBUtils.createSession(this, Constants.FB_APP_ID);
 	}
 
-    public void postToFB(){
+    public void syncAndPostSocial(final SOCIAL_TYPE type){
         // If a description has been entered, sync that before posting to FB
-        TextView editTitle = (TextView) this.getSupportFragmentManager().findFragmentById(R.id.media_object_info).getView().findViewById(R.id.editTitle);
-        if(editTitle.getText().toString().compareTo("") != 0){
+        //TextView editTitle = (TextView) this.getSupportFragmentManager().findFragmentById(R.id.media_object_info).getView().findViewById(R.id.editTitle);
+        if(!syncedWithOW){
             OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
             OWServiceRequests.syncOWServerObject(getApplicationContext(), serverObject, true, new OWServiceRequests.RequestCallback() {
                 @Override
                 public void onFailure() {
                     // If somehow the ow metadata request fails, post anyway...
-                    FBUtils.createVideoAction(WhatHappenedActivity.this, model_id);
+                    this.onSuccess();
                 }
 
                 @Override
                 public void onSuccess() {
-                    FBUtils.createVideoAction(WhatHappenedActivity.this, model_id);
+                    syncedWithOW = true;
+                    WhatHappenedActivity.postSocial(WhatHappenedActivity.this, type);
                 }
             });
-        }else
-            FBUtils.createVideoAction(WhatHappenedActivity.this, model_id);
+        }else{
+            WhatHappenedActivity.postSocial(WhatHappenedActivity.this, type);
+        }
+
+    }
+
+    public static void postSocial(Activity act, final SOCIAL_TYPE type){
+        switch(type){
+            case FB:
+                FBUtils.postVideoAction((FBUtils.FaceBookSessionActivity) act, model_id);
+                break;
+            case TWITTER:
+                TwitterUtils.tweet(act, model_id);
+                break;
+        }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.i("FBUtils", String.format("onActivityResult requestCode: %d , resultCode: %d", requestCode, resultCode));
-        if (this.session.onActivityResult(this, requestCode, resultCode, data) &&
-                pendingRequest &&
-                this.session.getState().isOpened()) {
-            Log.i("FBUtils", "onActivityResult create videoAction");
-            postToFB();
+        /*
+        switch(requestCode){
+            case TwitterUtils.TWITTER_RESULT:
+
+
+                break;
+            case 400:
+
+        }
+        */
+        if(requestCode == TwitterUtils.TWITTER_RESULT){
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setTitle("Login");
+            alert.setMessage("Enter Pin :");
+
+            // Set an EditText view to get user input
+            final EditText input = new EditText(this);
+            alert.setView(input);
+
+            alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    String value = input.getText().toString();
+                    Log.d( TAG, "Pin Value : " + value);
+                    TwitterUtils.twitterLoginConfirmation(WhatHappenedActivity.this, value, model_id);
+                    return;
+                }
+            });
+
+            alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                public void onClick(DialogInterface dialog, int which) {
+                    return;
+                }
+            });
+            alert.show();
+            //TwitterUtils.updateStatus(this, "test updateStatus");
+
+        }else{
+            // Facebook
+            if(this.session.onActivityResult(this, requestCode, resultCode, data) &&
+                    pendingRequest &&
+                    this.session.getState().isOpened()) {
+                Log.i("FBUtils", "onActivityResult create videoAction");
+                syncAndPostSocial(SOCIAL_TYPE.FB);
+            }else if(requestCode == Activity.RESULT_CANCELED){
+                fbToggle.setChecked(false);
+            }
         }
     }
 
@@ -156,7 +255,9 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 						recording_server_id = response.getInt(Constants.OW_SERVER_ID);
 						Log.i(TAG, "recording updated with server meta response");
                         if(fbToggle.isChecked())
-                            postToFB();
+                            syncAndPostSocial(SOCIAL_TYPE.FB);
+                        if(twitterToggle.isChecked())
+                            syncAndPostSocial(SOCIAL_TYPE.TWITTER);
 						return;
 					} catch(Exception e){
 						Log.e(TAG, "Error processing getRecording response");
