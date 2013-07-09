@@ -115,6 +115,9 @@ public class Constants {
     public static final String OBLIGATORY_TAG = "tag";
     public static final String MISSION_TIP = "mtip";
     public static final int CAMERA_ACTION_CODE = 444;
+    public static final String TWITTER_TOKEN = "ttoken";
+    public static final String TWITTER_SECRET = "tsecret";
+
 	
 	// Email REGEX
 	public static final Pattern EMAIL_ADDRESS_PATTERN = Pattern.compile(

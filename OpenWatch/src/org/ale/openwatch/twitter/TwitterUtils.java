@@ -6,6 +6,7 @@ import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -44,6 +45,11 @@ public class TwitterUtils {
     private static final String TWITTER_TOKEN = "com.twitter.android.oauth.token";
     private static final String TWITTER_SECRET = "com.twitter.android.oauth.token.secret";
 
+    private static boolean usingAccountManager = false;
+
+    private static final int maxAuthRetries = 1;
+    private static int numAuthRetries = 0;
+
     public interface TwitterAuthCallback{
         public void onAuth();
     }
@@ -72,7 +78,12 @@ public class TwitterUtils {
                 AccessToken accessToken = twitter.getOAuthAccessToken(lastLoginRequestToken, params[0]);
                 OAUTH_TOKEN = accessToken.getToken();
                 OAUTH_SECRET = accessToken.getTokenSecret();
-
+                if(!usingAccountManager){
+                    SharedPreferences.Editor prefs = act.getSharedPreferences(Constants.PROFILE_PREFS, act.MODE_PRIVATE).edit();
+                    prefs.putString(Constants.TWITTER_TOKEN, accessToken.getToken());
+                    prefs.putString(Constants.TWITTER_SECRET, accessToken.getTokenSecret());
+                    prefs.commit();
+                }
                 if(cb != null)
                     cb.onAuth();
             } catch (TwitterException e) {
@@ -118,19 +129,31 @@ public class TwitterUtils {
                 try {
                     twitter4j.Status tweet = twitter.updateStatus(params[0]);
                 } catch (TwitterException e) {
+                    numAuthRetries ++;
                     Log.i(TAG, String.format("Got TwitterException code %d, message %s", e.getErrorCode(), e.getMessage()));
                     e.printStackTrace();
                     if(e.getMessage().hashCode() == 1267074619){ // "No authentication challenges found"
                         // If the token is invalid, attempt to get another, and retry update status.
-                        AccountManager.get(act.getBaseContext()).invalidateAuthToken(TWITTER_ACCOUNT_TYPE, OAUTH_TOKEN);
-                        AccountManager.get(act.getBaseContext()).invalidateAuthToken(TWITTER_ACCOUNT_TYPE, OAUTH_SECRET);
-                        Log.i(TAG, String.format("Invalidating account %s token: %s secret: %s", TWITTER_ACCOUNT_TYPE, OAUTH_TOKEN, OAUTH_SECRET));
-                        authenticate(act, new TwitterAuthCallback() {
+                        if(usingAccountManager){
+                            AccountManager.get(act.getBaseContext()).invalidateAuthToken(TWITTER_ACCOUNT_TYPE, OAUTH_TOKEN);
+                            AccountManager.get(act.getBaseContext()).invalidateAuthToken(TWITTER_ACCOUNT_TYPE, OAUTH_SECRET);
+                            Log.i(TAG, String.format("Invalidating account %s token: %s secret: %s", TWITTER_ACCOUNT_TYPE, OAUTH_TOKEN, OAUTH_SECRET));
+
+                        }else{
+                            SharedPreferences.Editor prefs = act.getSharedPreferences(Constants.PROFILE_PREFS, act.MODE_PRIVATE).edit();
+                            prefs.remove(Constants.TWITTER_TOKEN);
+                            prefs.remove(Constants.TWITTER_SECRET);
+                            prefs.commit();
+                            Log.e(TAG, "Failed auth. Clearing SharedPreferences tokens.");
+                        }
+                        if(numAuthRetries <= maxAuthRetries)
+                            authenticate(act, new TwitterAuthCallback() {
                             @Override
                             public void onAuth() {
                                 updateStatus(act, status);
                             }
                         });
+
                     }
                 }
                 return null;
@@ -196,6 +219,7 @@ public class TwitterUtils {
         Log.i(TAG, String.format("Found %d accounts for type %s", accts.length, TWITTER_ACCOUNT_TYPE));
         boolean TEST_WEB_AUTH = false;
         if(accts.length > 0 && !TEST_WEB_AUTH) {
+            usingAccountManager = true;
             // TODO: Show Account Chooser
             Account acct = accts[0];
             twitterAccountId = 0;
@@ -238,12 +262,22 @@ public class TwitterUtils {
                     }
                 }}, null);
         }else{
-            // Twitter account not stored in AccountManager. Attempt to auth via http
-            Log.i(TAG, "unable to get twitter acct via AccountManager. Trying via web");
-            getTwitterOAuthViaWeb(act);
-            // We don't pass the callback here because getTwitterOAuthViaWeb will require the user
-            // getting the oauth confirmation pin via webview and entering it into the initiating
-            // activity via OnActivityResult.
+            usingAccountManager = false;
+            // Twitter account not stored in AccountManager.
+            // First, see if we have stored Twitter tokens in SharedPreferences
+            SharedPreferences prefs = act.getSharedPreferences(Constants.PROFILE_PREFS, act.MODE_PRIVATE);
+            if(prefs.contains(Constants.TWITTER_TOKEN) && prefs.contains(Constants.TWITTER_SECRET)){
+                OAUTH_TOKEN = prefs.getString(Constants.TWITTER_TOKEN,"");
+                OAUTH_SECRET = prefs.getString(Constants.TWITTER_SECRET, "");
+                Log.i(TAG, "got twitter credentials from sharedPreferences");
+            }else{
+                // Attempt to auth via http
+                Log.i(TAG, "unable to get twitter acct via AccountManager. Trying via web");
+                getTwitterOAuthViaWeb(act);
+                // We don't pass the callback here because getTwitterOAuthViaWeb will require the user
+                // getting the oauth confirmation pin via webview and entering it into the initiating
+                // activity via OnActivityResult.
+            }
         }
     }
 
