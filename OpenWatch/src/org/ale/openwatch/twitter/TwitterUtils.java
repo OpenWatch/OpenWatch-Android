@@ -22,6 +22,13 @@ import twitter4j.conf.ConfigurationBuilder;
 
 /**
  * Created by davidbrodsky on 7/5/13.
+ *
+ * If twitter tokens exist within Android's AccountManager: tweet(...) will retrieve them and send the tweet.
+ *
+ * If twitter tokens do not exist, tweet(..) will launch WebViewActivity with Twitter's authorization url, allow
+ * the user to authorize our app, and will store the resulting tokens. The initiating activity must catch WebViewActivity's
+ * conclusion in OnActivityResult and direct the user provided pin to twitterLoginConfirmation(...) with an optional
+ * TwitterAuthCallback defining the action to take after login is complete.
  */
 public class TwitterUtils {
     private static final String TAG = "TwitterUtils";
@@ -68,7 +75,6 @@ public class TwitterUtils {
 
                 if(cb != null)
                     cb.onAuth();
-                //updateStatus(act, Share.generateShareText(act.getBaseContext(), OWServerObject.objects(act.getApplicationContext(), OWServerObject.class).get(serverObjectId)));
             } catch (TwitterException e) {
                 e.printStackTrace();
             }
@@ -81,6 +87,12 @@ public class TwitterUtils {
         updateStatus(act, Share.generateShareText(act, OWServerObject.objects(act, OWServerObject.class).get(serverObjectId)));
     }
 
+    /**
+     * User facing method to send a tweet. Does not handle authentication.
+     * @param act The initiating Activity, which should be prepared to capture the PIN resulting from Twitter's
+     *            web authentication flow in it's OnActivityResult(...) and pass it to twitterLoginConfirmation(...)
+     * @param status the text of the tweet
+     */
     public static void updateStatus(final Activity act, final String status){
 
 
@@ -132,6 +144,12 @@ public class TwitterUtils {
         tweet(act, Share.generateShareText(act, OWServerObject.objects(act, OWServerObject.class).get(serverObjectId)));
     }
 
+    /**
+     * User facing method to send a tweet. Handles authentication.
+     * @param act The initiating Activity, which should be prepared to capture the PIN resulting from Twitter's
+     *            web authentication flow in it's OnActivityResult(...) and pass it to twitterLoginConfirmation(...)
+     * @param status the text of the tweet
+     */
     public static void tweet(final Activity act, final String status){
 
         final TwitterAuthCallback cb = new TwitterAuthCallback() {
@@ -164,6 +182,13 @@ public class TwitterUtils {
 
     }
 
+    /**
+     * Attempt to retrieve Twitter OAuth tokens from Android's AccountManager. If no such tokens exist,
+     * call getTwitterOAuthViaWeb(...), which will initiate authentication via Twitter's Web flow.
+     * @param act The initiating Activity, which should be prepared to capture the PIN resulting from Twitter's
+     *            web authentication flow in it's OnActivityResult(...) and pass it to twitterLoginConfirmation(...)
+     * @param cb an optional callback with actions to perform after the user is authenticated with Twitter
+     */
     private static void authenticate(final Activity act, final TwitterAuthCallback cb){
         // First try getting Twitter credentials from Android's AccountManager
         AccountManager am = AccountManager.get(act.getApplicationContext());
@@ -222,6 +247,12 @@ public class TwitterUtils {
         }
     }
 
+    /**
+     *
+     * @param act the activity to act which will prompt the user for the PIN provided by Twitter's authorization web flow
+     *            in it's OnActivityResult(...) method
+     * @return true if the token is already valid, false if web flow was initiated
+     */
     private static boolean getTwitterOAuthViaWeb(Activity act){
         TwitterFactory factory = new TwitterFactory(getTwitterConfiguration());
         Twitter twitter = factory.getInstance();
