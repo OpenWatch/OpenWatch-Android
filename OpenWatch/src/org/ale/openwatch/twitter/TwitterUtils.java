@@ -66,10 +66,6 @@ public class TwitterUtils {
                 OAUTH_TOKEN = accessToken.getToken();
                 OAUTH_SECRET = accessToken.getTokenSecret();
 
-                //AccountManager am = AccountManager.get(act.getBaseContext());
-                //Account twitterAccount = am.getAccountsByType(TWITTER_ACCOUNT_TYPE)[twitterAccountId];
-                //am.setAuthToken(twitterAccount, TWITTER_TOKEN, OAUTH_TOKEN);
-                //am.setAuthToken(twitterAccount, TWITTER_SECRET, OAUTH_SECRET);
                 if(cb != null)
                     cb.onAuth();
                 //updateStatus(act, Share.generateShareText(act.getBaseContext(), OWServerObject.objects(act.getApplicationContext(), OWServerObject.class).get(serverObjectId)));
@@ -97,7 +93,7 @@ public class TwitterUtils {
                     Log.e(TAG, "OAUTH credentials are null, aborting tweet.");
                     return null;
                 }
-                builder.setOAuthConsumerKey(Constants.TWITTER_CONSUMER_KEY);
+                builder.setOAuthConsumerKey(SECRETS.TWITTER_CONSUMER_KEY);
                 builder.setOAuthConsumerSecret(SECRETS.TWITTER_CONSUMER_SECRET);
                 builder.setOAuthAccessToken(OAUTH_TOKEN);
                 builder.setOAuthAccessTokenSecret(OAUTH_SECRET);
@@ -107,53 +103,16 @@ public class TwitterUtils {
                 TwitterFactory factory = new TwitterFactory(configuration);
 
                 Twitter twitter = factory.getInstance();
-                /*
-                ConfigurationBuilder builder2 = getOauthToken(act, twitter);
-                twitter = new TwitterFactory(builder2.build()).getInstance();
-                */
                 try {
                     twitter4j.Status tweet = twitter.updateStatus(params[0]);
                 } catch (TwitterException e) {
                     Log.i(TAG, String.format("Got TwitterException code %d, message %s", e.getErrorCode(), e.getMessage()));
                     e.printStackTrace();
                     if(e.getMessage().hashCode() == 1267074619){ // "No authentication challenges found"
+                        // If the token is invalid, attempt to get another, and retry update status.
                         AccountManager.get(act.getBaseContext()).invalidateAuthToken(TWITTER_ACCOUNT_TYPE, OAUTH_TOKEN);
                         AccountManager.get(act.getBaseContext()).invalidateAuthToken(TWITTER_ACCOUNT_TYPE, OAUTH_SECRET);
                         Log.i(TAG, String.format("Invalidating account %s token: %s secret: %s", TWITTER_ACCOUNT_TYPE, OAUTH_TOKEN, OAUTH_SECRET));
-
-                        // TESTING
-                        AccountManager am = AccountManager.get(act.getApplicationContext());
-
-                        am.getAuthToken( am.getAccountsByType(TWITTER_ACCOUNT_TYPE)[0], "com.twitter.android.oauth.token", null, act, new AccountManagerCallback<Bundle>() {
-
-                            @Override
-                            public void run(AccountManagerFuture<Bundle> arg0) {
-                                try {
-                                    Bundle b = arg0.getResult();
-                                    Log.i(TAG, "Got token that should have been invalidated: " + b.getString(AccountManager.KEY_AUTHTOKEN));
-                                    OAUTH_TOKEN = b.getString(AccountManager.KEY_AUTHTOKEN);
-                                } catch (Exception e) {
-                                    Log.e(TAG, "EXCEPTION@AUTHTOKEN");
-                                }
-                            }
-                        }, null);
-
-                        am.getAuthToken( am.getAccountsByType(TWITTER_ACCOUNT_TYPE)[0], "com.twitter.android.oauth.token.secret", null, act, new AccountManagerCallback<Bundle>() {
-
-                            @Override
-                            public void run(AccountManagerFuture<Bundle> arg0) {
-                                try {
-                                    Bundle b = arg0.getResult();
-                                    Log.i(TAG, "Got token that should have been invalidated: " + b.getString(AccountManager.KEY_AUTHTOKEN));
-                                    OAUTH_TOKEN = b.getString(AccountManager.KEY_AUTHTOKEN);
-                                } catch (Exception e) {
-                                    Log.e(TAG, "EXCEPTION@AUTHTOKEN");
-                                }
-                            }
-                        }, null);
-
-                        // END TESTING
-                        // AccountManager's token was invalid, let's get another and store it
                         authenticate(act, new TwitterAuthCallback() {
                             @Override
                             public void onAuth() {
@@ -161,7 +120,6 @@ public class TwitterUtils {
                             }
                         });
                     }
-
                 }
                 return null;
             }
@@ -218,7 +176,7 @@ public class TwitterUtils {
             twitterAccountId = 0;
             OAUTH_TOKEN = null;
             OAUTH_SECRET = null;
-            am.getAuthToken(acct, "com.twitter.android.oauth.token", null, act, new AccountManagerCallback<Bundle>() {
+            am.getAuthToken(acct, TWITTER_TOKEN, null, act, new AccountManagerCallback<Bundle>() {
 
                 @Override
                 public void run(AccountManagerFuture<Bundle> arg0) {
@@ -236,7 +194,7 @@ public class TwitterUtils {
                     }
                 }}, null);
 
-            am.getAuthToken(acct, "com.twitter.android.oauth.token.secret", null, act, new AccountManagerCallback<Bundle>() {
+            am.getAuthToken(acct, TWITTER_SECRET, null, act, new AccountManagerCallback<Bundle>() {
 
                 @Override
                 public void run(AccountManagerFuture<Bundle> arg0) {
@@ -281,9 +239,6 @@ public class TwitterUtils {
             }
         }
 
-        // TODO: If we get here assume auth is necessary
-        OAUTH_TOKEN = requestToken.getToken();
-        OAUTH_SECRET = requestToken.getTokenSecret();
         lastLoginRequestToken = requestToken;
         Intent i = new Intent(act.getApplicationContext(), WebViewActivity.class);
         Log.i(TAG, requestToken.getAuthenticationURL());
