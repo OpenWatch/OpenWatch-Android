@@ -29,6 +29,7 @@ import org.ale.openwatch.http.OWServiceRequests;
 import org.ale.openwatch.http.Utils;
 import org.ale.openwatch.model.OWServerObject;
 import org.ale.openwatch.model.OWVideoRecording;
+import org.ale.openwatch.share.Share;
 import org.ale.openwatch.twitter.TwitterUtils;
 import org.json.JSONObject;
 
@@ -185,9 +186,15 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 
             alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
-                    String value = input.getText().toString();
-                    Log.d( TAG, "Pin Value : " + value);
-                    TwitterUtils.twitterLoginConfirmation(WhatHappenedActivity.this, value, model_id);
+                    String pin = input.getText().toString();
+                    Log.d( TAG, "Pin Value : " + pin);
+                    TwitterUtils.TwitterAuthCallback cb = new TwitterUtils.TwitterAuthCallback() {
+                        @Override
+                        public void onAuth() {
+                            TwitterUtils.updateStatus(WhatHappenedActivity.this, Share.generateShareText(WhatHappenedActivity.this, OWServerObject.objects(WhatHappenedActivity.this, OWServerObject.class).get(model_id)));
+                        }
+                    };
+                    TwitterUtils.twitterLoginConfirmation(WhatHappenedActivity.this, pin, cb);
                     return;
                 }
             });
