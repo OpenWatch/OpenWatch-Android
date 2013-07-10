@@ -1,14 +1,11 @@
 package org.ale.openwatch;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.text.Html;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockActivity;
@@ -28,9 +25,7 @@ import org.ale.openwatch.share.Share;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URLEncoder;
-
-public class OWInvestigationViewActivity extends SherlockActivity implements OWMediaObjectBackedEntity {
+public class OWInvestigationViewActivity extends SherlockActivity implements OWObjectBackedEntity {
 	private static final String TAG = "OWInvestigationViewActivity";
 	
     //private View progress;

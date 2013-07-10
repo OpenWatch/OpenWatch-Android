@@ -6,12 +6,22 @@
                 android:layout_margin="10dp">
 
     <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:id="@+id/profileImage"
-            android:src="@drawable/thumbnail_placeholder"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"/>
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/profileImage"
+        android:src="@drawable/user_placeholder"
+        android:onClick="getUserAvatarFromDevice"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"/>
+
+    <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/profileImageAdd"
+            android:src="@drawable/picture_add"
+            android:onClick="getUserAvatarFromDevice"
+            android:layout_alignRight="@id/profileImage"
+            android:layout_alignBottom="@id/profileImage"/>
 
     <EditText
             android:layout_width="wrap_content"
@@ -53,11 +63,20 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentLeft="true"/>
 
+
+    <LinearLayout android:id="@+id/buttonContainer"
+                  android:layout_marginTop="10dp"
+                  android:layout_below="@id/bio"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:weightSum="1.0"
+                  android:orientation="horizontal">
+
     <com.facebook.widget.LoginButton
             android:id="@+id/fbButton"
-            android:layout_marginTop="10dp"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight=".5"
             android:layout_gravity="center_horizontal"
             android:layout_below="@+id/bio"
             android:layout_alignParentLeft="true"/>
@@ -67,7 +86,8 @@
             android:background="@drawable/twitter_button"
             android:drawableLeft="@drawable/twitter_btn_image_sosmall"
             android:layout_marginLeft="10dp"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight=".5"
             android:layout_height="wrap_content"
             android:layout_alignTop="@id/fbButton"
             android:layout_alignBottom="@id/fbButton"
@@ -78,4 +98,7 @@
             android:shadowDy="-2"
             android:shadowRadius=".1"
             android:layout_toRightOf="@id/fbButton"/>
+
+    </LinearLayout>
+
 </RelativeLayout>

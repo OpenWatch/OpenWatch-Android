@@ -269,6 +269,8 @@ public class Constants {
 	public static final String OW_VIEWS = "views";
 	public static final String OW_TITLE = "title";
 	public static final String OW_USERNAME = "username";
+    public static final String OW_FIRST_NAME = "first_name";
+    public static final String OW_LAST_NAME = "last_name";
 	public static final String OW_CLICKS = "clicks";
 	public static final String OW_UUID = "uuid";
 	public static final String OW_VIDEO_URL = "video_url";

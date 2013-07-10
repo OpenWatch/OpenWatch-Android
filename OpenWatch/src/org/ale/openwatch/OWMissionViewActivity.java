@@ -2,10 +2,7 @@ package org.ale.openwatch;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.View;
@@ -21,18 +18,15 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.http.OWServiceRequests;
-import org.ale.openwatch.location.DeviceLocation;
 import org.ale.openwatch.model.OWMission;
-import org.ale.openwatch.model.OWPhoto;
 import org.ale.openwatch.model.OWServerObject;
-import org.ale.openwatch.model.OWUser;
 import org.ale.openwatch.share.Share;
 import org.json.JSONObject;
 
 /**
  * Created by davidbrodsky on 6/10/13.
  */
-public class OWMissionViewActivity extends SherlockActivity implements OWMediaObjectBackedEntity{
+public class OWMissionViewActivity extends SherlockActivity implements OWObjectBackedEntity {
     private static final String TAG = "OWMissionViewActivity";
 
     int model_id = -1;

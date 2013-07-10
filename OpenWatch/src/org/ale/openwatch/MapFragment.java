@@ -20,7 +20,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapFragment extends SupportMapFragment implements OWMediaObjectBackedEntity{
+public class MapFragment extends SupportMapFragment implements OWObjectBackedEntity {
 	private static final String TAG = "MapFragment";
 	
     private GoogleMap mMap;

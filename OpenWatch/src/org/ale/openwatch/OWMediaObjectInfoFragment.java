@@ -21,7 +21,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class OWMediaObjectInfoFragment extends SherlockFragment implements
-		OWMediaObjectBackedEntity {
+        OWObjectBackedEntity {
 
 	private static final String TAG = "RecordingInfoFragment";
 

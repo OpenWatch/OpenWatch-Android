@@ -103,7 +103,7 @@
                         android:layout_alignParentLeft="true"
                         android:layout_below="@id/title"
                         android:layout_marginRight="5dp"
-                        android:onClick="setUserAvatar"
+                        android:onClick="getUserAvatarFromDevice"
                         android:src="@drawable/thumbnail_placeholder" />
 
                     <!-- http://stackoverflow.com/questions/2507898/how-to-pick-an-image-from-gallery-sd-card-for-my-app-in-android -->

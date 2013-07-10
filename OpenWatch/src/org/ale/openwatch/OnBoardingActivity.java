@@ -83,7 +83,7 @@ import org.ale.openwatch.model.OWUser;
                 OWUser user = OWUser.objects(getApplicationContext(), OWUser.class).get(profile.getInt(Constants.INTERNAL_USER_ID,0));
                 user.agent_applicant.set(agent_applicant);
                 user.save(getApplicationContext());
-                OWServiceRequests.syncOWUser(getApplicationContext(), user);
+                OWServiceRequests.syncOWUser(getApplicationContext(), user, null);
             }else{
                 Log.e(TAG, "OnBoardingActivity does not have internal user id...");
             }

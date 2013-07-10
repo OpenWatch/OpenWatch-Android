@@ -282,7 +282,7 @@ public class OWMediaRequests {
                 }
 			}
 
-		}.run();
+		}.start();
 	}
 	
 	public static String ApacheFilePost(Context c, String url, String filename, String post_key) throws ParseException, ClientProtocolException, IOException{

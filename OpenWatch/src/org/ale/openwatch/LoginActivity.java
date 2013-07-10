@@ -47,8 +47,8 @@ import java.util.HashMap;
 public class LoginActivity extends SherlockActivity {
 
 	private static final String TAG = "LoginActivity";
-	private static final int SELECT_PHOTO = 100;
-	private static final int TAKE_PHOTO = 101;
+    private static final int SELECT_PHOTO = 100;
+    private static final int TAKE_PHOTO = 101;
 
 	// Values for mEmailView and password at the time of the login attempt.
 	private String mEmail;
@@ -127,30 +127,9 @@ public class LoginActivity extends SherlockActivity {
 		}
 		
 	}
-	
+
 	public void setUserAvatar(View v){
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(getString(R.string.take_choose_picture_title))
-		.setMessage(getString(R.string.take_choose_picture_prompt))
-		.setPositiveButton(getString(R.string.take_picture), new OnClickListener(){
-
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-				startActivityForResult(takePicture, TAKE_PHOTO);
-			}
-			
-		}).setNegativeButton(getString(R.string.choose_picture), new OnClickListener(){
-
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-				photoPickerIntent.setType("image/*");
-				startActivityForResult(photoPickerIntent, SELECT_PHOTO);   
-			}
-			
-		}).show();
-		 
+        OWUtils.setUserAvatar(this, v, SELECT_PHOTO, TAKE_PHOTO);
 	}
 	
 	@Override

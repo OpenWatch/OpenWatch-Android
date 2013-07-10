@@ -478,7 +478,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
                 OWUser user = OWUser.objects(getApplicationContext(), OWUser.class).get(profile.getInt(Constants.INTERNAL_USER_ID,0));
                 if(user.agent_applicant.get() == true){
                     Log.i("MainActivity", "Sending agent location");
-                    OWServiceRequests.syncOWUser(getApplicationContext(), user);
+                    OWServiceRequests.syncOWUser(getApplicationContext(), user, null);
                 }
             }
         }

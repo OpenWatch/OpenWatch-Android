@@ -5,6 +5,8 @@
     <string name="menu_settings">Settings</string>
     <string name="title_activity_main">OpenWatch</string>
 
+    <string name="fb_app_id">297496017037529</string>
+
     <!-- General -->
     <string name="by">By</string>
     <string name="email">Email</string>
@@ -43,7 +45,6 @@
     <string name="reporter"></string>
     <string name="sign_in">Sign In!</string>
     <string name="take_choose_picture_title">Set your avatar</string>
-    <string name="take_choose_picture_prompt">How shall we get your fine picture?</string>
     <string name="take_picture">Use camera</string>
     <string name="choose_picture">Browse gallery</string>
     <string name="menu_forgot_password">Recover lost password</string>
@@ -220,6 +221,7 @@
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="connect">Connect</string>
+    <string name="disconnect">Disconnect</string>
 
 
 </resources>

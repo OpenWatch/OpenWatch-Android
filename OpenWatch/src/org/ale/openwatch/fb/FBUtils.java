@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import com.facebook.*;
 import com.facebook.model.GraphObject;
+import com.facebook.model.GraphUser;
 import org.ale.openwatch.OWUtils;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.model.OWServerObject;
@@ -136,6 +137,32 @@ public class FBUtils {
         };
 
         task.execute();
+    }
+
+    public interface FacebookUserCallback{
+        public void gotProfile(GraphUser user);
+    }
+
+    public static void getProfile(final Session session, final FacebookUserCallback cb) {
+        // Make an API call to get user data and define a
+        // new callback to handle the response.
+        Request request = Request.newMeRequest(session,
+                new Request.GraphUserCallback() {
+                    @Override
+                    public void onCompleted(GraphUser user, Response response) {
+                        // If the response is successful
+                        if (session == Session.getActiveSession()) {
+                            if (user != null) {
+                                if(cb != null)
+                                    cb.gotProfile(user);
+                            }
+                        }
+                        if (response.getError() != null) {
+                            // Handle errors, will do so later.
+                        }
+                    }
+                });
+        request.executeAsync();
     }
 
 

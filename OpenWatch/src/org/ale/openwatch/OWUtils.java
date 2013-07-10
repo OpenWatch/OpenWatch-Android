@@ -14,6 +14,7 @@ import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -308,6 +309,32 @@ public class OWUtils {
                 TwitterUtils.authenticateAndTweet(act, model_id);
                 break;
         }
+    }
+
+
+
+    public static void setUserAvatar(final Activity act, View v, final int SELECT_PHOTO_CODE, final int TAKE_PHOTO_CODE){
+        AlertDialog.Builder builder = new AlertDialog.Builder(act);
+        builder.setTitle(act.getString(R.string.take_choose_picture_title))
+                .setPositiveButton(act.getString(R.string.take_picture), new DialogInterface.OnClickListener(){
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        act.startActivityForResult(takePicture, TAKE_PHOTO_CODE);
+                    }
+
+                }).setNegativeButton(act.getString(R.string.choose_picture), new DialogInterface.OnClickListener(){
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                photoPickerIntent.setType("image/*");
+                act.startActivityForResult(photoPickerIntent, SELECT_PHOTO_CODE);
+            }
+
+        }).show();
+
     }
 
 }

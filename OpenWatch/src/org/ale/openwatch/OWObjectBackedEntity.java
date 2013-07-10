@@ -4,7 +4,7 @@ import org.ale.openwatch.model.OWServerObject;
 
 import android.content.Context;
 
-public interface OWMediaObjectBackedEntity {
+public interface OWObjectBackedEntity {
 
 	public void populateViews(OWServerObject media_object, Context app_context);
 }

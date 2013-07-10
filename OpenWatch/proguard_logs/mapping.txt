@@ -10944,7 +10944,7 @@ org.ale.openwatch.OWInvestigationViewActivity$1 -> org.ale.openwatch.ag:
     void onSuccess(org.json.JSONObject) -> a
     void onFailure(java.lang.Throwable,java.lang.String) -> a
     void onFinish() -> b
-org.ale.openwatch.OWMediaObjectBackedEntity -> org.ale.openwatch.ah:
+org.ale.openwatch.OWObjectBackedEntity -> org.ale.openwatch.ah:
     void populateViews(org.ale.openwatch.model.OWServerObject,android.content.Context) -> a
 org.ale.openwatch.OWMediaObjectInfoFragment -> org.ale.openwatch.OWMediaObjectInfoFragment:
     android.widget.TextView title -> P

@@ -219,9 +219,9 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
                     child.updateWithJson(c, response);
                     setupMediaViewForOWServerObject(serverObject);
                     if(getMapFragment() != null)
-                        ((OWMediaObjectBackedEntity) OWMediaObjectViewActivity.this.getMapFragment() ).populateViews(serverObject, c);
+                        ((OWObjectBackedEntity) OWMediaObjectViewActivity.this.getMapFragment() ).populateViews(serverObject, c);
                     if(getInfoFragment() != null)
-                        ((OWMediaObjectBackedEntity) OWMediaObjectViewActivity.this.getInfoFragment() ).populateViews(serverObject, c);
+                        ((OWObjectBackedEntity) OWMediaObjectViewActivity.this.getInfoFragment() ).populateViews(serverObject, c);
                 }
             }
 
@@ -462,7 +462,7 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
 	}
 	
 	public void onAttachFragment (Fragment fragment){
-    	if(OWMediaObjectBackedEntity.class.isInstance(fragment))
+    	if(OWObjectBackedEntity.class.isInstance(fragment))
     		attached_fragments.add((Fragment)fragment);
     }
 	

@@ -787,11 +787,29 @@ public class OWServiceRequests {
     /*
         Immediatley send user agent_applicant status, then re-send location on success
      */
-    public static void syncOWUser(final Context app_context, final OWUser user){
+
+    public static void syncOWUser(final Context app_context, final OWUser user, final RequestCallback cb){
         final AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
         Log.i(TAG,
                 "Commencing Edit User: "
                         + user.toJSON());
+
+        final JsonHttpResponseHandler _cb = new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(JSONObject response) {
+                user.updateWithJson(app_context, response);
+                if(cb != null)
+                    cb.onSuccess();
+            }
+
+            @Override
+            public void onFailure(Throwable e, String response) {
+                if(cb != null)
+                    cb.onFailure();
+            }
+
+        };
+
         if(user.agent_applicant.get() == true){
             DeviceLocation.getLastKnownLocation(app_context, false, new DeviceLocation.GPSRequestCallback() {
                 @Override
@@ -802,13 +820,13 @@ public class OWServiceRequests {
                     Log.i(TAG, String.format("Got user location %fx%f", result.getLatitude(), result.getLongitude()));
                     http_client.post(app_context, instanceEndpointForOWUser(app_context, user), Utils
                             .JSONObjectToStringEntity(user.toJSON()),
-                            "application/json", null);
+                            "application/json", _cb);
                 }
             });
 
             http_client.post(app_context, instanceEndpointForOWUser(app_context, user), Utils
                     .JSONObjectToStringEntity(user.toJSON()),
-                    "application/json", null);
+                    "application/json", _cb);
         }
 
     }

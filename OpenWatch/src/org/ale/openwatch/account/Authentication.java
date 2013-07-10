@@ -95,7 +95,6 @@ public class Authentication {
                                     + " Priv: "
                                     + server_response
                                     .getString(Constants.PRIV_TOKEN));
-                    // BOO THIS. need to look for existing user, not create new one
                     if (c != null) {
                         OWUser myself = null;
                         Filter userFilter = new Filter();
