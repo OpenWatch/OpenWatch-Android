@@ -217,6 +217,9 @@
     <string name="fb_error">We weren\'t able to contact FB. Please try again later. I wish there was more we could
         say...
     </string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="connect">Connect</string>
 
 
 </resources>

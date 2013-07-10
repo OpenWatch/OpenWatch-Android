@@ -140,6 +140,7 @@
                   android:theme="@android:style/Theme.Translucent.NoTitleBar"
                   android:label="@string/app_name" />
         <activity android:name=".WebViewActivity"/>
+        <activity android:name=".OWProfileActivity"/>
     </application>
 
 </manifest>

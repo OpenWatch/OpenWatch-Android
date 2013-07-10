@@ -397,9 +397,6 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
         		
         		Intent i = null;
         		switch(server_object.getContentType(getActivity().getApplicationContext())){
-        		case STORY:
-        			i = new Intent(this.getActivity(), OWStoryViewActivity.class);
-        			break;
         		case INVESTIGATION:
         			//TODO: InvestigationViewActivity
         			i = new Intent(this.getActivity(), OWInvestigationViewActivity.class);

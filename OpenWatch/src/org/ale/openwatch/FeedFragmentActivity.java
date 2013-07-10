@@ -75,7 +75,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     boolean onCreateWon = false;
 
     // Temporary drawer items
-    private ArrayList<String> mDrawerItems = new ArrayList<String>() {{/* add("Profile"); */add("Settings");  add("Send Feedback");}};
+    private ArrayList<String> mDrawerItems = new ArrayList<String>() {{ add("Profile"); add("Settings");  add("Send Feedback");}};
     private HashMap<String, Integer> drawerTitleToIcon = new HashMap<String, Integer>() {{put("Settings", R.drawable.settings); put("Profile", R.drawable.user_placeholder); put("Send Feedback", R.drawable.heart);}};
     DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -238,40 +238,14 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     
     private void setupFeedAndTagMaps(){
     	feeds.clear();
-    	//tags.clear();
-    	
-    	// Currently no way to poll server for list of feeds
-    	// so start with hard-coded feeds
-        /*
-		OWFeedType[] feed_types = OWFeedType.values();
-		for(int x=0; x < feed_types.length;x++){
-			if(!feeds.contains(feed_types[x])){
-    			feeds.add(feed_types[x].toString().toLowerCase());
-			}
-		}
-		*/
+    	tags.clear();
+
         feeds.add(OWFeedType.USER.toString().toLowerCase());
         feeds.add(OWFeedType.TOP.toString().toLowerCase());
         feeds.add(OWFeedType.MISSION.toString().toLowerCase());
         feeds.add(OWFeedType.FEATURED_MEDIA.toString().toLowerCase());
         feeds.add(OWFeedType.LOCAL.toString().toLowerCase());
         feeds.add(OWFeedType.RAW.toString().toLowerCase());
-
-		//Collections.sort(feeds);
-		//Collections.reverse(feeds);
-		
-		// Once we start polling feeds from the server, we'll add them as well
-		// Will have to resolve the issue where tags are added as feeds
-		// to allow caching. i.e: we query each tag view by media object's tag feed relation
-		// not the mere presence of a tag, since the server's feed sort is unpredictable
-		/*
-		QuerySet<OWFeed> feed_set = OWFeed.objects(getApplicationContext(), OWFeed.class).all();
-		for(OWFeed feed : feed_set){
-			if( !feeds.contains(feed.name.get()) ){
-    			feeds.add(feed.name.get());
-			}
-		}
-		*/
 
 		if(internal_user_id > 0){
             OWUser user = OWUser.objects(getApplicationContext(), OWUser.class).get(internal_user_id);
@@ -545,6 +519,9 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT,getString(R.string.share_email_subject));
                 emailIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_email_text) + OWUtils.getPackageVersion(getApplicationContext()));
                 startActivity(Intent.createChooser(emailIntent, getString(R.string.share_chooser_title)));
+            }else if(tag.compareTo("Profile") == 0){
+                Intent profileIntent = new Intent(this, OWProfileActivity.class);
+                startActivity(profileIntent);
             }
         }
 
