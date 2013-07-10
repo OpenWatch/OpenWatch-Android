@@ -24,6 +24,10 @@ public class FBUtils {
     private static final int REAUTH_ACTIVITY_CODE = 100;
     private static final List<String> PERMISSIONS = Arrays.asList("publish_actions");
 
+    public interface FacebookAuthCallback{
+        public void onAuth();
+    }
+
     public static Session createSession(Context c, String applicationId) {
         Session activeSession = Session.getActiveSession();
         if (activeSession == null || activeSession.getState().isClosed()) {
@@ -33,11 +37,11 @@ public class FBUtils {
         return activeSession;
     }
 
-    public static void postVideoAction(final FaceBookSessionActivity act, final int serverObjectId){
-        //postVideoAction(act, OWServerObject.objects(((Activity)act), OWServerObject.class).get(serverObjectId));
+    public static void authenticate(final FaceBookSessionActivity act, final FacebookAuthCallback cb){
         if (act.getSession().isOpened()) {
             Log.i(TAG, "Session is Open");
-            FBUtils.postVideoAction(act, OWServerObject.objects(((Activity) act), OWServerObject.class).get(serverObjectId));
+            if(cb != null)
+                cb.onAuth();
         } else {
             Log.i(TAG, "Session is not Open, Doing that now");
             Session.StatusCallback callback = new Session.StatusCallback() {
@@ -54,7 +58,8 @@ public class FBUtils {
                     }
                     else if(session.isOpened()){
                         Log.i(TAG, "Opened Session successfully!");
-                        FBUtils.postVideoAction(act, OWServerObject.objects(((Activity) act), OWServerObject.class).get(serverObjectId));
+                        if(cb != null)
+                            cb.onAuth();
                     }else{
                         Log.e(TAG, "session not opened");
                     }
@@ -64,26 +69,40 @@ public class FBUtils {
             act.setPendingRequest(true);
             act.getSession().openForPublish(new Session.OpenRequest((Activity)act).setPermissions(PERMISSIONS).setCallback(callback));
         }
+
     }
 
-    private static void postVideoAction(final FaceBookSessionActivity act, final OWServerObject serverObject){
+    /**
+     *
+     * @param act
+     * @param serverObjectId
+     */
+    public static void authenticateAndPostVideoAction(final FaceBookSessionActivity act, final int serverObjectId){
+        FacebookAuthCallback cb = new FacebookAuthCallback() {
+            @Override
+            public void onAuth() {
+                FBUtils.postVideoAction(act, serverObjectId);
+            }
+        };
+        authenticate(act, cb);
+    }
+
+    /**
+     * Execute request to create Facebook "Post a Video" Action given an OWServerObject
+     * @param act the initiating FaceBookSessionActivity
+     * @param serverObjectId id of a OWServerObject related to a OWVideoRecording
+     */
+    public static void postVideoAction(final FaceBookSessionActivity act, final int serverObjectId){
+        final OWServerObject serverObject = OWServerObject.objects(((Activity) act), OWServerObject.class).get(serverObjectId);
+
+        if(serverObject == null || serverObject.getContentType(((Activity)act).getApplicationContext()) != Constants.CONTENT_TYPE.VIDEO)
+            return;
         act.setPendingRequest(false);
         //requestPublishPermissions((Activity) act, Session.getActiveSession());
         AsyncTask<Void, Void, Response> task = new AsyncTask<Void, Void, Response>() {
 
             @Override
             protected Response doInBackground(Void... voids) {
-
-                /*
-                EatAction eatAction = GraphObject.Factory.create(EatAction.class);
-                for (BaseListElement element : listElements) {
-                    element.populateOGAction(eatAction);
-                }
-                Request request = new Request(Session.getActiveSession(),
-                        POST_ACTION_PATH, null, HttpMethod.POST);
-                request.setGraphObject(eatAction);
-                */
-                //
                 Bundle params = new Bundle();
                 params.putString("type", "video.other");
                 params.putBoolean("fb:explicitly_shared", true);
@@ -127,18 +146,6 @@ public class FBUtils {
         String getId();
     }
 
-    /*
-    private static void requestPublishPermissions(Activity act, Session session) {
-        if (session != null) {
-            Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(act, PERMISSIONS)
-                    // demonstrate how to set an audience for the publish permissions,
-                    // if none are set, this defaults to FRIENDS
-                    .setDefaultAudience(SessionDefaultAudience.FRIENDS)
-                    .setRequestCode(REAUTH_ACTIVITY_CODE);
-            session.requestNewPublishPermissions(newPermissionsRequest);
-        }
-    }
-    */
 
     public interface FaceBookSessionActivity{
         public void onFBError(Map response);

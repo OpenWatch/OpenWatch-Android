@@ -10,7 +10,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -37,7 +36,7 @@ import java.util.Map;
 
 public class WhatHappenedActivity extends SherlockFragmentActivity implements FBUtils.FaceBookSessionActivity {
 
-    public static enum SOCIAL_TYPE {FB, TWITTER};
+
 	private static final String TAG = "WhatHappenedActivity";
 	static int model_id = -1;
 	int recording_server_id = -1;
@@ -53,6 +52,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 
     CompoundButton fbToggle;
     CompoundButton twitterToggle;
+    CompoundButton owToggle;
 
     // Keep track of OW-Sync before Sharing to FB / Twitter
     boolean syncedWithOW = false;
@@ -71,29 +71,29 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
                     if(model_id > 0){
-                        Log.i(TAG, "posting to FB");
-                        syncAndPostSocial(SOCIAL_TYPE.FB);
+                        syncAndPostSocial(OWUtils.SOCIAL_TYPE.FB);
+                    }else{
+                        // make sure we're authenticated with FB
+                        FBUtils.authenticate(WhatHappenedActivity.this, null);
                     }
                 }
             }
         });
-
         twitterToggle = (CompoundButton) findViewById(R.id.twitterSwitch);
         twitterToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+                if(isChecked){
                     if(model_id > 0){
-                        Log.i(TAG, "Tweetin'");
-                        syncAndPostSocial(SOCIAL_TYPE.TWITTER);
+                        syncAndPostSocial(OWUtils.SOCIAL_TYPE.TWITTER);
+                    }else{
+                        // make sure we're authenticated with Twitter
+                        TwitterUtils.authenticate(WhatHappenedActivity.this, null);
                     }
-                    //TwitterUtils.twitterLogin(WhatHappenedActivity.this);
-                    //TwitterUtils.updateStatus(WhatHappenedActivity.this, "test updateStatus");
-                    //TwitterUtils.getOauthToken();
-
                 }
             }
         });
+        owToggle = (CompoundButton) findViewById(R.id.owSwitch);
 
 		Log.i(TAG, "onCreate");
 		try{
@@ -131,7 +131,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
         this.session = FBUtils.createSession(this, Constants.FB_APP_ID);
 	}
 
-    public void syncAndPostSocial(final SOCIAL_TYPE type){
+    public void syncAndPostSocial(final OWUtils.SOCIAL_TYPE type){
         // If a description has been entered, sync that before posting to FB
         //TextView editTitle = (TextView) this.getSupportFragmentManager().findFragmentById(R.id.media_object_info).getView().findViewById(R.id.editTitle);
         if(!syncedWithOW){
@@ -146,78 +146,24 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
                 @Override
                 public void onSuccess() {
                     syncedWithOW = true;
-                    WhatHappenedActivity.postSocial(WhatHappenedActivity.this, type);
+                    OWUtils.postSocial(WhatHappenedActivity.this, type, model_id);
                 }
             });
         }else{
-            WhatHappenedActivity.postSocial(WhatHappenedActivity.this, type);
+            OWUtils.postSocial(WhatHappenedActivity.this, type, model_id);
         }
 
-    }
-
-    public static void postSocial(Activity act, final SOCIAL_TYPE type){
-        switch(type){
-            case FB:
-                FBUtils.postVideoAction((FBUtils.FaceBookSessionActivity) act, model_id);
-                break;
-            case TWITTER:
-                TwitterUtils.tweet(act, model_id);
-                break;
-        }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.i("FBUtils", String.format("onActivityResult requestCode: %d , resultCode: %d", requestCode, resultCode));
-        /*
-        switch(requestCode){
-            case TwitterUtils.TWITTER_RESULT:
-
-
-                break;
-            case 400:
-
-        }
-        */
         if(requestCode == TwitterUtils.TWITTER_RESULT){
-            /*
-            AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.setTitle("Login");
-            alert.setMessage("Enter Pin :");
-
-            // Set an EditText view to get user input
-            final EditText input = new EditText(this);
-            alert.setView(input);
-
-            alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    String pin = input.getText().toString();
-                    Log.d( TAG, "Pin Value : " + pin);
-                    TwitterUtils.TwitterAuthCallback cb = new TwitterUtils.TwitterAuthCallback() {
-                        @Override
-                        public void onAuth() {
-                            TwitterUtils.updateStatus(WhatHappenedActivity.this, Share.generateShareText(WhatHappenedActivity.this, OWServerObject.objects(WhatHappenedActivity.this, OWServerObject.class).get(model_id)));
-                        }
-                    };
-                    TwitterUtils.twitterLoginConfirmation(WhatHappenedActivity.this, pin, cb);
-                    return;
-                }
-            });
-
-            alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-
-                public void onClick(DialogInterface dialog, int which) {
-                    twitterToggle.setChecked(false);
-                }
-            });
-            alert.show();
-            */
-            //TwitterUtils.updateStatus(this, "test updateStatus");
 
             TwitterUtils.TwitterAuthCallback cb = new TwitterUtils.TwitterAuthCallback() {
                 @Override
                 public void onAuth() {
-                    TwitterUtils.updateStatus(WhatHappenedActivity.this, Share.generateShareText(WhatHappenedActivity.this, OWServerObject.objects(WhatHappenedActivity.this, OWServerObject.class).get(model_id)));
+                    TwitterUtils.tweet(WhatHappenedActivity.this, Share.generateShareText(WhatHappenedActivity.this, OWServerObject.objects(WhatHappenedActivity.this, OWServerObject.class).get(model_id)));
                 }
             };
 
@@ -233,7 +179,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
                     pendingRequest &&
                     this.session.getState().isOpened()) {
                 Log.i("FBUtils", "onActivityResult create videoAction");
-                syncAndPostSocial(SOCIAL_TYPE.FB);
+                syncAndPostSocial(OWUtils.SOCIAL_TYPE.FB);
             }else if(requestCode == Activity.RESULT_CANCELED){
                 fbToggle.setChecked(false);
             }
@@ -281,9 +227,9 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 						recording_server_id = response.getInt(Constants.OW_SERVER_ID);
 						Log.i(TAG, "recording updated with server meta response");
                         if(fbToggle.isChecked())
-                            syncAndPostSocial(SOCIAL_TYPE.FB);
+                            syncAndPostSocial(OWUtils.SOCIAL_TYPE.FB);
                         if(twitterToggle.isChecked())
-                            syncAndPostSocial(SOCIAL_TYPE.TWITTER);
+                            syncAndPostSocial(OWUtils.SOCIAL_TYPE.TWITTER);
 						return;
 					} catch(Exception e){
 						Log.e(TAG, "Error processing getRecording response");
@@ -308,68 +254,19 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 	}
 
     public void onDoneButtonClick(View v){
+        /*
+        if(model_id > 0){
+            if(fbToggle.isChecked()){
+                syncAndPostSocial(OWUtils.SOCIAL_TYPE.FB);
+            }
+            if(twitterToggle.isChecked()){
+                syncAndPostSocial(OWUtils.SOCIAL_TYPE.TWITTER);
+            }
+        }
+        */
         this.finish();
     }
 
-	
-	/**
-	 * If a server_id was received, give option to share, else return to FeedFragmentActivity
-	 */
-    /*
-	private void showCompleteDialog(){
-		if(model_id == -1){
-			Log.e(TAG, "model_id not set. aborting showCompleteDialog");
-			return;
-		}
-		//final OWVideoRecording recording = OWMediaObject.objects(getApplicationContext(), OWMediaObject.class).get(model_id).video_recording.get(getApplicationContext());
-		if(recording_server_id == -1){
-			Log.i(TAG, "recording does not have a valid server_id. Cannot present share dialog");
-			Intent i = new Intent(WhatHappenedActivity.this, FeedFragmentActivity.class);
-			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-			startActivity(i);
-			this.finish();
-			return;
-		}
-        final Context c = this;
-		Log.i(TAG, "recording server_id: " + String.valueOf(recording_server_id));
-        LayoutInflater inflater = (LayoutInflater)
-                c.getSystemService(LAYOUT_INFLATER_SERVICE);
-        View layout = inflater.inflate(R.layout.share_prompt,
-                (ViewGroup) findViewById(R.id.root_layout), false);
-        AlertDialog.Builder builder = new AlertDialog.Builder(c);
-        builder.setView(layout);
-        final AlertDialog dialog = builder.create();
-
-        ((TextView) layout.findViewById(R.id.share_title)).setText(R.string.share_dialog_video_message);
-        layout.findViewById(R.id.button_share).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                OWServerObject server_obj = OWServerObject.objects(c, OWServerObject.class).get(model_id);
-                Share.showShareDialogWithInfo(c, getString(R.string.share_video), server_obj.getTitle(getApplicationContext()), OWUtils.urlForOWServerObject(server_obj, getApplicationContext()));
-                OWServiceRequests.increaseHitCount(getApplicationContext(), server_obj.getServerId(getApplicationContext()), model_id, server_obj.getContentType(getApplicationContext()), Constants.HIT_TYPE.CLICK);
-                WhatHappenedActivity.this.finish();
-            }
-        });
-        layout.findViewById(R.id.share_nothanks).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                Intent i = new Intent(WhatHappenedActivity.this, FeedFragmentActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(i);
-
-            }
-        });
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                //TODO: Catch returning to activity when you cancel share dialog. Instead finish activity
-            }
-        });
-        dialog.show();
-	}
-	*/
 
     @Override
     public void onResume(){
@@ -423,14 +320,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
                         public void onVideoSizeChanged(MediaPlayer mp, int width,
                                                        int height) {
                             VideoView video_view = (VideoView) findViewById(R.id.videoview);
-                            //video_view.setVisibility(View.VISIBLE);
-                            //(findViewById(R.id.progress_container)).setVisibility(View.GONE);
-                            /*
-                            MediaController mc = new MediaController(
-                                    WhatHappenedActivity.this);
-                            video_view.setMediaController(mc);
-                            mc.setAnchorView(video_view);
-                            */
+                            mp.setLooping(true);
                             video_view.requestFocus();
                             video_view.start();
                             video_playing = true;

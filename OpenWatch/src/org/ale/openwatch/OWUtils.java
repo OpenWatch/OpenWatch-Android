@@ -1,10 +1,10 @@
 package org.ale.openwatch;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -24,10 +24,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.ale.openwatch.constants.Constants;
-import org.ale.openwatch.database.DatabaseManager;
-import org.ale.openwatch.http.OWServiceRequests;
+import org.ale.openwatch.fb.FBUtils;
 import org.ale.openwatch.model.OWServerObject;
-import org.ale.openwatch.model.OWUser;
+import org.ale.openwatch.twitter.TwitterUtils;
 
 public class OWUtils {
     private static final String TAG = "OWUtils";
@@ -295,6 +294,19 @@ public class OWUtils {
             return true;
         } else {
             return false;
+        }
+    }
+
+    public static enum SOCIAL_TYPE {FB, TWITTER};
+
+    public static void postSocial(Activity act, final SOCIAL_TYPE type, int model_id){
+        switch(type){
+            case FB:
+                FBUtils.authenticateAndPostVideoAction((FBUtils.FaceBookSessionActivity) act, model_id);
+                break;
+            case TWITTER:
+                TwitterUtils.authenticateAndTweet(act, model_id);
+                break;
         }
     }
 

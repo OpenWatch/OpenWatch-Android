@@ -26,9 +26,9 @@ import twitter4j.conf.ConfigurationBuilder;
 /**
  * Created by davidbrodsky on 7/5/13.
  *
- * If twitter tokens exist within Android's AccountManager: tweet(...) will retrieve them and send the tweet.
+ * If twitter tokens exist within Android's AccountManager: authenticateAndTweet(...) will retrieve them and send the authenticateAndTweet.
  *
- * If twitter tokens do not exist, tweet(..) will launch WebViewActivity with Twitter's authorization url, allow
+ * If twitter tokens do not exist, authenticateAndTweet(..) will launch WebViewActivity with Twitter's authorization url, allow
  * the user to authorize our app, and will store the resulting tokens. The initiating activity must catch WebViewActivity's
  * conclusion in OnActivityResult and direct the user provided pin to twitterLoginConfirmation(...) with an optional
  * TwitterAuthCallback defining the action to take after login is complete.
@@ -70,6 +70,12 @@ public class TwitterUtils {
         return builder.build();
     }
 
+    /**
+     * Sets user's OAuth Token and Secret given Twitter's OAuth callback url.
+     * @param c Application context
+     * @param oauthCallbackUrl the url redirected to after OAuth authorization is complete. Contains oauth_verifier GET parameter
+     * @param cb optional callback to perform if authentication successful
+     */
     public static void twitterLoginConfirmation(final Context c, final String oauthCallbackUrl, final TwitterAuthCallback cb){
         new AsyncTask<String, Void, Void>(){
 
@@ -102,51 +108,18 @@ public class TwitterUtils {
             }
         }.execute();
     }
-    /*
-    public static void twitterLoginConfirmation(final Context c, final TwitterAuthCallback cb){
 
-        new AsyncTask<String, Void, Void>(){
-
-            @Override
-            protected Void doInBackground(String... params) {
-            TwitterFactory factory = new TwitterFactory(getTwitterConfiguration());
-            Twitter twitter = factory.getInstance();
-            try {
-
-                AccessToken accessToken = twitter.getOAuthAccessToken();
-                OAUTH_TOKEN = accessToken.getToken();
-                OAUTH_SECRET = accessToken.getTokenSecret();
-                Log.i(TAG, String.format("Got oath access from loginConfirmation token: %s, secret: %s", OAUTH_TOKEN, OAUTH_SECRET));
-                if(!usingAccountManager){
-                    SharedPreferences.Editor prefs = c.getSharedPreferences(Constants.PROFILE_PREFS, c.MODE_PRIVATE).edit();
-                    prefs.putString(Constants.TWITTER_TOKEN, accessToken.getToken());
-                    prefs.putString(Constants.TWITTER_SECRET, accessToken.getTokenSecret());
-                    prefs.commit();
-                }
-                if(cb != null)
-                    cb.onAuth();
-            } catch (TwitterException e) {
-                Log.e(TAG, "TwitterException on twitterLoginConfirmation");
-                e.printStackTrace();
-            }
-            return null;
-            }
-        }.execute();
-    }
-
-    */
-
-    public static void updateStatus(final Activity act, int serverObjectId){
-        updateStatus(act, Share.generateShareText(act, OWServerObject.objects(act, OWServerObject.class).get(serverObjectId)));
+    public static void tweet(final Activity act, int serverObjectId){
+        tweet(act, Share.generateShareText(act, OWServerObject.objects(act, OWServerObject.class).get(serverObjectId)));
     }
 
     /**
-     * User facing method to send a tweet. Does not handle authentication.
+     * User facing method to send a authenticateAndTweet. Does not handle authentication.
      * @param act The initiating Activity, which should be prepared to capture the PIN resulting from Twitter's
      *            web authentication flow in it's OnActivityResult(...) and pass it to twitterLoginConfirmation(...)
-     * @param status the text of the tweet
+     * @param status the text of the authenticateAndTweet
      */
-    public static void updateStatus(final Activity act, final String status){
+    public static void tweet(final Activity act, final String status){
 
 
         new AsyncTask<String, Void, Void>(){
@@ -192,7 +165,7 @@ public class TwitterUtils {
                             authenticate(act, new TwitterAuthCallback() {
                             @Override
                             public void onAuth() {
-                                updateStatus(act, status);
+                                tweet(act, status);
                             }
                         });
 
@@ -205,22 +178,22 @@ public class TwitterUtils {
 
     }
 
-    public static void tweet(final Activity act, int serverObjectId){
-        tweet(act, Share.generateShareText(act, OWServerObject.objects(act, OWServerObject.class).get(serverObjectId)));
+    public static void authenticateAndTweet(final Activity act, int serverObjectId){
+        authenticateAndTweet(act, Share.generateShareText(act, OWServerObject.objects(act, OWServerObject.class).get(serverObjectId)));
     }
 
     /**
-     * User facing method to send a tweet. Handles authentication.
+     * User facing method to send a authenticateAndTweet. Handles authentication.
      * @param act The initiating Activity, which should be prepared to capture the PIN resulting from Twitter's
      *            web authentication flow in it's OnActivityResult(...) and pass it to twitterLoginConfirmation(...)
-     * @param status the text of the tweet
+     * @param status the text of the authenticateAndTweet
      */
-    public static void tweet(final Activity act, final String status){
+    public static void authenticateAndTweet(final Activity act, final String status){
 
         final TwitterAuthCallback cb = new TwitterAuthCallback() {
             @Override
             public void onAuth() {
-                updateStatus(act, status);
+                tweet(act, status);
             }
         };
         new AsyncTask<Void, Void, Void>(){
@@ -232,13 +205,13 @@ public class TwitterUtils {
 
                 try {
                     authenticate(act, cb);
-                    // Initiating Activity will handle calling updateStatus() after pin confirmation
+                    // Initiating Activity will handle calling tweet() after pin confirmation
                 } catch(IllegalStateException ie){
                     if (!twitter.getAuthorization().isEnabled()) {
                         Log.e(TAG, "OAuth consumer key/secret not set!");
                     }else{
                         // AccessToken already valid.
-                        //updateStatus(act, params[0]);
+                        //tweet(act, params[0]);
                     }
                 }
                 return null;
@@ -254,7 +227,7 @@ public class TwitterUtils {
      *            web authentication flow in it's OnActivityResult(...) and pass it to twitterLoginConfirmation(...)
      * @param cb an optional callback with actions to perform after the user is authenticated with Twitter
      */
-    private static void authenticate(final Activity act, final TwitterAuthCallback cb){
+    public static void authenticate(final Activity act, final TwitterAuthCallback cb){
         // First see if tokens are stored
         SharedPreferences prefs = act.getSharedPreferences(Constants.PROFILE_PREFS, act.MODE_PRIVATE);
         if(prefs.contains(Constants.TWITTER_TOKEN) && prefs.contains(Constants.TWITTER_SECRET)){
