@@ -13,6 +13,7 @@ import org.ale.openwatch.model.OWServerObject;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by davidbrodsky on 7/3/13.
@@ -68,7 +69,6 @@ public class FBUtils {
     private static void postVideoAction(final FaceBookSessionActivity act, final OWServerObject serverObject){
         act.setPendingRequest(false);
         //requestPublishPermissions((Activity) act, Session.getActiveSession());
-
         AsyncTask<Void, Void, Response> task = new AsyncTask<Void, Void, Response>() {
 
             @Override
@@ -108,6 +108,7 @@ public class FBUtils {
                 PostResponse postResponse = response.getGraphObjectAs(PostResponse.class);
                 if (postResponse != null && postResponse.getId() != null) {
                     Log.i(TAG, response.toString());
+                    act.onFBError(postResponse.asMap());
                 } else {
                     Log.e(TAG, response.getError().toString());
                     //handleError(response.getError());
@@ -126,6 +127,7 @@ public class FBUtils {
         String getId();
     }
 
+    /*
     private static void requestPublishPermissions(Activity act, Session session) {
         if (session != null) {
             Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(act, PERMISSIONS)
@@ -136,8 +138,10 @@ public class FBUtils {
             session.requestNewPublishPermissions(newPermissionsRequest);
         }
     }
+    */
 
     public interface FaceBookSessionActivity{
+        public void onFBError(Map response);
         public boolean getPendingRequest();
         public Session getSession();
         public void setSession(Session session);

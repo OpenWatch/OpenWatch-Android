@@ -5,8 +5,10 @@ import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -59,14 +61,49 @@ public class TwitterUtils {
         builder.setUseSSL(true); // default=false. wtf.
         builder.setOAuthConsumerKey(Constants.TWITTER_CONSUMER_KEY);
         builder.setOAuthConsumerSecret(SECRETS.TWITTER_CONSUMER_SECRET);
+
         if(OAUTH_SECRET != null && OAUTH_TOKEN != null){
             builder.setOAuthAccessToken(OAUTH_TOKEN)
                     .setOAuthAccessTokenSecret(OAUTH_SECRET);
-        }
+        }else
+            Log.e(TAG, "OAUTH_TOKEN or SECRET null on getTwitterConfiguration()");
         return builder.build();
     }
 
-    public static void twitterLoginConfirmation(final Activity act, String pin, final TwitterAuthCallback cb){
+    public static void twitterLoginConfirmation(final Context c, final String oauthCallbackUrl, final TwitterAuthCallback cb){
+        new AsyncTask<String, Void, Void>(){
+
+            @Override
+            protected Void doInBackground(String... params) {
+                TwitterFactory factory = new TwitterFactory(getTwitterConfiguration());
+                Twitter twitter = factory.getInstance();
+                try {
+
+                    Uri uri=Uri.parse(oauthCallbackUrl);
+                    String oauthVerifier = uri.getQueryParameter("oauth_verifier");
+                    Log.i(TAG, String.format("callback url: %s. verifier: %s", oauthCallbackUrl, oauthVerifier));
+                    AccessToken accessToken = twitter.getOAuthAccessToken(lastLoginRequestToken, oauthVerifier);
+                    OAUTH_TOKEN = accessToken.getToken();
+                    OAUTH_SECRET = accessToken.getTokenSecret();
+                    Log.i(TAG, String.format("Got oath access from loginConfirmation token: %s, secret: %s", OAUTH_TOKEN, OAUTH_SECRET));
+                    if(!usingAccountManager){
+                        SharedPreferences.Editor prefs = c.getSharedPreferences(Constants.PROFILE_PREFS, c.MODE_PRIVATE).edit();
+                        prefs.putString(Constants.TWITTER_TOKEN, accessToken.getToken());
+                        prefs.putString(Constants.TWITTER_SECRET, accessToken.getTokenSecret());
+                        prefs.commit();
+                    }
+                    if(cb != null)
+                        cb.onAuth();
+                } catch (TwitterException e) {
+                    Log.e(TAG, "TwitterException on twitterLoginConfirmation");
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }.execute();
+    }
+    /*
+    public static void twitterLoginConfirmation(final Context c, final TwitterAuthCallback cb){
 
         new AsyncTask<String, Void, Void>(){
 
@@ -75,11 +112,13 @@ public class TwitterUtils {
             TwitterFactory factory = new TwitterFactory(getTwitterConfiguration());
             Twitter twitter = factory.getInstance();
             try {
-                AccessToken accessToken = twitter.getOAuthAccessToken(lastLoginRequestToken, params[0]);
+
+                AccessToken accessToken = twitter.getOAuthAccessToken();
                 OAUTH_TOKEN = accessToken.getToken();
                 OAUTH_SECRET = accessToken.getTokenSecret();
+                Log.i(TAG, String.format("Got oath access from loginConfirmation token: %s, secret: %s", OAUTH_TOKEN, OAUTH_SECRET));
                 if(!usingAccountManager){
-                    SharedPreferences.Editor prefs = act.getSharedPreferences(Constants.PROFILE_PREFS, act.MODE_PRIVATE).edit();
+                    SharedPreferences.Editor prefs = c.getSharedPreferences(Constants.PROFILE_PREFS, c.MODE_PRIVATE).edit();
                     prefs.putString(Constants.TWITTER_TOKEN, accessToken.getToken());
                     prefs.putString(Constants.TWITTER_SECRET, accessToken.getTokenSecret());
                     prefs.commit();
@@ -87,12 +126,15 @@ public class TwitterUtils {
                 if(cb != null)
                     cb.onAuth();
             } catch (TwitterException e) {
+                Log.e(TAG, "TwitterException on twitterLoginConfirmation");
                 e.printStackTrace();
             }
             return null;
             }
-        }.execute(pin);
+        }.execute();
     }
+
+    */
 
     public static void updateStatus(final Activity act, int serverObjectId){
         updateStatus(act, Share.generateShareText(act, OWServerObject.objects(act, OWServerObject.class).get(serverObjectId)));
@@ -116,7 +158,7 @@ public class TwitterUtils {
                     Log.e(TAG, "OAUTH credentials are null, aborting tweet.");
                     return null;
                 }
-                builder.setOAuthConsumerKey(SECRETS.TWITTER_CONSUMER_KEY);
+                builder.setOAuthConsumerKey(Constants.TWITTER_CONSUMER_KEY);
                 builder.setOAuthConsumerSecret(SECRETS.TWITTER_CONSUMER_SECRET);
                 builder.setOAuthAccessToken(OAUTH_TOKEN);
                 builder.setOAuthAccessTokenSecret(OAUTH_SECRET);
@@ -213,12 +255,24 @@ public class TwitterUtils {
      * @param cb an optional callback with actions to perform after the user is authenticated with Twitter
      */
     private static void authenticate(final Activity act, final TwitterAuthCallback cb){
-        // First try getting Twitter credentials from Android's AccountManager
+        // First see if tokens are stored
+        SharedPreferences prefs = act.getSharedPreferences(Constants.PROFILE_PREFS, act.MODE_PRIVATE);
+        if(prefs.contains(Constants.TWITTER_TOKEN) && prefs.contains(Constants.TWITTER_SECRET)){
+            usingAccountManager = false;
+            OAUTH_TOKEN = prefs.getString(Constants.TWITTER_TOKEN,"");
+            OAUTH_SECRET = prefs.getString(Constants.TWITTER_SECRET, "");
+            Log.i(TAG, "got twitter credentials from sharedPreferences");
+            if(cb != null)
+                cb.onAuth();
+            return;
+        }
+
+        // Next try getting Twitter credentials from Android's AccountManager
         AccountManager am = AccountManager.get(act.getApplicationContext());
         Account[] accts = am.getAccountsByType(TWITTER_ACCOUNT_TYPE);
         Log.i(TAG, String.format("Found %d accounts for type %s", accts.length, TWITTER_ACCOUNT_TYPE));
-        boolean TEST_WEB_AUTH = false;
-        if(accts.length > 0 && !TEST_WEB_AUTH) {
+        boolean FORCE_WEB_AUTH = true;
+        if(accts.length > 0 && !FORCE_WEB_AUTH) {
             usingAccountManager = true;
             // TODO: Show Account Chooser
             Account acct = accts[0];
@@ -265,19 +319,12 @@ public class TwitterUtils {
             usingAccountManager = false;
             // Twitter account not stored in AccountManager.
             // First, see if we have stored Twitter tokens in SharedPreferences
-            SharedPreferences prefs = act.getSharedPreferences(Constants.PROFILE_PREFS, act.MODE_PRIVATE);
-            if(prefs.contains(Constants.TWITTER_TOKEN) && prefs.contains(Constants.TWITTER_SECRET)){
-                OAUTH_TOKEN = prefs.getString(Constants.TWITTER_TOKEN,"");
-                OAUTH_SECRET = prefs.getString(Constants.TWITTER_SECRET, "");
-                Log.i(TAG, "got twitter credentials from sharedPreferences");
-            }else{
                 // Attempt to auth via http
                 Log.i(TAG, "unable to get twitter acct via AccountManager. Trying via web");
                 getTwitterOAuthViaWeb(act);
                 // We don't pass the callback here because getTwitterOAuthViaWeb will require the user
                 // getting the oauth confirmation pin via webview and entering it into the initiating
                 // activity via OnActivityResult.
-            }
         }
     }
 
@@ -285,7 +332,7 @@ public class TwitterUtils {
      *
      * @param act the activity to act which will prompt the user for the PIN provided by Twitter's authorization web flow
      *            in it's OnActivityResult(...) method
-     * @return true if the token is already valid, false if web flow was initiated
+     * @return true if the token is already valid, false if web flow was initiated or an error occurred
      */
     private static boolean getTwitterOAuthViaWeb(Activity act){
         TwitterFactory factory = new TwitterFactory(getTwitterConfiguration());
@@ -305,10 +352,13 @@ public class TwitterUtils {
         }
 
         lastLoginRequestToken = requestToken;
-        Intent i = new Intent(act.getApplicationContext(), WebViewActivity.class);
-        Log.i(TAG, requestToken.getAuthenticationURL());
-        i.putExtra(WebViewActivity.URL_INTENT_KEY, requestToken.getAuthenticationURL());
-        act.startActivityForResult(i, TWITTER_RESULT);
+        if(requestToken.getAuthenticationURL() != null){
+            Intent i = new Intent(act.getApplicationContext(), WebViewActivity.class);
+            Log.i(TAG, requestToken.getAuthenticationURL());
+            i.putExtra(WebViewActivity.URL_INTENT_KEY, requestToken.getAuthenticationURL());
+            act.startActivityForResult(i, TWITTER_RESULT);
+            return false;
+        }
         return false;
     }
 

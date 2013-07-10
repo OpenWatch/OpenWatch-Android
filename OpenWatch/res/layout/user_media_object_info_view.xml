@@ -14,7 +14,7 @@
         android:hint="@string/media_description_hint"
         android:maxLength="254"
         android:ems="10"
-        android:singleLine="true" />
+        android:singleLine="false" />
 
 
     <TextView

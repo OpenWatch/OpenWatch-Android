@@ -64,16 +64,64 @@
         android:layout_toLeftOf="@id/videoview"
         android:layout_alignBottom="@id/videoview"
         android:layout_width="match_parent"
-        android:layout_marginBottom="48dp"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content">
 
         <fragment
             android:id="@+id/media_object_info"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            class="org.ale.openwatch.OWMediaObjectInfoFragment" />
+            android:layout_height="match_parent"
+            class="org.ale.openwatch.OWMediaObjectInfoFragment"
+            tools:layout="@layout/user_media_object_info_view"/>
 
     </FrameLayout>
+
+    <ImageView
+            android:id="@+id/owImage"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_below="@id/infoFragmentLayout"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/ic_ab_icon" />
+
+    <TextView
+            android:id="@+id/owText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="20dp"
+            android:fontFamily="sans-serif-condensed"
+            android:layout_alignBottom="@id/owImage"
+            android:text="@string/public_on_ow"
+            android:textSize="20sp"
+            android:layout_toRightOf="@id/owImage"/>
+
+
+
+    <Switch
+            android:id="@+id/owSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:thumbTextPadding="15dp"
+            android:switchTextAppearance="@style/Theme.openwatch.SwitchTextAppearance"
+            android:thumb="@drawable/ow_toggle"
+            android:textOn="@string/yes"
+            android:textOff="@string/no"
+            android:layout_marginRight="15dp"
+            android:layout_alignBottom="@id/owImage"
+            android:layout_alignParentRight="true"
+            tools:ignore="NewApi"/>
+
+    <ImageView
+            android:id="@+id/fbImage"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_below="@id/owImage"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/fb" />
 
     <TextView
         android:id="@+id/fbText"
@@ -82,32 +130,36 @@
         android:layout_marginLeft="15dp"
         android:layout_marginTop="20dp"
         android:fontFamily="sans-serif-condensed"
-        android:layout_below="@id/infoFragmentLayout"
-        android:text="@string/post_to"
+        android:layout_alignBottom="@id/fbImage"
+        android:text="@string/post_to_fb"
         android:textSize="20sp"
-        android:layout_alignParentLeft="true"/>
+        android:layout_toRightOf="@id/fbImage"/>
 
-    <ImageView
-            android:id="@+id/fbImage"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@id/fbText"
-            android:layout_alignBottom="@id/fbText"
-            android:src="@drawable/fb" />
+
 
     <Switch
         android:id="@+id/fbSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:switchTextAppearance="@style/Theme.openwatch.SwitchTextAppearance"
+        android:thumbTextPadding="15dp"
+        android:thumb="@drawable/fb_toggle"
         android:textOn="@string/yes"
         android:textOff="@string/no"
         android:layout_marginRight="15dp"
-        android:layout_marginTop="20dp"
-        android:textSize="20sp"
-        android:layout_below="@id/infoFragmentLayout"
+        android:layout_alignBottom="@id/fbImage"
         android:layout_alignParentRight="true"
         tools:ignore="NewApi"/>
+
+    <ImageView
+            android:id="@+id/twitterImage"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="10dp"
+            android:layout_below="@id/fbImage"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/twitter" />
 
     <TextView
         android:id="@+id/twitterText"
@@ -115,29 +167,24 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-condensed"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:layout_below="@id/fbText"
-        android:text="@string/post_to"
-        android:textSize="20sp"
-        android:layout_alignParentLeft="true"/>
+        android:layout_toRightOf="@id/twitterImage"
+        android:layout_alignBottom="@id/twitterImage"
+        android:text="@string/post_to_twitter"
+        android:textSize="20sp"/>
 
-    <ImageView
-            android:id="@+id/twitterImage"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@id/twitterText"
-            android:layout_alignBottom="@id/twitterText"
-            android:src="@drawable/twitter" />
 
     <Switch
         android:id="@+id/twitterSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:thumbTextPadding="15dp"
+        android:switchTextAppearance="@style/Theme.openwatch.SwitchTextAppearance"
         android:layout_marginRight="15dp"
         android:layout_marginTop="20dp"
-        android:layout_below="@id/fbSwitch"
-        android:textSize="20sp"
+        android:thumb="@drawable/twitter_toggle"
+        android:layout_alignBottom="@id/twitterImage"
         android:textOn="@string/yes"
         android:textOff="@string/no"
         android:layout_alignParentRight="true"
@@ -148,7 +195,7 @@
             android:id="@+id/doneButton"
             android:background="@drawable/green_button_bg"
             android:layout_below="@id/twitterSwitch"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="30dp"
             android:layout_width="250dp"
             android:layout_height="50dp"
             android:fontFamily="sans-serif-condensed"

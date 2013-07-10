@@ -1,11 +1,14 @@
 package org.ale.openwatch;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import com.actionbarsherlock.app.SherlockActivity;
+import org.ale.openwatch.constants.Constants;
+import org.ale.openwatch.twitter.TwitterUtils;
 
 /**
  * Created by davidbrodsky on 7/5/13.
@@ -25,7 +28,14 @@ public class WebViewActivity extends SherlockActivity {
             public boolean shouldOverrideUrlLoading(WebView view, String url){
                 // do your handling codes here, which url is the requested url
                 // probably you need to open that url rather than redirect:
-                view.loadUrl(url);
+                Log.i(TAG, String.format("webView received redirect to %s", url));
+                if(url.contains("https://openwatch.net/oauth_callback")){
+                    Intent data = new Intent();
+                    data.putExtra("oauth_callback_url", url);
+                    setResult(Activity.RESULT_OK, data);
+                    finish();
+                }else
+                    view.loadUrl(url);
                 return false; // then it is not handled by default action
             }
         });

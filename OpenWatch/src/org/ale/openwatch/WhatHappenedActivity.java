@@ -33,6 +33,8 @@ import org.ale.openwatch.share.Share;
 import org.ale.openwatch.twitter.TwitterUtils;
 import org.json.JSONObject;
 
+import java.util.Map;
+
 public class WhatHappenedActivity extends SherlockFragmentActivity implements FBUtils.FaceBookSessionActivity {
 
     public static enum SOCIAL_TYPE {FB, TWITTER};
@@ -60,6 +62,8 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_what_happened);
 		this.getSupportActionBar().setTitle(getString(R.string.what_happened));
+
+        ((CompoundButton) findViewById(R.id.owSwitch)).setChecked(true);
 
         fbToggle = (CompoundButton) findViewById(R.id.fbSwitch);
         fbToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -176,6 +180,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
         }
         */
         if(requestCode == TwitterUtils.TWITTER_RESULT){
+            /*
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
             alert.setTitle("Login");
             alert.setMessage("Enter Pin :");
@@ -202,11 +207,25 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
             alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 
                 public void onClick(DialogInterface dialog, int which) {
-                    return;
+                    twitterToggle.setChecked(false);
                 }
             });
             alert.show();
+            */
             //TwitterUtils.updateStatus(this, "test updateStatus");
+
+            TwitterUtils.TwitterAuthCallback cb = new TwitterUtils.TwitterAuthCallback() {
+                @Override
+                public void onAuth() {
+                    TwitterUtils.updateStatus(WhatHappenedActivity.this, Share.generateShareText(WhatHappenedActivity.this, OWServerObject.objects(WhatHappenedActivity.this, OWServerObject.class).get(model_id)));
+                }
+            };
+
+            if(data.hasExtra("oauth_callback_url")){
+                String oauthCallbackUrl = data.getExtras().getString("oauth_callback_url");
+                TwitterUtils.twitterLoginConfirmation(WhatHappenedActivity.this, oauthCallbackUrl, cb);
+            }else
+                Log.e(TAG, "onActivityResult did not provide Intent data with twitter oauth callback url");
 
         }else{
             // Facebook
@@ -464,6 +483,20 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
             }
         }
     };
+
+    @Override
+    public void onFBError(Map response) {
+        fbToggle.setChecked(false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.whoops))
+                .setMessage(getString(R.string.fb_error))
+                .setPositiveButton(getString(R.string.dialog_bummer), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
+    }
 
     @Override
     public boolean getPendingRequest() {
