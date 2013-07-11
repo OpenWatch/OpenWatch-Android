@@ -7,7 +7,7 @@
 
     <EditText
         android:id="@+id/editTitle"
-        android:fontFamily="sans-serif-condensed"
+        android:fontFamily="sans-serif-light"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"

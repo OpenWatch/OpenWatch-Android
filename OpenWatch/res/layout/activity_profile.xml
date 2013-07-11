@@ -63,10 +63,21 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentLeft="true"/>
 
+    <TextView
+            android:id="@+id/socialInfo"
+            android:fontFamily="sans-serif-light"
+            android:layout_below="@id/bio"
+            android:textColor="@color/text_light"
+            android:layout_centerHorizontal="true"
+            android:text="Connect a social account to quickly complete your profile"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
 
     <LinearLayout android:id="@+id/buttonContainer"
                   android:layout_marginTop="10dp"
-                  android:layout_below="@id/bio"
+                  android:layout_below="@id/socialInfo"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:weightSum="1.0"

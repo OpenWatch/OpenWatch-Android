@@ -11,12 +11,17 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginBottom="5dp"
-            android:background="#eda5a8">
+            android:background="#a8dff4">
 
         <TextView
                 android:id="@+id/sync_progress_text"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:textColor="#000"
+                android:shadowColor="#fffbfffd"
+                android:shadowDy="-2"
+                android:shadowRadius=".1"
                 android:layout_centerInParent="true"
                 android:layout_centerHorizontal="true"
                 android:layout_toRightOf="@id/button_login_progress"
@@ -77,10 +82,10 @@
 
     <ImageView
             android:id="@+id/owImage"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="60dp"
             android:layout_below="@id/infoFragmentLayout"
             android:layout_alignParentLeft="true"
             android:src="@drawable/ic_ab_icon" />
@@ -91,7 +96,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="20dp"
-            android:fontFamily="sans-serif-condensed"
+            android:fontFamily="sans-serif-light"
             android:layout_alignBottom="@id/owImage"
             android:text="@string/public_on_ow"
             android:textSize="20sp"
@@ -105,7 +110,7 @@
             android:layout_height="wrap_content"
             android:thumbTextPadding="10dp"
             android:switchTextAppearance="@style/Theme.openwatch.SwitchTextAppearance"
-            android:thumb="@drawable/ow_toggle"
+            android:thumb="@drawable/ow_toggle_bg"
             android:textOn="@string/yes"
             android:textOff="@string/no"
             android:layout_marginRight="15dp"
@@ -115,12 +120,13 @@
 
     <ImageView
             android:id="@+id/fbImage"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="60dp"
             android:layout_below="@id/owImage"
             android:layout_alignParentLeft="true"
+            android:visibility="invisible"
             android:src="@drawable/fb" />
 
     <TextView
@@ -129,7 +135,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="20dp"
-        android:fontFamily="sans-serif-condensed"
+        android:fontFamily="sans-serif-light"
         android:layout_alignBottom="@id/fbImage"
         android:text="@string/post_to_fb"
         android:textSize="20sp"
@@ -143,7 +149,7 @@
         android:layout_height="wrap_content"
         android:switchTextAppearance="@style/Theme.openwatch.SwitchTextAppearance"
         android:thumbTextPadding="10dp"
-        android:thumb="@drawable/ow_toggle"
+        android:thumb="@drawable/ow_toggle_bg"
         android:textOn="@string/yes"
         android:textOff="@string/no"
         android:layout_marginRight="15dp"
@@ -153,19 +159,20 @@
 
     <ImageView
             android:id="@+id/twitterImage"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginTop="30dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="60dp"
             android:layout_marginLeft="10dp"
             android:layout_below="@id/fbImage"
             android:layout_alignParentLeft="true"
+            android:visibility="invisible"
             android:src="@drawable/twitter" />
 
     <TextView
         android:id="@+id/twitterText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-condensed"
+        android:fontFamily="sans-serif-light"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="30dp"
         android:layout_below="@id/fbText"
@@ -183,7 +190,7 @@
         android:switchTextAppearance="@style/Theme.openwatch.SwitchTextAppearance"
         android:layout_marginRight="15dp"
         android:layout_marginTop="20dp"
-        android:thumb="@drawable/ow_toggle"
+        android:thumb="@drawable/ow_toggle_bg"
         android:layout_alignBottom="@id/twitterImage"
         android:textOn="@string/yes"
         android:textOff="@string/no"
@@ -198,7 +205,7 @@
             android:layout_marginTop="30dp"
             android:layout_width="250dp"
             android:layout_height="50dp"
-            android:fontFamily="sans-serif-condensed"
+            android:fontFamily="sans-serif-light"
             android:layout_centerHorizontal="true"
             android:onClick="onDoneButtonClick"
             android:textColor="#fff"
