@@ -222,6 +222,7 @@
     <string name="last_name">Last Name</string>
     <string name="connect">Connect</string>
     <string name="disconnect">Disconnect</string>
+    <string name="save">Save</string>
 
 
 </resources>

@@ -83,7 +83,7 @@
 
     <Button
             android:id="@+id/twitterButton"
-            android:background="@drawable/twitter_button"
+            android:background="@drawable/twitter_button_bg"
             android:drawableLeft="@drawable/twitter_btn_image_sosmall"
             android:layout_marginLeft="10dp"
             android:layout_width="0dp"

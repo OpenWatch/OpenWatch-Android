@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Thanks! http://android.onyou.ch/2011/01/25/simple-custom-button-using-a-selector-xml-layout/ -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- disabled -->
+    <item android:state_enabled="false"><nine-patch android:src="@drawable/twitter_button"/> </item>
+
+    <!-- pressed -->
+    <item android:state_pressed="true"><nine-patch android:src="@drawable/twitter_button_pressed"/> </item>
+
+    <!-- focused -->
+    <item android:state_focused="true"><nine-patch android:src="@drawable/twitter_button_pressed"/> </item>
+
+    <!-- default -->
+    <item><nine-patch android:src="@drawable/twitter_button"/> </item>
+
+</selector>
