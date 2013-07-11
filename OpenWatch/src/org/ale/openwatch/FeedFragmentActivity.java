@@ -111,7 +111,9 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         
         SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, 0);
 	    internal_user_id = profile.getInt(Constants.INTERNAL_USER_ID, 0);
-        String userThumbnailUrl = OWUser.objects(getApplicationContext(), OWUser.class).get(internal_user_id).thumbnail_url.get();
+        String userThumbnailUrl = null;
+        if(internal_user_id > 0)
+            userThumbnailUrl = OWUser.objects(getApplicationContext(), OWUser.class).get(internal_user_id).thumbnail_url.get();
         
         setupFeedAndTagMaps();
         

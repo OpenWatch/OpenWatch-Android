@@ -128,8 +128,9 @@ public class FBUtils {
                 PostResponse postResponse = response.getGraphObjectAs(PostResponse.class);
                 if (postResponse != null && postResponse.getId() != null) {
                     Log.i(TAG, response.toString());
-                    act.onFBError(postResponse.asMap());
+
                 } else {
+                    act.onFBError(postResponse.asMap());
                     Log.e(TAG, response.getError().toString());
                     //handleError(response.getError());
                 }

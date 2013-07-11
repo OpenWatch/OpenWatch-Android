@@ -36,6 +36,7 @@ import java.util.Map;
 
 public class WhatHappenedActivity extends SherlockFragmentActivity implements FBUtils.FaceBookSessionActivity {
 
+    TextView editTitle;
 
 	private static final String TAG = "WhatHappenedActivity";
 	static int model_id = -1;
@@ -56,6 +57,8 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 
     // Keep track of OW-Sync before Sharing to FB / Twitter
     boolean syncedWithOW = false;
+    boolean didTweet = false;
+    boolean didFBShare = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +97,21 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
             }
         });
         owToggle = (CompoundButton) findViewById(R.id.owSwitch);
+        owToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(!isChecked){
+                    // TODO: Mark deleted
+                    fbToggle.setChecked(false);
+                    fbToggle.setEnabled(false);
+                    twitterToggle.setChecked(false);
+                    twitterToggle.setEnabled(false);
+                }else{
+                    fbToggle.setEnabled(true);
+                    twitterToggle.setEnabled(true);
+                }
+            }
+        });
 
 		Log.i(TAG, "onCreate");
 		try{
@@ -113,8 +131,10 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 		
 		Log.i(TAG, "sent recordingMeta request");
 
-        this.findViewById(R.id.editTitle).requestFocus();
-        ((EditText)this.findViewById(R.id.editTitle)).addTextChangedListener(new TextWatcher() {
+        editTitle = ((TextView)findViewById(R.id.editTitle));
+        editTitle.setFocusableInTouchMode(true);
+        editTitle.requestFocus();
+        editTitle.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
@@ -132,10 +152,22 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 	}
 
     public void syncAndPostSocial(final OWUtils.SOCIAL_TYPE type){
+        if(type == OWUtils.SOCIAL_TYPE.FB && didFBShare)
+            return;
+        else if(type == OWUtils.SOCIAL_TYPE.TWITTER && didTweet)
+            return;
+
+        // TODO: Let's make a network request service
+        if(type == OWUtils.SOCIAL_TYPE.FB)
+            didFBShare = true;
+        else
+            didTweet = true;
         // If a description has been entered, sync that before posting to FB
         //TextView editTitle = (TextView) this.getSupportFragmentManager().findFragmentById(R.id.media_object_info).getView().findViewById(R.id.editTitle);
         if(!syncedWithOW){
             OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
+            serverObject.title.set(editTitle.getText().toString());
+            serverObject.save(getApplicationContext());
             OWServiceRequests.syncOWServerObject(getApplicationContext(), serverObject, true, new OWServiceRequests.RequestCallback() {
                 @Override
                 public void onFailure() {
@@ -147,6 +179,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
                 public void onSuccess() {
                     syncedWithOW = true;
                     OWUtils.postSocial(WhatHappenedActivity.this, type, model_id);
+
                 }
             });
         }else{
@@ -167,11 +200,14 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
                 }
             };
 
-            if(data.hasExtra("oauth_callback_url")){
+            if(data != null && data.hasExtra("oauth_callback_url")){
                 String oauthCallbackUrl = data.getExtras().getString("oauth_callback_url");
                 TwitterUtils.twitterLoginConfirmation(WhatHappenedActivity.this, oauthCallbackUrl, cb);
-            }else
+            }else{
                 Log.e(TAG, "onActivityResult did not provide Intent data with twitter oauth callback url");
+                twitterToggle.setChecked(false);
+            }
+
 
         }else{
             // Facebook
@@ -180,7 +216,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
                     this.session.getState().isOpened()) {
                 Log.i("FBUtils", "onActivityResult create videoAction");
                 syncAndPostSocial(OWUtils.SOCIAL_TYPE.FB);
-            }else if(requestCode == Activity.RESULT_CANCELED){
+            }else{
                 fbToggle.setChecked(false);
             }
         }

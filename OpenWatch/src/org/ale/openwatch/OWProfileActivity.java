@@ -216,11 +216,12 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
                     }
                 };
 
-                if(data.hasExtra("oauth_callback_url")){
+                if(data != null && data.hasExtra("oauth_callback_url")){
                     String oauthCallbackUrl = data.getExtras().getString("oauth_callback_url");
                     TwitterUtils.twitterLoginConfirmation(OWProfileActivity.this, oauthCallbackUrl, cb);
-                }else
+                }else{
                     Log.e(TAG, "onActivityResult did not provide Intent data with twitter oauth callback url");
+                }
                 break;
             case SELECT_PHOTO:
                 if(resultCode == RESULT_OK){

@@ -12,6 +12,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:hint="@string/media_description_hint"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:maxLength="254"
         android:ems="10"
         android:singleLine="false" />

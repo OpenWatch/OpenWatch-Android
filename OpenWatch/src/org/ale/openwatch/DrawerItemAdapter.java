@@ -71,7 +71,7 @@ public class DrawerItemAdapter extends ArrayAdapter {
         if(dataToIcon.containsKey(data.get(position))){
             viewCache.title.setText(data.get(position));
             viewCache.icon.setVisibility(View.VISIBLE);
-            if(data.get(position).compareTo("Profile")==0){
+            if(data.get(position).compareTo("Profile")==0 && userThumbnailUrl != null){
                 ImageLoader.getInstance().displayImage(userThumbnailUrl, viewCache.icon);
             }else
                 viewCache.icon.setImageResource((Integer)dataToIcon.get(data.get(position)));
