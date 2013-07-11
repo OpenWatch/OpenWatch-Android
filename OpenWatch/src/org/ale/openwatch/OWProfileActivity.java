@@ -192,7 +192,7 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
                         user.blurb.set(twitterUser.getDescription());
                         blurb.setText(twitterUser.getDescription());
                     }
-                    if (user.thumbnail_url.get() != null && user.thumbnail_url.get().compareTo("") != 0) {
+                    if (user.thumbnail_url.get() == null || user.thumbnail_url.get().compareTo("") == 0) {
                         user.thumbnail_url.set(twitterUser.getProfileImageURLHttps());
                         ImageLoader.getInstance().displayImage(twitterUser.getProfileImageURLHttps(), profileImage);
                         // TODO: Download Image, upload to OW
