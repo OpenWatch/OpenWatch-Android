@@ -10,6 +10,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -341,7 +342,6 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
                         public void onVideoSizeChanged(MediaPlayer mp, int width,
                                                        int height) {
                             VideoView video_view = (VideoView) findViewById(R.id.videoview);
-                            mp.setLooping(true);
                             video_view.requestFocus();
                             video_view.start();
                             video_playing = true;
@@ -354,6 +354,19 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
                 public boolean onError(MediaPlayer mp, int what, int extra) {
                     video_view.setVisibility(View.GONE);
                     return true;
+                }
+            });
+            video_view.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if(video_playing){
+                        ((VideoView)v).pause();
+                        video_playing = false;
+                    }else{
+                        ((VideoView)v).start();
+                        video_playing = true;
+                    }
+                    return false;
                 }
             });
             video_view.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
