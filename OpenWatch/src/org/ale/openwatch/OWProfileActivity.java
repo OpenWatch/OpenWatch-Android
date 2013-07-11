@@ -58,7 +58,7 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
         setContentView(R.layout.activity_profile);
         firstName = (TextView) findViewById(R.id.firstName);
         lastName = (TextView) findViewById(R.id.lastName);
-        blurb = (TextView) findViewById(R.id.blurb);
+        blurb = (TextView) findViewById(R.id.bio);
         profileImage = (ImageView) findViewById(R.id.profileImage);
         twitterButton = (Button) findViewById(R.id.twitterButton);
         fbButton = (Button) findViewById(R.id.fbButton);
@@ -186,8 +186,9 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
                     OWUser user = OWUser.objects(getApplicationContext(), OWUser.class).get(model_id);
                     if (user == null)
                         return;
-                    if (twitterUser.getDescription() != null && !(user.blurb.get() == null || user.blurb.get().compareTo("") == 0)) {
+                    if (twitterUser.getDescription() != null && (user.blurb.get() == null || user.blurb.get().compareTo("") == 0)) {
                         user.blurb.set(twitterUser.getDescription());
+                        blurb.setText(twitterUser.getDescription());
                     }
                     if (user.thumbnail_url.get() != null && user.thumbnail_url.get().compareTo("") != 0) {
                         user.thumbnail_url.set(twitterUser.getProfileImageURLHttps());
