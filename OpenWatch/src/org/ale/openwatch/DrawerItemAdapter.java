@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import org.ale.openwatch.constants.Constants;
 
 import java.util.ArrayList;
@@ -22,13 +23,15 @@ public class DrawerItemAdapter extends ArrayAdapter {
     ArrayList<String> data = null;
     ArrayList<String> feeds = null;
     HashMap dataToIcon;
+    String userThumbnailUrl;
 
-    public DrawerItemAdapter(Context context, ArrayList<String> data, HashMap<String, Integer> dataToIcon, ArrayList<String> feeds) {
+    public DrawerItemAdapter(Context context, ArrayList<String> data, HashMap<String, Integer> dataToIcon, ArrayList<String> feeds, String userThumbnailUrl) {
         super(context, layoutId, data);
         c = context;
         this.data = data;
         this.dataToIcon = dataToIcon;
         this.feeds = feeds;
+        this.userThumbnailUrl = userThumbnailUrl;
     }
 
     @Override
@@ -68,7 +71,10 @@ public class DrawerItemAdapter extends ArrayAdapter {
         if(dataToIcon.containsKey(data.get(position))){
             viewCache.title.setText(data.get(position));
             viewCache.icon.setVisibility(View.VISIBLE);
-            viewCache.icon.setImageResource((Integer)dataToIcon.get(data.get(position)));
+            if(data.get(position).compareTo("Profile")==0){
+                ImageLoader.getInstance().displayImage(userThumbnailUrl, viewCache.icon);
+            }else
+                viewCache.icon.setImageResource((Integer)dataToIcon.get(data.get(position)));
             //view.setTag(R.id.list_item_model, data.get(position));
         }else if(feeds.contains(data.get(position))){
             viewCache.title.setText(Constants.FEED_TO_TITLE.get(data.get(position)));
@@ -79,6 +85,7 @@ public class DrawerItemAdapter extends ArrayAdapter {
             viewCache.title.setText("# " + data.get(position));
             viewCache.icon.setVisibility(View.GONE);
         }
+
         view.setTag(R.id.list_item_model, data.get(position));
         return view;
     }

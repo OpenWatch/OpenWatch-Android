@@ -111,6 +111,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         
         SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, 0);
 	    internal_user_id = profile.getInt(Constants.INTERNAL_USER_ID, 0);
+        String userThumbnailUrl = OWUser.objects(getApplicationContext(), OWUser.class).get(internal_user_id).thumbnail_url.get();
         
         setupFeedAndTagMaps();
         
@@ -140,7 +141,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         mDrawerItems.add("divider");
         mDrawerItems.addAll(tags);
         mDrawerList.setAdapter(new DrawerItemAdapter(this,
-                mDrawerItems, drawerTitleToIcon, feeds));
+                mDrawerItems, drawerTitleToIcon, feeds, userThumbnailUrl));
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
