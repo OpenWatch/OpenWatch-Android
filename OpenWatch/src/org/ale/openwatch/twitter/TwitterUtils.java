@@ -157,12 +157,11 @@ public class TwitterUtils {
 
     /**
      * User facing method to send a authenticateAndTweet. Does not handle authentication.
-     * @param act The initiating Activity, which should be prepared to capture the PIN resulting from Twitter's
-     *            web authentication flow in it's OnActivityResult(...) and pass it to twitterLoginConfirmation(...)
+     * @param act The initiating Activity, which should be prepared to capture result from Twitter's
+     *            web authentication flow in it's OnActivityResult(...)
      * @param status the text of the authenticateAndTweet
      */
     public static void tweet(final Activity act, final String status){
-
 
         new AsyncTask<String, Void, Void>(){
 
@@ -342,7 +341,6 @@ public class TwitterUtils {
                 }
                 return null;
             }
-
             @Override
             protected void onPostExecute(RequestToken requestToken) {
                 lastLoginRequestToken = requestToken;

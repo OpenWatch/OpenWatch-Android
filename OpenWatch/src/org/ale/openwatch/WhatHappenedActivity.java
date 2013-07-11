@@ -73,12 +73,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    if(model_id > 0){
-                        syncAndPostSocial(OWUtils.SOCIAL_TYPE.FB);
-                    }else{
-                        // make sure we're authenticated with FB
-                        FBUtils.authenticate(WhatHappenedActivity.this, null);
-                    }
+                    FBUtils.authenticate(WhatHappenedActivity.this, null);
                 }
             }
         });
@@ -87,12 +82,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    if(model_id > 0){
-                        syncAndPostSocial(OWUtils.SOCIAL_TYPE.TWITTER);
-                    }else{
-                        // make sure we're authenticated with Twitter
-                        TwitterUtils.authenticate(WhatHappenedActivity.this, null);
-                    }
+                    TwitterUtils.authenticate(WhatHappenedActivity.this, null);
                 }
             }
         });
@@ -214,8 +204,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
             if(this.session.onActivityResult(this, requestCode, resultCode, data) &&
                     pendingRequest &&
                     this.session.getState().isOpened()) {
-                Log.i("FBUtils", "onActivityResult create videoAction");
-                syncAndPostSocial(OWUtils.SOCIAL_TYPE.FB);
+                //syncAndPostSocial(OWUtils.SOCIAL_TYPE.FB);
             }else{
                 fbToggle.setChecked(false);
             }
@@ -262,10 +251,6 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 						recording.updateWithJson(app_context, response);
 						recording_server_id = response.getInt(Constants.OW_SERVER_ID);
 						Log.i(TAG, "recording updated with server meta response");
-                        if(fbToggle.isChecked())
-                            syncAndPostSocial(OWUtils.SOCIAL_TYPE.FB);
-                        if(twitterToggle.isChecked())
-                            syncAndPostSocial(OWUtils.SOCIAL_TYPE.TWITTER);
 						return;
 					} catch(Exception e){
 						Log.e(TAG, "Error processing getRecording response");
@@ -290,7 +275,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 	}
 
     public void onDoneButtonClick(View v){
-        /*
+
         if(model_id > 0){
             if(fbToggle.isChecked()){
                 syncAndPostSocial(OWUtils.SOCIAL_TYPE.FB);
@@ -299,7 +284,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
                 syncAndPostSocial(OWUtils.SOCIAL_TYPE.TWITTER);
             }
         }
-        */
+
         this.finish();
     }
 

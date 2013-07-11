@@ -306,6 +306,7 @@ public class OWUtils {
                 FBUtils.authenticateAndPostVideoAction((FBUtils.FaceBookSessionActivity) act, model_id);
                 break;
             case TWITTER:
+                TwitterUtils.tweet(act, model_id);
                 TwitterUtils.authenticateAndTweet(act, model_id);
                 break;
         }
