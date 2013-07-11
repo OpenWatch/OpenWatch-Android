@@ -129,7 +129,11 @@
                   android:theme="@android:style/Theme.Translucent.NoTitleBar"
                   android:label="@string/app_name" />
         <activity android:name=".WebViewActivity"/>
-        <activity android:name=".OWProfileActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".OWProfileActivity" android:label="@string/profile" android:screenOrientation="portrait">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="org.ale.openwatch.FeedFragmentActivity" />
+        </activity>
     </application>
 
 </manifest>
