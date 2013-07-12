@@ -39,6 +39,7 @@
     <orderEntry type="module" module-name="Android-ViewPagerIndicator" exported="" />
     <orderEntry type="module" module-name="facebook" exported="" />
     <orderEntry type="module" module-name="androrm" exported="" />
+    <orderEntry type="module" module-name="ActionBar-PullToRefresh" exported="" />
   </component>
 </module>
 

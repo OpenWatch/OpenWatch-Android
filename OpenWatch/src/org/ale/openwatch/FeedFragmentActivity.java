@@ -41,10 +41,11 @@ import java.util.*;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.Constants.OWFeedType;
 import org.ale.openwatch.database.DatabaseManager;
-import org.ale.openwatch.feeds.RemoteFeedFragmentActivity;
+import org.ale.openwatch.feeds.RemoteRecordingsListFragment;
 import org.ale.openwatch.http.OWServiceRequests;
 import org.ale.openwatch.model.OWTag;
 import org.ale.openwatch.model.OWUser;
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
 
 /**
  * Demonstrates combining a TabHost with a ViewPager to implement a tab UI
@@ -53,7 +54,6 @@ import org.ale.openwatch.model.OWUser;
  */
 public class FeedFragmentActivity extends SherlockFragmentActivity {
     private static String TAG = "FeedFragmentActivity";
-
     TabHost mTabHost;
     ViewPager  mViewPager;
     TabsAdapter mTabsAdapter;
@@ -87,10 +87,14 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private ListView mDrawerList;
 
+    public PullToRefreshAttacher mPullToRefreshAttacher;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mPullToRefreshAttacher = new PullToRefreshAttacher(this);
+        //mTabHost.setOn
         setContentView(R.layout.fragment_tabs_pager);
         this.getSupportActionBar().setDisplayShowTitleEnabled(false);
         BugSenseHandler.initAndStartSession(getApplicationContext(), SECRETS.BUGSENSE_API_KEY);
@@ -109,7 +113,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         mTabHost.setup();
         mViewPager = (ViewPager)findViewById(R.id.pager);
         mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
-        
+
         mTitleIndicator = (TitlePageIndicator)findViewById(R.id.titles);
         mTitleIndicator.setViewPager(mViewPager);
 
@@ -180,7 +184,13 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
 
             @Override
             public void onPageSelected(int i) {
+                Log.i(TAG, String.format("page %d selected",i));
                 removeVideoView();
+                /*
+                RemoteRecordingsListFragment frag = ((RemoteRecordingsListFragment) FeedFragmentActivity.this.mTabsAdapter.getItem(i));
+                if( frag != null)
+                    frag.onPageSelected();
+                */
             }
 
             @Override
@@ -194,6 +204,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     @Override
     public void onPause(){
         removeVideoView();
+        super.onPause();
     }
 
     @Override
@@ -226,7 +237,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     	for(String feed : feeds){
             /*
     		if(feed.compareTo(OWFeedType.USER.toString().toLowerCase()) == 0){
-    			//TODO: Merge MyFeedFragmentActivity and RemoteFeedFragmentActivity
+    			//TODO: Merge MyFeedFragmentActivity and RemoteFeedFragment
     			mTabsAdapter.addTab(mTabHost.newTabSpec(getString(Constants.FEED_TO_TITLE.get(feed))).setIndicator(inflateCustomTab(getString(Constants.FEED_TO_TITLE.get(feed)))),
     	                MyFeedFragmentActivity.LocalRecordingsListFragment.class, null);
     			mTitleToTabId.put(feed, nextPagerViewId);
@@ -235,7 +246,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
             feedBundle = new Bundle(1);
             feedBundle.putString(Constants.OW_FEED, feed);
             mTabsAdapter.addTab(mTabHost.newTabSpec(getString(Constants.FEED_TO_TITLE.get(feed))).setIndicator(inflateCustomTab(getString(Constants.FEED_TO_TITLE.get(feed)))),
-                    RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, feedBundle);
+                    RemoteRecordingsListFragment.class, feedBundle);
             mTitleToTabId.put(feed, nextPagerViewId);
     		//}
     		nextPagerViewId ++;
@@ -245,7 +256,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     		feedBundle = new Bundle(1);
 			feedBundle.putString(Constants.OW_FEED, tag);
 	        mTabsAdapter.addTab(mTabHost.newTabSpec("#"+tag).setIndicator(inflateCustomTab("#"+tag)),
-	                RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, feedBundle);
+	                RemoteRecordingsListFragment.class, feedBundle);
 	        mTitleToTabId.put(tag, nextPagerViewId);
 	        nextPagerViewId ++;
     	}
@@ -262,7 +273,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         else
             tabTitle = "#" + name;
         mTabsAdapter.addTab(mTabHost.newTabSpec(tabTitle).setIndicator(inflateCustomTab(tabTitle)),
-                RemoteFeedFragmentActivity.RemoteRecordingsListFragment.class, feedBundle);
+                RemoteRecordingsListFragment.class, feedBundle);
         mTitleToTabId.put(name, nextPagerViewId);
         nextPagerViewId ++;
     }

@@ -3735,13 +3735,13 @@ org.ale.openwatch.feeds.MyFeedFragmentActivity:
 org.ale.openwatch.feeds.MyFeedFragmentActivity$LocalRecordingsListFragment:
     java.lang.String mCurFilter
     android.support.v4.widget.SearchViewCompat$OnQueryTextListenerCompat mOnQueryTextListenerCompat
-org.ale.openwatch.feeds.RemoteFeedFragmentActivity:
+org.ale.openwatch.feeds.RemoteFeedFragment:
     private static final java.lang.String TAG
     60:78:public RemoteFeedFragmentActivity()
-org.ale.openwatch.feeds.RemoteFeedFragmentActivity$RemoteRecordingsListFragment:
+org.ale.openwatch.feeds.RemoteFeedFragment$RemoteRecordingsListFragment:
     java.lang.String mCurFilter
     android.support.v4.widget.SearchViewCompat$OnQueryTextListenerCompat mOnQueryTextListenerCompat
-org.ale.openwatch.feeds.RemoteFeedFragmentActivity$RemoteRecordingsListFragment$4:
+org.ale.openwatch.feeds.RemoteFeedFragment$RemoteRecordingsListFragment$4:
     299:299:public void onError()
 org.ale.openwatch.file.FileUtils:
     private static final java.lang.String TAG

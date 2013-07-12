@@ -11520,11 +11520,11 @@ org.ale.openwatch.feeds.OWMediaObjectAdapter$ViewCache -> org.ale.openwatch.d.i:
     int video_col -> s
     int investigation_col -> t
     int mission_col -> u
-org.ale.openwatch.feeds.RemoteFeedFragmentActivity -> org.ale.openwatch.d.j:
+org.ale.openwatch.feeds.RemoteFeedFragment -> org.ale.openwatch.d.j:
     void onCreate(android.os.Bundle) -> onCreate
-org.ale.openwatch.feeds.RemoteFeedFragmentActivity$1 -> org.ale.openwatch.d.k:
+org.ale.openwatch.feeds.RemoteFeedFragment$1 -> org.ale.openwatch.d.k:
     int[] $SwitchMap$org$ale$openwatch$constants$Constants$CONTENT_TYPE -> a
-org.ale.openwatch.feeds.RemoteFeedFragmentActivity$RemoteRecordingsListFragment -> org.ale.openwatch.d.l:
+org.ale.openwatch.feeds.RemoteFeedFragment$RemoteRecordingsListFragment -> org.ale.openwatch.d.l:
     java.lang.String TAG -> X
     boolean didRefreshFeed -> Y
     int page -> Z
@@ -11552,35 +11552,35 @@ org.ale.openwatch.feeds.RemoteFeedFragmentActivity$RemoteRecordingsListFragment 
     void onLoaderReset(android.support.v4.content.Loader) -> a
     android.support.v4.content.Loader onCreateLoader(int,android.os.Bundle) -> a
     void onLoadFinished(android.support.v4.content.Loader,java.lang.Object) -> a
-    void access$000(org.ale.openwatch.feeds.RemoteFeedFragmentActivity$RemoteRecordingsListFragment,boolean) -> a
-    void access$100(org.ale.openwatch.feeds.RemoteFeedFragmentActivity$RemoteRecordingsListFragment) -> a
-    void access$200(org.ale.openwatch.feeds.RemoteFeedFragmentActivity$RemoteRecordingsListFragment) -> b
-org.ale.openwatch.feeds.RemoteFeedFragmentActivity$RemoteRecordingsListFragment$1 -> org.ale.openwatch.d.m:
-    org.ale.openwatch.feeds.RemoteFeedFragmentActivity$RemoteRecordingsListFragment this$0 -> a
+    void access$000(org.ale.openwatch.feeds.RemoteFeedFragment$RemoteRecordingsListFragment,boolean) -> a
+    void access$100(org.ale.openwatch.feeds.RemoteFeedFragment$RemoteRecordingsListFragment) -> a
+    void access$200(org.ale.openwatch.feeds.RemoteFeedFragment$RemoteRecordingsListFragment) -> b
+org.ale.openwatch.feeds.RemoteFeedFragment$RemoteRecordingsListFragment$1 -> org.ale.openwatch.d.m:
+    org.ale.openwatch.feeds.RemoteFeedFragment$RemoteRecordingsListFragment this$0 -> a
     void onSuccess(int,int,int) -> a
     void onFailure(int) -> a
-org.ale.openwatch.feeds.RemoteFeedFragmentActivity$RemoteRecordingsListFragment$2 -> org.ale.openwatch.d.n:
-    org.ale.openwatch.feeds.RemoteFeedFragmentActivity$RemoteRecordingsListFragment this$0 -> a
+org.ale.openwatch.feeds.RemoteFeedFragment$RemoteRecordingsListFragment$2 -> org.ale.openwatch.d.n:
+    org.ale.openwatch.feeds.RemoteFeedFragment$RemoteRecordingsListFragment this$0 -> a
     void onScrollStateChanged(android.widget.AbsListView,int) -> onScrollStateChanged
     void onScroll(android.widget.AbsListView,int,int,int) -> onScroll
-org.ale.openwatch.feeds.RemoteFeedFragmentActivity$RemoteRecordingsListFragment$3 -> org.ale.openwatch.d.o:
-    org.ale.openwatch.feeds.RemoteFeedFragmentActivity$RemoteRecordingsListFragment this$0 -> a
+org.ale.openwatch.feeds.RemoteFeedFragment$RemoteRecordingsListFragment$3 -> org.ale.openwatch.d.o:
+    org.ale.openwatch.feeds.RemoteFeedFragment$RemoteRecordingsListFragment this$0 -> a
     void onSuccess(android.location.Location) -> a
-org.ale.openwatch.feeds.RemoteFeedFragmentActivity$RemoteRecordingsListFragment$4 -> org.ale.openwatch.d.p:
-    org.ale.openwatch.feeds.RemoteFeedFragmentActivity$RemoteRecordingsListFragment this$0 -> a
+org.ale.openwatch.feeds.RemoteFeedFragment$RemoteRecordingsListFragment$4 -> org.ale.openwatch.d.p:
+    org.ale.openwatch.feeds.RemoteFeedFragment$RemoteRecordingsListFragment this$0 -> a
     void onPlaybackComplete(android.view.ViewGroup) -> a
     void onPrepared(android.view.ViewGroup) -> b
-org.ale.openwatch.feeds.RemoteFeedFragmentActivity$RemoteRecordingsListFragment$5 -> org.ale.openwatch.d.q:
+org.ale.openwatch.feeds.RemoteFeedFragment$RemoteRecordingsListFragment$5 -> org.ale.openwatch.d.q:
     android.app.AlertDialog val$dialog -> a
     android.content.Context val$c -> b
     org.ale.openwatch.model.OWServerObject val$server_object -> c
     int val$model_id -> d
-    org.ale.openwatch.feeds.RemoteFeedFragmentActivity$RemoteRecordingsListFragment this$0 -> e
+    org.ale.openwatch.feeds.RemoteFeedFragment$RemoteRecordingsListFragment this$0 -> e
     void onClick(android.view.View) -> onClick
-org.ale.openwatch.feeds.RemoteFeedFragmentActivity$RemoteRecordingsListFragment$6 -> org.ale.openwatch.d.r:
+org.ale.openwatch.feeds.RemoteFeedFragment$RemoteRecordingsListFragment$6 -> org.ale.openwatch.d.r:
     android.app.AlertDialog val$dialog -> a
     int val$model_id -> b
-    org.ale.openwatch.feeds.RemoteFeedFragmentActivity$RemoteRecordingsListFragment this$0 -> c
+    org.ale.openwatch.feeds.RemoteFeedFragment$RemoteRecordingsListFragment this$0 -> c
     void onClick(android.view.View) -> onClick
 org.ale.openwatch.file.FileUtils -> org.ale.openwatch.e.a:
     java.io.File getRootStorageDirectory(android.content.Context,java.lang.String) -> a

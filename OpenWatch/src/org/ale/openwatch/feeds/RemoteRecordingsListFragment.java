@@ -36,11 +36,8 @@ import android.util.Log;
 import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AbsListView;
+import android.widget.*;
 import android.widget.AbsListView.OnScrollListener;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.VideoView;
 import org.ale.openwatch.*;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
@@ -53,30 +50,12 @@ import org.ale.openwatch.model.OWServerObject;
 import org.ale.openwatch.model.OWServerObjectInterface;
 import org.ale.openwatch.model.OWVideoRecording;
 import org.ale.openwatch.share.Share;
-
-/**
- * Demonstration of the implementation of a custom Loader.
- */
-public class RemoteFeedFragmentActivity extends FragmentActivity {
-    private static final String TAG = "RemoteFeedFragmentActivity";
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        FragmentManager fm = getSupportFragmentManager();
-
-        // Create the list fragment and add it as our sole content.
-        if (fm.findFragmentById(android.R.id.content) == null) {
-            RemoteRecordingsListFragment list = new RemoteRecordingsListFragment();
-            fm.beginTransaction().add(android.R.id.content, list).commit();
-        }
-        
-    }
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
 
 
-    public static class RemoteRecordingsListFragment extends ListFragment
-            implements LoaderManager.LoaderCallbacks<Cursor> {
+public  class RemoteRecordingsListFragment extends ListFragment
+            implements LoaderManager.LoaderCallbacks<Cursor>,
+            PullToRefreshAttacher.OnRefreshListener, TabHost.OnTabChangeListener{
     	
     	static String TAG = "RemoteFeedFragment";
     	boolean didRefreshFeed = false;
@@ -101,6 +80,8 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
         OnQueryTextListenerCompat mOnQueryTextListenerCompat;
 
         FeedFragmentActivity parentActivity;
+
+        public PullToRefreshAttacher mPullToRefreshAttacher;
         
         PaginatedRequestCallback cb = new PaginatedRequestCallback(){
 
@@ -127,6 +108,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
         @Override public void onActivityCreated(Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
             parentActivity = (FeedFragmentActivity) getActivity();
+            Log.i("FeedFragment", "onActivityCreated");
             // Give some text to display if there is no data.  In a real
             // application this would come from a resource.
             setEmptyText(getString(R.string.feed_empty));
@@ -139,7 +121,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             // Initialize adapter without cursor. Let loader provide it when ready
             mAdapter = new OWMediaObjectAdapter(getActivity(), null);
             // Add footer loading view
-            LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
+            LayoutInflater layoutInflater = (LayoutInflater) parentActivity.getSystemService(parentActivity.LAYOUT_INFLATER_SERVICE);
             loading_footer = layoutInflater.inflate(R.layout.list_view_loading_footer, (ViewGroup) getActivity().findViewById(android.R.id.list), false);
             loading_footer.setVisibility(View.GONE);
             getListView().addFooterView(loading_footer);
@@ -149,6 +131,8 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             setListAdapter(mAdapter);
             getListView().setDivider(null);
             getListView().setDividerHeight(0);
+
+
 
             this.getListView().setOnScrollListener(new OnScrollListener(){
 
@@ -198,14 +182,32 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 	            }
         	}
 
+            onPageSelected();
+
         }
+
+
+        public void onPageSelected() {
+            // Now get the PullToRefresh attacher from the Activity. An exercise to the reader
+            // is to create an implicit interface instead of casting to the concrete Activity
+            if(parentActivity != null){
+                Log.i(TAG, "Attempting to set PullToRefreshAttacher");
+                mPullToRefreshAttacher = parentActivity.mPullToRefreshAttacher;
+
+                // Now set the ScrollView as the refreshable view, and the refresh listener (this)
+                mPullToRefreshAttacher.setRefreshableView(getListView(), this);
+            }else
+                Log.i(TAG, "parentActivity is null onPageSelected");
+
+        }
+
 
         private void addListViewHeader(){
             if(feed.compareTo(Constants.OWFeedType.MISSION.toString().toLowerCase()) == 0){
                 if(getActivity() == null)
                     return;
                 LayoutInflater inflater = (LayoutInflater)
-                        getActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
+                        parentActivity.getSystemService(parentActivity.LAYOUT_INFLATER_SERVICE);
                 View missionHeader = inflater.inflate(R.layout.mission_header,
                         (ViewGroup) getListView(), false);
                 if(missionHeader != null){
@@ -332,7 +334,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
                     Log.i(TAG, "menu click!");
                     final Context c = getActivity();
                     LayoutInflater inflater = (LayoutInflater)
-                            getActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
+                           parentActivity.getSystemService(parentActivity.LAYOUT_INFLATER_SERVICE);
                     View layout = inflater.inflate(R.layout.media_menu_popup,
                             (ViewGroup) getActivity().findViewById(R.id.content_frame), false);
                     final AlertDialog dialog =  new AlertDialog.Builder(getActivity()).setView(layout).create();
@@ -380,7 +382,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 
                     parentActivity.removeVideoView(); // remove prior VideoView if it exists
 
-                    LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
+                    LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(parentActivity.LAYOUT_INFLATER_SERVICE);
                     //videoViewParent = (ViewGroup) v;
                     parentActivity.videoViewHostCell = (ViewGroup) v;
                     parentActivity.videoViewParent = (ViewGroup) layoutInflater.inflate(R.layout.feed_video_view, (ViewGroup) v, true);
@@ -484,7 +486,14 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 		}
 
 
-    }
+        @Override
+        public void onRefreshStarted(View view) {
+            Log.i(TAG, "refresh!");
+            mPullToRefreshAttacher.setRefreshComplete();
+        }
 
+        @Override
+        public void onTabChanged(String tabId) {
 
+        }
 }
