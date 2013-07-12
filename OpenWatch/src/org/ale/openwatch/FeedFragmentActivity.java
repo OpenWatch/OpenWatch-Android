@@ -59,6 +59,12 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     TabsAdapter mTabsAdapter;
     TitlePageIndicator mTitleIndicator;
     int nextPagerViewId;
+
+    public VideoView videoView;
+    public ProgressBar progressBar;
+    public ViewGroup videoViewParent;
+    public ViewGroup videoViewHostCell;
+    public int videoViewListIndex;
     
     HashMap<String, Integer> mTitleToTabId = new HashMap<String, Integer>();
     
@@ -166,6 +172,28 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
+        mTitleIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i2) {
+
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                removeVideoView();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
+
+    }
+
+    @Override
+    public void onPause(){
+        removeVideoView();
     }
 
     @Override
@@ -796,6 +824,24 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         super.onConfigurationChanged(newConfig);
         // Pass any configuration change to the drawer toggls
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    public void removeVideoView(){
+        if(videoViewParent != null && videoViewHostCell != null && videoView != null){
+            if(videoView.isPlaying())
+                videoView.stopPlayback();
+            Log.i(TAG, "removing videoView");
+
+            videoViewParent.removeView(videoView);
+            videoViewHostCell.removeView(videoViewParent);
+            videoViewHostCell.findViewById(R.id.thumbnail).setVisibility(View.VISIBLE);
+            videoViewHostCell.findViewById(R.id.playButton).setVisibility(View.VISIBLE);
+            videoViewHostCell.findViewById(R.id.playButton).bringToFront();
+            videoView = null;
+            videoViewParent = null;
+            videoViewHostCell = null;
+        }
+
     }
 
 }

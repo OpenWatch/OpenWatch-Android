@@ -98,13 +98,9 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
         // If non-null, this is the current filter the user has provided.
         String mCurFilter;
 
-        VideoView videoView;
-        ProgressBar progressBar;
-        ViewGroup videoViewParent;
-        ViewGroup videoViewHostCell;
-        int videoViewListIndex;
-
         OnQueryTextListenerCompat mOnQueryTextListenerCompat;
+
+        FeedFragmentActivity parentActivity;
         
         PaginatedRequestCallback cb = new PaginatedRequestCallback(){
 
@@ -130,7 +126,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 
         @Override public void onActivityCreated(Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
-
+            parentActivity = (FeedFragmentActivity) getActivity();
             // Give some text to display if there is no data.  In a real
             // application this would come from a resource.
             setEmptyText(getString(R.string.feed_empty));
@@ -164,8 +160,8 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 				public void onScroll(AbsListView view, int firstVisibleItem,
 						int visibleItemCount, int totalItemCount) {
 
-                    if(videoViewListIndex != -1 && !(videoViewListIndex >= firstVisibleItem && videoViewListIndex <= firstVisibleItem + visibleItemCount)){
-                        removeVideoView();
+                    if(parentActivity.videoViewListIndex != -1 && !(parentActivity.videoViewListIndex >= firstVisibleItem && parentActivity.videoViewListIndex <= firstVisibleItem + visibleItemCount)){
+                        parentActivity.removeVideoView();
                     }
 
 					if(!RemoteRecordingsListFragment.this.has_next_page)
@@ -307,7 +303,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
             @Override
             public void onPlaybackComplete(ViewGroup parent) {
                 Log.i(TAG, "playbackComplete");
-                removeVideoView();
+                parentActivity.removeVideoView();
             }
 
             @Override
@@ -317,7 +313,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
                 //progressBar.setVisibility(View.GONE);
                 parent.removeView(parent.findViewById(R.id.videoProgress));
                 if(Build.VERSION.SDK_INT >= 11)
-                    videoView.setAlpha(1);
+                    parentActivity.videoView.setAlpha(1);
             }
 
             @Override
@@ -382,25 +378,25 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
                     // play video inline
                     v.findViewById(R.id.playButton).setVisibility(View.GONE);
 
-                    removeVideoView(); // remove prior VideoView if it exists
+                    parentActivity.removeVideoView(); // remove prior VideoView if it exists
 
                     LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
                     //videoViewParent = (ViewGroup) v;
-                    videoViewHostCell = (ViewGroup) v;
-                    videoViewParent = (ViewGroup) layoutInflater.inflate(R.layout.feed_video_view, (ViewGroup) v, true);
-                    videoView = (VideoView) videoViewParent.findViewById(R.id.videoView);
+                    parentActivity.videoViewHostCell = (ViewGroup) v;
+                    parentActivity.videoViewParent = (ViewGroup) layoutInflater.inflate(R.layout.feed_video_view, (ViewGroup) v, true);
+                    parentActivity.videoView = (VideoView) parentActivity.videoViewParent.findViewById(R.id.videoView);
 
                     if(Build.VERSION.SDK_INT >= 11)
-                        videoView.setAlpha(0);
-                    progressBar = (ProgressBar) videoViewParent.findViewById(R.id.videoProgress);
-                    progressBar.setVisibility(View.VISIBLE);
+                        parentActivity.videoView.setAlpha(0);
+                    parentActivity.progressBar = (ProgressBar) parentActivity.videoViewParent.findViewById(R.id.videoProgress);
+                    parentActivity.progressBar.setVisibility(View.VISIBLE);
 
                     //Log.i(TAG, progressBar.toString());
                     //RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)videoView.getLayoutParams();
                     String url = ((OWVideoRecording) server_object.getChildObject(getActivity().getApplicationContext())).getMediaFilepath(getActivity().getApplicationContext());
-                    OWUtils.setupVideoView(getActivity(), videoView, url, videoViewCallback, progressBar);
+                    OWUtils.setupVideoView(getActivity(), parentActivity.videoView, url, videoViewCallback, parentActivity.progressBar);
                     Log.i(TAG, "created VideoView");
-                    videoViewListIndex = position;
+                    parentActivity.videoViewListIndex = position;
         			break;
                 case AUDIO:
                 case PHOTO:
@@ -420,24 +416,6 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
         		return;
         	}
         	
-        }
-
-        private void removeVideoView(){
-            if(videoViewParent != null && videoViewHostCell != null && videoView != null){
-                if(videoView.isPlaying())
-                    videoView.stopPlayback();
-                Log.i(TAG, "removing videoView");
-
-                videoViewParent.removeView(videoView);
-                videoViewHostCell.removeView(videoViewParent);
-                videoViewHostCell.findViewById(R.id.thumbnail).setVisibility(View.VISIBLE);
-                videoViewHostCell.findViewById(R.id.playButton).setVisibility(View.VISIBLE);
-                videoViewHostCell.findViewById(R.id.playButton).bringToFront();
-                videoView = null;
-                videoViewParent = null;
-                videoViewHostCell = null;
-            }
-
         }
 
 

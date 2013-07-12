@@ -34,11 +34,11 @@
     </orderEntry>
     <orderEntry type="module" module-name="google-play-services_lib" exported="" />
     <orderEntry type="module" module-name="TouchImageView" exported="" />
-    <orderEntry type="module" module-name="src" exported="" />
     <orderEntry type="module" module-name="ActionBarSherlock" exported="" />
     <orderEntry type="module" module-name="Android-Universal-Image-Loader" exported="" />
     <orderEntry type="module" module-name="Android-ViewPagerIndicator" exported="" />
     <orderEntry type="module" module-name="facebook" exported="" />
+    <orderEntry type="module" module-name="androrm" exported="" />
   </component>
 </module>
 
