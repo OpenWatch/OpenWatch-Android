@@ -90,7 +90,6 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
     	
     	String feed;
     	Location device_location;
-    	Uri this_uri; // TESTING
 
         // This is the Adapter being used to display the list's data.
         //AppListAdapter mAdapter;
@@ -166,27 +165,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 						int visibleItemCount, int totalItemCount) {
 
                     if(videoViewListIndex != -1 && !(videoViewListIndex >= firstVisibleItem && videoViewListIndex <= firstVisibleItem + visibleItemCount)){
-                        /*
-                        if(progressBar != null){
-                            progressBar.setVisibility(View.GONE);
-                            videoViewParent.removeView(progressBar);
-                            //progressBar = null;
-                            //Log.i(TAG, "progressBar is hidden");
-                        }else{
-                            //Log.i(TAG, "progressBar is null");
-                        }
-                        */
                         removeVideoView();
-                        /*
-                        if(videoView != null){
-                            Log.i(TAG, "Removing VideoView from list");
-                            videoView.setVisibility(View.GONE);
-                            videoView.stopPlayback();
-                            videoViewParent.removeView(videoView);
-                            videoView = null;
-                            videoViewParent = null;
-                        }
-                        */
                     }
 
 					if(!RemoteRecordingsListFragment.this.has_next_page)
@@ -241,9 +220,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
                             SharedPreferences.Editor profile = getActivity().getSharedPreferences(Constants.PROFILE_PREFS, 0).edit();
                             profile.putBoolean(Constants.MISSION_TIP, true);
                             profile.commit();
-                            //v.findViewById(R.id.missionBadge).startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.fadeout));
-                            //v.findViewById(R.id.missionText).startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.fadeout));
-                            //v.findViewById(R.id.tapToDismiss).startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.fadeout));
+
                             Animation fadeOut = AnimationUtils.loadAnimation(v.getContext(), R.anim.fadeout);
                             fadeOut.setAnimationListener(new Animation.AnimationListener() {
                                 @Override
@@ -478,12 +455,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 			mAdapter.swapCursor(cursor);
 			if(!isAdded())
 				return;
-			/*
-			if(cursor == null || cursor.getCount() == 0)
-				Log.i("URI" + feed.toString(), "onLoadFinished empty cursor on uri " + this_uri.toString());
-			else
-				Log.i("URI" + feed.toString(), String.format("onLoadFinished %d rows on uri %s ",cursor.getCount(), this_uri.toString()));
-			*/
+
 			// The list should now be shown.
             if (isResumed()) {
                 setListShown(true);
@@ -525,14 +497,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 
 		@Override
 		public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
-            Uri baseUri = null;
-            /*
-            if(feed.compareTo(Constants.OWFeedType.USER.toString().toLowerCase()) == 0)
-                baseUri = OWContentProvider.getUserRecordingsUri(internal_user_id);
-            else
-            */
-            baseUri = OWContentProvider.getFeedUri(feed);
-			this_uri = baseUri;
+            Uri baseUri = OWContentProvider.getFeedUri(feed);
 			String selection = null;
             String[] selectionArgs = null;
             String order = null;
@@ -540,34 +505,7 @@ public class RemoteFeedFragmentActivity extends FragmentActivity {
 			return new CursorLoader(getActivity(), baseUri, PROJECTION, selection, selectionArgs, order);
 		}
 
-        /*
-        public void checkUserState(){
-            SharedPreferences profile = getActivity().getSharedPreferences(Constants.PROFILE_PREFS, 0);
-            boolean authenticated = profile.getBoolean(Constants.AUTHENTICATED, false);
-            if(authenticated){
-                int user_server_id = profile.getInt(DBConstants.USER_SERVER_ID, 0);
-                //int user_server_id = (Integer) OWApplication.user_data.get(DBConstants.USER_SERVER_ID);
-                com.orm.androrm.Filter filter = new com.orm.androrm.Filter();
-                filter.is(DBConstants.USER_SERVER_ID, user_server_id);
-                QuerySet<OWUser> users = OWUser.objects(getActivity().getApplicationContext(), OWUser.class).filter(filter);
-                for(OWUser user : users){
-                    internal_user_id = user.getId();
-                    break;
-                }
-                if(internal_user_id > 0){
-                    setEmptyText(getString(R.string.loading_recordings));
-                    setListShown(false); // start with a progress indicator
-                    getLoaderManager().initLoader(0, null, this);
-                }
-            }else{
-                // It's possible the sharedpreferences haven't finished being written to, but the user has logged in
-                if( OWApplication.user_data != null && OWApplication.user_data.containsKey(Constants.AUTHENTICATED)){
-                    setEmptyText(getString(R.string.loading_recordings));
-                }else
-                    setEmptyText(getString(R.string.login_for_local_recordings));
-            }
-        }
-        */
+
     }
 
 
