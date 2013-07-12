@@ -5,10 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 import com.orm.androrm.*;
+import com.orm.androrm.field.BooleanField;
 import com.orm.androrm.field.CharField;
 import com.orm.androrm.field.DoubleField;
 import com.orm.androrm.field.ForeignKeyField;
 
+import com.orm.androrm.migration.Migrator;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
 import org.ale.openwatch.constants.Constants.CONTENT_TYPE;
@@ -44,7 +46,6 @@ public class OWVideoRecording extends Model implements OWServerObjectInterface{
 	
 	public OWVideoRecording(Context c){
 		super();
-		
 		save(c);
 		OWServerObject media_object = new OWServerObject();
 		media_object.video_recording.set(this);

@@ -219,9 +219,9 @@ public class OWMediaObjectViewActivity extends SherlockFragmentActivity {
                     child.updateWithJson(c, response);
                     setupMediaViewForOWServerObject(serverObject);
                     if(getMapFragment() != null)
-                        ((OWObjectBackedEntity) OWMediaObjectViewActivity.this.getMapFragment() ).populateViews(serverObject, c);
+                        ((OWObjectBackedEntity) OWMediaObjectViewActivity.this.getMapFragment() ).populateViews(serverObject.getId(), c);
                     if(getInfoFragment() != null)
-                        ((OWObjectBackedEntity) OWMediaObjectViewActivity.this.getInfoFragment() ).populateViews(serverObject, c);
+                        ((OWObjectBackedEntity) OWMediaObjectViewActivity.this.getInfoFragment() ).populateViews(serverObject.getId(), c);
                 }
             }
 

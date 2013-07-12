@@ -114,9 +114,12 @@ public class MapFragment extends SupportMapFragment implements OWObjectBackedEnt
             getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(mStopLocation, 18));
     }
 
-	@Override
-	public void populateViews(OWServerObject server_object, Context c) {
-		mapOWServerObjectInterface(server_object);
-	}
 
+    @Override
+    public void populateViews(int model_id, Context app_context) {
+        OWServerObject serverObject = OWServerObject
+                .objects(getActivity().getApplicationContext(),
+                        OWServerObject.class).get(model_id);
+        mapOWServerObjectInterface(serverObject);
+    }
 }

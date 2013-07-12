@@ -20,6 +20,8 @@ import java.util.regex.Pattern;
 public class Constants {
 
     public static final String SUPPORT_EMAIL = "team@openwatch.net";
+    public static final String GOOGLE_STORE_URL = "https://play.google.com/store/apps/details?id=org.ale.openwatch";
+    public static final String APPLE_STORE_URL = "https://itunes.apple.com/us/app/openwatch-social-muckraking/id642680756?mt=8";
 
     // Facebook
     public static final String FB_APP_ID = "297496017037529";
@@ -29,16 +31,16 @@ public class Constants {
 	
 	// Set this flag to toggle between production 
 	// and development endpoint addresses
-	public static final boolean USE_DEV_ENDPOINTS = false;
+	public static final boolean USE_DEV_ENDPOINTS = true;
 	
 	public static final String PROD_HOST = "https://openwatch.net/";
 	public static final String PROD_CAPTURE_HOST = "https://capture.openwatch.net/";
 
     public static final String DEV_HOST = "https://staging.openwatch.net/";
     public static final String DEV_CAPTURE_HOST = "https://capture-staging.openwatch.net/";
-	
-	//public static final String DEV_HOST = "http://10.0.1.26:8000/";
-    //public static final String DEV_CAPTURE_HOST = "http://10.0.1.26:5000/";
+
+	//public static final String DEV_HOST = "http://192.168.1.27:8000/";
+    //public static final String DEV_CAPTURE_HOST = "http://192.168.1.27:5000/";
 
     public static final String PASSWORD_RESET_ENDPOINT = "accounts/password/reset/";
 	

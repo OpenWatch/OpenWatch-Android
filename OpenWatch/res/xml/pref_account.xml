@@ -1,7 +1,8 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-    
-    <Preference android:title="@string/pref_title_account" >
-        <intent android:action=".LoginActivity"/>
-    </Preference>
+    <PreferenceCategory android:title="@string/ow.net">
+        <Preference android:title="@string/pref_title_account" >
+            <intent android:action=".LoginActivity"/>
+        </Preference>
+    </PreferenceCategory>
 
 </PreferenceScreen>

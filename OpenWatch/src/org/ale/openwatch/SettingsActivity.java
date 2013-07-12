@@ -2,11 +2,16 @@ package org.ale.openwatch;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.*;
+import android.support.v4.app.NavUtils;
+import android.util.Log;
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
+import com.actionbarsherlock.view.MenuItem;
+import org.ale.openwatch.constants.Constants;
 
 import java.util.List;
 
@@ -23,6 +28,19 @@ import java.util.List;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends SherlockPreferenceActivity {
+
+
+    Preference.OnPreferenceClickListener shareAppListener = new Preference.OnPreferenceClickListener() {
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("text/plain");
+            i.putExtra(Intent.EXTRA_TEXT, String.format(SettingsActivity.this.getString(R.string.handle_truth), Constants.GOOGLE_STORE_URL, Constants.APPLE_STORE_URL));
+            SettingsActivity.this.startActivity(Intent.createChooser(i, "Share OpenWatch!"));
+            return false;
+        }
+    };
+
 	/**
 	 * Determines whether to always show the simplified settings UI, where
 	 * settings are presented in a single list. When false, settings are shown
@@ -30,6 +48,12 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 	 * shown on tablets.
 	 */
 	private static final boolean ALWAYS_SIMPLE_PREFS = false;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
 
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
@@ -55,6 +79,12 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 		PreferenceCategory fakeHeader = new PreferenceCategory(this);
 		fakeHeader.setTitle(R.string.pref_header_account);
 		addPreferencesFromResource(R.xml.pref_account);
+
+        // Add 'Misc' preferences
+        PreferenceCategory fakeHeader2 = new PreferenceCategory(this);
+        fakeHeader.setTitle(R.string.misc);
+        addPreferencesFromResource(R.xml.pref_misc);
+        findPreference("shareOpenWatch").setOnPreferenceClickListener(shareAppListener);
 
 		// Bind the summaries of EditText/List/Dialog/Ringtone preferences to
 		// their values. When their values change, their summaries are updated
@@ -141,20 +171,48 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 	 */
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	public static class GeneralPreferenceFragment extends PreferenceFragment {
-		@Override
-		public void onCreate(Bundle savedInstanceState) {
-			super.onCreate(savedInstanceState);
+     public static class GeneralPreferenceFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_account);
+            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
+            // to their values. When their values change, their summaries are
+            // updated to reflect the new value, per the Android Design
+            // guidelines.
+            //bindPreferenceSummaryToValue(findPreference("example_text"));
+            //bindPreferenceSummaryToValue(findPreference("example_list"));
+        }
+    }
 
-			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
-			// to their values. When their values change, their summaries are
-			// updated to reflect the new value, per the Android Design
-			// guidelines.
-			//bindPreferenceSummaryToValue(findPreference("example_text"));
-			//bindPreferenceSummaryToValue(findPreference("example_list"));
-		}
-	}
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public static class MiscPreferenceFragment extends PreferenceFragment {
+
+
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.pref_misc);
+
+            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
+            // to their values. When their values change, their summaries are
+            // updated to reflect the new value, per the Android Design
+            // guidelines.
+            //bindPreferenceSummaryToValue(findPreference("example_text"));
+            //bindPreferenceSummaryToValue(findPreference("example_list"));
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
+        return true;
+    }
 
 	
 }

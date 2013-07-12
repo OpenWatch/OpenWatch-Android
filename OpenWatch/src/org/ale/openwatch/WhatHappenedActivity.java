@@ -92,7 +92,6 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(!isChecked){
-                    // TODO: Mark deleted
                     fbToggle.setChecked(false);
                     fbToggle.setEnabled(false);
                     twitterToggle.setChecked(false);
@@ -276,16 +275,6 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 	}
 
     public void onDoneButtonClick(View v){
-
-        if(model_id > 0){
-            if(fbToggle.isChecked()){
-                syncAndPostSocial(OWUtils.SOCIAL_TYPE.FB);
-            }
-            if(twitterToggle.isChecked()){
-                syncAndPostSocial(OWUtils.SOCIAL_TYPE.TWITTER);
-            }
-        }
-
         this.finish();
     }
 
@@ -305,6 +294,25 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 
     @Override
 	public void onPause(){
+        if(model_id > 0){
+            if(!owToggle.isChecked()){
+                OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
+                serverObject.is_private.set(true);
+                if(editTitle.getText().toString().length() > 0)
+                    serverObject.title.set(editTitle.getText().toString());
+                serverObject.save(getApplicationContext());
+                serverObject.saveAndSync(this.getApplicationContext());
+            }
+
+            if(fbToggle.isChecked()){
+                syncAndPostSocial(OWUtils.SOCIAL_TYPE.FB);
+            }
+            if(twitterToggle.isChecked()){
+                syncAndPostSocial(OWUtils.SOCIAL_TYPE.TWITTER);
+            }
+
+        }
+
 		SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, 0);
 		int user_id = profile.getInt(DBConstants.USER_SERVER_ID, 0);
 		if(user_id > 0)

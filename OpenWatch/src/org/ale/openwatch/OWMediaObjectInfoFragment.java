@@ -28,7 +28,7 @@ public class OWMediaObjectInfoFragment extends SherlockFragment implements
 	protected TextView title;
 	protected TextView edit_title;
 	protected TextView title_length_warning;
-	protected OWServerObject media_obj = null;
+    int model_id = -1;
 
 	private boolean is_user_owner = false;
 
@@ -73,18 +73,20 @@ public class OWMediaObjectInfoFragment extends SherlockFragment implements
 		else
 			setupViewsForUserRecording(v);
 
-		int model_id = this.getActivity().getIntent().getExtras()
+		model_id = this.getActivity().getIntent().getExtras()
 				.getInt(Constants.INTERNAL_DB_ID);
 
 		if (model_id == 0) {
 			Log.e(TAG, "Error getting bundled internal db id");
-		} else {
+		} /*else {
 			media_obj = OWServerObject
 					.objects(getActivity().getApplicationContext(),
 							OWServerObject.class).get(
 							this.getActivity().getIntent().getExtras()
 									.getInt(Constants.INTERNAL_DB_ID));
+
 		}
+		*/
 
 		return v;
 	}
@@ -98,42 +100,7 @@ public class OWMediaObjectInfoFragment extends SherlockFragment implements
 
 	@Override
 	public void onViewCreated(View view_arg, Bundle savedInstanceState) {
-		populateViews(media_obj, getActivity().getApplicationContext());
-	}
-
-	public void populateViews(OWServerObject media_obj, Context app_context) {
-		try {
-			if (!is_user_owner) {
-				if (media_obj.getUser(app_context).thumbnail_url.get() != null) {
-					ImageView user_thumb = (ImageView) this.getView()
-							.findViewById(R.id.user_thumbnail);
-
-					ImageLoader.getInstance().displayImage(
-							media_obj.getUser(app_context).thumbnail_url.get(),
-							user_thumb);
-				}
-				if (media_obj.username.get() != null)
-					((TextView) getView().findViewById(R.id.userLabel))
-							.setText(media_obj.username.get());
-
-				Log.i("populateViews", String.format(
-						"Description: %s Actions: %d Views: %d",
-						media_obj.getDescription(app_context),
-						media_obj.getActions(app_context),
-						media_obj.getViews(app_context)));
-				((TextView) getView().findViewById(R.id.action_count))
-						.setText(String.valueOf(media_obj
-								.getActions(app_context)));
-				((TextView) getView().findViewById(R.id.view_count))
-						.setText(String.valueOf(media_obj.getViews(app_context)));
-			}
-			if (media_obj.getTitle(app_context) != null)
-				title.setText(media_obj.getTitle(app_context));
-		} catch (Exception e) {
-			e.printStackTrace();
-			Log.e(TAG, "Error retrieving recording");
-		}
-
+		populateViews(model_id, getActivity().getApplicationContext());
 	}
 
 	@Override
@@ -149,23 +116,29 @@ public class OWMediaObjectInfoFragment extends SherlockFragment implements
 	@Override
 	public void onPause() {
 		super.onPause();
-		if (media_obj == null)
+        /*
+		if (model_id > 0)
 			return;
+
+        OWServerObject serverObject = OWServerObject
+                .objects(getActivity().getApplicationContext(),
+                        OWServerObject.class).get(model_id);
 		// String rec_title =
 		// media_obj.getTitle(getActivity().getApplicationContext());
 		// String title_input = title.getText().toString();
 		// Title may not be set to empty string
 		if (title.getText().toString().compareTo("") != 0) {
 			doSave = true;
-			media_obj.setTitle(getActivity().getApplicationContext(), title
+            serverObject.setTitle(getActivity().getApplicationContext(), title
 					.getText().toString());
             Log.i(TAG, String.format("setting media_obj title: %s", title.getText().toString()));
 		}
 		if (doSave) {
-			media_obj.save(getActivity().getApplicationContext(), true);
+            serverObject.save(getActivity().getApplicationContext(), true);
 			Log.i(TAG, "Saving recording. " + title.getText().toString());
-			media_obj.saveAndSync(getActivity().getApplicationContext());
+            serverObject.saveAndSync(getActivity().getApplicationContext());
 		}
+		*/
 	}
 	
 	private void setupViewsForRemoteRecording(View root) {
@@ -203,6 +176,44 @@ public class OWMediaObjectInfoFragment extends SherlockFragment implements
 			
 		});
 	}
-	
-	
+
+
+    @Override
+    public void populateViews(int model_id, Context app_context) {
+        OWServerObject serverObject = OWServerObject
+                .objects(getActivity().getApplicationContext(),
+                        OWServerObject.class).get(model_id);
+
+        try {
+            if (!is_user_owner) {
+                if (serverObject.getUser(app_context).thumbnail_url.get() != null) {
+                    ImageView user_thumb = (ImageView) this.getView()
+                            .findViewById(R.id.user_thumbnail);
+
+                    ImageLoader.getInstance().displayImage(
+                            serverObject.getUser(app_context).thumbnail_url.get(),
+                            user_thumb);
+                }
+                if (serverObject.username.get() != null)
+                    ((TextView) getView().findViewById(R.id.userLabel))
+                            .setText(serverObject.username.get());
+
+                Log.i("populateViews", String.format(
+                        "Description: %s Actions: %d Views: %d",
+                        serverObject.getDescription(app_context),
+                        serverObject.getActions(app_context),
+                        serverObject.getViews(app_context)));
+                ((TextView) getView().findViewById(R.id.action_count))
+                        .setText(String.valueOf(serverObject
+                                .getActions(app_context)));
+                ((TextView) getView().findViewById(R.id.view_count))
+                        .setText(String.valueOf(serverObject.getViews(app_context)));
+            }
+            if (serverObject.getTitle(app_context) != null)
+                title.setText(serverObject.getTitle(app_context));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "Error retrieving recording");
+        }
+    }
 }

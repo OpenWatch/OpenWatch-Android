@@ -18,7 +18,7 @@ public class MapActivity extends SherlockFragmentActivity {
         if(model_id != 0){
             OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
             this.getSupportActionBar().setTitle(serverObject.title.get());
-            ((MapFragment) this.getSupportFragmentManager().findFragmentById(R.id.mapFragment)).populateViews(serverObject, getApplicationContext());
+            ((MapFragment) this.getSupportFragmentManager().findFragmentById(R.id.mapFragment)).populateViews(model_id, getApplicationContext());
         }
 
     }

@@ -50,7 +50,7 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
             model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
             server_id = OWServerObject.objects(this, OWServerObject.class).get(model_id).server_id.get();
             if( OWServerObject.objects(this, OWServerObject.class).get(model_id).story.get(c) != null && OWServerObject.objects(this, OWServerObject.class).get(model_id).story.get(c).body.get() != null){
-                populateViews(OWServerObject.objects(this, OWServerObject.class).get(model_id), c);
+                populateViews(model_id, c);
             } else if(OWServerObject.objects(this, OWServerObject.class).get(model_id).title.get() != null){
                 ((TextView)findViewById(R.id.title)).setText(OWServerObject.objects(this, OWServerObject.class).get(model_id).title.get());
                 this.getSupportActionBar().setTitle(OWServerObject.objects(this, OWServerObject.class).get(model_id).title.get());
@@ -63,7 +63,7 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
                         Log.i(TAG, " success : " + response.toString());
 
                         if (OWServerObject.objects(c, OWServerObject.class).get(model_id).mission.get(c).body.get() != null) {
-                            OWMissionViewActivity.this.populateViews(OWServerObject.objects(c, OWServerObject.class).get(model_id), c);
+                            OWMissionViewActivity.this.populateViews(model_id, c);
                         }
                     }
 
@@ -89,50 +89,6 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
         }
     }
 
-    @Override
-    public void populateViews(OWServerObject serverObject, Context c) {
-        OWMission mission = serverObject.mission.get(c);
-        missionTag = mission.tag.get();
-        this.getSupportActionBar().setTitle(serverObject.getTitle(c));
-        ((TextView) this.findViewById(R.id.title)).setText(serverObject.getTitle(c));
-        if(mission.media_url.get() != null)
-            ImageLoader.getInstance().displayImage(mission.media_url.get(), (ImageView) findViewById(R.id.missionImage));
-
-        boolean bounty = false;
-        if(mission.usd.get() != null && mission.usd.get() != 0.0){
-            ((TextView) this.findViewById(R.id.bounty)).setText(Constants.USD + String.format("%.2f",mission.usd.get()));
-            bounty = true;
-        } else if(mission.usd.get() != null && mission.karma.get() != 0.0){
-            ((TextView) this.findViewById(R.id.bounty)).setText(String.format("%.0f",mission.karma.get()) + " " + getString(R.string.karma));
-            bounty = true;
-        }
-        if(bounty){
-            this.findViewById(R.id.bounty).startAnimation(AnimationUtils.loadAnimation(c, R.anim.slide_left));
-            this.findViewById(R.id.bounty).setVisibility(View.VISIBLE);
-        }
-
-        /*
-        OWUser user = serverObject.user.get(c);
-        if(user != null){
-            ((TextView) this.findViewById(R.id.userTitle)).setText(user.username.get());
-            if(user.thumbnail_url.get() != null && user.thumbnail_url.get().compareTo("") != 0)
-                ImageLoader.getInstance().displayImage(user.thumbnail_url.get(), (ImageView) findViewById(R.id.userImage));
-        }
-        */
-        ((TextView) this.findViewById(R.id.description)).setText(mission.body.get());
-
-
-        ((TextView) this.findViewById(R.id.description)).getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener(){
-
-            @Override
-            public void onGlobalLayout() {
-                if(findViewById(R.id.scrollView) != null){
-                    ((ScrollView)findViewById(R.id.scrollView)).scrollTo(0, 0);
-                }
-            }
-        });
-
-    }
 /*
     public void cameraButtonClick(View v){
         String uuid = OWUtils.generateRecordingIdentifier();
@@ -185,5 +141,53 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void populateViews(int model_id, Context app_context) {
+        OWServerObject serverObject = OWServerObject
+                .objects(getApplicationContext(),
+                        OWServerObject.class).get(model_id);
+
+        OWMission mission = serverObject.mission.get(c);
+        missionTag = mission.tag.get();
+        this.getSupportActionBar().setTitle(serverObject.getTitle(c));
+        ((TextView) this.findViewById(R.id.title)).setText(serverObject.getTitle(c));
+        if(mission.media_url.get() != null)
+            ImageLoader.getInstance().displayImage(mission.media_url.get(), (ImageView) findViewById(R.id.missionImage));
+
+        boolean bounty = false;
+        if(mission.usd.get() != null && mission.usd.get() != 0.0){
+            ((TextView) this.findViewById(R.id.bounty)).setText(Constants.USD + String.format("%.2f",mission.usd.get()));
+            bounty = true;
+        } else if(mission.usd.get() != null && mission.karma.get() != 0.0){
+            ((TextView) this.findViewById(R.id.bounty)).setText(String.format("%.0f",mission.karma.get()) + " " + getString(R.string.karma));
+            bounty = true;
+        }
+        if(bounty){
+            this.findViewById(R.id.bounty).startAnimation(AnimationUtils.loadAnimation(c, R.anim.slide_left));
+            this.findViewById(R.id.bounty).setVisibility(View.VISIBLE);
+        }
+
+        /*
+        OWUser user = serverObject.user.get(c);
+        if(user != null){
+            ((TextView) this.findViewById(R.id.userTitle)).setText(user.username.get());
+            if(user.thumbnail_url.get() != null && user.thumbnail_url.get().compareTo("") != 0)
+                ImageLoader.getInstance().displayImage(user.thumbnail_url.get(), (ImageView) findViewById(R.id.userImage));
+        }
+        */
+        ((TextView) this.findViewById(R.id.description)).setText(mission.body.get());
+
+
+        ((TextView) this.findViewById(R.id.description)).getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener(){
+
+            @Override
+            public void onGlobalLayout() {
+                if(findViewById(R.id.scrollView) != null){
+                    ((ScrollView)findViewById(R.id.scrollView)).scrollTo(0, 0);
+                }
+            }
+        });
     }
 }

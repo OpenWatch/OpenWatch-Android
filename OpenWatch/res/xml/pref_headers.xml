@@ -7,5 +7,10 @@
         android:title="@string/pref_header_account"
         android:summary="@string/pref_description_account" />
 
+    <header
+        android:fragment="org.ale.openwatch.SettingsActivity$MiscPreferenceFragment"
+        android:title="@string/misc"
+        android:summary="" />
+
 
 </preference-headers>

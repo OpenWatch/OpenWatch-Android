@@ -224,6 +224,13 @@
     <string name="disconnect">Disconnect</string>
     <string name="save">Save</string>
     <string name="profile">Profile</string>
+    <string name="misc">Misc</string>
+    <string name="share_this_app">Share this app!</string>
+    <string name="ow_on_github">OpenWatch on Github</string>
+    <string name="visit_ow">Visit OpenWatch.net</string>
+    <string name="ow_credentials">OpenWatch.net Credentials</string>
+    <string name="ow.net">OpenWatch.net</string>
+    <string name="handle_truth">You can handle the truth! Get @OpenWatch for Android or iOS! \n\nAndroid: %1$s \n\niOS: %2$s</string>
 
 
 </resources>

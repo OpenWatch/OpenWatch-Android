@@ -7,10 +7,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 import com.orm.androrm.*;
-import com.orm.androrm.field.CharField;
-import com.orm.androrm.field.ForeignKeyField;
-import com.orm.androrm.field.IntegerField;
-import com.orm.androrm.field.ManyToManyField;
+import com.orm.androrm.field.*;
 
 import com.orm.androrm.migration.Migrator;
 import com.orm.androrm.statement.Statement;
@@ -40,6 +37,7 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
 	public CharField first_posted = new CharField();
 	public CharField last_edited = new CharField();
     public CharField metro_code = new CharField();
+    public BooleanField is_private = new BooleanField();
 	
 	public ForeignKeyField<OWUser> user = new ForeignKeyField<OWUser>(
 			OWUser.class);
@@ -80,6 +78,8 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
         migrator.addField("user_thumbnail_url", new CharField());
 
         migrator.addField("metro_code", new CharField());
+
+        migrator.addField("is_private", new BooleanField());
 
         // roll out all migrations
         migrator.migrate(context);
@@ -190,6 +190,10 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
             serverObjectValues.put(DBConstants.MEDIA_OBJECT_METRO_CODE, json.getString(DBConstants.MEDIA_OBJECT_METRO_CODE));
         if(json.has("video_recording"))
             serverObjectValues.put("video_recording", json.getInt("video_recording"));
+        if(json.has("public")){
+            serverObjectValues.put("is_private", (json.getBoolean("public") ? 1 : 0 ));
+        }
+
 
         if(json.has(Constants.OW_THUMB_URL) && json.getString(Constants.OW_THUMB_URL).compareTo(Constants.OW_NO_VALUE)!= 0)
             serverObjectValues.put(DBConstants.THUMBNAIL_URL, json.getString(Constants.OW_THUMB_URL));
@@ -459,6 +463,9 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
 				json_obj.put(Constants.OW_EDIT_TIME, getLastEdited(c));
 			if(getFirstPosted(c) != null)
 				json_obj.put(Constants.OW_FIRST_POSTED, getFirstPosted(c));
+
+            Log.i("race", String.format("OwServerObject toJson id %d is_private: %b", getId(), is_private.get()));
+            json_obj.put("public", !is_private.get());
 			
 			QuerySet<OWTag> qs = getTags(c);
 			JSONArray tags = new JSONArray();

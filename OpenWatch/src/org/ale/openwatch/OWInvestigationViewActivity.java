@@ -44,7 +44,7 @@ public class OWInvestigationViewActivity extends SherlockActivity implements OWO
 		OWServerObject object = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
 		server_id = object.getServerId(getApplicationContext());
 		this.getSupportActionBar().setTitle(object.title.get());
-		populateViews(object, getApplicationContext());
+		populateViews(model_id, getApplicationContext());
 	}
 
 	@Override
@@ -54,51 +54,6 @@ public class OWInvestigationViewActivity extends SherlockActivity implements OWO
 		return true;
 	}
 
-	@Override
-	public void populateViews(OWServerObject media_object, Context app_context) {
-		OWServiceRequests.getOWServerObjectMeta(getApplicationContext(), media_object, "", new JsonHttpResponseHandler() {
-
-			@Override
-			public void onSuccess(JSONObject response) {
-				Log.i(TAG, "get i success : " + response.toString());
-                try {
-                    //populate views
-                    showProgress(false);
-                    OWInvestigation.createOrUpdateOWInvestigationWithJson(getApplicationContext(), response);
-                    OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
-                    OWInvestigation investigation = serverObject.investigation.get(getApplicationContext());
-                    ((TextView) findViewById(R.id.title)).setText(serverObject.title.get());
-                    ((TextView) findViewById(R.id.blurb)).setText(investigation.blurb.get());
-                    if(investigation.questions.get() != null)
-                        ((TextView) findViewById(R.id.questions)).setText(Html.fromHtml(investigation.questions.get()));
-                    ImageLoader.getInstance().displayImage(investigation.big_logo_url.get(), (ImageView) findViewById(R.id.image));
-                    OWUser user = serverObject.user.get(getApplicationContext());
-                    if(user != null){
-                        ((TextView) findViewById(R.id.userTitle)).setText(user.username.get());
-                        if(user.thumbnail_url.get() != null && user.thumbnail_url.get().compareTo("") != 0)
-                            ImageLoader.getInstance().displayImage(user.thumbnail_url.get(), (ImageView) findViewById(R.id.userImage));
-                    }
-                    // http://stackoverflow.com/questions/8421670/webpage-not-available-with-webview-loaddata-only-in-emulator
-                } catch (JSONException e) {
-                    Log.e(TAG, "unable to load html from investigation response: " + response.toString());
-                    e.printStackTrace();
-                }
-			}
-
-			@Override
-			public void onFailure(Throwable e, String response) {
-				Log.i(TAG, "get i failure: " + response);
-
-			}
-
-			@Override
-			public void onFinish() {
-				Log.i(TAG, "get i finish: ");
-
-			}
-		});
-	}
-	
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu){
 		//menu.removeItem(R.id.menu_delete);
@@ -134,6 +89,52 @@ public class OWInvestigationViewActivity extends SherlockActivity implements OWO
     }
 
 
+    @Override
+    public void populateViews(final int model_id, Context app_context) {
+        OWServerObject serverObject = OWServerObject
+                .objects(getApplicationContext(),
+                        OWServerObject.class).get(model_id);
 
+        OWServiceRequests.getOWServerObjectMeta(getApplicationContext(), serverObject, "", new JsonHttpResponseHandler() {
 
+            @Override
+            public void onSuccess(JSONObject response) {
+                Log.i(TAG, "get i success : " + response.toString());
+                try {
+                    //populate views
+                    showProgress(false);
+                    OWInvestigation.createOrUpdateOWInvestigationWithJson(getApplicationContext(), response);
+                    OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
+                    OWInvestigation investigation = serverObject.investigation.get(getApplicationContext());
+                    ((TextView) findViewById(R.id.title)).setText(serverObject.title.get());
+                    ((TextView) findViewById(R.id.blurb)).setText(investigation.blurb.get());
+                    if(investigation.questions.get() != null)
+                        ((TextView) findViewById(R.id.questions)).setText(Html.fromHtml(investigation.questions.get()));
+                    ImageLoader.getInstance().displayImage(investigation.big_logo_url.get(), (ImageView) findViewById(R.id.image));
+                    OWUser user = serverObject.user.get(getApplicationContext());
+                    if(user != null){
+                        ((TextView) findViewById(R.id.userTitle)).setText(user.username.get());
+                        if(user.thumbnail_url.get() != null && user.thumbnail_url.get().compareTo("") != 0)
+                            ImageLoader.getInstance().displayImage(user.thumbnail_url.get(), (ImageView) findViewById(R.id.userImage));
+                    }
+                    // http://stackoverflow.com/questions/8421670/webpage-not-available-with-webview-loaddata-only-in-emulator
+                } catch (JSONException e) {
+                    Log.e(TAG, "unable to load html from investigation response: " + response.toString());
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable e, String response) {
+                Log.i(TAG, "get i failure: " + response);
+
+            }
+
+            @Override
+            public void onFinish() {
+                Log.i(TAG, "get i finish: ");
+
+            }
+        });
+    }
 }

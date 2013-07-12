@@ -1,10 +1,8 @@
 package org.ale.openwatch;
 
-import org.ale.openwatch.model.OWServerObject;
-
 import android.content.Context;
 
 public interface OWObjectBackedEntity {
 
-	public void populateViews(OWServerObject media_object, Context app_context);
+	public void populateViews(int model_id, Context app_context);
 }
