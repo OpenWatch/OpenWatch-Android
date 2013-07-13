@@ -1,10 +1,12 @@
 package org.ale.openwatch.file;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import java.io.File;
@@ -137,17 +139,29 @@ public class FileUtils {
 		
 		
 		output = FileUtils.getStorageDirectory(output, uuid);
-		try {
-			if(filename != null){
-				output = File.createTempFile(filename, extension, output);
-			}
-			Log.i("prepareOutputLocation", output.getAbsolutePath());
-			return output;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
+        return prepareOutputLocation(c, output, filename, extension);
 		
 	}
+
+    public static File prepareOutputLocation(Context c, File root, String filename, String extension){
+        File output = null;
+        try {
+            if(filename != null){
+                output = File.createTempFile(filename, extension, root);
+            }
+            return output;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String getRealPathFromURI(Context c, Uri contentUri) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = c.getContentResolver().query(contentUri, proj, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
 
 }

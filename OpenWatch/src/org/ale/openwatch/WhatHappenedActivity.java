@@ -295,12 +295,16 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
     @Override
 	public void onPause(){
         if(model_id > 0){
-            if(!owToggle.isChecked()){
-                OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
-                serverObject.is_private.set(true);
-                if(editTitle.getText().toString().length() > 0)
-                    serverObject.title.set(editTitle.getText().toString());
+
+            OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
+
+            if(editTitle.getText().toString().length() > 0){
+                serverObject.title.set(editTitle.getText().toString());
                 serverObject.save(getApplicationContext());
+            }
+
+            if(!owToggle.isChecked()){
+                serverObject.is_private.set(true);
                 serverObject.saveAndSync(this.getApplicationContext());
             }
 

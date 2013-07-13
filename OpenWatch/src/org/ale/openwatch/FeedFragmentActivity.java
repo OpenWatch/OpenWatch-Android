@@ -194,6 +194,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     @Override
     public void onPause(){
         removeVideoView();
+        super.onPause();
     }
 
     @Override

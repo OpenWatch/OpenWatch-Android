@@ -14,6 +14,7 @@ import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -21,11 +22,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 
+import java.io.File;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.fb.FBUtils;
+import org.ale.openwatch.file.FileUtils;
 import org.ale.openwatch.model.OWServerObject;
 import org.ale.openwatch.twitter.TwitterUtils;
 
@@ -312,16 +316,31 @@ public class OWUtils {
         }
     }
 
+    public interface TakePictureCallback{
+        public void gotPotentialPictureLocation(File imageLocation);
+    }
 
-
-    public static void setUserAvatar(final Activity act, View v, final int SELECT_PHOTO_CODE, final int TAKE_PHOTO_CODE){
+    public static void setUserAvatar(final Activity act, View v, final int SELECT_PHOTO_CODE, final int TAKE_PHOTO_CODE, final TakePictureCallback cb){
         AlertDialog.Builder builder = new AlertDialog.Builder(act);
+
         builder.setTitle(act.getString(R.string.take_choose_picture_title))
                 .setPositiveButton(act.getString(R.string.take_picture), new DialogInterface.OnClickListener(){
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        File storageDir = Environment.getExternalStoragePublicDirectory(
+                                        Environment.DIRECTORY_PICTURES);
+                        File image = FileUtils.prepareOutputLocation(act.getApplicationContext(), storageDir, "ow_avatar_" + String.valueOf(new Date().getTime()),".jpg");
                         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        //takePicture.putExtra("crop", "true");
+                        takePicture.putExtra("outputX", 640);
+                        takePicture.putExtra("outputY", 480);
+                        takePicture.putExtra("aspectX", 1);
+                        takePicture.putExtra("aspectY", 1);
+                        takePicture.putExtra("scale", true);
+                        takePicture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(image));
+                        if(cb != null)
+                            cb.gotPotentialPictureLocation(image);
                         act.startActivityForResult(takePicture, TAKE_PHOTO_CODE);
                     }
 
@@ -331,6 +350,12 @@ public class OWUtils {
             public void onClick(DialogInterface dialog, int which) {
                 Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                 photoPickerIntent.setType("image/*");
+                //photoPickerIntent.putExtra("crop", "true");
+                photoPickerIntent.putExtra("outputX", 640);
+                photoPickerIntent.putExtra("outputY", 480);
+                photoPickerIntent.putExtra("aspectX", 1);
+                photoPickerIntent.putExtra("aspectY", 1);
+                photoPickerIntent.putExtra("scale", true);
                 act.startActivityForResult(photoPickerIntent, SELECT_PHOTO_CODE);
             }
 

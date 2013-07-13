@@ -784,6 +784,34 @@ public class OWServiceRequests {
 				});
 	}
 
+    public static void sendOWUserAvatar(final Context app_context, final OWUser user, final File image, final RequestCallback cb){
+        new Thread(){
+            public void run(){
+                try {
+                    String fileResponse = OWMediaRequests.ApacheFilePost(app_context, instanceEndpointForOWUser(app_context, user), image.getAbsolutePath(), "file_data");
+                    if(fileResponse.contains("object")){
+                        try {
+                            JSONObject jsonResponse= new JSONObject(fileResponse);
+                            OWUser.objects(app_context, OWUser.class).get(user.getId()).updateWithJson(app_context, jsonResponse);
+                            if(cb != null)
+                                cb.onSuccess();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }else{
+                        if(cb != null)
+                            cb.onFailure();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }.start();
+
+    }
+
     /*
         Immediatley send user agent_applicant status, then re-send location on success
      */
