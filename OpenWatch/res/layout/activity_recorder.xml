@@ -17,7 +17,24 @@
             android:background="@drawable/streaming"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
+            android:visibility="gone"
             android:layout_margin="20dp"/>
+
+    <TextView
+            android:id="@+id/touchToRecord"
+            android:fontFamily="sans-serif-light"
+            android:textSize="30dp"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="#fff"
+            android:shadowColor="#000"
+            android:shadowDy="-2"
+            android:shadowRadius=".1"
+            android:layout_centerInParent="true"
+            android:clickable="true"
+            android:onClick="startRecording"
+            android:text="@string/touch_to_broadcast"/>
 
     <Button
             android:id="@+id/button_stop"
@@ -30,12 +47,13 @@
             android:fontFamily="sans-serif-condensed"
             android:onClick="onStopRecordingButtonClick"
             android:textColor="#fff"
-            android:shadowColor="#264826"
+            android:shadowColor="#ff480105"
             android:shadowDy="-2"
             android:shadowRadius=".1"
-            android:text="@string/stop_recording_dialog_stop"
+            android:text="@string/remove_tag_dialog_cancel"
             android:textSize="25sp"
             />
+
 
 
 </RelativeLayout>

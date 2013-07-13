@@ -231,6 +231,7 @@
     <string name="ow_credentials">OpenWatch.net Credentials</string>
     <string name="ow.net">OpenWatch.net</string>
     <string name="handle_truth">You can handle the truth! Get @OpenWatch for Android or iOS! \n\nAndroid: %1$s \n\niOS: %2$s</string>
+    <string name="touch_to_broadcast">Touch anywhere to begin broadcasting</string>
 
 
 </resources>
