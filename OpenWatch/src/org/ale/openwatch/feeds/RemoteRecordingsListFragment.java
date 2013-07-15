@@ -25,8 +25,6 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -97,11 +95,18 @@ public  class RemoteRecordingsListFragment extends ListFragment
                     fetching_next_page = false;
                     showLoadingMore(false);
 					restartLoader();
+                    if(mPullToRefreshAttacher != null)
+                        mPullToRefreshAttacher.setRefreshComplete();
 				}
 			}
 
 			@Override
-			public void onFailure(int page) {}
+			public void onFailure(int page) {
+                if(mPullToRefreshAttacher != null)
+                    mPullToRefreshAttacher.setRefreshComplete();
+                fetching_next_page = false;
+                showLoadingMore(false);
+            }
         	
         };
 
@@ -132,7 +137,14 @@ public  class RemoteRecordingsListFragment extends ListFragment
             getListView().setDivider(null);
             getListView().setDividerHeight(0);
 
-
+            this.getListView().setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if(mPullToRefreshAttacher == null)
+                        attachPullToRefresh();
+                    return false;
+                }
+            });
 
             this.getListView().setOnScrollListener(new OnScrollListener(){
 
@@ -182,23 +194,25 @@ public  class RemoteRecordingsListFragment extends ListFragment
 	            }
         	}
 
-            onPageSelected();
-
         }
 
 
-        public void onPageSelected() {
+        public void attachPullToRefresh() {
             // Now get the PullToRefresh attacher from the Activity. An exercise to the reader
             // is to create an implicit interface instead of casting to the concrete Activity
             if(parentActivity != null){
-                Log.i(TAG, "Attempting to set PullToRefreshAttacher");
+                Log.i("PTR", "Attempting to set PullToRefreshAttacher");
                 mPullToRefreshAttacher = parentActivity.mPullToRefreshAttacher;
 
                 // Now set the ScrollView as the refreshable view, and the refresh listener (this)
                 mPullToRefreshAttacher.setRefreshableView(getListView(), this);
             }else
-                Log.i(TAG, "parentActivity is null onPageSelected");
+                Log.i("PTR", "parentActivity is null on attachPullToRefresh");
 
+        }
+
+        public void detachPullToRefresh() {
+            mPullToRefreshAttacher = null;
         }
 
 
@@ -248,10 +262,14 @@ public  class RemoteRecordingsListFragment extends ListFragment
         }
         
         private void fetchNextFeedPage(){
+            fetchFeedPage(page+1);
+        }
+
+        private void fetchFeedPage(int page){
             if(!fetching_next_page){
                 if(Constants.isOWFeedTypeGeoSensitive(feed) && device_location != null){
                     try{
-                        OWServiceRequests.getGeoFeed(this.getActivity().getApplicationContext(), device_location, feed, page+1, cb);	 // NPE HERE
+                        OWServiceRequests.getGeoFeed(this.getActivity().getApplicationContext(), device_location, feed, page, cb);	 // NPE HERE
                         fetching_next_page = true;
                         showLoadingMore(true);
                     }catch(NullPointerException e){
@@ -261,7 +279,7 @@ public  class RemoteRecordingsListFragment extends ListFragment
                 }
                 else{
                     try{
-                        OWServiceRequests.getFeed(this.getActivity().getApplicationContext(), feed, page+1, cb);
+                        OWServiceRequests.getFeed(this.getActivity().getApplicationContext(), feed, page, cb);
                         fetching_next_page = true;
                         showLoadingMore(true);
                     }catch(NullPointerException e){
@@ -489,7 +507,7 @@ public  class RemoteRecordingsListFragment extends ListFragment
         @Override
         public void onRefreshStarted(View view) {
             Log.i(TAG, "refresh!");
-            mPullToRefreshAttacher.setRefreshComplete();
+            fetchFeedPage(1);
         }
 
         @Override
