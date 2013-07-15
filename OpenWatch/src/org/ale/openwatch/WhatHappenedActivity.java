@@ -1,6 +1,5 @@
 package org.ale.openwatch;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.*;
 import android.media.MediaPlayer;
@@ -13,7 +12,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.VideoView;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -109,6 +107,9 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 			recording_uuid = getIntent().getExtras().getString(Constants.OW_REC_UUID);
             hq_filepath = getIntent().getExtras().getString("hq_filepath");
             OWServerObject server_object = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
+            if(server_object.video_recording.get(getApplicationContext()).local.get(getApplicationContext()).hq_synced.get() == true){
+                setStatusBarWithObjectUrl();
+            }
             setupVideoView(server_object);
 		}catch (Exception e){
 			Log.e(TAG, "could not load recording_id from intent");
@@ -397,28 +398,58 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
             // Get extra data included in the Intent
             int status = intent.getIntExtra(Constants.OW_SYNC_STATE_STATUS, Constants.OW_SYNC_STATUS_FAILED);
             if(status == Constants.OW_SYNC_STATUS_SUCCESS){ // sync complete
-                if(model_id == intent.getIntExtra(Constants.OW_SYNC_STATE_MODEL_ID, -1) && model_id != -1){
-                    OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
-                    Log.d("WhatHappenedActivity-BroadcastReceived", "sync complete. serverObject serverID: " + String.valueOf(serverObject.getServerId(getApplicationContext())));
-                    final String url = OWUtils.urlForOWServerObject(serverObject, getApplicationContext());
-                    findViewById(R.id.sync_progress).setVisibility(View.GONE);
-                    findViewById(R.id.sync_complete).setVisibility(View.VISIBLE);
-                    TextView sync_progress = ((TextView)findViewById(R.id.sync_progress_text));
-                    sync_progress.setText(getString(R.string.sync_video_complete_header_text) +  "\n" + url);
-                    sync_progress.setClickable(true);
-                    sync_progress.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                            startActivity(browserIntent);
-                        }
-                    });
+                if(model_id == intent.getIntExtra(Constants.OW_SYNC_STATE_MODEL_ID, -1) && model_id > -1){
+                    setStatusBarWithObjectUrl();
                 }
             }else if(status == Constants.OW_SYNC_STATUS_FAILED){
 
             }
         }
     };
+
+    private void setStatusBarWithObjectUrl(){
+        //Log.d("WhatHappenedActivity-BroadcastReceived", "sync complete. serverObject serverID: " + String.valueOf(serverObject.getServerId(getApplicationContext())));
+        String tempUrl = "";
+        if(model_id <= 0){
+            // This shouldn't ever happen
+            setStatusBarCompleteWithUrl("");
+        }else if(model_id > 0){
+            OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
+            if(serverObject.server_id.get() == null || serverObject.server_id.get() == 0){
+                // No server_id available, so get it.
+                OWServiceRequests.syncOWServerObject(getApplicationContext(), serverObject, new OWServiceRequests.RequestCallback() {
+                    @Override
+                    public void onFailure() {
+                        setStatusBarCompleteWithUrl("");
+                    }
+
+                    @Override
+                    public void onSuccess() {
+                        OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
+                        setStatusBarCompleteWithUrl(OWUtils.urlForOWServerObject(serverObject, getApplicationContext()));
+                    }
+                });
+            }else{
+                setStatusBarCompleteWithUrl(OWUtils.urlForOWServerObject(serverObject, getApplicationContext()));
+            }
+        }
+
+    }
+
+    private void setStatusBarCompleteWithUrl(final String url){
+        findViewById(R.id.sync_progress).setVisibility(View.GONE);
+        findViewById(R.id.sync_complete).setVisibility(View.VISIBLE);
+        TextView sync_progress = ((TextView)findViewById(R.id.sync_progress_text));
+        sync_progress.setText(getString(R.string.sync_video_complete_header_text) +  "\n" + url);
+        sync_progress.setClickable(true);
+        sync_progress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(browserIntent);
+            }
+        });
+    }
 
     @Override
     public void onFBError(Map response) {

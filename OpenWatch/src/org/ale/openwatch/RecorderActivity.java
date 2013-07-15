@@ -372,6 +372,10 @@ public class RecorderActivity extends SherlockActivity implements
         if(mCamera == null){ showCameraError();return;}
 
         try {
+            CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_480P);
+            Camera.Parameters parameters = mCamera.getParameters();
+            parameters.setPreviewSize(profile.videoFrameWidth,profile.videoFrameHeight);
+            mCamera.setParameters(parameters);
             mCamera.setPreviewDisplay(mCameraPreview.getHolder());
             mCamera.startPreview();
         } catch (IOException e) {
