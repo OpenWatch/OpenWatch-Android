@@ -129,7 +129,7 @@ public class LoginActivity extends SherlockActivity {
 	}
 
 	public void setUserAvatar(View v){
-        OWUtils.setUserAvatar(this, v, SELECT_PHOTO, TAKE_PHOTO);
+        OWUtils.setUserAvatar(this, v, SELECT_PHOTO, TAKE_PHOTO, null);
 	}
 	
 	@Override

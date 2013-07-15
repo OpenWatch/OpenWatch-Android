@@ -245,8 +245,7 @@ public class OWMediaRequests {
                             // BEGIN OWServerObject Sync Broadcast
                             Log.d("sender", "Broadcasting message");
                             Intent intent = new Intent(Constants.OW_SYNC_STATE_FILTER);
-                            // You can also include some extra data.
-                            intent.putExtra(Constants.OW_SYNC_STATE_STATUS, 1);
+                            intent.putExtra(Constants.OW_SYNC_STATE_STATUS, Constants.OW_SYNC_STATUS_SUCCESS);
                             intent.putExtra(Constants.OW_SYNC_STATE_MODEL_ID, server_object_id);
                             LocalBroadcastManager.getInstance(c).sendBroadcast(intent);
                             // END OWServerObject Sync Broadcast

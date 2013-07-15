@@ -16,6 +16,7 @@ import android.os.PowerManager;
 import android.util.Log;
 import android.view.*;
 import android.widget.ImageView;
+import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -39,7 +40,7 @@ public class RecorderActivity extends SherlockActivity implements
 		SurfaceHolder.Callback {
 
 	static final String TAG = "RecorderActivity";
-	
+
 	SurfaceView mCameraPreview;
 
 	Camera mCamera;
@@ -233,8 +234,11 @@ public class RecorderActivity extends SherlockActivity implements
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		if(!is_recording)
+        showCamerPreview();
+		/*
+        if(!is_recording)
 			startRecording();
+	    */
 	}
 
 	@Override
@@ -266,7 +270,10 @@ public class RecorderActivity extends SherlockActivity implements
 	/**
 	 * Starts recording, noting the time in recording_start
 	 */
-	private void startRecording(){
+	public void startRecording(View v){
+        this.findViewById(R.id.touchToRecord).setVisibility(View.GONE);
+        this.findViewById(R.id.streaming_animation).setVisibility(View.VISIBLE);
+        ((TextView) this.findViewById(R.id.button_stop)).setText(getString(R.string.stop_recording_dialog_stop));
 		try {
 			//av_recorder.startRecording(mCamera, camera_preview, output_filename);
 			//PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -359,6 +366,24 @@ public class RecorderActivity extends SherlockActivity implements
 			}).show();
 		}
 	}
+
+    private void showCamerPreview(){
+        mCamera = getCameraInstance();
+        if(mCamera == null){ showCameraError();return;}
+
+        try {
+            CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_480P);
+            Camera.Parameters parameters = mCamera.getParameters();
+            parameters.setPreviewSize(profile.videoFrameWidth,profile.videoFrameHeight);
+            mCamera.setParameters(parameters);
+            mCamera.setPreviewDisplay(mCameraPreview.getHolder());
+            mCamera.startPreview();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 	private boolean h263Fallback = false;
 
 	private boolean prepareVideoRecorder(){
@@ -369,7 +394,8 @@ public class RecorderActivity extends SherlockActivity implements
 			e1.printStackTrace();
             return false;
 		}
-	    mCamera = getCameraInstance();
+        if(mCamera == null)
+	        mCamera = getCameraInstance();
         if(mCamera == null){ showCameraError();return false;}
 
 	    mMediaRecorder = new MediaRecorder();
@@ -446,7 +472,11 @@ public class RecorderActivity extends SherlockActivity implements
     }
 
     public void onStopRecordingButtonClick(View v){
-        showStopRecordingDialog();
+        if(is_recording)
+            showStopRecordingDialog();
+        else{
+            this.finish();
+        }
     }
 
     private void showCameraError(){

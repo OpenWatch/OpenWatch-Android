@@ -1,8 +1,5 @@
 package org.ale.openwatch;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -17,18 +14,18 @@ import android.widget.TextView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.facebook.model.GraphUser;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.fb.FBUtils;
 import org.ale.openwatch.fb.FaceBookSherlockActivity;
 import org.ale.openwatch.file.FileUtils;
 import org.ale.openwatch.http.OWServiceRequests;
-import org.ale.openwatch.model.OWServerObject;
 import org.ale.openwatch.model.OWUser;
-import org.ale.openwatch.share.Share;
 import org.ale.openwatch.twitter.TwitterUtils;
 import twitter4j.User;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
@@ -48,6 +45,8 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
     TextView blurb;
     Button twitterButton;
     Button fbButton;
+
+    public File cameraPhotoLocation;
 
     boolean profileImageSet = false;
     boolean firstNameSet = false;
@@ -85,15 +84,46 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
             populateViews(null);
         else
             Log.e(TAG, "Unknown user id!");
+
+        fetchOWUser();
+    }
+
+    private void fetchOWUser(){
+        if(model_id <= 0)
+            return;
+
+        OWServiceRequests.syncOWUser(getApplicationContext(), getUser(), new OWServiceRequests.RequestCallback() {
+            @Override
+            public void onFailure() {
+
+            }
+
+            @Override
+            public void onSuccess() {
+                populateViews(getUser());
+            }
+        });
+    }
+
+    private OWUser getUser(){
+        if(model_id > 0)
+            return OWUser.objects(getApplicationContext(), OWUser.class).get(model_id);
+        else
+            return null;
     }
 
     public void getUserAvatarFromDevice(View v){
-        OWUtils.setUserAvatar(this, v, SELECT_PHOTO, TAKE_PHOTO);
+        OWUtils.setUserAvatar(this, v, SELECT_PHOTO, TAKE_PHOTO, new OWUtils.TakePictureCallback() {
+            @Override
+            public void gotPotentialPictureLocation(File image) {
+                cameraPhotoLocation = image;
+            }
+        });
     }
 
     public void populateViews(OWUser user) {
         if(user == null)
-            user = OWUser.objects(getApplicationContext(), OWUser.class).get(model_id);
+            user = getUser();
         if(user.first_name.get() != null && user.first_name.get().compareTo("") != 0)
             firstName.setText(user.first_name.get());
         if(user.last_name.get() != null && user.last_name.get().compareTo("") != 0)
@@ -107,7 +137,7 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
 
     private void loadProfilePicture(OWUser user){
         if(user == null)
-            user = OWUser.objects(getApplicationContext(), OWUser.class).get(model_id);
+            user = getUser();
         if(user.thumbnail_url.get() != null && user.thumbnail_url.get().compareTo("") != 0){
             profileImageSet = true;
             ImageLoader.getInstance().displayImage(user.thumbnail_url.get(), profileImage);
@@ -121,7 +151,7 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
 
             @Override
             public void onSuccess() {
-                String url = OWUser.objects(OWProfileActivity.this, OWUser.class).get(model_id).thumbnail_url.get();
+                String url = OWProfileActivity.this.getUser().thumbnail_url.get();
                 if(url != null && url.compareTo("") != 0){
                     profileImageSet = true;
                     ImageLoader.getInstance().displayImage(url, profileImage);
@@ -138,7 +168,7 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
                 @Override
                 public void gotProfile(GraphUser user) {
                     Log.i(TAG, "Got user");
-                    OWUser owUser = OWUser.objects(OWProfileActivity.this, OWUser.class).get(model_id);
+                    OWUser owUser = getUser();
                     if(owUser.thumbnail_url.get() == null || owUser.thumbnail_url.get().compareTo("") == 0){
                         String url = String.format("https://graph.facebook.com/%s/picture", user.getId());
                         // TODO: Download image, upload to OW
@@ -189,7 +219,7 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
                 public void gotUser(User twitterUser) {
                     Log.i(TAG, "Twitter got User");
 
-                    OWUser user = OWUser.objects(getApplicationContext(), OWUser.class).get(model_id);
+                    OWUser user = getUser();
                     if (user == null)
                         return;
                     if (twitterUser.getDescription() != null && (user.blurb.get() == null || user.blurb.get().compareTo("") == 0)) {
@@ -229,12 +259,13 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
                 break;
             case SELECT_PHOTO:
                 if(resultCode == RESULT_OK){
-                    Uri selectedImage = data.getData();
-                    InputStream imageStream;
+                    Uri selectedImageUri = data.getData();
+                    File imageFile = new File(FileUtils.getRealPathFromURI(getApplicationContext(), selectedImageUri));
+                    Log.i("selected_image", imageFile.getAbsolutePath());
                     try {
-                        Bitmap yourSelectedImage = FileUtils.decodeUri(getApplicationContext(), selectedImage, 100);
-                        profileImage.setImageBitmap(yourSelectedImage);
-                        //TODO: Send thumbnail to server
+                        OWServiceRequests.sendOWUserAvatar(getApplicationContext(), getUser(), imageFile, null);
+                        Bitmap selectedImage = FileUtils.decodeUri(getApplicationContext(), selectedImageUri, 100);
+                        profileImage.setImageBitmap(selectedImage);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -242,8 +273,12 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
                 }
             case TAKE_PHOTO:
                 if(resultCode == RESULT_OK){
-                    profileImage.setImageBitmap((Bitmap)data.getExtras().get("data"));
-                    //TODO: Send thumbnail to server
+                    String imageFilePath = OWProfileActivity.this.cameraPhotoLocation.getAbsolutePath();
+                    if(!imageFilePath.contains("file://"))
+                        imageFilePath = "file://" + imageFilePath;
+                    ImageLoader.getInstance().displayImage(imageFilePath, profileImage);
+
+                    OWServiceRequests.sendOWUserAvatar(getApplicationContext(), getUser(), new File(OWProfileActivity.this.cameraPhotoLocation.getAbsolutePath()), null);
                     break;
                 }
         }
