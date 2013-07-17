@@ -363,4 +363,11 @@ public class OWUtils {
 
     }
 
+    public static void goToLoginActivityWithMessage(Context c, String message){
+        Intent i = new Intent(c, LoginActivity.class);
+        i.putExtra("message", message);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        c.startActivity(i);
+    }
+
 }
