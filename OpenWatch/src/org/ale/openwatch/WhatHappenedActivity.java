@@ -296,24 +296,32 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
     @Override
 	public void onPause(){
         if(model_id > 0){
-
+            boolean doSync = false;
             OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
 
             if(editTitle.getText().toString().length() > 0){
                 serverObject.title.set(editTitle.getText().toString());
                 serverObject.save(getApplicationContext());
+                doSync = true;
             }
 
             if(!owToggle.isChecked()){
                 serverObject.is_private.set(true);
-                serverObject.saveAndSync(this.getApplicationContext());
+                serverObject.save(getApplicationContext());
+                doSync = true;
             }
 
             if(fbToggle.isChecked()){
                 syncAndPostSocial(OWUtils.SOCIAL_TYPE.FB);
+                doSync = false;
             }
             if(twitterToggle.isChecked()){
                 syncAndPostSocial(OWUtils.SOCIAL_TYPE.TWITTER);
+                doSync = false;
+            }
+
+            if(doSync){
+                serverObject.saveAndSync(this.getApplicationContext());
             }
 
         }

@@ -36,8 +36,8 @@ public class Constants {
 	public static final String PROD_HOST = "https://openwatch.net/";
 	public static final String PROD_CAPTURE_HOST = "https://capture.openwatch.net/";
 
-    public static final String DEV_HOST = "https://staging.openwatch.net/";
-    public static final String DEV_CAPTURE_HOST = "https://capture-staging.openwatch.net/";
+    public static final String DEV_HOST = "https://openwatch.net/";
+    public static final String DEV_CAPTURE_HOST = "https://66.175.223.168/";
 
 	//public static final String DEV_HOST = "http://192.168.1.27:8000/";
     //public static final String DEV_CAPTURE_HOST = "http://192.168.1.27:5000/";
