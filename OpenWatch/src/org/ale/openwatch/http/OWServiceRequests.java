@@ -18,7 +18,11 @@ import com.orm.androrm.Filter;
 import com.orm.androrm.Model;
 import com.orm.androrm.QuerySet;
 
+import org.ale.openwatch.FeedFragmentActivity;
+import org.ale.openwatch.LoginActivity;
 import org.ale.openwatch.OWApplication;
+import org.ale.openwatch.R;
+import org.ale.openwatch.account.Authentication;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
 import org.ale.openwatch.constants.Constants.CONTENT_TYPE;
@@ -248,8 +252,24 @@ public class OWServiceRequests {
 					ParseFeedTask parseTask = new ParseFeedTask(app_context, cb, feed_name, page, internal_user_id);
 					parseTask.execute(response);
 					
-				}else
-					Log.e(TAG, "Feed response format unexpected" + response.toString());
+				}else try {
+                    if(response.has("success") && response.getBoolean("success") == false){
+                        if(response.has("code") && response.getInt("code") == 406){
+                            // Auth cookie wrong / missing. Prompt user to re-login
+                            Authentication.logOut(app_context);
+                            Intent i = new Intent(app_context, LoginActivity.class);
+                            i.putExtra("message", app_context.getString(R.string.message_account_expired));
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            app_context.startActivity(i);
+
+                        }
+                    }else{
+                        Log.e(TAG, "Feed response format unexpected" + response.toString());
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
 			}
 			
 			@Override

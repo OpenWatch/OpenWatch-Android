@@ -97,6 +97,7 @@ public class LoginActivity extends SherlockActivity {
 						attemptLogin();
 					}
 				});
+
 	}
 
 	@Override
@@ -118,12 +119,13 @@ public class LoginActivity extends SherlockActivity {
 				return;
 			}
 		}
-		setViewsAsNotAuthenticated();
-		
-		// If the user has never provided an email:
-		if(!profile.contains(Constants.EMAIL) && !profile.getBoolean(Constants.AUTHENTICATED, false)){
-			((TextView) findViewById(R.id.login_state_message)).setText(getString(R.string.create_account_prompt));
-			this.findViewById(R.id.login_state_message).setVisibility(View.VISIBLE);
+
+        Bundle extras = getIntent().getExtras();
+        if(extras != null && extras.containsKey("message")){
+            setViewsAsNotAuthenticatedWithMessage(extras.getString("message"));
+        } else if(!profile.contains(Constants.EMAIL) && !profile.getBoolean(Constants.AUTHENTICATED, false)){
+            // The user has never provided an email:
+            setViewsAsNotAuthenticatedWithMessage(getString(R.string.create_account_prompt));
 		}
 		
 	}
@@ -166,6 +168,12 @@ public class LoginActivity extends SherlockActivity {
 		mEmailView.setEnabled(false);
 		mPasswordView.setVisibility(View.GONE);
 	}
+
+    private void setViewsAsNotAuthenticatedWithMessage(String message) {
+        setViewsAsNotAuthenticated();
+        this.findViewById(R.id.login_state_message).setVisibility(View.VISIBLE);
+        ((TextView)this.findViewById(R.id.login_state_message)).setText(message);
+    }
 
 	private void setViewsAsNotAuthenticated() {
 		this.findViewById(R.id.login_state_message).setVisibility(View.GONE);

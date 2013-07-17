@@ -55,6 +55,7 @@
     <string name="error_field_required">This field is required</string>
 
     <string name="message_account_stored">You are currently signed in. For security, your password is not stored on this device. Log out to use a different account.</string>
+    <string name="message_account_expired">Whoops, your account session has expired. Please login again.</string>
 
     <!-- FancyLoginActivity -->
     <string name="fancy_login_welcome_text">Welcome to OpenWatch. Enter your email to get started.</string>
