@@ -27,6 +27,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.MemoryCacheUtil;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.fb.FBUtils;
 import org.ale.openwatch.file.FileUtils;
@@ -368,6 +370,15 @@ public class OWUtils {
         i.putExtra("message", message);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         c.startActivity(i);
+    }
+
+    public static void removeUriFromImageCache(String imageUri){
+        ImageLoader imageLoader = ImageLoader.getInstance();
+        File imageFile = imageLoader.getDiscCache().get(imageUri);
+        if (imageFile.exists()) {
+            imageFile.delete();
+        }
+        MemoryCacheUtil.removeFromCache(imageUri, imageLoader.getMemoryCache());
     }
 
 }

@@ -86,6 +86,7 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
             Log.e(TAG, "Unknown user id!");
 
         fetchOWUser();
+
     }
 
     private void fetchOWUser(){
@@ -100,6 +101,7 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
 
             @Override
             public void onSuccess() {
+                OWUtils.removeUriFromImageCache(getUser().thumbnail_url.get());
                 populateViews(getUser());
             }
         });
@@ -264,6 +266,7 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
                     Log.i("selected_image", imageFile.getAbsolutePath());
                     try {
                         OWServiceRequests.sendOWUserAvatar(getApplicationContext(), getUser(), imageFile, null);
+                        OWUtils.removeUriFromImageCache(selectedImageUri.toString());
                         Bitmap selectedImage = FileUtils.decodeUri(getApplicationContext(), selectedImageUri, 100);
                         profileImage.setImageBitmap(selectedImage);
                     } catch (FileNotFoundException e) {
@@ -276,8 +279,8 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
                     String imageFilePath = OWProfileActivity.this.cameraPhotoLocation.getAbsolutePath();
                     if(!imageFilePath.contains("file://"))
                         imageFilePath = "file://" + imageFilePath;
+                    OWUtils.removeUriFromImageCache(imageFilePath);
                     ImageLoader.getInstance().displayImage(imageFilePath, profileImage);
-
                     OWServiceRequests.sendOWUserAvatar(getApplicationContext(), getUser(), new File(OWProfileActivity.this.cameraPhotoLocation.getAbsolutePath()), null);
                     break;
                 }

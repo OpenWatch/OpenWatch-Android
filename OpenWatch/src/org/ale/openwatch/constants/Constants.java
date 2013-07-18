@@ -31,7 +31,7 @@ public class Constants {
 	
 	// Set this flag to toggle between production 
 	// and development endpoint addresses
-	public static final boolean USE_DEV_ENDPOINTS = false;
+	public static final boolean USE_DEV_ENDPOINTS = true;
 	
 	public static final String PROD_HOST = "https://openwatch.net/";
 	public static final String PROD_CAPTURE_HOST = "https://capture.openwatch.net/";

@@ -850,19 +850,29 @@ public class OWServiceRequests {
     public static void syncOWUser(final Context app_context, final OWUser user, final RequestCallback cb){
         final AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
         Log.i(TAG,
-                "Commencing Edit User: "
+                "Commencing Edit User to: " + instanceEndpointForOWUser(app_context, user) + " "
                         + user.toJSON());
 
         final JsonHttpResponseHandler _cb = new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(JSONObject response) {
-                user.updateWithJson(app_context, response);
-                if(cb != null)
-                    cb.onSuccess();
+                Log.i(TAG, "Edit user response: " + response.toString());
+                if(response.has("object")){
+                    try {
+                        user.updateWithJson(app_context, response.getJSONObject("object"));
+                        if(cb != null)
+                            cb.onSuccess();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        if(cb != null)
+                            cb.onFailure();
+                    }
+                }
             }
 
             @Override
             public void onFailure(Throwable e, String response) {
+                Log.i(TAG, "Edit user response: " + response.toString());
                 if(cb != null)
                     cb.onFailure();
             }
@@ -882,12 +892,11 @@ public class OWServiceRequests {
                             "application/json", _cb);
                 }
             });
-
-            http_client.post(app_context, instanceEndpointForOWUser(app_context, user), Utils
-                    .JSONObjectToStringEntity(user.toJSON()),
-                    "application/json", _cb);
         }
 
+        http_client.post(app_context, instanceEndpointForOWUser(app_context, user), Utils
+                .JSONObjectToStringEntity(user.toJSON()),
+                "application/json", _cb);
     }
 
 	/**
