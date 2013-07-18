@@ -64,6 +64,9 @@ public class RecorderActivity extends SherlockActivity implements
 	String recording_uuid;
 	String recording_start;
 	String recording_end;
+
+    private final int VIDEO_WIDTH = 720;
+    private final int VIDEO_HEIGHT = 480;
 	
 	class MediaSignalTask extends AsyncTask<String, Void, Void> {
         protected Void doInBackground(String... command) {
@@ -372,9 +375,8 @@ public class RecorderActivity extends SherlockActivity implements
         if(mCamera == null){ showCameraError();return;}
 
         try {
-            CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_480P);
             Camera.Parameters parameters = mCamera.getParameters();
-            parameters.setPreviewSize(profile.videoFrameWidth,profile.videoFrameHeight);
+            parameters.setPreviewSize(VIDEO_WIDTH, VIDEO_HEIGHT);
             mCamera.setParameters(parameters);
             mCamera.setPreviewDisplay(mCameraPreview.getHolder());
             mCamera.startPreview();
@@ -410,7 +412,13 @@ public class RecorderActivity extends SherlockActivity implements
 
 	    // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
         if(Build.VERSION.SDK_INT >= 11){
-	        mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_480P));
+            mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+            mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+            mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
+            mMediaRecorder.setVideoEncodingBitRate(2500000);
+            mMediaRecorder.setAudioEncodingBitRate(96000);
+            mMediaRecorder.setVideoSize(VIDEO_WIDTH, VIDEO_HEIGHT);
+            mMediaRecorder.setVideoFrameRate(30);
         }else{
             mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
             mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
