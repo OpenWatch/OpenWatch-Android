@@ -251,11 +251,7 @@ public class OWServiceRequests {
 					
 				}else try {
                     if(response.has("success") && response.getBoolean("success") == false){
-                        if(response.has("code") && response.getInt("code") == 406){
-                            // Auth cookie wrong / missing. Prompt user to re-login
-                            Authentication.logOut(app_context);
-                            OWUtils.goToLoginActivityWithMessage(app_context, app_context.getString(R.string.message_account_expired));
-                        }
+                        handleOWApiError(app_context, response);
                     }else{
                         Log.e(TAG, "Feed response format unexpected" + response.toString());
                     }
@@ -685,11 +681,7 @@ public class OWServiceRequests {
 					}
 				}else try {
                     if(response.has("success") && response.getBoolean("success") == false){
-                        if(response.has("code") && response.getInt("code") == 406){
-                            // Auth cookie wrong / missing. Prompt user to re-login
-                            Authentication.logOut(app_context);
-                            OWUtils.goToLoginActivityWithMessage(app_context, app_context.getString(R.string.message_account_expired));
-                        }
+                        handleOWApiError(app_context, response);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -712,6 +704,22 @@ public class OWServiceRequests {
 		getOWServerObjectMeta(app_context, object, "", get_handler);
 
 	}
+
+    private static void handleOWApiError(Context app_context, JSONObject response){
+        try {
+            if(response.has("code") && response.getInt("code") == 406){
+                SharedPreferences profile = app_context.getSharedPreferences(
+                        Constants.PROFILE_PREFS, app_context.MODE_PRIVATE);
+                if(profile.contains(Constants.EMAIL) && profile.getBoolean(Constants.AUTHENTICATED, false)){
+                    // Auth cookie wrong / missing. Prompt user to re-login
+                    Authentication.logOut(app_context);
+                    OWUtils.goToLoginActivityWithMessage(app_context, app_context.getString(R.string.message_account_expired));
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
 	public static void getOWServerObjectMeta(Context app_context, OWServerObjectInterface object, String http_get_string, JsonHttpResponseHandler response_handler) {
 		AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
