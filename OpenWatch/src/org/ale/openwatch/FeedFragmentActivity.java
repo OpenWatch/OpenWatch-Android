@@ -94,7 +94,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mPullToRefreshAttacher = new PullToRefreshAttacher(this);
+        mPullToRefreshAttacher =  PullToRefreshAttacher.get(this);
         //mTabHost.setOn
         setContentView(R.layout.fragment_tabs_pager);
         this.getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -185,13 +185,16 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
 
             @Override
             public void onPageSelected(int i) {
+                if(mPullToRefreshAttacher != null)
+                    mPullToRefreshAttacher.setRefreshComplete();
                 Log.i(TAG, String.format("page %d selected", i));
                 removeVideoView();
                 if(lastPagePosition != -1){
                     RemoteRecordingsListFragment frag = ((RemoteRecordingsListFragment) FeedFragmentActivity.this.mTabsAdapter.getItem(lastPagePosition));
-                    if( frag != null)
+                    if( frag != null){
                         frag.detachPullToRefresh();
-                    else
+
+                    } else
                         Log.i("PTR", String.format("fragment at page %d is null",i));
                 }
                 lastPagePosition = i;

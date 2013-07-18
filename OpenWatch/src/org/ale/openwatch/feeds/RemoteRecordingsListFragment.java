@@ -205,7 +205,8 @@ public  class RemoteRecordingsListFragment extends ListFragment
                 mPullToRefreshAttacher = parentActivity.mPullToRefreshAttacher;
 
                 // Now set the ScrollView as the refreshable view, and the refresh listener (this)
-                mPullToRefreshAttacher.setRefreshableView(getListView(), this);
+                mPullToRefreshAttacher.addRefreshableView(getListView(), this);
+                //mPullToRefreshAttacher.setRefreshableView(getListView(), this);
             }else
                 Log.i("PTR", "parentActivity is null on attachPullToRefresh");
 
