@@ -33,6 +33,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.bugsense.trace.BugSenseHandler;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.orm.androrm.QuerySet;
 import com.viewpagerindicator.TitlePageIndicator;
 
@@ -203,6 +204,21 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
 
             }
         });
+
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        if(internal_user_id > 0){
+            RelativeLayout profileDrawerItem = (RelativeLayout) findViewById(R.id.profileRow);
+            if(profileDrawerItem != null){
+                String userThumbnailUrl = OWUser.objects(getApplicationContext(), OWUser.class).get(internal_user_id).thumbnail_url.get();
+                if(userThumbnailUrl != null){
+                    ImageLoader.getInstance().displayImage(userThumbnailUrl, (ImageView) profileDrawerItem.findViewById(R.id.icon));
+                }
+            }
+        }
 
     }
 

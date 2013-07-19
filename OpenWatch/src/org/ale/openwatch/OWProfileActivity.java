@@ -1,5 +1,7 @@
 package org.ale.openwatch;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -262,14 +264,26 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
             case SELECT_PHOTO:
                 if(resultCode == RESULT_OK){
                     Uri selectedImageUri = data.getData();
-                    File imageFile = new File(FileUtils.getRealPathFromURI(getApplicationContext(), selectedImageUri));
-                    Log.i("selected_image", imageFile.getAbsolutePath());
-                    try {
+                    //Log.i("selected_image_uri", selectedImageUri.toString());
+                    String path = FileUtils.getRealPathFromURI(getApplicationContext(), selectedImageUri);
+                    try{
+                        File imageFile = new File(path);
                         OWServiceRequests.sendOWUserAvatar(getApplicationContext(), getUser(), imageFile, null);
                         OWUtils.removeUriFromImageCache(selectedImageUri.toString());
                         Bitmap selectedImage = FileUtils.decodeUri(getApplicationContext(), selectedImageUri, 100);
                         profileImage.setImageBitmap(selectedImage);
-                    } catch (FileNotFoundException e) {
+                    }catch(NullPointerException e){
+                        new AlertDialog.Builder(OWProfileActivity.this)
+                                .setTitle(getString(R.string.cant_get_image))
+                                .setMessage(getString(R.string.cant_get_image_message))
+                                .setPositiveButton(getString(R.string.dialog_bummer), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .show();
+                    }catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
                     break;

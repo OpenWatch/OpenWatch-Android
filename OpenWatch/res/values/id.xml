@@ -12,5 +12,9 @@
     <!-- ListItem subView action type -->
     <item name="subView" type="id"></item>
 
+    <!-- Drawer -->
+    <item name="profileRow" type="id"></item>
+    <item name="standardRow" type="id"></item>
+
         
 </resources>

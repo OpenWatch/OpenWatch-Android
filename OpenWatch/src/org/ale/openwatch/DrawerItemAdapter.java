@@ -67,12 +67,17 @@ public class DrawerItemAdapter extends ArrayAdapter {
             viewCache.title.setVisibility(View.VISIBLE);
         }
 
-
+        view.setId(R.id.standardRow);
         if(dataToIcon.containsKey(data.get(position))){
             viewCache.title.setText(data.get(position));
             viewCache.icon.setVisibility(View.VISIBLE);
-            if(data.get(position).compareTo("Profile")==0 && userThumbnailUrl != null){
-                ImageLoader.getInstance().displayImage(userThumbnailUrl, viewCache.icon);
+            if(data.get(position).compareTo("Profile")==0){
+                view.setId(R.id.profileRow);
+                if(userThumbnailUrl != null){
+                    ImageLoader.getInstance().displayImage(userThumbnailUrl, viewCache.icon);
+                }else{
+                    viewCache.icon.setImageResource((Integer)dataToIcon.get(data.get(position)));
+                }
             }else
                 viewCache.icon.setImageResource((Integer)dataToIcon.get(data.get(position)));
             //view.setTag(R.id.list_item_model, data.get(position));
