@@ -101,7 +101,7 @@
 
 
 
-    <ToggleButton
+    <Switch
             android:id="@+id/owSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -140,7 +140,7 @@
 
 
 
-    <ToggleButton
+    <Switch
         android:id="@+id/fbSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -179,7 +179,7 @@
         android:textSize="20sp"/>
 
 
-    <ToggleButton
+    <Switch
         android:id="@+id/twitterSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

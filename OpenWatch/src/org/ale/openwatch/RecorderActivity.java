@@ -413,17 +413,18 @@ public class RecorderActivity extends SherlockActivity implements
 
 	    // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
         if(Build.VERSION.SDK_INT >= 11){
-            mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_480P));
-            /*
+            //mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_480P));
+
             mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-            mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+            mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
             mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
             mMediaRecorder.setVideoEncodingBitRate(2500000);
             mMediaRecorder.setAudioSamplingRate(44100);
             mMediaRecorder.setAudioEncodingBitRate(128000);
             mMediaRecorder.setVideoSize(VIDEO_WIDTH, VIDEO_HEIGHT);
             mMediaRecorder.setVideoFrameRate(30);
-            */
+
+
         }else{
             mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
             mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
