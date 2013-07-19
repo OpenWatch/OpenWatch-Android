@@ -15,12 +15,14 @@ import org.ale.openwatch.model.OWLocalVideoRecordingSegment;
 import org.ale.openwatch.model.OWVideoRecording;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -283,6 +285,8 @@ public class OWMediaRequests {
 
 		}.start();
 	}
+
+    public static final int FILE_UPLOAD_RETRY_COUNT = 3;
 	
 	public static String ApacheFilePost(Context c, String url, String filename, String post_key) throws ParseException, ClientProtocolException, IOException{
 		final String TAG = "ApacheFilePost";
@@ -302,7 +306,15 @@ public class OWMediaRequests {
 		entity.addPart(post_key, fileBody);
 
 		post.setEntity( entity );
-
+        client.setHttpRequestRetryHandler(new HttpRequestRetryHandler() {
+            @Override
+            public boolean retryRequest(IOException e, int i, HttpContext httpContext) {
+                if(i < FILE_UPLOAD_RETRY_COUNT)
+                    return true;
+                else
+                    return false;
+            }
+        });
 		// Here we go!
 		String response = EntityUtils.toString( client.execute( post ).getEntity(), "UTF-8" );
 		Log.i(TAG, "response: " + response);

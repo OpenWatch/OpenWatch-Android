@@ -316,11 +316,12 @@ public class RecorderActivity extends SherlockActivity implements
 			recording_end = String.valueOf(new Date().getTime() / 1000);
 			stop_date = new Date();
 			new MediaSignalTask().execute("end", Constants.utc_formatter.format(start_date), Constants.utc_formatter.format(stop_date), new JSONArray(new ArrayList()).toString());
-			new MediaSignalTask().execute("hq", output_filename);
             try{
 			    mMediaRecorder.stop();
                 releaseMediaRecorder();
                 mCamera.lock();
+                // Make sure the media file is finalized before syncing.
+                new MediaSignalTask().execute("hq", output_filename);
             }catch( NullPointerException e){
                 Log.i(TAG, "mMediaRecorder was null on stop recording. figure this out");
             }
@@ -412,13 +413,17 @@ public class RecorderActivity extends SherlockActivity implements
 
 	    // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
         if(Build.VERSION.SDK_INT >= 11){
+            mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_480P));
+            /*
             mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-            mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+            mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
             mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
             mMediaRecorder.setVideoEncodingBitRate(2500000);
-            mMediaRecorder.setAudioEncodingBitRate(96000);
+            mMediaRecorder.setAudioSamplingRate(44100);
+            mMediaRecorder.setAudioEncodingBitRate(128000);
             mMediaRecorder.setVideoSize(VIDEO_WIDTH, VIDEO_HEIGHT);
             mMediaRecorder.setVideoFrameRate(30);
+            */
         }else{
             mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
             mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);

@@ -276,7 +276,10 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 	}
 
     public void onDoneButtonClick(View v){
-        this.finish();
+        Intent feedFragmentIntent = new Intent(getApplicationContext(), FeedFragmentActivity.class);
+        feedFragmentIntent.putExtra(Constants.FEED_TYPE, Constants.OWFeedType.USER);
+        feedFragmentIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(feedFragmentIntent);
     }
 
 
@@ -295,6 +298,17 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 
     @Override
 	public void onPause(){
+        syncOWServerObject();
+
+		SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, 0);
+		int user_id = profile.getInt(DBConstants.USER_SERVER_ID, 0);
+		if(user_id > 0)
+			getContentResolver().notifyChange(OWContentProvider.getUserRecordingsUri(user_id), null);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(serverObjectSyncStateMessageReceiver);
+        super.onPause();
+	}
+
+    private void syncOWServerObject(){
         if(model_id > 0){
             boolean doSync = false;
             OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
@@ -325,14 +339,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
             }
 
         }
-
-		SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, 0);
-		int user_id = profile.getInt(DBConstants.USER_SERVER_ID, 0);
-		if(user_id > 0)
-			getContentResolver().notifyChange(OWContentProvider.getUserRecordingsUri(user_id), null);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(serverObjectSyncStateMessageReceiver);
-        super.onPause();
-	}
+    }
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

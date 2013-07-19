@@ -79,6 +79,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     int nextDirectoryMenuId = 1;
     
     boolean onCreateWon = false;
+    public boolean forceUserFeedRefresh = false;
 
     // Temporary drawer items
     private ArrayList<String> mDrawerItems = new ArrayList<String>() {{ add("Profile"); add("Settings");  add("Send Feedback");}};
@@ -130,11 +131,8 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         
         populateTabsFromMaps();
         
-        // See if initiating intent specified a tab
+        // See if initiating intent specified a tab via url, feed type
         if(checkIntentForUri(getIntent())){
-        }else if(getIntent().getExtras() != null && getIntent().getExtras().containsKey(Constants.FEED_TYPE) ){
-        	mTitleIndicator.setCurrentItem(mTitleToTabId.get(((OWFeedType)getIntent().getExtras().getSerializable(Constants.FEED_TYPE)).toString() ));
-        // Try to restore last tab state
         }else if (savedInstanceState != null) {
             mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
         }else{
@@ -234,7 +232,20 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
             mTitleIndicator.setCurrentItem(mTitleToTabId.get(tag));
             return true;
 
+        }else if(intent.getExtras() != null && intent.getExtras().containsKey(Constants.FEED_TYPE) ){
+            OWFeedType feedType = ((OWFeedType)intent.getExtras().getSerializable(Constants.FEED_TYPE));
+            if(feedType == OWFeedType.USER){
+                // Force the user feed to refresh
+                RemoteRecordingsListFragment userFrag = ((RemoteRecordingsListFragment) FeedFragmentActivity.this.mTabsAdapter.getItem(mTitleToTabId.get(feedType.toString().toLowerCase())));
+                FeedFragmentActivity.this.forceUserFeedRefresh = true;
+                //userFrag.didRefreshFeed = false;
+                //userFrag.forceRefresh = true;
+                Log.i(feedType.toString(), "force refresh feed now!");
+            }
+            mTitleIndicator.setCurrentItem(mTitleToTabId.get(feedType.toString().toLowerCase() ));
+
         }
+
         return false;
     }
     private void populateTabsFromMaps(){

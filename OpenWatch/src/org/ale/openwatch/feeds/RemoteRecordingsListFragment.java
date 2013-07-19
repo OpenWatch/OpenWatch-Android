@@ -56,7 +56,7 @@ public  class RemoteRecordingsListFragment extends ListFragment
             PullToRefreshAttacher.OnRefreshListener, TabHost.OnTabChangeListener{
     	
     	static String TAG = "RemoteFeedFragment";
-    	boolean didRefreshFeed = false;
+    	public boolean didRefreshFeed = false;
     	int page = 0;
     	boolean has_next_page = false;
         boolean fetching_next_page = false;
@@ -85,6 +85,7 @@ public  class RemoteRecordingsListFragment extends ListFragment
 
 			@Override
 			public void onSuccess(int page, int object_count, int total_pages) {
+                fetching_next_page = false;
 				if(RemoteRecordingsListFragment.this.isAdded()){
 					RemoteRecordingsListFragment.this.page = page;
 					if(total_pages <= page)
@@ -92,7 +93,6 @@ public  class RemoteRecordingsListFragment extends ListFragment
 					else
 						RemoteRecordingsListFragment.this.has_next_page = true;
 					didRefreshFeed = true;
-                    fetching_next_page = false;
                     showLoadingMore(false);
 					restartLoader();
                     if(mPullToRefreshAttacher != null)
@@ -110,10 +110,25 @@ public  class RemoteRecordingsListFragment extends ListFragment
         	
         };
 
+    @Override
+    public void onDestroy (){
+        super.onDestroy();
+        Log.i(feed.toString(), "onDestroy");
+    }
+
+    public void onResume (){
+        super.onResume();
+        Log.i(feed.toString(), "onResume");
+        if(feed.compareTo("user") == 0 && ((FeedFragmentActivity) getActivity()).forceUserFeedRefresh ){
+            fetchFeedPage(1);
+            ((FeedFragmentActivity) getActivity()).forceUserFeedRefresh = false;
+        }
+    }
+
         @Override public void onActivityCreated(Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
             parentActivity = (FeedFragmentActivity) getActivity();
-            Log.i("FeedFragment", "onActivityCreated");
+
             // Give some text to display if there is no data.  In a real
             // application this would come from a resource.
             setEmptyText(getString(R.string.feed_empty));
@@ -122,7 +137,7 @@ public  class RemoteRecordingsListFragment extends ListFragment
             setHasOptionsMenu(true);
 
             feed = this.getArguments().getString(Constants.OW_FEED);
-
+            Log.i(feed.toString(), "onActivityCreated");
             // Initialize adapter without cursor. Let loader provide it when ready
             mAdapter = new OWMediaObjectAdapter(getActivity(), null);
             // Add footer loading view
