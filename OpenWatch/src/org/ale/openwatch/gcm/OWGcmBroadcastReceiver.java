@@ -33,7 +33,7 @@ public class OWGcmBroadcastReceiver extends BroadcastReceiver {
             sendNotification("Deleted messages on server: " +
                     intent.getExtras().toString());
         } else {
-            sendNotification("Received: " + intent.getExtras().toString());
+            sendNotification(intent.getExtras().getString("message"));
         }
         setResultCode(Activity.RESULT_OK);
     }
@@ -49,7 +49,7 @@ public class OWGcmBroadcastReceiver extends BroadcastReceiver {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(ctx)
                         .setSmallIcon(R.drawable.ic_ab_icon)
-                        .setContentTitle("OW GCM Notification")
+                        .setContentTitle("OPENWATCH RULES")
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText(msg))
                         .setContentText(msg);

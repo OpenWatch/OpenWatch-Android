@@ -181,6 +181,8 @@ public abstract class GCMActivity extends SherlockFragmentActivity {
         int userId = userPrefs.getInt(Constants.INTERNAL_USER_ID, 0);
         if(userId > 0){
             OWUser user = OWUser.objects(context, OWUser.class).get(userId);
+            user.gcm_registration_id.set(regId);
+            user.save(context);
             OWServiceRequests.syncOWUser(context.getApplicationContext(), user, null);
         }
     }

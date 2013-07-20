@@ -43,10 +43,11 @@
         android:theme="@style/Theme.openwatch" >
         <receiver
                 android:name=".gcm.OWGcmBroadcastReceiver"
-                android:permission="com.google.android.c2dm.permission.SEND" >
+                android:permission="com.google.android.c2dm.permission.SEND"
+                android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <category android:name="com.example.gcm" />
+                <category android:name="org.ale.openwatch" />
             </intent-filter>
         </receiver>
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/fb_app_id"/>
