@@ -19,7 +19,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/gen" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="Android SDK" jdkType="Android SDK" />
+    <orderEntry type="jdk" jdkName="Android 4.2.2 Google APIs" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="android-async-http" exported="" />
     <orderEntry type="module-library" exported="">
@@ -32,7 +32,6 @@
         <jarDirectory url="file://$MODULE_DIR$/libs" recursive="false" />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="google-play-services_lib" exported="" />
     <orderEntry type="module" module-name="TouchImageView" exported="" />
     <orderEntry type="module" module-name="ActionBarSherlock" exported="" />
     <orderEntry type="module" module-name="Android-Universal-Image-Loader" exported="" />
@@ -40,6 +39,7 @@
     <orderEntry type="module" module-name="facebook" exported="" />
     <orderEntry type="module" module-name="androrm" exported="" />
     <orderEntry type="module" module-name="ActionBar-PullToRefresh" exported="" />
+    <orderEntry type="module" module-name="google-play-services_lib1" exported="" />
   </component>
 </module>
 

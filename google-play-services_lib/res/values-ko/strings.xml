@@ -14,9 +14,13 @@
     <string name="common_google_play_services_unsupported_title" msgid="6334768798839376943">"Google Play 서비스"</string>
     <string name="common_google_play_services_unsupported_text" msgid="3542578567569488671">"일부 사용자 애플리케이션에 필요한 Google Play 서비스가 사용자 기기에서 지원되지 않습니다. 기기 제조업체에 문의하시기 바랍니다."</string>
     <string name="common_google_play_services_update_button" msgid="8932944190611227642">"업데이트"</string>
+    <string name="common_signin_button_text" msgid="9071884888741449141">"로그인"</string>
     <string name="common_signin_button_text_long" msgid="2429381841831957106">"Google 계정으로 로그인"</string>
 
-    <string name="auth_client_availability_notification_title" msgid="8472377992819116328">"Google Play 서비스 설치/업데이트/사용 설정"</string>
+    <string name="auth_client_using_bad_version_title" msgid="2534454398764507874">"애플리케이션에서 잘못된 버전의 Google Play 서비스를 사용하려고 했습니다."</string>
+    <string name="auth_client_needs_enabling_title" msgid="3983201110833868073">"Google Play 서비스를 사용하도록 설정해야 하는 애플리케이션입니다."</string>
+    <string name="auth_client_needs_installation_title" msgid="7999585836145154206">"Google Play 서비스를 설치해야 하는 애플리케이션입니다."</string>
+    <string name="auth_client_needs_update_title" msgid="6488605506794595966">"Google Play 서비스를 업데이트해야 하는 애플리케이션입니다."</string>
     <string name="auth_client_play_services_err_notification_msg" msgid="3635065018897986478">"Google Play 서비스 오류"</string>
     <string name="auth_client_requested_by_msg" msgid="6304135633531965756">"<xliff:g id="APP_NAME">%1$s</xliff:g>에서 요청"</string>
 </resources>

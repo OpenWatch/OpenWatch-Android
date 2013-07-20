@@ -22,6 +22,7 @@ public class OWUser extends Model{
     public CharField blurb = new CharField();
 	public CharField thumbnail_url = new CharField();
 	public IntegerField server_id = new IntegerField();
+    public CharField gcm_registration_id = new CharField();
 
     public DoubleField lat = new DoubleField();
     public DoubleField lon = new DoubleField();
@@ -45,6 +46,8 @@ public class OWUser extends Model{
         migrator.addField("last_name", new CharField());
 
         migrator.addField("blurb", new CharField());
+
+        migrator.addField("gcm_registration_id", new CharField());
 
         // roll out all migrations
         migrator.migrate(context);
@@ -76,6 +79,8 @@ public class OWUser extends Model{
 				json_obj.put(Constants.OW_THUMB_URL, thumbnail_url.get());
             if(this.agent_applicant.get() != null)
                 json_obj.put("agent_applicant", agent_applicant.get());
+            if(this.gcm_registration_id.get() != null)
+                json_obj.put("google_push_token", gcm_registration_id.get());
             if(this.lat.get() != null && this.lon.get() != null){
                 json_obj.put(Constants.OW_LAT, lat.get());
                 json_obj.put(Constants.OW_LON, lon.get());

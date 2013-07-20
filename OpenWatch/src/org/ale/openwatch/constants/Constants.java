@@ -94,6 +94,7 @@ public class Constants {
 
 	// SharedPreferences titles
 	public static final String PROFILE_PREFS = "Profile";
+    public static final String GCM_PREFS = "gcm";
 	
 	// External storage 
 	public static final String ROOT_OUTPUT_DIR = "OpenWatch";

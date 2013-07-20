@@ -100,6 +100,19 @@ public class OWUtils {
             //USER_AGENT += " (Android API " + Build.VERSION.RELEASE + ")";
     }
 
+    public static int getPackageVersionAsInt(Context c){
+        int packageVersion = 0;
+        try {
+            PackageInfo pInfo = c.getPackageManager().getPackageInfo(
+                    c.getPackageName(), 0);
+            packageVersion = pInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e("getPackageVersion", "Unable to read PackageName in RegisterApp");
+            e.printStackTrace();
+        }
+        return packageVersion;
+    }
+
     public static void showConnectionErrorDialog(Context c){
         AlertDialog.Builder builder = new AlertDialog.Builder(c);
         builder.setTitle("Uh oh")
