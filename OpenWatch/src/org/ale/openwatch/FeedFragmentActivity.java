@@ -43,7 +43,7 @@ import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.Constants.OWFeedType;
 import org.ale.openwatch.database.DatabaseManager;
 import org.ale.openwatch.feeds.RemoteRecordingsListFragment;
-import org.ale.openwatch.gcm.GCMActivity;
+import org.ale.openwatch.gcm.GCMUtils;
 import org.ale.openwatch.http.OWServiceRequests;
 import org.ale.openwatch.model.OWTag;
 import org.ale.openwatch.model.OWUser;
@@ -54,7 +54,7 @@ import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
  * that switches between tabs and also allows the user to perform horizontal
  * flicks to move between the tabs.
  */
-public class FeedFragmentActivity extends GCMActivity {
+public class FeedFragmentActivity extends SherlockFragmentActivity {
     private static String TAG = "FeedFragmentActivity";
     TabHost mTabHost;
     ViewPager  mViewPager;
@@ -104,6 +104,7 @@ public class FeedFragmentActivity extends GCMActivity {
         BugSenseHandler.initAndStartSession(getApplicationContext(), SECRETS.BUGSENSE_API_KEY);
 
         checkUserStatus();
+        GCMUtils.setUpGCM(getApplicationContext());
 
         getDisplayWidth();
         mDrawerList = (ListView) findViewById(R.id.left_drawer);

@@ -363,7 +363,7 @@ public class FancyLoginActivity extends SherlockActivity {
 
             @Override
             public void onSuccess(JSONObject response) {
-                Log.i(TAG, "OW login success: " + response.toString());
+                Log.i("OWServiceRequests", "OW login success: " + response.toString());
                 try {
                     Authentication.setUserAuthenticated(getApplicationContext(), response, mEmail);
 

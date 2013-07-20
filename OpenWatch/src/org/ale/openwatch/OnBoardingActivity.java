@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.*;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import org.ale.openwatch.constants.Constants;
+import org.ale.openwatch.gcm.GCMUtils;
 import org.ale.openwatch.http.OWServiceRequests;
 import org.ale.openwatch.model.OWUser;
 
@@ -82,6 +83,10 @@ import org.ale.openwatch.model.OWUser;
                 Log.i(TAG, "OnBoardingActivity has internal user id...");
                 OWUser user = OWUser.objects(getApplicationContext(), OWUser.class).get(profile.getInt(Constants.INTERNAL_USER_ID,0));
                 user.agent_applicant.set(agent_applicant);
+                if(GCMUtils.regid != null && GCMUtils.regid.length() > 0){
+                    Log.i(TAG, "setregid");
+                    user.gcm_registration_id.set(GCMUtils.regid);
+                }
                 user.save(getApplicationContext());
                 OWServiceRequests.syncOWUser(getApplicationContext(), user, null);
             }else{

@@ -7,7 +7,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import org.ale.openwatch.FeedFragmentActivity;
 import org.ale.openwatch.GCMMissionActivity;
 import org.ale.openwatch.R;
 
@@ -24,6 +26,7 @@ public class OWGcmBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.i(TAG, "received message");
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
         ctx = context;
         String messageType = gcm.getMessageType(intent);
@@ -44,14 +47,15 @@ public class OWGcmBroadcastReceiver extends BroadcastReceiver {
                 ctx.getSystemService(Context.NOTIFICATION_SERVICE);
 
         PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0,
-                new Intent(ctx, GCMMissionActivity.class), 0);
+                new Intent(ctx, FeedFragmentActivity.class), 0);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(ctx)
                         .setSmallIcon(R.drawable.ic_ab_icon)
-                        .setContentTitle("OPENWATCH RULES")
+                        .setContentTitle("YOU'VE BEEN SERVED")
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText(msg))
+                        .setTicker(msg)
                         .setContentText(msg);
 
         mBuilder.setContentIntent(contentIntent);
