@@ -150,6 +150,8 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
             return;
 
         // TODO: Let's make a network request service
+        // There's a pretty serious bug here where the syncPostSocial request won't wait to ensure
+        // the video is live on OW...
         if(type == OWUtils.SOCIAL_TYPE.FB)
             didFBShare = true;
         else

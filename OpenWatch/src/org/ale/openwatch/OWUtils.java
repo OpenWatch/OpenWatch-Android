@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -30,9 +31,12 @@ import java.util.UUID;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.MemoryCacheUtil;
 import org.ale.openwatch.constants.Constants;
+import org.ale.openwatch.database.DatabaseManager;
 import org.ale.openwatch.fb.FBUtils;
 import org.ale.openwatch.file.FileUtils;
+import org.ale.openwatch.http.OWServiceRequests;
 import org.ale.openwatch.model.OWServerObject;
+import org.ale.openwatch.model.OWUser;
 import org.ale.openwatch.twitter.TwitterUtils;
 
 public class OWUtils {
@@ -392,6 +396,55 @@ public class OWUtils {
             imageFile.delete();
         }
         MemoryCacheUtil.removeFromCache(imageUri, imageLoader.getMemoryCache());
+    }
+
+    public static void checkUserStatus(Activity act){
+        Context c = act.getApplicationContext();
+
+        boolean debug_fancy = false;
+
+        SharedPreferences profile = c.getSharedPreferences(Constants.PROFILE_PREFS, 0);
+        boolean authenticated = profile.getBoolean(Constants.AUTHENTICATED, false);
+        //boolean db_initialized = profile.getBoolean(Constants.DB_READY, false);
+        /*
+        if(!db_initialized){
+            //DatabaseManager.setupDB(getApplicationContext()); // do this every time to auto handle migrations
+            //DatabaseManager.testDB(this);
+        }else{
+            DatabaseManager.registerModels(getApplicationContext()); // ensure androrm is set to our custom Database name.
+        }
+        */
+        DatabaseManager.registerModels(c); // ensure migrations are run.
+
+        if(authenticated /*&& db_initialized*/ && !((OWApplication) c).per_launch_sync){
+            // TODO: Attempt to login with stored credentials and report back if error
+
+            OWMediaSyncer.syncMedia(c);
+            ((OWApplication) c).per_launch_sync = true;
+            // If we have a User object for the current user, and they've applied as an agent, send their current location
+            if(profile.getInt(Constants.INTERNAL_USER_ID, 0) != 0){
+                OWUser user = OWUser.objects(c, OWUser.class).get(profile.getInt(Constants.INTERNAL_USER_ID,0));
+                if(user.agent_applicant.get() == true){
+                    Log.i("MainActivity", "Sending agent location");
+                    OWServiceRequests.syncOWUser(c, user, null);
+                }
+            }
+        }
+        if(debug_fancy || (!authenticated && !act.getIntent().hasExtra(Constants.AUTHENTICATED) ) ){
+            Intent i = new Intent(c, FancyLoginActivity.class	);
+            //Intent i = new Intent(this, LoginActivity.class	);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            String email = profile.getString(Constants.EMAIL, null);
+            if(email != null)
+                i.putExtra(Constants.EMAIL, email);
+            act.startActivity(i);
+            // This will set OWApplication.user_data
+        }
+        else if(authenticated){
+            // If the user state is stored, load user_data into memory
+            OWApplication.user_data = c.getSharedPreferences(Constants.PROFILE_PREFS, c.MODE_PRIVATE).getAll();
+        }
+
     }
 
 }

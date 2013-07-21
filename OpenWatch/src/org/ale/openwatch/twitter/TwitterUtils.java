@@ -52,6 +52,8 @@ public class TwitterUtils {
     private static final int maxAuthRetries = 1;
     private static int numAuthRetries = 0;
 
+    private static boolean showingWebView = false;
+
     public interface TwitterAuthCallback{
         public void onAuth();
     }
@@ -77,6 +79,7 @@ public class TwitterUtils {
      * @param cb optional callback to perform if authentication successful
      */
     public static void twitterLoginConfirmation(final Context c, final String oauthCallbackUrl, final TwitterAuthCallback cb){
+        showingWebView = false;
         new AsyncTask<String, Void, Boolean>(){
 
             @Override
@@ -344,11 +347,12 @@ public class TwitterUtils {
             @Override
             protected void onPostExecute(RequestToken requestToken) {
                 lastLoginRequestToken = requestToken;
-                if(requestToken.getAuthenticationURL() != null){
+                if(!showingWebView && requestToken.getAuthenticationURL() != null){
                     Intent i = new Intent(act.getApplicationContext(), WebViewActivity.class);
                     Log.i(TAG, requestToken.getAuthenticationURL());
                     i.putExtra(WebViewActivity.URL_INTENT_KEY, requestToken.getAuthenticationURL());
                     act.startActivityForResult(i, TWITTER_RESULT);
+                    showingWebView = true;
                 }
             }
         }.execute();

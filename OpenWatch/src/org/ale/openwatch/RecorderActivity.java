@@ -36,6 +36,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import static org.ale.openwatch.OWUtils.checkUserStatus;
+
 public class RecorderActivity extends SherlockActivity implements
 		SurfaceHolder.Callback {
 
@@ -157,6 +159,7 @@ public class RecorderActivity extends SherlockActivity implements
         requestWindowFeature(com.actionbarsherlock.view.Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_recorder);
+        checkUserStatus(this);
 		//this.getSupportActionBar().setTitle(getString(R.string.recording));
 		ready_to_record = false;
 		Log.i(TAG,"onCreate");

@@ -49,6 +49,8 @@ import org.ale.openwatch.model.OWTag;
 import org.ale.openwatch.model.OWUser;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
 
+import static org.ale.openwatch.OWUtils.checkUserStatus;
+
 /**
  * Demonstrates combining a TabHost with a ViewPager to implement a tab UI
  * that switches between tabs and also allows the user to perform horizontal
@@ -103,7 +105,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         this.getSupportActionBar().setDisplayShowTitleEnabled(false);
         BugSenseHandler.initAndStartSession(getApplicationContext(), SECRETS.BUGSENSE_API_KEY);
 
-        checkUserStatus();
+        checkUserStatus(this);
         GCMUtils.setUpGCM(this);
 
         getDisplayWidth();
@@ -529,53 +531,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         display_width = display.getWidth();
     }
 
-    public void checkUserStatus(){
 
-        boolean debug_fancy = false;
-
-        SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, 0);
-        boolean authenticated = profile.getBoolean(Constants.AUTHENTICATED, false);
-        //boolean db_initialized = profile.getBoolean(Constants.DB_READY, false);
-        /*
-        if(!db_initialized){
-            //DatabaseManager.setupDB(getApplicationContext()); // do this every time to auto handle migrations
-            //DatabaseManager.testDB(this);
-        }else{
-            DatabaseManager.registerModels(getApplicationContext()); // ensure androrm is set to our custom Database name.
-        }
-        */
-        DatabaseManager.registerModels(getApplicationContext()); // ensure migrations are run.
-
-        if(authenticated /*&& db_initialized*/ && !((OWApplication) this.getApplicationContext()).per_launch_sync){
-            // TODO: Attempt to login with stored credentials and report back if error
-
-            OWMediaSyncer.syncMedia(getApplicationContext());
-            ((OWApplication) getApplicationContext()).per_launch_sync = true;
-            // If we have a User object for the current user, and they've applied as an agent, send their current location
-            if(profile.getInt(Constants.INTERNAL_USER_ID, 0) != 0){
-                OWUser user = OWUser.objects(getApplicationContext(), OWUser.class).get(profile.getInt(Constants.INTERNAL_USER_ID,0));
-                if(user.agent_applicant.get() == true){
-                    Log.i("MainActivity", "Sending agent location");
-                    OWServiceRequests.syncOWUser(getApplicationContext(), user, null);
-                }
-            }
-        }
-        if(debug_fancy || (!authenticated && !this.getIntent().hasExtra(Constants.AUTHENTICATED) ) ){
-            Intent i = new Intent(this, FancyLoginActivity.class	);
-            //Intent i = new Intent(this, LoginActivity.class	);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            String email = profile.getString(Constants.EMAIL, null);
-            if(email != null)
-                i.putExtra(Constants.EMAIL, email);
-            startActivity(i);
-            // This will set OWApplication.user_data
-        }
-        else if(authenticated){
-            // If the user state is stored, load user_data into memory
-            OWApplication.user_data = getApplicationContext().getSharedPreferences(Constants.PROFILE_PREFS, getApplicationContext().MODE_PRIVATE).getAll();
-        }
-
-    }
 
     private void selectItem(View v, int position) {
         // Highlight the selected item, update the title, and close the drawer
