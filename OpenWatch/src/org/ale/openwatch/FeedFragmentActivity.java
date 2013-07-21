@@ -104,7 +104,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         BugSenseHandler.initAndStartSession(getApplicationContext(), SECRETS.BUGSENSE_API_KEY);
 
         checkUserStatus();
-        GCMUtils.setUpGCM(getApplicationContext());
+        GCMUtils.setUpGCM(this);
 
         getDisplayWidth();
         mDrawerList = (ListView) findViewById(R.id.left_drawer);

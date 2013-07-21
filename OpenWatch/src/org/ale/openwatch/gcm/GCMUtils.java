@@ -1,5 +1,6 @@
 package org.ale.openwatch.gcm;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -32,11 +33,12 @@ public class GCMUtils {
     public static GoogleCloudMessaging gcm;
     public static String regid;
 
-    public static void setUpGCM(Context context){
-        GCMUtils.regid = GCMUtils.getRegistrationId(context);
+    public static void setUpGCM(Activity act){
+        Context context = act.getApplicationContext();
+        GCMUtils.regid = GCMUtils.getRegistrationId(act);
 
         if (GCMUtils.regid.length() == 0) {
-            GCMUtils.registerBackground(context);
+            GCMUtils.registerBackground(act);
         }else{
             SharedPreferences userPrefs = context.getSharedPreferences(Constants.PROFILE_PREFS, context.MODE_PRIVATE);
             int userId = userPrefs.getInt(Constants.INTERNAL_USER_ID, 0);
@@ -44,7 +46,7 @@ public class GCMUtils {
                 OWUser user = OWUser.objects(context, OWUser.class).get(userId);
                 user.gcm_registration_id.set(regid);
                 user.save(context);
-                OWServiceRequests.syncOWUser(context.getApplicationContext(), user, null);
+                OWServiceRequests.syncOWUser(context, user, null);
             }
 
         }
@@ -59,7 +61,7 @@ public class GCMUtils {
      * @return registration id, or empty string if the registration is not
      *         complete.
      */
-    public static String getRegistrationId(Context context) {
+    private static String getRegistrationId(Context context) {
         final SharedPreferences prefs = getGCMPreferences(context);
         String registrationId = prefs.getString(PROPERTY_REG_ID, "");
         if (registrationId.length() == 0) {
@@ -86,7 +88,7 @@ public class GCMUtils {
      *
      * @return true if the registration has expired.
      */
-    public static boolean isRegistrationExpired(Context context) {
+    private static boolean isRegistrationExpired(Context context) {
         final SharedPreferences prefs = getGCMPreferences(context);
         // checks if the information is not stale
         long expirationTime =
@@ -97,7 +99,7 @@ public class GCMUtils {
     /**
      * @return Application's version code from the {@code PackageManager}.
      */
-    public static int getAppVersion(Context context) {
+    private static int getAppVersion(Context context) {
         try {
             PackageInfo packageInfo = context.getPackageManager()
                     .getPackageInfo(context.getPackageName(), 0);
@@ -114,7 +116,8 @@ public class GCMUtils {
      * Stores the registration id, app versionCode, and expiration time in the
      * application's shared preferences.
      */
-    public static void registerBackground(final Context context) {
+    private static void registerBackground(final Activity act) {
+        final Context context = act.getApplicationContext();
         new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void... params) {
@@ -134,7 +137,7 @@ public class GCMUtils {
                     // using the 'from' address in the message.
 
                     // Save the regid - no need to register again.
-                    setRegistrationId(context, regid);
+                    setRegistrationId(act, regid);
                 } catch (IOException ex) {
                     msg = "Error :" + ex.getMessage();
                 }
@@ -154,10 +157,11 @@ public class GCMUtils {
      * Stores the registration id, app versionCode, and expiration time in the
      * application's {@code SharedPreferences}.
      *
-     * @param context application's context.
+     * @param act activity.
      * @param regId registration id
      */
-    public static void setRegistrationId(Context context, String regId) {
+    private static void setRegistrationId(Activity act, final String regId) {
+        final Context context = act.getApplicationContext();
         SharedPreferences prefs = getGCMPreferences(context);
         int appVersion = getAppVersion(context);
         Log.v(TAG, "Saving regId on app version " + appVersion);
@@ -172,12 +176,18 @@ public class GCMUtils {
         editor.commit();
 
         SharedPreferences userPrefs = context.getSharedPreferences(Constants.PROFILE_PREFS, context.MODE_PRIVATE);
-        int userId = userPrefs.getInt(Constants.INTERNAL_USER_ID, 0);
+        final int userId = userPrefs.getInt(Constants.INTERNAL_USER_ID, 0);
         if(userId > 0){
-            OWUser user = OWUser.objects(context, OWUser.class).get(userId);
-            user.gcm_registration_id.set(regId);
-            user.save(context);
-            OWServiceRequests.syncOWUser(context.getApplicationContext(), user, null);
+            act.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    OWUser user = OWUser.objects(context, OWUser.class).get(userId);
+                    user.gcm_registration_id.set(regId);
+                    user.save(context);
+                    OWServiceRequests.syncOWUser(context.getApplicationContext(), user, null);
+                }
+            });
+
         }
     }
 

@@ -56,6 +56,7 @@ public class OWGcmBroadcastReceiver extends BroadcastReceiver {
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText(msg))
                         .setTicker(msg)
+                        .setVibrate(new long[] {0, 200, 200, 200})
                         .setContentText(msg);
 
         mBuilder.setContentIntent(contentIntent);

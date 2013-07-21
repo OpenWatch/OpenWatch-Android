@@ -883,13 +883,15 @@ public class OWServiceRequests {
             DeviceLocation.getLastKnownLocation(app_context, false, new DeviceLocation.GPSRequestCallback() {
                 @Override
                 public void onSuccess(Location result) {
-                    user.lat.set(result.getLatitude());
-                    user.lon.set(result.getLongitude());
-                    user.save(app_context);
-                    Log.i(TAG, String.format("Got user location %fx%f", result.getLatitude(), result.getLongitude()));
-                    http_client.post(app_context, instanceEndpointForOWUser(app_context, user), Utils
-                            .JSONObjectToStringEntity(user.toJSON()),
-                            "application/json", _cb);
+                    if(result != null){
+                        user.lat.set(result.getLatitude());
+                        user.lon.set(result.getLongitude());
+                        user.save(app_context);
+                        Log.i(TAG, String.format("Got user location %fx%f", result.getLatitude(), result.getLongitude()));
+                        http_client.post(app_context, instanceEndpointForOWUser(app_context, user), Utils
+                                .JSONObjectToStringEntity(user.toJSON()),
+                                "application/json", _cb);
+                    }
                 }
             });
         }
