@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -27,10 +28,12 @@ import com.actionbarsherlock.view.MenuItem;
 import com.google.gson.Gson;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
 import org.ale.openwatch.account.Authentication;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.file.FileUtils;
 import org.ale.openwatch.http.OWServiceRequests;
+import org.ale.openwatch.model.OWUser;
 import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -100,6 +103,7 @@ public class LoginActivity extends SherlockActivity {
 
 	}
 
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
@@ -119,6 +123,12 @@ public class LoginActivity extends SherlockActivity {
 				return;
 			}
 		}
+        if(profile.contains(Constants.INTERNAL_USER_ID)){
+            OWUser user = OWUser.objects(getApplicationContext(), OWUser.class).get(profile.getInt(Constants.INTERNAL_USER_ID,0));
+            if(user != null){
+                loadProfilePicture(user, ((ImageView) findViewById(R.id.user_thumbnail)));
+            }
+        }
 
         Bundle extras = getIntent().getExtras();
         if(extras != null && extras.containsKey("message")){
@@ -128,10 +138,6 @@ public class LoginActivity extends SherlockActivity {
             setViewsAsNotAuthenticatedWithMessage(getString(R.string.create_account_prompt));
 		}
 		
-	}
-
-	public void setUserAvatar(View v){
-        OWUtils.setUserAvatar(this, v, SELECT_PHOTO, TAKE_PHOTO, null);
 	}
 	
 	@Override
@@ -510,5 +516,31 @@ public class LoginActivity extends SherlockActivity {
 				| Intent.FLAG_ACTIVITY_CLEAR_TASK);
 		startActivity(i);
 	}
+
+    private void loadProfilePicture(OWUser user, final ImageView profileImage){
+        final int userId = user.getId();
+        final Context c = getApplicationContext();
+        if(user == null)
+            return;
+        if(user.thumbnail_url.get() != null && user.thumbnail_url.get().compareTo("") != 0){
+            ImageLoader.getInstance().displayImage(user.thumbnail_url.get(), profileImage);
+        }
+
+        OWServiceRequests.syncOWUser(getApplicationContext(), user, new OWServiceRequests.RequestCallback() {
+            @Override
+            public void onFailure() {
+
+            }
+
+            @Override
+            public void onSuccess() {
+                String url = OWUser.objects(c, OWUser.class).get(userId).thumbnail_url.get();
+                if(url != null && url.compareTo("") != 0){
+                    ImageLoader.getInstance().displayImage(url, profileImage);
+                }else
+                    Log.i(TAG, "User has no thumbnail set");
+            }
+        });
+    }
 
 }
