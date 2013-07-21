@@ -44,6 +44,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
     String hq_filepath;
 
     boolean video_playing = false;
+    boolean isResumed = false;
 
     // Facebook
     static final String PENDING_REQUEST_BUNDLE_KEY = "org.ale.openwatch.WhatHappenedActivity:PendingRequest";
@@ -286,7 +287,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
     @Override
     public void onResume(){
         super.onResume();
-
+        isResumed = true;
         LocalBroadcastManager.getInstance(this).registerReceiver(serverObjectSyncStateMessageReceiver,
                 new IntentFilter(Constants.OW_SYNC_STATE_FILTER));
 
@@ -298,6 +299,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 
     @Override
 	public void onPause(){
+        isResumed = false;
         syncOWServerObject();
 
 		SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, 0);
@@ -467,17 +469,19 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
     }
 
     @Override
-    public void onFBError(Map response) {
-        fbToggle.setChecked(false);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.whoops))
-                .setMessage(getString(R.string.fb_error))
-                .setPositiveButton(getString(R.string.dialog_bummer), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).show();
+    public void onFBError(String response) {
+        if(isResumed){
+            fbToggle.setChecked(false);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getString(R.string.whoops))
+                    .setMessage(getString(R.string.fb_error))
+                    .setPositiveButton(getString(R.string.dialog_bummer), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
+        }
     }
 
     @Override
