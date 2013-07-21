@@ -236,6 +236,7 @@
     <string name="cant_get_image">Whoops, we can\'t get that image</string>
     <string name="cant_get_image_message">The image you selected is stored with a 3rd party service, and we aren\'t able to retrieve it at this time. We\'ll work to
         support this in the future.</string>
+    <string name="mission_available">Mission Available</string>
 
 
 </resources>

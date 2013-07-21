@@ -12,6 +12,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import org.ale.openwatch.FeedFragmentActivity;
 import org.ale.openwatch.GCMMissionActivity;
 import org.ale.openwatch.R;
+import org.ale.openwatch.RecorderActivity;
 
 /**
  * Created by davidbrodsky on 5/29/13.
@@ -47,16 +48,17 @@ public class OWGcmBroadcastReceiver extends BroadcastReceiver {
                 ctx.getSystemService(Context.NOTIFICATION_SERVICE);
 
         PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0,
-                new Intent(ctx, FeedFragmentActivity.class), 0);
+                new Intent(ctx, RecorderActivity.class), 0);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(ctx)
                         .setSmallIcon(R.drawable.ic_ab_icon)
-                        .setContentTitle("YOU'VE BEEN SERVED")
+                        .setContentTitle(ctx.getString(R.string.mission_available))
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText(msg))
                         .setTicker(msg)
-                        .setVibrate(new long[] {0, 200, 200, 200})
+                        .setAutoCancel(true)
+                        .setVibrate(new long[]{0, 200, 200, 200})
                         .setContentText(msg);
 
         mBuilder.setContentIntent(contentIntent);
