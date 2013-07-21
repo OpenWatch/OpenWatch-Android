@@ -130,8 +130,8 @@ public class FBUtils {
                     Log.i(TAG, response.toString());
 
                 } else {
-                    act.onFBError(postResponse.asMap());
                     Log.e(TAG, response.getError().toString());
+                    act.onFBError(response.getError().toString());
                     //handleError(response.getError());
                 }
             }
@@ -176,7 +176,7 @@ public class FBUtils {
 
 
     public interface FaceBookSessionActivity{
-        public void onFBError(Map response);
+        public void onFBError(String response);
         public boolean getPendingRequest();
         public Session getSession();
         public void setSession(Session session);
