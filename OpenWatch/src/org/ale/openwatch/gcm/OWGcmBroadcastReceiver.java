@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -59,6 +60,7 @@ public class OWGcmBroadcastReceiver extends BroadcastReceiver {
                         .setTicker(msg)
                         .setAutoCancel(true)
                         .setVibrate(new long[]{0, 200, 200, 200})
+                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                         .setContentText(msg);
 
         mBuilder.setContentIntent(contentIntent);
