@@ -1,0 +1,59 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RecorderActivity" >
+
+    <SurfaceView
+        android:id="@+id/camera_surface_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center" />
+
+    <ImageView
+            android:id="@+id/streaming_animation"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/streaming"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:visibility="gone"
+            android:layout_margin="20dp"/>
+
+    <TextView
+            android:id="@+id/touchToRecord"
+            android:fontFamily="sans-serif-black"
+            android:textSize="30dp"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="#fff"
+            android:shadowColor="#000"
+            android:shadowDy="2"
+            android:shadowRadius=".1"
+            android:layout_centerInParent="true"
+            android:clickable="true"
+            android:onClick="startRecording"
+            android:text="@string/touch_to_broadcast"/>
+
+    <Button
+            android:id="@+id/button_stop"
+            android:background="@drawable/red_button_bg"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="20dp"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:fontFamily="sans-serif-condensed"
+            android:onClick="onStopRecordingButtonClick"
+            android:textColor="#fff"
+            android:shadowColor="#ff480105"
+            android:shadowDy="-2"
+            android:shadowRadius=".1"
+            android:text="@string/remove_tag_dialog_cancel"
+            android:textSize="25sp"
+            />
+
+
+
+</RelativeLayout>

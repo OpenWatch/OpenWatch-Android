@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<org.ale.openwatch.view.TouchableSubviewRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="0dp"
+    android:paddingBottom="12dp">
+
+    <ImageView
+        android:id="@+id/thumbnail"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="5dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/thumbnail_placeholder" />
+
+    <ImageView
+            android:id="@+id/playButton"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:layout_alignParentTop="true"
+            android:layout_margin="5dp"
+            android:scaleType="fitCenter"
+            android:padding="70dp"
+            android:visibility="gone"
+            android:src="@drawable/play_btn" />
+
+
+    <ImageView
+            android:id="@+id/userImage"
+            android:layout_below="@id/thumbnail"
+            android:layout_alignLeft="@+id/thumbnail"
+            android:scaleType="centerCrop"
+            android:layout_marginLeft="5dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"/>
+
+    <TextView
+            android:id="@+id/username"
+            style="@style/Theme.openwatch.feedItemOtherText"
+            android:fontFamily="sans-serif-black"
+            android:textColor="#ffeb1d1d"
+            android:textStyle="bold"
+            android:layout_below="@id/thumbnail"
+            android:layout_marginLeft="5dp"
+            android:textSize="7pt"
+            android:layout_toRightOf="@id/userImage"/>
+
+
+    <TextView
+            android:id="@+id/location"
+            style="@style/Theme.openwatch.feedItemOtherText"
+            android:textColor="@color/text_light"
+            android:layout_below="@id/thumbnail"
+            android:layout_alignParentRight="true"
+            android:layout_alignBaseline="@id/username"
+            android:layout_toRightOf="@id/username"
+            android:gravity="right"
+            android:layout_marginRight="5dp"/>
+
+
+    <org.ale.openwatch.view.LinkedTextView
+            android:id="@+id/title"
+            style="@style/Theme.openwatch.feedItemTitleText"
+            android:fontFamily="sans-serif-light"
+            android:textStyle="normal"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/userImage"
+            android:paddingLeft="0dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColorLink="#ffeb1d1d"
+            android:text=""
+            android:layout_below="@+id/username"
+            android:layout_marginTop="0dp"/>
+
+
+    <TextView
+            android:id="@+id/date"
+            style="@style/Theme.openwatch.feedItemOtherText"
+            android:text="n days ago"
+            android:textColor="@color/text_light"
+            android:layout_below="@id/title"
+            android:layout_toRightOf="@id/userImage"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"/>
+
+    <ImageView
+            android:id="@+id/menu"
+            android:layout_width="50dp"
+            android:layout_height="25dp"
+            android:layout_below="@id/title"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="0dp"
+            android:layout_marginRight="5dp"
+            android:tag="menu"
+            android:src="@drawable/threedots" />
+
+    <!--
+    <ImageView
+            android:id="@+id/type_icon"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignTop="@id/username"
+            android:layout_toLeftOf="@id/username"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/camcorder_icon" />
+    -->
+
+
+</org.ale.openwatch.view.TouchableSubviewRelativeLayout>
