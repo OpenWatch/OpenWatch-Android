@@ -1,0 +1,21 @@
+[submodule "libraries/ActionBar-PullToRefresh"]
+	path = libraries/ActionBar-PullToRefresh
+	url = https://github.com/chrisbanes/ActionBar-PullToRefresh
+[submodule "libraries/ActionBarSherlock"]
+	path = libraries/ActionBarSherlock
+	url = git@github.com:JakeWharton/ActionBarSherlock.git
+[submodule "libraries/Android-Universal-Image-Loader"]
+	path = libraries/Android-Universal-Image-Loader
+	url = git@github.com:nostra13/Android-Universal-Image-Loader.git
+[submodule "libraries/Android-ViewPagerIndicator"]
+	path = libraries/Android-ViewPagerIndicator
+	url = git@github.com:OnlyInAmerica/Android-ViewPagerIndicator.git
+[submodule "libraries/android-async-http"]
+	path = libraries/android-async-http
+	url = git@github.com:loopj/android-async-http.git
+[submodule "libraries/androrm"]
+	path = libraries/androrm
+	url = git@github.com:OnlyInAmerica/androrm.git
+[submodule "libraries/facebook-android-sdk"]
+	path = libraries/facebook-android-sdk
+	url = git@github.com:facebook/facebook-android-sdk.git
