@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:padding="0dp"
+              android:animateLayoutChanges="true"
+              android:gravity="center">
+
+    <ImageView android:id="@+id/missionBadge"
+               android:contentDescription=""
+               android:padding="10dp"
+               android:layout_width="wrap_content"
+               android:layout_height="50dp"
+               android:layout_marginTop="20dp"
+               android:gravity="center_vertical"
+               android:layout_gravity="center_vertical"
+               android:src="@drawable/mission"/>
+
+    <TextView
+            android:id="@+id/missionText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-light"
+            android:textSize="20sp"
+            android:padding="10dp"
+            android:layout_toRightOf="@id/missionBadge"
+            android:text="@string/mission_header"/>
+
+    <TextView
+            android:id="@+id/tapToDismiss"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-light"
+            android:textStyle="italic"
+            android:gravity="center_horizontal"
+            android:textSize="14sp"
+            android:padding="5dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@id/missionBadge"
+            android:layout_below="@id/missionText"
+            android:text="@string/tap_to_dismiss"/>
+
+</RelativeLayout><!-- From: file:/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/res/layout/mission_header.xml -->

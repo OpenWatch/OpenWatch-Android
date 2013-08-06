@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- From: file:/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/res/values-sw720dp-land/dimens.xml -->
+    <dimen name="activity_horizontal_margin">128dp</dimen>
+
+</resources>

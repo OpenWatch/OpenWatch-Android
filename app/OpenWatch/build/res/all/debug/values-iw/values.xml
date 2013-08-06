@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!-- From: file:/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/build/exploded-bundles/OpenWatchAndroidLibrariesGooglePlayServices_libUnspecified.aar/res/values-iw/values.xml -->
+    <string name="auth_client_needs_enabling_title" msgid="3983201110833868073">"יש אפליקציה המחייבת הפעלה של שירותי Google Play."</string>
+    <string name="auth_client_needs_installation_title" msgid="7999585836145154206">"יש אפליקציה המחייבת התקנה של שירותי Google Play."</string>
+    <string name="auth_client_needs_update_title" msgid="6488605506794595966">"יש אפליקציה המחייבת עדכון של שירותי Google Play."</string>
+    <string name="auth_client_play_services_err_notification_msg" msgid="3635065018897986478">"שגיאה בשירותי Google Play"</string>
+    <string name="auth_client_requested_by_msg" msgid="6304135633531965756">"התבקשה על ידי <ns1:g id="APP_NAME">%1$s</ns1:g>"</string>
+    <string name="auth_client_using_bad_version_title" msgid="2534454398764507874">"יש אפליקציה שניסתה להשתמש בגרסה שגויה של שירותי Google Play."</string>
+    <!-- From: file:/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/build/exploded-bundles/OpenWatchAndroidLibrariesFacebookAndroidSdkUnspecified.aar/res/values-iw/values.xml -->
+    <string name="com_facebook_choose_friends">בחר חברים</string>
+    <string name="com_facebook_dialogloginactivity_ok_button">אישור</string>
+    <string name="com_facebook_internet_permission_error_message">ההתחברות לתצוגת אתר דורשת אישור אינטרנט</string>
+    <string name="com_facebook_internet_permission_error_title">AndroidManifest שגיאת</string>
+    <string name="com_facebook_loading">..מעלה</string>
+    <string name="com_facebook_loginview_cancel_action">בטל</string>
+    <string name="com_facebook_loginview_log_in_button">התחבר</string>
+    <string name="com_facebook_loginview_log_out_action">התנתק</string>
+    <string name="com_facebook_loginview_log_out_button">התנתק</string>
+    <string name="com_facebook_loginview_logged_in_as">מחובר בשם: %1$s</string>
+    <string name="com_facebook_loginview_logged_in_using_facebook">מחובר באמצעות פייסבוק</string>
+    <string name="com_facebook_logo_content_description">פייסבוק לוגו</string>
+    <string name="com_facebook_nearby">קרוב אליי</string>
+    <string name="com_facebook_picker_done_button_text">בצע</string>
+    <string name="com_facebook_placepicker_subtitle_catetory_only_format">%1$s</string>
+    <string name="com_facebook_placepicker_subtitle_format">%1$s • %2$,d היו פה</string>
+    <string name="com_facebook_placepicker_subtitle_were_here_only_format">%1$,d היו פה</string>
+    <string name="com_facebook_requesterror_password_changed">.הסיסמה שלך בפייסבוק השתנתה, אנא חבר מחדש את האפליקציה עם פייסבוק</string>
+    <string name="com_facebook_requesterror_permissions">.חיבור האפליקציה עם פייסבוק נכשל בשל הרשאות לא מספקות, אנא הענק הרשאות לאפליקציה בכדי שהפעולה תוכל להתבצע</string>
+    <string name="com_facebook_requesterror_reconnect">.ארעה שגיאה בעת החיבור עם פייסבוק, חבר בבקשה מחדש את האפליקציה עם פייסבוק</string>
+    <string name="com_facebook_requesterror_relogin">.האפליקציה אינה מחוברת לפייסבוק, אנא היכנס וחבר מחדש את האפליקציה</string>
+    <string name="com_facebook_requesterror_web_login">.כדי לאפשר מחדש לאפליקציה להתחבר עם פייסבוק https://www.facebook.com או https://m.facebook.com אנא היכנס דרך</string>
+    <string name="com_facebook_usersettingsfragment_log_in_button">התחבר…</string>
+    <string name="com_facebook_usersettingsfragment_logged_in">מחובר</string>
+    <string name="com_facebook_usersettingsfragment_not_logged_in">לא מחובר</string>
+    <!-- From: file:/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/build/exploded-bundles/OpenWatchAndroidLibrariesGooglePlayServices_libUnspecified.aar/res/values-iw/values.xml -->
+    <string name="common_google_play_services_enable_button" msgid="4181637455539816337">"הפעל את שירותי Google Play"</string>
+    <string name="common_google_play_services_enable_text" msgid="7627896071867667758">"יישום זה לא יעבוד אם לא תפעיל את שירותי Google Play."</string>
+    <string name="common_google_play_services_enable_title" msgid="529078775174559253">"הפעלת שירותי Google Play"</string>
+    <string name="common_google_play_services_install_button" msgid="8515591849428043265">"קבל את שירותי Google Play"</string>
+    <string name="common_google_play_services_install_text_phone" msgid="8685301130651051380">"יישום זה לא יפעל ללא שירותי Google Play, החסרים בטלפון שלך."</string>
+    <string name="common_google_play_services_install_text_tablet" msgid="1589957570365247855">"יישום זה לא יפעל ללא שירותי Google Play, החסרים בטאבלט שלך."</string>
+    <string name="common_google_play_services_install_title" msgid="26645092511305524">"קבל את שירותי Google Play"</string>
+    <string name="common_google_play_services_unknown_issue" msgid="4762332809710093730">"בעיה לא ידועה בשירותי Google Play."</string>
+    <string name="common_google_play_services_unsupported_text" msgid="3542578567569488671">"שירותי Google Play, שחלק מהיישומים שלך מתבססים עליהם, אינם נתמכים על ידי המכשיר שברשותך. צור קשר עם היצרן לקבלת סיוע."</string>
+    <string name="common_google_play_services_unsupported_title" msgid="6334768798839376943">"שירותי Google Play"</string>
+    <string name="common_google_play_services_update_button" msgid="8932944190611227642">"עדכן"</string>
+    <string name="common_google_play_services_update_text" msgid="448354684997260580">"יישום זה לא יפעל אם לא תעדכן את שירותי Google Play."</string>
+    <string name="common_google_play_services_update_title" msgid="6006316683626838685">"עדכון שירותי Google Play"</string>
+    <string name="common_signin_button_text" msgid="9071884888741449141">"היכנס"</string>
+    <string name="common_signin_button_text_long" msgid="2429381841831957106">"היכנס באמצעות Google"</string>
+    <!-- From: file:/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/build/exploded-bundles/OpenWatchAndroidLibrariesActionBarPullToRefreshLibraryUnspecified.aar/res/values-iw/values.xml -->
+    <string name="pull_to_refresh_pull_label">משוך לרענון…</string>
+    <string name="pull_to_refresh_refreshing_label">טוען…</string>
+    <string name="pull_to_refresh_release_label">שחרר לרענון…</string>
+
+</resources>

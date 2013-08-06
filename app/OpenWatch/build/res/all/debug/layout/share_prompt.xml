@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:background="@drawable/stone">
+
+    <TextView
+            android:id="@+id/share_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_alignParentTop="true"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:textSize="20sp"
+            android:text="@string/share_dialog_generic_title"/>
+
+
+    <Button
+            android:id="@+id/button_share"
+            android:layout_below="@id/share_title"
+            android:background="@drawable/green_button_bg"
+            android:layout_width="250dp"
+            android:layout_height="50dp"
+            android:textColor="#fff"
+            android:shadowColor="#264826"
+            android:shadowDy="-2"
+            android:shadowRadius=".1"
+            android:textSize="25sp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_centerHorizontal="true"
+            android:onClick="shareClick"
+            android:text="@string/share"/>
+
+    <TextView
+            android:id="@+id/share_nothanks"
+            android:layout_below="@id/button_share"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:clickable="true"
+            android:textSize="15sp"
+            android:onClick="noThanksClick"
+            android:text="@string/dialog_no"/>
+
+</RelativeLayout><!-- From: file:/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/res/layout/share_prompt.xml -->

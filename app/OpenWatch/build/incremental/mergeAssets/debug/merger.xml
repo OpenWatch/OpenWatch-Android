@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger>
+
+    <dataSet config="OpenWatchAndroidLibrariesGooglePlayServices_libUnspecified.aar" >
+        <source path="/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/build/exploded-bundles/OpenWatchAndroidLibrariesGooglePlayServices_libUnspecified.aar/assets" />
+    </dataSet>
+    <dataSet config="OpenWatchAndroidLibrariesFacebookAndroidSdkUnspecified.aar" >
+        <source path="/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/build/exploded-bundles/OpenWatchAndroidLibrariesFacebookAndroidSdkUnspecified.aar/assets" />
+    </dataSet>
+    <dataSet config="OpenWatchAndroidLibrariesAndrormUnspecified.aar" >
+        <source path="/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/build/exploded-bundles/OpenWatchAndroidLibrariesAndrormUnspecified.aar/assets" />
+    </dataSet>
+    <dataSet config="OpenWatchAndroidLibrariesAndroidViewPagerIndicatorUnspecified.aar" >
+        <source path="/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/build/exploded-bundles/OpenWatchAndroidLibrariesAndroidViewPagerIndicatorUnspecified.aar/assets" />
+    </dataSet>
+    <dataSet config="OpenWatchAndroidLibrariesAndroidUniversalImageLoaderUnspecified.aar" >
+        <source path="/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/build/exploded-bundles/OpenWatchAndroidLibrariesAndroidUniversalImageLoaderUnspecified.aar/assets" />
+    </dataSet>
+    <dataSet config="OpenWatchAndroidLibrariesAndroidAsyncHttpUnspecified.aar" >
+        <source path="/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/build/exploded-bundles/OpenWatchAndroidLibrariesAndroidAsyncHttpUnspecified.aar/assets" />
+    </dataSet>
+    <dataSet config="OpenWatchAndroidLibrariesActionBarSherlockUnspecified.aar" >
+        <source path="/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/build/exploded-bundles/OpenWatchAndroidLibrariesActionBarSherlockUnspecified.aar/assets" />
+    </dataSet>
+    <dataSet config="OpenWatchAndroidLibrariesActionBarPullToRefreshLibraryUnspecified.aar" >
+        <source path="/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/build/exploded-bundles/OpenWatchAndroidLibrariesActionBarPullToRefreshLibraryUnspecified.aar/assets" />
+    </dataSet>
+    <dataSet config="OpenWatchAndroidLibrariesActionBarPullToRefreshExtrasActionbarsherlockUnspecified.aar" >
+        <source path="/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/build/exploded-bundles/OpenWatchAndroidLibrariesActionBarPullToRefreshExtrasActionbarsherlockUnspecified.aar/assets" />
+    </dataSet>
+    <dataSet config="main" >
+        <source path="/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/assets" >
+            <file
+                name="Palatino.ttc"
+                path="/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/assets/Palatino.ttc" />
+        </source>
+    </dataSet>
+    <dataSet config="debug" >
+        <source path="/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/src/debug/assets" />
+    </dataSet>
+
+</merger>

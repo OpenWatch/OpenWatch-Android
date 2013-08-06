@@ -169,7 +169,6 @@
 
     <!-- OnBoardingActivity -->
     <string name="continue_button_text">Continue</string>
-    <string name="get_started_button_text">Get Started</string>
 
     <string name="media_description_hint">What Happened? #tags</string>
 

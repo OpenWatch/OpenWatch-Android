@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/menu_stop"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="@string/stop_recording_dialog_stop"/>
+
+</menu><!-- From: file:/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/res/menu/activity_recorder.xml -->

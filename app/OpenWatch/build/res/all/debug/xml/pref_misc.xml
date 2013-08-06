@@ -1,0 +1,20 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@string/misc">
+    <Preference android:title="@string/share_this_app" android:key="shareOpenWatch" >
+    </Preference>
+    <Preference android:title="@string/ow_on_github" >
+        <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/openwatch"
+                />
+    </Preference>
+    <Preference android:title="@string/visit_ow" >
+        <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://www.openwatch.net"
+                />
+    </Preference>
+    </PreferenceCategory>
+
+</PreferenceScreen><!-- From: file:/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/res/xml/pref_misc.xml -->

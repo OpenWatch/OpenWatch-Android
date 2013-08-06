@@ -40,7 +40,6 @@
     <!--FancyLoginActivity-->
     <string name="fancy_login_welcome_text">OpenWatch\'a hoş geldiniz. Başlamak için e-posta adresinizi girin.</string>
     <string name="login_button_text">Giriş</string>
-    <string name="get_started_button_text">Başlarken</string>
     <string name="forgot_password_label">Şifrenizi mi unuttunuz?</string>
     <!--Account creation prompt-->
     <string name="create_account_prompt">Başlamadan önce bir OpenWatch hesabı oluşturmak için bir dakikanızı ayırın. Bu yalnızca bir saniye sürer ve bu sayede yayını hemen başlatabilirsiniz. </string>

@@ -1,0 +1,8 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory android:title="@string/ow.net">
+        <Preference android:title="@string/pref_title_account" >
+            <intent android:action=".LoginActivity"/>
+        </Preference>
+    </PreferenceCategory>
+
+</PreferenceScreen><!-- From: file:/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/res/xml/pref_account.xml -->

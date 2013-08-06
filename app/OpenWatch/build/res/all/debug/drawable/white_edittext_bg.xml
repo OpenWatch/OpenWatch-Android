@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Thanks! http://android.onyou.ch/2011/01/25/simple-custom-button-using-a-selector-xml-layout/ -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- disabled -->
+    <item android:state_enabled="false"><shape>
+            <solid android:color="#FFFFFF"/>
+            <corners android:radius="6dp" />
+            <stroke android:color="#cccccc" android:width="2dp" />
+        </shape></item>
+
+    <!-- pressed -->
+    <!-- pressed -->
+    <item android:state_pressed="true"><shape>
+        <solid android:color="#FFFFFF"/>
+        <corners android:radius="6dp" />
+        <stroke android:color="#74b9ef" android:width="2dp" />
+        </shape></item>
+
+    <!-- focused -->
+    <item android:state_focused="true"><shape>
+        <solid android:color="#FFFFFF"/>
+        <corners android:radius="6dp" />
+        <stroke android:color="#74b9ef" android:width="2dp" />
+        </shape></item>
+
+    <!-- default -->
+    <item><shape>
+        <solid android:color="#FFFFFF"/>
+        <corners android:radius="6dp" />
+        <stroke android:color="#cccccc" android:width="2dp" />
+        </shape></item>
+
+</selector><!-- From: file:/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/res/drawable/white_edittext_bg.xml -->

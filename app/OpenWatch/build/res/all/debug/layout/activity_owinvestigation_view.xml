@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+    <RelativeLayout
+            android:id="@+id/relativeLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        <ImageView
+                android:id="@+id/image"
+                android:contentDescription=""
+                android:scaleType="centerCrop"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"/>
+
+        <TextView
+                android:id="@+id/title"
+                android:fontFamily="sans-serif-black"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/image"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="10dp"
+                android:textSize="32sp"
+                style="@style/Theme.openwatch.storyBodyText"/>
+
+        <TextView
+                android:id="@+id/blurb"
+                android:fontFamily="sans-serif-light"
+                android:textStyle="italic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="10dp"
+                android:layout_below="@+id/title"
+                android:layout_marginTop="0dp"
+                style="@style/Theme.openwatch.storyBodyText"/>
+
+        <ImageView
+                android:id="@+id/userImage"
+                android:contentDescription=""
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/thumbnail_placeholder"
+                android:scaleType="centerCrop"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_below="@+id/blurb"
+                android:layout_alignLeft="@+id/blurb"/>
+
+        <TextView
+                android:id="@+id/userTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:fontFamily="sans-serif-black"
+                android:textColor="#ffeb1d1d"
+                android:textStyle="bold"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="30dp"
+                android:layout_toRightOf="@id/userImage"
+                android:layout_alignTop="@+id/userImage"/>
+
+
+        <TextView
+                android:id="@+id/questions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_below="@+id/userImage"
+                android:layout_marginTop="10dp"
+                android:autoLink="web"
+                style="@style/Theme.openwatch.storyBodyText"/>
+
+
+        <View
+                android:layout_below="@id/questions"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"/>
+
+    </RelativeLayout>
+</ScrollView><!-- From: file:/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/res/layout/activity_owinvestigation_view.xml -->

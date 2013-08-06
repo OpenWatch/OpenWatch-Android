@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp">
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/profileImage"
+        android:src="@drawable/user_placeholder"
+        android:onClick="getUserAvatarFromDevice"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"/>
+
+    <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/profileImageAdd"
+            android:src="@drawable/picture_add"
+            android:onClick="getUserAvatarFromDevice"
+            android:layout_alignRight="@id/profileImage"
+            android:layout_alignBottom="@id/profileImage"/>
+
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:inputType="textPersonName"
+            android:fontFamily="sans-serif-light"
+            android:ems="10"
+            android:id="@+id/firstName"
+            android:singleLine="true"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@+id/profileImage"
+            android:hint="@string/first_name"/>
+
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:inputType="textPersonName"
+            android:fontFamily="sans-serif-light"
+            android:ems="10"
+            android:id="@+id/lastName"
+            android:singleLine="true"
+            android:layout_alignBottom="@+id/profileImage"
+            android:layout_alignLeft="@+id/firstName"
+            android:layout_alignRight="@+id/firstName"
+            android:hint="@string/last_name"/>
+
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="100dp"
+            android:id="@+id/bio"
+            android:layout_below="@+id/profileImage"
+            android:fontFamily="sans-serif-light"
+            android:layout_marginTop="10dp"
+            android:hint="Tell us about yourself!"
+            android:singleLine="false"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"/>
+
+    <TextView
+            android:id="@+id/socialTip"
+            android:fontFamily="sans-serif-light"
+            android:textStyle="italic"
+            android:layout_below="@id/bio"
+            android:textColor="@color/text_light"
+            android:layout_centerHorizontal="true"
+            android:text="Connect a social account to quickly complete your profile"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+    <LinearLayout android:id="@+id/buttonContainer"
+                  android:layout_marginTop="10dp"
+                  android:layout_below="@id/socialTip"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:weightSum="1.0"
+                  android:orientation="horizontal">
+
+    <com.facebook.widget.LoginButton
+            android:id="@+id/fbButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:layout_gravity="center_horizontal"
+            android:layout_below="@+id/bio"
+            android:layout_alignParentLeft="true"/>
+
+    <Button
+            android:id="@+id/twitterButton"
+            android:background="@drawable/twitter_button_bg"
+            android:drawableLeft="@drawable/twitter_btn_image_sosmall"
+            android:layout_marginLeft="10dp"
+            android:layout_width="0dp"
+            android:layout_weight=".5"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/fbButton"
+            android:layout_alignBottom="@id/fbButton"
+            android:layout_alignParentRight="true"
+            android:text="@string/connect"
+            android:textColor="#fff"
+            android:shadowColor="#ff1e4366"
+            android:shadowDy="-2"
+            android:shadowRadius=".1"
+            android:layout_toRightOf="@id/fbButton"/>
+
+    </LinearLayout>
+
+</RelativeLayout><!-- From: file:/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/res/layout/activity_profile.xml -->

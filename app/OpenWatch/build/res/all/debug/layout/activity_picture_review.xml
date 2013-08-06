@@ -1,0 +1,86 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".OWPhotoReviewActivity"
+    android:animateLayoutChanges="true">
+
+    <RelativeLayout
+            android:id="@+id/sync_progress_container"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#eda5a8">
+
+        <TextView
+            android:id="@+id/sync_progress_text"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
+            android:layout_toRightOf="@id/button_login_progress"
+            android:text="@string/sync_photo_header_text"/>
+
+        <ProgressBar
+                android:id="@+id/sync_progress"
+                android:layout_toLeftOf="@id/sync_progress_text"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="15dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:indeterminate="true"
+                android:indeterminateBehavior="cycle"
+                android:visibility="visible"
+                />
+
+        <ImageView
+            android:id="@+id/sync_complete"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/earth"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/sync_progress"
+            android:visibility="gone"
+            />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/picture_preview"
+        android:layout_width="fill_parent"
+        android:layout_height="300dp" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp" >
+
+            <fragment
+                    android:id="@+id/media_object_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    class="org.ale.openwatch.OWMediaObjectInfoFragment" />
+        </FrameLayout>
+<!-- 
+        <Spinner
+            android:id="@+id/spinner1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/picture_caption"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp" />
+            -->
+    </LinearLayout>
+
+</LinearLayout>
+<!-- From: file:/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/res/layout/activity_picture_review.xml -->

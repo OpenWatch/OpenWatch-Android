@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/container"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center_horizontal"
+              android:animateLayoutChanges="true">
+
+    <ImageView
+            android:id="@+id/image_1"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/openwatch_splash_syria_peace" />
+
+    <ImageView
+            android:id="@+id/image_2"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:scaleType="centerCrop"
+            android:alpha="0"
+            android:src="@drawable/openwatch_splash_police_back" />
+
+    <ScrollView
+        android:id="@+id/scroll_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true">
+
+    <ImageView
+            android:id="@+id/image_logo"
+            android:layout_marginTop="40dp"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/openwatch_white" />
+
+    <TextView
+        android:id="@+id/welcome_text"
+        android:layout_marginTop="30dp"
+        android:layout_below="@id/image_logo"
+        android:fontFamily="sans-serif-bold"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/white"
+        android:shadowColor="#000"
+        android:shadowDy="-2"
+        android:shadowRadius=".1"
+        android:textSize="22sp"
+        android:text="@string/fancy_login_welcome_text"
+        />
+
+    <EditText
+            android:id="@+id/field_email"
+            android:fontFamily="sans-serif-light"
+            android:layout_marginTop="20dp"
+            android:layout_below="@id/welcome_text"
+            android:inputType="textEmailAddress"
+            android:layout_width="250dp"
+            android:layout_height="50dp"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/white_edittext_bg"
+            android:padding="5dp"
+            android:hint="@string/email"
+            android:imeActionId="@+id/login"
+            android:imeActionLabel="@string/sign_in"
+            android:textSize="22sp"
+            />
+
+    <EditText
+            android:id="@+id/field_password"
+            android:fontFamily="sans-serif-light"
+            android:layout_below="@id/field_email"
+            android:visibility="gone"
+            android:layout_marginTop="10dp"
+            android:inputType="textPassword"
+            android:layout_width="250dp"
+            android:layout_height="50dp"
+            android:background="@drawable/white_edittext_bg"
+            android:padding="5dp"
+            android:layout_centerHorizontal="true"
+            android:hint="@string/password"
+            android:imeActionId="@+id/login"
+            android:imeActionLabel="@string/sign_in"
+            android:textSize="22sp"
+            />
+
+    <Button
+            android:id="@+id/button_login"
+            android:background="@drawable/green_button_bg"
+            android:layout_below="@id/field_password"
+            android:layout_marginTop="20dp"
+            android:layout_width="250dp"
+            android:layout_height="50dp"
+            android:fontFamily="sans-serif-light"
+            android:layout_centerHorizontal="true"
+            android:onClick="onLoginButtonClick"
+            android:textColor="#fff"
+            android:shadowColor="#264826"
+            android:shadowDy="-2"
+            android:shadowRadius=".1"
+            android:text="@string/get_started_button_text"
+            android:textSize="25sp"
+        />
+
+    <ProgressBar
+            android:id="@+id/button_login_progress"
+            android:layout_alignTop="@id/button_login"
+            android:layout_marginTop="12dp"
+            android:layout_marginRight="15dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:indeterminate="true"
+            android:indeterminateBehavior="cycle"
+            android:layout_alignRight="@id/button_login"
+            android:visibility="gone"
+        />
+
+    <TextView
+            android:id="@+id/forgot_password"
+            android:layout_marginTop="30dp"
+            android:layout_below="@id/button_login"
+            android:layout_alignRight="@id/button_login"
+            android:fontFamily="sans-serif-regular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onForgotPasswordClick"
+			android:clickable="true"
+            android:textColor="@android:color/white"
+            android:shadowColor="#000"
+            android:shadowDy="-2"
+            android:shadowRadius=".1"
+            android:textSize="18sp"
+            android:text="@string/forgot_password_label"
+            />
+    </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout><!-- From: file:/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/res/layout/activity_fancy_login.xml -->

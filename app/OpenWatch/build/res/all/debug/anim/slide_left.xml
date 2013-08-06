@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+     android:shareInterpolator="false"
+     android:fillAfter="true"
+     android:fillEnabled="true">
+    <translate
+            android:fromXDelta="200%" android:toXDelta="0%"
+            android:fromYDelta="0%" android:toYDelta="0%"
+            android:duration="1400"
+            android:interpolator="@android:anim/decelerate_interpolator"/>
+</set><!-- From: file:/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/res/anim/slide_left.xml -->
