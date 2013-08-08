@@ -2,6 +2,7 @@ package org.ale.openwatch;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
@@ -16,7 +17,10 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.orm.androrm.Filter;
+import com.orm.androrm.QuerySet;
 import org.ale.openwatch.constants.Constants;
+import org.ale.openwatch.constants.DBConstants;
 import org.ale.openwatch.http.OWServiceRequests;
 import org.ale.openwatch.model.OWMission;
 import org.ale.openwatch.model.OWServerObject;
@@ -47,16 +51,27 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
         OWUtils.setReadingFontOnChildren((ViewGroup) findViewById(R.id.relativeLayout));
 
         try{
-            model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);
-            server_id = OWServerObject.objects(this, OWServerObject.class).get(model_id).server_id.get();
-            if( OWServerObject.objects(this, OWServerObject.class).get(model_id).story.get(c) != null && OWServerObject.objects(this, OWServerObject.class).get(model_id).story.get(c).body.get() != null){
+            Bundle extras = getIntent().getExtras();
+            if(extras.containsKey(Constants.INTERNAL_DB_ID)){
+                model_id = extras.getInt(Constants.INTERNAL_DB_ID);
+                server_id = OWServerObject.objects(this, OWServerObject.class).get(model_id).server_id.get();
+            }else if(extras.containsKey(Constants.SERVER_ID)){
+                server_id = extras.getInt(Constants.SERVER_ID);
+                Filter filter = new Filter();
+                filter.is(DBConstants.SERVER_ID, server_id);
+                QuerySet<OWServerObject> serverObjects = OWServerObject.objects(this, OWServerObject.class).filter(filter);
+                for(OWServerObject serverObject : serverObjects){
+                    model_id = serverObject.getId();
+                }
+            }
+
+            if( OWServerObject.objects(this, OWServerObject.class).get(model_id).mission.get(c) != null && OWServerObject.objects(this, OWServerObject.class).get(model_id).mission.get(c).body.get() != null){
                 populateViews(model_id, c);
             } else if(OWServerObject.objects(this, OWServerObject.class).get(model_id).title.get() != null){
                 ((TextView)findViewById(R.id.title)).setText(OWServerObject.objects(this, OWServerObject.class).get(model_id).title.get());
                 this.getSupportActionBar().setTitle(OWServerObject.objects(this, OWServerObject.class).get(model_id).title.get());
                 final Context c = this.c;
                 OWServerObject serverObject = OWServerObject.objects(this, OWServerObject.class).get(model_id);
-                int story_server_id = serverObject.getServerId(c);
                 OWServiceRequests.getOWServerObjectMeta(c, serverObject, "", new JsonHttpResponseHandler(){
                     @Override
                     public void onSuccess(JSONObject response) {
@@ -143,6 +158,46 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
         return super.onOptionsItemSelected(item);
     }
 
+    public void onJoinButtonClick(View v){
+        OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
+        OWMission mission = serverObject.mission.get(getApplicationContext());
+        if(mission.joined.get() == true){
+            findViewById(R.id.join_button).setBackgroundResource(R.drawable.red_button_bg);
+            ((TextView) findViewById(R.id.join_button)).setText(getString(R.string.leave_mission));
+            mission.joined.set(false);
+        }else{
+            findViewById(R.id.join_button).setBackgroundResource(R.drawable.green_button_bg);
+            ((TextView) findViewById(R.id.join_button)).setText(getString(R.string.join_mission));
+            mission.joined.set(true);
+        }
+        mission.save(getApplicationContext());
+        OWServiceRequests.syncOWServerObject(getApplicationContext(), mission);
+    }
+
+    public void onMapButtonClick(View v){
+        OWServerObject serverObject = OWServerObject
+                .objects(getApplicationContext(),
+                        OWServerObject.class).get(model_id);
+
+        OWMission mission = serverObject.mission.get(c);
+        Intent i = new Intent(this, MapActivity.class);
+        i.putExtra(Constants.INTERNAL_DB_ID, model_id);
+        this.startActivity(i);
+    }
+
+    public void onMediaButtonClick(View v){
+        OWServerObject serverObject = OWServerObject
+                .objects(getApplicationContext(),
+                        OWServerObject.class).get(model_id);
+
+        OWMission mission = serverObject.mission.get(c);
+
+        Intent i = new Intent(this, FeedFragmentActivity.class);
+        i.setData(Uri.parse("https://openwatch.net/w/" + mission.tag.get()));
+        startActivity(i);
+
+    }
+
     @Override
     public void populateViews(int model_id, Context app_context) {
         OWServerObject serverObject = OWServerObject
@@ -169,6 +224,12 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
             this.findViewById(R.id.bounty).setVisibility(View.VISIBLE);
         }
 
+        if(mission.lat.get() != null && mission.lat.get() != 0){
+            findViewById(R.id.map_button).setEnabled(true);
+        }else{
+            findViewById(R.id.map_button).setEnabled(false);
+        }
+
         /*
         OWUser user = serverObject.user.get(c);
         if(user != null){
@@ -189,5 +250,6 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
                 }
             }
         });
+
     }
 }

@@ -10,6 +10,7 @@ import com.orm.androrm.field.BooleanField;
 import com.orm.androrm.field.CharField;
 import com.orm.androrm.field.DoubleField;
 import com.orm.androrm.field.ForeignKeyField;
+import com.orm.androrm.migration.Migrator;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.Constants.CONTENT_TYPE;
 import org.ale.openwatch.constants.DBConstants;
@@ -30,6 +31,7 @@ public class OWMission extends Model implements OWServerObjectInterface{
     public DoubleField lat = new DoubleField();
     public DoubleField lon = new DoubleField();
     public CharField media_url = new CharField();
+    public BooleanField joined = new BooleanField();
 
 
 	public ForeignKeyField<OWServerObject> media_object = new ForeignKeyField<OWServerObject> ( OWServerObject.class );
@@ -47,14 +49,24 @@ public class OWMission extends Model implements OWServerObjectInterface{
 		this.media_object.set(media_object);
 		this.save(c);
 	}
+
+    @Override
+    protected void migrate(Context context) {
+        /*
+            Migrator automatically keeps track of which migrations have been run.
+            All we do is add a migration for each change that occurs after the initial app release
+         */
+        Migrator<OWServerObject> migrator = new Migrator<OWServerObject>(OWServerObject.class);
+
+        migrator.addField("joined", new BooleanField());
+
+        // roll out all migrations
+        migrator.migrate(context);
+    }
 	
 	@Override
 	public boolean save(Context context) {
 		// notify the ContentProvider that the dataset has changed
-		if(media_object.get() != null){ // this is called once in <init> to get db id before medi_object created
-			setLastEdited(context, Constants.utc_formatter.format(new Date()));
-			//context.getContentResolver().notifyChange(OWContentProvider.getMediaObjectUri(media_object.get(context).getId()), null);
-		}
 		return super.save(context);
 	}
 
@@ -304,8 +316,7 @@ public class OWMission extends Model implements OWServerObjectInterface{
 
 	@Override
 	public double getLat(Context c) {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.lat.get();
 	}
 
 	@Override
@@ -316,8 +327,7 @@ public class OWMission extends Model implements OWServerObjectInterface{
 
 	@Override
 	public double getLon(Context c) {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.lon.get();
 	}
 
 

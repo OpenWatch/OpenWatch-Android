@@ -43,6 +43,63 @@
                     android:layout_below="@id/missionImage"
                     android:padding="10dp"
                     android:textSize="32sp"/>
+
+    <RelativeLayout
+            android:id="@+id/buttonLayout"
+            android:layout_gravity="center"
+            android:layout_below="@id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/green_button_bg"
+                    android:fontFamily="sans-serif-light"
+                    android:text="@string/join_mission"
+                    android:id="@+id/join_button"
+                    android:textSize="25sp"
+                    android:onClick="onJoinButtonClick"
+                    android:textColor="#fff"
+                    android:shadowColor="#264826"
+                    android:shadowDy="-2"
+                    android:shadowRadius=".1"
+                    android:layout_centerHorizontal="true"/>
+
+            <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
+                    android:background="@drawable/transparent_button_bg"
+                    android:drawableLeft="@drawable/local_button"
+                    android:drawablePadding="10dp"
+                    android:padding="10dp"
+                    android:text="@string/tab_map"
+                    android:onClick="onMapButtonClick"
+                    android:id="@+id/map_button"
+                    android:enabled="false"
+                    android:layout_below="@+id/join_button"
+                    android:layout_alignLeft="@+id/join_button"
+                    android:textSize="24sp"
+                    android:layout_marginTop="19dp"/>
+
+            <Button
+                    android:id="@+id/media_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
+                    android:drawableLeft="@drawable/saved_button"
+                    android:drawablePadding="10dp"
+                    android:background="@drawable/transparent_button_bg"
+                    android:paddingRight="10dp"
+                    android:padding="10dp"
+                    android:text="@string/view_media"
+                    android:onClick="onMediaButtonClick"
+                    android:textSize="24sp"
+                    android:layout_alignBaseline="@+id/map_button"
+                    android:layout_alignRight="@+id/join_button"/>
+
+        </RelativeLayout>
 <!--
             <ImageView
                     android:id="@+id/userImage"
@@ -70,13 +127,13 @@
 -->
             <TextView
                     android:id="@+id/description"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
-                    android:layout_below="@+id/title"
+                    android:layout_below="@+id/buttonLayout"
                     style="@style/Theme.openwatch.storyBodyText"
                     android:layout_marginTop="10dp"/>
-
+<!--
             <Button
                     android:id="@+id/camcorderButton"
                     android:layout_below="@id/description"
@@ -97,6 +154,7 @@
                     android:layout_below="@id/camcorderButton"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"/>
+                    -->
 
         </RelativeLayout>
 </ScrollView>

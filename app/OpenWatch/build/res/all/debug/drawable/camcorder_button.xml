@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item android:drawable="@drawable/camcorder_pressed" android:state_pressed="true"/>
-    <item android:drawable="@drawable/camcorder" android:state_hovered="true"/>
-    <item android:drawable="@drawable/camcorder"/>
-
-</selector><!-- From: file:/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/res/drawable/camcorder_button.xml -->

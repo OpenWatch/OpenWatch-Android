@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <!-- From: file:/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/build/exploded-bundles/OpenWatchAndroidLibrariesActionBarSherlockUnspecified.aar/res/values-w500dp/values.xml -->
-    <integer name="abs__max_action_buttons">4</integer>
-
-</resources>

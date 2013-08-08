@@ -109,9 +109,9 @@ public class MapFragment extends SupportMapFragment implements OWObjectBackedEnt
         }
 
         if(mStartLocation != null )
-            getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(mStartLocation, 18));
+            getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(mStartLocation, 16));
         else if(mStopLocation != null)
-            getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(mStopLocation, 18));
+            getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(mStopLocation, 16));
     }
 
 

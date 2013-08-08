@@ -236,6 +236,9 @@
     <string name="cant_get_image_message">The image you selected is stored with a 3rd party service, and we aren\'t able to retrieve it at this time. We\'ll work to
         support this in the future.</string>
     <string name="mission_available">Mission Available</string>
+    <string name="join_mission">Join Mission</string>
+    <string name="leave_mission">Leave Mission</string>
+    <string name="view_media">Media</string>
 
 
 </resources>

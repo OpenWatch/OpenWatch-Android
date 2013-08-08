@@ -7,13 +7,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import org.ale.openwatch.FeedFragmentActivity;
-import org.ale.openwatch.GCMMissionActivity;
-import org.ale.openwatch.R;
-import org.ale.openwatch.RecorderActivity;
+import org.ale.openwatch.*;
+import org.ale.openwatch.constants.Constants;
 
 /**
  * Created by davidbrodsky on 5/29/13.
@@ -32,24 +31,32 @@ public class OWGcmBroadcastReceiver extends BroadcastReceiver {
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
         ctx = context;
         String messageType = gcm.getMessageType(intent);
+
         if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
-            sendNotification("Send error: " + intent.getExtras().toString());
+            Log.e(TAG, "GCM Send Error: " + intent.getExtras().toString());
         } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
-            sendNotification("Deleted messages on server: " +
-                    intent.getExtras().toString());
+            Log.e(TAG, "GCM Deleted Messages on Server: " + intent.getExtras().toString());
         } else {
-            sendNotification(intent.getExtras().getString("message"));
+            sendNotification(intent.getExtras());
         }
         setResultCode(Activity.RESULT_OK);
     }
 
     // Put the GCM message into a notification and post it.
-    private void sendNotification(String msg) {
+    private void sendNotification(Bundle gcmData) {
+        String msg = gcmData.getString("message");
+        int missionId = gcmData.getInt("m", 0);
         mNotificationManager = (NotificationManager)
                 ctx.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0,
-                new Intent(ctx, RecorderActivity.class), 0);
+        Intent notificationIntent;
+        if(missionId > 0){
+            notificationIntent  = new Intent(ctx, OWMissionViewActivity.class);
+            notificationIntent.putExtra(Constants.SERVER_ID, missionId);
+        }else
+            notificationIntent  = new Intent(ctx, RecorderActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, notificationIntent, 0);
+
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(ctx)

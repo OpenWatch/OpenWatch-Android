@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_checked="false" android:drawable="@drawable/switch_no" />
-    <item android:state_checked="true" android:drawable="@drawable/switch_yes" />
-</selector><!-- From: file:/Users/davidbrodsky/Code/android/OpenWatch-Android2/OpenWatch-Android/app/OpenWatch/res/drawable/btn_toggle.xml -->
