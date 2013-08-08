@@ -161,17 +161,17 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
     public void onJoinButtonClick(View v){
         OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
         OWMission mission = serverObject.mission.get(getApplicationContext());
+        mission.joined.set(!mission.joined.get());
+        mission.save(getApplicationContext());
         if(mission.joined.get() == true){
             findViewById(R.id.join_button).setBackgroundResource(R.drawable.red_button_bg);
             ((TextView) findViewById(R.id.join_button)).setText(getString(R.string.leave_mission));
-            mission.joined.set(false);
         }else{
             findViewById(R.id.join_button).setBackgroundResource(R.drawable.green_button_bg);
             ((TextView) findViewById(R.id.join_button)).setText(getString(R.string.join_mission));
-            mission.joined.set(true);
         }
         mission.save(getApplicationContext());
-        OWServiceRequests.syncOWServerObject(getApplicationContext(), mission);
+        OWServiceRequests.syncOWServerObject(getApplicationContext(), serverObject);
     }
 
     public void onMapButtonClick(View v){
