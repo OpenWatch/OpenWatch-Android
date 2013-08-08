@@ -1,5 +1,5 @@
 gen
-.gradle
+.gradle/
 libraries/google-play-services_lib/build/
 app/OpenWatch/out/
 app/OpenWatch/build/
