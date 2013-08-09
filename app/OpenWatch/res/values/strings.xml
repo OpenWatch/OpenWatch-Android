@@ -119,7 +119,7 @@
     <string name="remove_tag_dialog_title">Remove Tag?</string>
     <string name="remove_tag_dialog_msg">Would you like to remove this tag from this recording?</string>
     <string name="remove_tag_dialog_yes">Remove Tag</string>
-    <string name="remove_tag_dialog_cancel">Cancel</string>
+    <string name="dialog_cancel">Cancel</string>
 
     <!-- AutoComplete Tag Field -->
     <string name="action_tag">Tag</string>
@@ -239,6 +239,8 @@
     <string name="join_mission">Join Mission</string>
     <string name="leave_mission">Leave Mission</string>
     <string name="view_media">Media</string>
+    <string name="choose_mission">Choose a Mission</string>
+    <string name="no_mission">No Mission</string>
 
 
 </resources>

@@ -5,6 +5,7 @@ import android.content.*;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -505,4 +506,16 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
     public void setPendingRequest(boolean pendingRequest) {
         this.pendingRequest = pendingRequest;
     }
+
+    public void onSelectMissionClick(View v){
+        showNoticeDialog();
+    }
+
+    public void showNoticeDialog() {
+        // Create an instance of the dialog fragment and show it
+        DialogFragment dialog = new MissionChooserDialogFragment();
+        dialog.show(getSupportFragmentManager(), "MissionChooserDialogFragment");
+    }
+
+
 }

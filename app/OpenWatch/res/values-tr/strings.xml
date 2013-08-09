@@ -81,7 +81,7 @@
     <string name="remove_tag_dialog_title">Etiketi kaldır?</string>
     <string name="remove_tag_dialog_msg">Bu etiketi bu kayıttan kaldırmak ister misiniz?</string>
     <string name="remove_tag_dialog_yes">Etiketi kaldır</string>
-    <string name="remove_tag_dialog_cancel">İptal et</string>
+    <string name="dialog_cancel">İptal et</string>
     <!--AutoComplete Tag Field-->
     <string name="action_tag">Etiket</string>
     <!--WhatHappenedActivity-->

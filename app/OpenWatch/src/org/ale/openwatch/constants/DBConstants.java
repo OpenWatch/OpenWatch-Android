@@ -94,4 +94,7 @@ public class DBConstants {
 	// Investigation table
 	public static final String INVESTIGATION_TABLENAME = "owinvestigation";
 
+    // Mission Table
+    public static final String EXPIRES = "expires";
+
 }

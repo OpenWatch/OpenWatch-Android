@@ -13,6 +13,8 @@ import android.net.Uri;
 import android.util.Log;
 import com.orm.androrm.DatabaseAdapter;
 
+import java.util.Date;
+
 public class OWContentProvider extends ContentProvider {
 	
 	private static final String TAG = "OWContentProvider";
@@ -35,11 +37,14 @@ public class OWContentProvider extends ContentProvider {
      private static final int TAGS = 5;
      private static final int TAG_ID = 6;
      private static final int TAG_SEARCH = 7;
+
+    private static final int MISSIONS = 10;
      
      // Externally accessed uris
      public static final Uri LOCAL_RECORDING_URI = AUTHORITY_URI.buildUpon().appendPath(DBConstants.LOCAL_RECORDINGS_TABLENAME).build();
      public static final Uri REMOTE_RECORDING_URI = AUTHORITY_URI.buildUpon().appendPath(DBConstants.RECORDINGS_TABLENAME).build();
      public static final Uri MEDIA_OBJECT_URI = AUTHORITY_URI.buildUpon().appendPath(DBConstants.MEDIA_OBJECT_TABLENAME).build();
+     public static final Uri MISSION_OBJECT_URI = AUTHORITY_URI.buildUpon().appendPath(DBConstants.MEDIA_OBJECT_MISSION).build();
      public static final Uri TAG_URI = AUTHORITY_URI.buildUpon().appendPath(DBConstants.TAG_TABLENAME).build();
      public static final Uri TAG_SEARCH_URI = TAG_URI.buildUpon().appendPath("search").build();
 	
@@ -68,6 +73,9 @@ public class OWContentProvider extends ContentProvider {
      public static Uri getTagSearchUri(String query){
     	 return TAG_SEARCH_URI.buildUpon().appendEncodedPath(query).build();
      }
+    public static Uri getMissionUri(){
+        return MISSION_OBJECT_URI;
+    }
      
      public OWContentProvider(){
 		// Create and initialize URI matcher.
@@ -79,6 +87,7 @@ public class OWContentProvider extends ContentProvider {
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.TAG_TABLENAME, TAGS);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.TAG_TABLENAME + "/#", TAG_ID);
 	    mUriMatcher.addURI(AUTHORITY, DBConstants.TAG_TABLENAME + "/search/*", TAG_SEARCH);
+        mUriMatcher.addURI(AUTHORITY, DBConstants.MEDIA_OBJECT_MISSION, MISSIONS);
      }
 
 	@Override
@@ -209,6 +218,13 @@ public class OWContentProvider extends ContentProvider {
 				result = adapter.open().query(select + " FROM " + DBConstants.TAG_TABLENAME + " where name LIKE \"%" + uri.getLastPathSegment() + "%\"" + sortby);
 				//Log.i(TAG, String.valueOf(result.getCount()));
 				break;
+            case MISSIONS:
+                // Get missions that haven't yet expired
+                // TODO: Don't use select yet
+                queryString = select.replace("_id",DBConstants.MEDIA_OBJECT_TABLENAME + "._id").replace("expires","owmission.expires") + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " JOIN " + "owmission" + " ON " + " owmission._id = owserverobject.mission"; //+ " where owmission.expires > '" + Constants.utc_formatter.format(new Date())+ "' " + sortby;
+                Log.i(TAG, String.format("Mission Query: %s", queryString));
+                result = adapter.open().query(queryString);
+                break;
 		}
 		
 		// adapter is not closed!

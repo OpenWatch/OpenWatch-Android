@@ -171,7 +171,7 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
             ((TextView) findViewById(R.id.join_button)).setText(getString(R.string.join_mission));
         }
         mission.save(getApplicationContext());
-        OWServiceRequests.syncOWServerObject(getApplicationContext(), serverObject);
+        OWServiceRequests.syncOWServerObject(getApplicationContext(), serverObject, true, null);
     }
 
     public void onMapButtonClick(View v){

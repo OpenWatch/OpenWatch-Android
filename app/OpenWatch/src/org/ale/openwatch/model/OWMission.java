@@ -31,6 +31,7 @@ public class OWMission extends Model implements OWServerObjectInterface{
     public DoubleField lat = new DoubleField();
     public DoubleField lon = new DoubleField();
     public CharField media_url = new CharField();
+    public CharField expires = new CharField();
     public BooleanField joined = new BooleanField();
 
 
@@ -56,9 +57,10 @@ public class OWMission extends Model implements OWServerObjectInterface{
             Migrator automatically keeps track of which migrations have been run.
             All we do is add a migration for each change that occurs after the initial app release
          */
-        Migrator<OWServerObject> migrator = new Migrator<OWServerObject>(OWServerObject.class);
+        Migrator<OWMission> migrator = new Migrator<OWMission>(OWMission.class);
 
         migrator.addField("joined", new BooleanField());
+        migrator.addField("expires", new CharField());
 
         // roll out all migrations
         migrator.migrate(context);
@@ -98,6 +100,8 @@ public class OWMission extends Model implements OWServerObjectInterface{
                 media_url.set(json.getString(Constants.OW_MEDIA_BUCKET));
             if(json.has("primary_tag"))
                 tag.set(json.getString("primary_tag"));
+            if(json.has(Constants.OW_EXPIRES))
+                expires.set(json.getString(Constants.OW_EXPIRES));
 		}catch(JSONException e){
 			Log.e(TAG, "Error deserializing story");
 			e.printStackTrace();
@@ -284,6 +288,8 @@ public class OWMission extends Model implements OWServerObjectInterface{
                 json_obj.put(Constants.OW_END_LAT, lat.get());
             if (lon.get() != null)
                 json_obj.put(Constants.OW_END_LON, lon.get());
+            if (expires.get() != null)
+                json_obj.put(Constants.OW_EXPIRES, expires.get());
 
 		}catch(JSONException e){
 			Log.e(TAG, "Error serializing recording to json");

@@ -99,8 +99,6 @@
             android:textSize="20sp"
             android:layout_toRightOf="@id/owImage"/>
 
-
-
     <Switch
             android:id="@+id/owSwitch"
             android:layout_width="wrap_content"
@@ -115,13 +113,41 @@
             android:layout_alignParentRight="true"
             tools:ignore="NewApi"/>
 
+    <!-- Mission Chooser -->
+
+    <ImageView
+            android:id="@+id/missionImage"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="60dp"
+            android:layout_below="@id/owImage"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/ic_ab_icon" />
+
+    <TextView
+            android:id="@+id/missionText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="sans-serif-light"
+            android:layout_alignBottom="@id/missionImage"
+            android:text="Touch To Select Mission"
+            android:onClick="onSelectMissionClick"
+            android:clickable="true"
+            android:textSize="20sp"
+            android:layout_centerHorizontal="true"/>
+
+
+    <!-- End Mission Chooser -->
+
     <ImageView
             android:id="@+id/fbImage"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginLeft="0dp"
             android:layout_marginTop="60dp"
-            android:layout_below="@id/owImage"
+            android:layout_below="@id/missionImage"
             android:layout_alignParentLeft="true"
             android:visibility="invisible"
             android:src="@drawable/fb" />

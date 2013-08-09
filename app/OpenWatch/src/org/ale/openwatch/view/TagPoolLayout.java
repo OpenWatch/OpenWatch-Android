@@ -153,7 +153,7 @@ public class TagPoolLayout extends TableLayout {
 						dialog.dismiss();
 					}
 
-				}).setNegativeButton(c.getString(R.string.remove_tag_dialog_cancel), new DialogInterface.OnClickListener() {
+				}).setNegativeButton(c.getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
