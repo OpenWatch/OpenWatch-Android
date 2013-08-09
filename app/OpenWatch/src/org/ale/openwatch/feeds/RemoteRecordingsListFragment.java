@@ -208,6 +208,7 @@ public  class RemoteRecordingsListFragment extends ListFragment
 	            	fetchNextFeedPage();
 	            }
         	}
+            restartLoader();
 
         }
 
