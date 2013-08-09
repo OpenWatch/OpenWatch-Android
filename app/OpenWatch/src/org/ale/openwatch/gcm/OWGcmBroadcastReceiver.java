@@ -13,6 +13,9 @@ import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import org.ale.openwatch.*;
 import org.ale.openwatch.constants.Constants;
+import org.ale.openwatch.http.OWServiceRequests;
+import org.ale.openwatch.model.OWMission;
+import org.ale.openwatch.model.OWServerObject;
 
 /**
  * Created by davidbrodsky on 5/29/13.
@@ -45,14 +48,17 @@ public class OWGcmBroadcastReceiver extends BroadcastReceiver {
     // Put the GCM message into a notification and post it.
     private void sendNotification(Bundle gcmData) {
         String msg = gcmData.getString("message");
-        int missionId = gcmData.getInt("m", 0);
+        int missionId = Integer.parseInt(gcmData.getString("m"));
         mNotificationManager = (NotificationManager)
                 ctx.getSystemService(Context.NOTIFICATION_SERVICE);
 
         Intent notificationIntent;
         if(missionId > 0){
+            OWServerObject serverObject = OWMission.getByServerId(ctx, missionId);
+            OWServiceRequests.postMissionAction(ctx, serverObject, OWMission.ACTION.RECEIVED_PUSH);
             notificationIntent  = new Intent(ctx, OWMissionViewActivity.class);
             notificationIntent.putExtra(Constants.SERVER_ID, missionId);
+            notificationIntent.putExtra("viewed_push", true);
         }else
             notificationIntent  = new Intent(ctx, RecorderActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, notificationIntent, 0);

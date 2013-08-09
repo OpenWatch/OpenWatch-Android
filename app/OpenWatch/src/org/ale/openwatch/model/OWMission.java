@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 import com.orm.androrm.DatabaseAdapter;
+import com.orm.androrm.Filter;
 import com.orm.androrm.Model;
 import com.orm.androrm.QuerySet;
 import com.orm.androrm.field.BooleanField;
@@ -33,7 +34,10 @@ public class OWMission extends Model implements OWServerObjectInterface{
     public CharField media_url = new CharField();
     public CharField expires = new CharField();
     public BooleanField joined = new BooleanField();
+    public BooleanField viewed_push = new BooleanField();
+    public BooleanField viewed_mission = new BooleanField();
 
+    public static enum ACTION {JOINED, LEFT, RECEIVED_PUSH, VIEWED_PUSH, VIEWED_MISSION};
 
 	public ForeignKeyField<OWServerObject> media_object = new ForeignKeyField<OWServerObject> ( OWServerObject.class );
 
@@ -51,6 +55,27 @@ public class OWMission extends Model implements OWServerObjectInterface{
 		this.save(c);
 	}
 
+    public void updateWithActionComplete(Context c, ACTION action){
+        switch(action){
+            case JOINED:
+                this.joined.set(true);
+                break;
+            case LEFT:
+                this.joined.set(false);
+                break;
+            case RECEIVED_PUSH:
+                // not necessary. this will be reported directly by GCMBroadcastReceiver
+                break;
+            case VIEWED_PUSH:
+                this.viewed_push.set(true);
+                break;
+            case VIEWED_MISSION:
+                this.viewed_mission.set(true);
+                break;
+        }
+        this.save(c);
+    }
+
     @Override
     protected void migrate(Context context) {
         /*
@@ -60,6 +85,10 @@ public class OWMission extends Model implements OWServerObjectInterface{
         Migrator<OWMission> migrator = new Migrator<OWMission>(OWMission.class);
 
         migrator.addField("joined", new BooleanField());
+        migrator.addField("left", new BooleanField());
+        migrator.addField("viewed_push", new BooleanField());
+        migrator.addField("viewed_mission", new BooleanField());
+
         migrator.addField("expires", new CharField());
 
         // roll out all migrations
@@ -353,5 +382,16 @@ public class OWMission extends Model implements OWServerObjectInterface{
 	public CONTENT_TYPE getContentType(Context c) {
 		return CONTENT_TYPE.MISSION;
 	}
+
+    public static OWServerObject getByServerId(Context c, int serverId){
+        Filter filter = new Filter();
+        filter.is(DBConstants.SERVER_ID, serverId);
+        filter.is(DBConstants.MEDIA_OBJECT_MISSION, "!=","NULL");
+        QuerySet<OWServerObject> serverObjects = OWServerObject.objects(c, OWServerObject.class).filter(filter);
+        for(OWServerObject aServerObject : serverObjects){
+            return aServerObject;
+        }
+        return null;
+    }
 
 }

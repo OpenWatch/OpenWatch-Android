@@ -748,6 +748,33 @@ public class OWServiceRequests {
 				"application/json", response_handler);
 	}
 
+    public static void postMissionAction(final Context app_context, OWServerObject serverObject, final OWMission.ACTION action){
+        JSONObject json = new JSONObject();
+        final int modelId = serverObject.getId();
+        try {
+            json.put("action", action.toString().toLowerCase());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonHttpResponseHandler response_handler = new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                try {
+                    if(response.has("success") && response.getBoolean("success")){
+                        OWServerObject serverObject = OWServerObject.objects(app_context, OWServerObject.class).get(modelId);
+                        serverObject.mission.get(app_context).updateWithActionComplete(app_context, action);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
+        http_client.post(app_context, instanceEndpointForOWMediaObject(app_context, serverObject), Utils.JSONObjectToStringEntity(json), "application/json", response_handler);
+    }
+
     public static void flagOWServerObjet(Context app_context, OWServerObjectInterface object){
         AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
         JSONObject json = new JSONObject();

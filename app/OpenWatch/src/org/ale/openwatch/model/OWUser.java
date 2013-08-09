@@ -113,17 +113,17 @@ public class OWUser extends Model{
             if(json.has("agent_approved"))
                 agent_approved.set(json.getBoolean("agent_approved"));
             if(json.has("agent_applicant"))
-                agent_approved.set(json.getBoolean("agent_applicant"));
+                agent_applicant.set(json.getBoolean("agent_applicant"));
 			if(json.has(Constants.OW_TAGS)){
-				this.tags.reset();
-				JSONArray tag_array =  json.getJSONArray("tags");
-				OWTag tag = null;
-				for(int x=0;x<tag_array.length();x++){
-					tag = OWTag.getOrCreateTagFromJson(c, tag_array.getJSONObject(x));
-					tag.save(c);
-					this.addTag(c, tag, false);
-				}
-			} // end tags update
+            this.tags.reset();
+            JSONArray tag_array =  json.getJSONArray("tags");
+            OWTag tag = null;
+            for(int x=0;x<tag_array.length();x++){
+                tag = OWTag.getOrCreateTagFromJson(c, tag_array.getJSONObject(x));
+                tag.save(c);
+                this.addTag(c, tag, false);
+            }
+        } // end tags update
 			this.save(c);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block

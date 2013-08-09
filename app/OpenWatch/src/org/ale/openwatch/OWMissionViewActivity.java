@@ -52,17 +52,20 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
 
         try{
             Bundle extras = getIntent().getExtras();
+            OWServerObject serverObject = null;
             if(extras.containsKey(Constants.INTERNAL_DB_ID)){
                 model_id = extras.getInt(Constants.INTERNAL_DB_ID);
-                server_id = OWServerObject.objects(this, OWServerObject.class).get(model_id).server_id.get();
+                serverObject = OWServerObject.objects(this, OWServerObject.class).get(model_id);
+                server_id = serverObject.server_id.get();
             }else if(extras.containsKey(Constants.SERVER_ID)){
                 server_id = extras.getInt(Constants.SERVER_ID);
-                Filter filter = new Filter();
-                filter.is(DBConstants.SERVER_ID, server_id);
-                QuerySet<OWServerObject> serverObjects = OWServerObject.objects(this, OWServerObject.class).filter(filter);
-                for(OWServerObject serverObject : serverObjects){
+                serverObject = OWMission.getByServerId(getApplicationContext(), server_id);
+                if(serverObject != null)
                     model_id = serverObject.getId();
-                }
+            }
+
+            if(extras.containsKey("viewed_push") && serverObject != null){
+                OWServiceRequests.postMissionAction(getApplicationContext(), serverObject, OWMission.ACTION.VIEWED_PUSH);
             }
 
             if( OWServerObject.objects(this, OWServerObject.class).get(model_id).mission.get(c) != null && OWServerObject.objects(this, OWServerObject.class).get(model_id).mission.get(c).body.get() != null){
@@ -71,7 +74,6 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
                 ((TextView)findViewById(R.id.title)).setText(OWServerObject.objects(this, OWServerObject.class).get(model_id).title.get());
                 this.getSupportActionBar().setTitle(OWServerObject.objects(this, OWServerObject.class).get(model_id).title.get());
                 final Context c = this.c;
-                OWServerObject serverObject = OWServerObject.objects(this, OWServerObject.class).get(model_id);
                 OWServiceRequests.getOWServerObjectMeta(c, serverObject, "", new JsonHttpResponseHandler(){
                     @Override
                     public void onSuccess(JSONObject response) {
@@ -98,6 +100,7 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
             }
             OWServerObject server_object = OWServerObject.objects(this, OWServerObject.class).get(server_id);
             OWServiceRequests.increaseHitCount(c, server_id , model_id, server_object.getContentType(c), Constants.HIT_TYPE.VIEW);
+            OWServiceRequests.postMissionAction(getApplicationContext(), server_object, OWMission.ACTION.VIEWED_MISSION);
         }catch(Exception e){
             Log.e(TAG, "Error retrieving model");
             e.printStackTrace();
@@ -163,15 +166,18 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
         OWMission mission = serverObject.mission.get(getApplicationContext());
         mission.joined.set(!mission.joined.get());
         mission.save(getApplicationContext());
+        OWMission.ACTION action;
         if(mission.joined.get() == true){
+            action = OWMission.ACTION.JOINED;
             findViewById(R.id.join_button).setBackgroundResource(R.drawable.red_button_bg);
             ((TextView) findViewById(R.id.join_button)).setText(getString(R.string.leave_mission));
         }else{
+            action = OWMission.ACTION.LEFT;
             findViewById(R.id.join_button).setBackgroundResource(R.drawable.green_button_bg);
             ((TextView) findViewById(R.id.join_button)).setText(getString(R.string.join_mission));
         }
         mission.save(getApplicationContext());
-        OWServiceRequests.syncOWServerObject(getApplicationContext(), serverObject, true, null);
+        OWServiceRequests.postMissionAction(getApplicationContext(), serverObject, action);
     }
 
     public void onMapButtonClick(View v){
@@ -239,7 +245,6 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
         }
         */
         ((TextView) this.findViewById(R.id.description)).setText(mission.body.get());
-
 
         ((TextView) this.findViewById(R.id.description)).getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener(){
 

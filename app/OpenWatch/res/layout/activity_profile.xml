@@ -63,11 +63,31 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentLeft="true"/>
 
+
+    <TextView
+            android:id="@+id/agentText"
+            android:layout_below="@id/bio"
+            android:fontFamily="sans-serif-light"
+            android:textSize="20sp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Receive alerts for nearby events"/>
+
+    <CheckBox
+            android:id="@+id/agentToggle"
+            android:layout_alignBaseline="@id/agentText"
+            android:layout_below="@id/bio"
+            android:layout_toRightOf="@id/agentText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
     <TextView
             android:id="@+id/socialTip"
             android:fontFamily="sans-serif-light"
             android:textStyle="italic"
-            android:layout_below="@id/bio"
+            android:layout_below="@id/agentText"
             android:textColor="@color/text_light"
             android:layout_centerHorizontal="true"
             android:text="Connect a social account to quickly complete your profile"
@@ -81,6 +101,7 @@
                   android:layout_below="@id/socialTip"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
+                  android:layout_marginBottom="10dp"
                   android:weightSum="1.0"
                   android:orientation="horizontal">
 
@@ -90,7 +111,6 @@
             android:layout_height="wrap_content"
             android:layout_weight=".5"
             android:layout_gravity="center_horizontal"
-            android:layout_below="@+id/bio"
             android:layout_alignParentLeft="true"/>
 
     <Button

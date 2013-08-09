@@ -132,9 +132,11 @@
     <TextView
             android:id="@+id/missionText"
             android:background="@drawable/transparent_button_bg"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:layout_marginRight="15dp"
+            android:layout_alignParentRight="true"
             android:fontFamily="sans-serif-light"
             android:layout_alignBottom="@id/missionImage"
             android:layout_toRightOf="@id/missionImage"

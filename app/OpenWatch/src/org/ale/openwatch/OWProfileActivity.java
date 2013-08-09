@@ -10,9 +10,7 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.*;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.facebook.model.GraphUser;
@@ -47,6 +45,7 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
     TextView blurb;
     Button twitterButton;
     Button fbButton;
+    CheckBox agentToggle;
 
     public File cameraPhotoLocation;
 
@@ -67,6 +66,7 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
         profileImage = (ImageView) findViewById(R.id.profileImage);
         twitterButton = (Button) findViewById(R.id.twitterButton);
         fbButton = (Button) findViewById(R.id.fbButton);
+        agentToggle = (CheckBox) findViewById(R.id.agentToggle);
         profileImageSet = false;
         firstNameSet = false;
         lastNameSet = false;
@@ -88,7 +88,7 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
             Log.e(TAG, "Unknown user id!");
 
         fetchOWUser();
-
+        agentToggle.setOnCheckedChangeListener(agentCheckedChangeListener);
     }
 
     private void fetchOWUser(){
@@ -134,6 +134,7 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
             lastName.setText(user.last_name.get());
         if(user.blurb.get() != null && user.blurb.get().compareTo("") != 0)
             blurb.setText(user.blurb.get());
+        agentToggle.setChecked(user.agent_applicant.get());
 
         loadProfilePicture(user);
     }
@@ -321,5 +322,17 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
         }
         return true;
     }
+
+    CompoundButton.OnCheckedChangeListener agentCheckedChangeListener = new CompoundButton.OnCheckedChangeListener(){
+
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            OWUser user = getUser();
+            user.agent_applicant.set(isChecked);
+            user.save(getApplicationContext());
+            if(isChecked)
+                OWServiceRequests.syncOWUser(getApplicationContext(), user, null);
+        }
+    };
 
 }
