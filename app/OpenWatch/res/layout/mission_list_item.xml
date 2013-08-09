@@ -17,22 +17,24 @@
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
             android:fontFamily="sans-serif-light"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_toRightOf="@id/thumbnail"
-            android:id="@+id/title"/>
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/text_light"
+            android:id="@+id/expires"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/thumbnail"/>
 
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="10dp"
             android:fontFamily="sans-serif-light"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="10dp"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="@color/text_light"
-            android:id="@+id/expires"
-            android:layout_below="@+id/title"
-            android:layout_toRightOf="@+id/thumbnail"/>
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_toRightOf="@id/thumbnail"
+            android:layout_above="@id/expires"
+            android:id="@+id/title"/>
+
+
 </RelativeLayout>
