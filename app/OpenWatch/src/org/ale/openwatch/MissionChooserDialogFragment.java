@@ -31,32 +31,6 @@ public class MissionChooserDialogFragment extends SherlockDialogFragment impleme
     Dialog dialog;
     ListView listView;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        getDialog().setTitle(getString(R.string.choose_mission));
-        View v = inflater.inflate(R.layout.list_view, container, false);
-        listView = (ListView) v.findViewById(R.id.list_view);
-        mAdapter = new OWMissionAdapter(getActivity(), null);
-        getLoaderManager().initLoader(0, null, this);
-        listView.setAdapter(mAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int model_id = (Integer) view.getTag(R.id.list_item_model);
-
-            }
-        });
-
-        ((Button) v.findViewById(R.id.noMissionButton)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        return v;
-    }
-
 
     private void restartLoader(){
         this.getLoaderManager().restartLoader(0, null, this);
@@ -90,5 +64,38 @@ public class MissionChooserDialogFragment extends SherlockDialogFragment impleme
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
         mAdapter.swapCursor(null);
+    }
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+        View v = getActivity().getLayoutInflater().inflate(R.layout.list_view, null);
+        listView = (ListView) v.findViewById(R.id.list_view);
+        mAdapter = new OWMissionAdapter(getActivity(), null);
+        getLoaderManager().initLoader(0, null, this);
+        listView.setAdapter(mAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int model_id = (Integer) view.getTag(R.id.list_item_model);
+                ((WhatHappenedActivity) getActivity()).onMissionSelected(model_id);
+                dialog.dismiss();
+            }
+        });
+
+        dialog = new AlertDialog.Builder(getActivity())
+                .setView(v)
+                .setIcon(R.drawable.mission)
+                .setTitle(getString(R.string.choose_mission))
+                .setNegativeButton(R.string.no_mission,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                ((WhatHappenedActivity) getActivity()).onMissionSelected(0);
+                                dialog.dismiss();
+                            }
+                        }
+                )
+                .create();
+        return dialog;
     }
 }

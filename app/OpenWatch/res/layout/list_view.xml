@@ -8,11 +8,4 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" />
 
-    <Button
-            android:id="@+id/noMissionButton"
-            style="style/Widget.Sherlock.Light.Button.Borderless.Small"
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:text="@string/no_mission"/>
-
 </LinearLayout>

@@ -46,7 +46,7 @@ public class DrawerItemAdapter extends ArrayAdapter {
             viewCache = new ViewCache();
             viewCache.icon = (ImageView)view.findViewById(R.id.icon);
             viewCache.title = (TextView)view.findViewById(R.id.title);
-            viewCache.divider = view.findViewById(R.id.divider);
+            viewCache.divider = view.findViewById(R.id.owDivider);
 
             view.setTag(R.id.list_item_cache, viewCache);
         }

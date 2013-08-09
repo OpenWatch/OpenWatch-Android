@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.VideoView;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -20,6 +21,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.facebook.Session;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
 import org.ale.openwatch.contentprovider.OWContentProvider;
@@ -43,6 +45,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 	int recording_server_id = -1;
 	String recording_uuid;
     String hq_filepath;
+    String missionTag;
 
     boolean video_playing = false;
     boolean isResumed = false;
@@ -515,6 +518,24 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
         // Create an instance of the dialog fragment and show it
         DialogFragment dialog = new MissionChooserDialogFragment();
         dialog.show(getSupportFragmentManager(), "MissionChooserDialogFragment");
+    }
+
+    public void onMissionSelected(int model_id){
+        // Remove previous missionTag from editTitle if present
+        String titleText = ((TextView)this.findViewById(R.id.editTitle)).getText().toString();
+        if(missionTag != null && titleText.contains("#"+missionTag))
+            titleText = titleText.replace(" #"+missionTag,"").replace("#"+missionTag,"");
+
+        if(model_id == 0){
+            ((TextView)findViewById(R.id.missionText)).setText(R.string.select_mission);
+            ((TextView)this.findViewById(R.id.editTitle)).setText(titleText);
+            missionTag = null;
+        }else{
+            OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
+            ((TextView)findViewById(R.id.missionText)).setText(serverObject.title.get());
+            missionTag = serverObject.mission.get(getApplicationContext()).tag.get();
+            ((TextView)this.findViewById(R.id.editTitle)).setText(titleText + " #" + missionTag);
+        }
     }
 
 

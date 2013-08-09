@@ -30,7 +30,7 @@
             android:textSize="24sp"/>
 
     <View
-          android:id="@+id/divider"
+          android:id="@+id/owDivider"
           android:background="#262626"
           android:layout_alignParentBottom="true"
           android:layout_height="1pt"

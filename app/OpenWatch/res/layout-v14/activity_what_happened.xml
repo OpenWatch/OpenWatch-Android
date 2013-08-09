@@ -65,6 +65,7 @@
         android:id="@+id/infoFragmentLayout"
         android:layout_toLeftOf="@id/videoview"
         android:layout_alignBottom="@id/videoview"
+        android:layout_marginLeft="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -82,7 +83,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginLeft="0dp"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="40dp"
             android:layout_below="@id/infoFragmentLayout"
             android:layout_alignParentLeft="true"
             android:src="@drawable/ic_ab_icon" />
@@ -117,26 +118,44 @@
 
     <ImageView
             android:id="@+id/missionImage"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginLeft="0dp"
-            android:layout_marginTop="60dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="-5dp"
+            android:layout_marginTop="15dp"
+            android:paddingBottom="5dp"
             android:layout_below="@id/owImage"
-            android:layout_alignParentLeft="true"
-            android:src="@drawable/ic_ab_icon" />
+            android:layout_alignLeft="@id/owText"
+            android:onClick="onSelectMissionClick"
+            android:src="@drawable/mission" />
+
 
     <TextView
             android:id="@+id/missionText"
-            android:layout_width="wrap_content"
+            android:background="@drawable/transparent_button_bg"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:fontFamily="sans-serif-light"
             android:layout_alignBottom="@id/missionImage"
-            android:text="Touch To Select Mission"
+            android:layout_toRightOf="@id/missionImage"
+            android:text="@string/select_mission"
+            android:padding="5dp"
             android:onClick="onSelectMissionClick"
             android:clickable="true"
-            android:textSize="20sp"
+            android:gravity="bottom"
+            android:textSize="15sp"
             android:layout_centerHorizontal="true"/>
+
+    <View
+            android:id="@+id/owDivider"
+            android:layout_width="fill_parent"
+            android:layout_height="1sp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:background="#ffc9c9cd"
+            android:layout_below="@id/missionText"/>
 
 
     <!-- End Mission Chooser -->
@@ -146,8 +165,8 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginLeft="0dp"
-            android:layout_marginTop="60dp"
-            android:layout_below="@id/missionImage"
+            android:layout_marginTop="20dp"
+            android:layout_below="@id/owDivider"
             android:layout_alignParentLeft="true"
             android:visibility="invisible"
             android:src="@drawable/fb" />
