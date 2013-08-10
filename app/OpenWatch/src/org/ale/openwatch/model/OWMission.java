@@ -33,7 +33,7 @@ public class OWMission extends Model implements OWServerObjectInterface{
     public DoubleField lon = new DoubleField();
     public CharField media_url = new CharField();
     public CharField expires = new CharField();
-    public BooleanField joined = new BooleanField();
+    public CharField joined = new CharField();
     public BooleanField viewed_push = new BooleanField();
     public BooleanField viewed_mission = new BooleanField();
 
@@ -58,10 +58,10 @@ public class OWMission extends Model implements OWServerObjectInterface{
     public void updateWithActionComplete(Context c, ACTION action){
         switch(action){
             case JOINED:
-                this.joined.set(true);
+                this.joined.set(Constants.utc_formatter.format(new Date()));
                 break;
             case LEFT:
-                this.joined.set(false);
+                this.joined.set(null);
                 break;
             case RECEIVED_PUSH:
                 // not necessary. this will be reported directly by GCMBroadcastReceiver
@@ -84,7 +84,7 @@ public class OWMission extends Model implements OWServerObjectInterface{
          */
         Migrator<OWMission> migrator = new Migrator<OWMission>(OWMission.class);
 
-        migrator.addField("joined", new BooleanField());
+        migrator.addField("joined", new CharField());
         migrator.addField("left", new BooleanField());
         migrator.addField("viewed_push", new BooleanField());
         migrator.addField("viewed_mission", new BooleanField());
@@ -131,6 +131,8 @@ public class OWMission extends Model implements OWServerObjectInterface{
                 tag.set(json.getString("primary_tag"));
             if(json.has(Constants.OW_EXPIRES))
                 expires.set(json.getString(Constants.OW_EXPIRES));
+            if(json.has("joined"))
+                joined.set(json.getString("joined"));
 		}catch(JSONException e){
 			Log.e(TAG, "Error deserializing story");
 			e.printStackTrace();

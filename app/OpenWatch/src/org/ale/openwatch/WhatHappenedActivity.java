@@ -22,12 +22,15 @@ import com.actionbarsherlock.view.MenuItem;
 import com.facebook.Session;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.orm.androrm.Filter;
+import com.orm.androrm.QuerySet;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
 import org.ale.openwatch.contentprovider.OWContentProvider;
 import org.ale.openwatch.fb.FBUtils;
 import org.ale.openwatch.http.OWServiceRequests;
 import org.ale.openwatch.http.Utils;
+import org.ale.openwatch.model.OWMission;
 import org.ale.openwatch.model.OWServerObject;
 import org.ale.openwatch.model.OWVideoRecording;
 import org.ale.openwatch.share.Share;
@@ -146,6 +149,18 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
         // Facebook
         this.session = FBUtils.createSession(this, Constants.FB_APP_ID);
 	}
+
+    private void populateViews(){
+        Filter filter = new Filter();
+        filter.is("joined", "!=","NULL");
+        QuerySet<OWMission> joinedMissions = OWMission.objects(getApplicationContext(), OWMission.class).filter(filter).orderBy("-joined");
+        int mostRecentJoinedMissionServerObjectId = 0;
+        for(OWMission mission : joinedMissions){
+            mostRecentJoinedMissionServerObjectId = mission.media_object.get(getApplicationContext()).getId();
+            break;
+        }
+        onMissionSelected(mostRecentJoinedMissionServerObjectId);
+    }
 
     public void syncAndPostSocial(final OWUtils.SOCIAL_TYPE type){
         if(type == OWUtils.SOCIAL_TYPE.FB && didFBShare)
@@ -537,6 +552,4 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
             ((TextView)this.findViewById(R.id.editTitle)).setText(titleText + " #" + missionTag);
         }
     }
-
-
 }

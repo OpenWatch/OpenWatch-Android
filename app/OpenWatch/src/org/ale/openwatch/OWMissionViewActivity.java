@@ -27,6 +27,8 @@ import org.ale.openwatch.model.OWServerObject;
 import org.ale.openwatch.share.Share;
 import org.json.JSONObject;
 
+import java.util.Date;
+
 /**
  * Created by davidbrodsky on 6/10/13.
  */
@@ -98,9 +100,8 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
 
                 });
             }
-            OWServerObject server_object = OWServerObject.objects(this, OWServerObject.class).get(server_id);
-            OWServiceRequests.increaseHitCount(c, server_id , model_id, server_object.getContentType(c), Constants.HIT_TYPE.VIEW);
-            OWServiceRequests.postMissionAction(getApplicationContext(), server_object, OWMission.ACTION.VIEWED_MISSION);
+            OWServiceRequests.increaseHitCount(c, server_id , model_id, serverObject.getContentType(c), Constants.HIT_TYPE.VIEW);
+            OWServiceRequests.postMissionAction(getApplicationContext(), serverObject, OWMission.ACTION.VIEWED_MISSION);
         }catch(Exception e){
             Log.e(TAG, "Error retrieving model");
             e.printStackTrace();
@@ -164,10 +165,14 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
     public void onJoinButtonClick(View v){
         OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
         OWMission mission = serverObject.mission.get(getApplicationContext());
-        mission.joined.set(!mission.joined.get());
+        if(mission.joined.get() != null){
+            mission.joined.set(null);
+        }else
+            mission.joined.set(Constants.utc_formatter.format(new Date()));
+
         mission.save(getApplicationContext());
         OWMission.ACTION action;
-        if(mission.joined.get() == true){
+        if(mission.joined.get() != null){
             action = OWMission.ACTION.JOINED;
             findViewById(R.id.join_button).setBackgroundResource(R.drawable.red_button_bg);
             ((TextView) findViewById(R.id.join_button)).setText(getString(R.string.leave_mission));
@@ -185,7 +190,6 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
                 .objects(getApplicationContext(),
                         OWServerObject.class).get(model_id);
 
-        OWMission mission = serverObject.mission.get(c);
         Intent i = new Intent(this, MapActivity.class);
         i.putExtra(Constants.INTERNAL_DB_ID, model_id);
         this.startActivity(i);

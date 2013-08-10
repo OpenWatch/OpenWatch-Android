@@ -10,12 +10,8 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import com.actionbarsherlock.app.SherlockDialogFragment;
 import org.ale.openwatch.constants.DBConstants;
@@ -51,13 +47,11 @@ public class MissionChooserDialogFragment extends SherlockDialogFragment impleme
         String selection = null;
         String[] selectionArgs = null;
         String order = null;
-        Log.i("URI-MISSIONS-DIALOG", "createLoader on uri: " + baseUri.toString());
         return new CursorLoader(getActivity(), baseUri, PROJECTION, selection, selectionArgs, order);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        Log.i(TAG, "onLoadFinished");
         mAdapter.swapCursor(cursor);
     }
 
