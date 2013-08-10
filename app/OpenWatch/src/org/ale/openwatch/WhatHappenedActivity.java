@@ -12,8 +12,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.VideoView;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -21,7 +21,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.facebook.Session;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.orm.androrm.Filter;
 import com.orm.androrm.QuerySet;
 import org.ale.openwatch.constants.Constants;
@@ -36,8 +35,6 @@ import org.ale.openwatch.model.OWVideoRecording;
 import org.ale.openwatch.share.Share;
 import org.ale.openwatch.twitter.TwitterUtils;
 import org.json.JSONObject;
-
-import java.util.Map;
 
 public class WhatHappenedActivity extends SherlockFragmentActivity implements FBUtils.FaceBookSessionActivity {
 
@@ -148,6 +145,8 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 
         // Facebook
         this.session = FBUtils.createSession(this, Constants.FB_APP_ID);
+
+        populateViews();
 	}
 
     private void populateViews(){
@@ -542,12 +541,12 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
             titleText = titleText.replace(" #"+missionTag,"").replace("#"+missionTag,"");
 
         if(model_id == 0){
-            ((TextView)findViewById(R.id.missionText)).setText(R.string.select_mission);
+            ((Button)findViewById(R.id.missionButton)).setText(R.string.select_mission);
             ((TextView)this.findViewById(R.id.editTitle)).setText(titleText);
             missionTag = null;
         }else{
             OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
-            ((TextView)findViewById(R.id.missionText)).setText(serverObject.title.get());
+            ((Button)findViewById(R.id.missionButton)).setText(serverObject.title.get());
             missionTag = serverObject.mission.get(getApplicationContext()).tag.get();
             ((TextView)this.findViewById(R.id.editTitle)).setText(titleText + " #" + missionTag);
         }

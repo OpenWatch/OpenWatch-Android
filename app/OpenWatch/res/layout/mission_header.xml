@@ -19,7 +19,7 @@
                android:src="@drawable/mission"/>
 
     <TextView
-            android:id="@+id/missionText"
+            android:id="@+id/missionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-light"
@@ -40,7 +40,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             android:layout_toRightOf="@id/missionBadge"
-            android:layout_below="@id/missionText"
+            android:layout_below="@id/missionButton"
             android:text="@string/tap_to_dismiss"/>
 
 </RelativeLayout>

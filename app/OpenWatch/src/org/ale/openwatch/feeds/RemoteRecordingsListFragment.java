@@ -260,7 +260,7 @@ public  class RemoteRecordingsListFragment extends ListFragment
                                 @Override
                                 public void onAnimationEnd(Animation animation) {
                                     missionHeader.findViewById(R.id.missionBadge).setVisibility(View.GONE);
-                                    missionHeader.findViewById(R.id.missionText).setVisibility(View.GONE);
+                                    missionHeader.findViewById(R.id.missionButton).setVisibility(View.GONE);
                                     missionHeader.findViewById(R.id.tapToDismiss).setVisibility(View.GONE);
                                 }
 

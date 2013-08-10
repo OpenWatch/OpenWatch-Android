@@ -115,11 +115,11 @@
             tools:ignore="NewApi"/>
 
     <!-- Mission Chooser -->
-
+<!--
     <ImageView
             android:id="@+id/missionImage"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_marginLeft="-5dp"
             android:layout_marginTop="15dp"
             android:paddingBottom="5dp"
@@ -127,11 +127,10 @@
             android:layout_alignLeft="@id/owText"
             android:onClick="onSelectMissionClick"
             android:src="@drawable/mission" />
+-->
 
-
-    <TextView
-            android:id="@+id/missionText"
-            android:background="@drawable/transparent_button_bg"
+    <Button
+            android:id="@+id/missionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -141,23 +140,28 @@
             android:layout_alignBottom="@id/missionImage"
             android:layout_toRightOf="@id/missionImage"
             android:text="@string/select_mission"
+            android:drawableLeft="@drawable/mission"
+            android:background="@drawable/grey_button_bg"
             android:padding="5dp"
             android:onClick="onSelectMissionClick"
+            android:layout_below="@id/owImage"
+            android:layout_alignLeft="@id/owText"
             android:clickable="true"
-            android:gravity="bottom"
-            android:textSize="15sp"
+            android:gravity="left|center_vertical"
+            android:textSize="20sp"
             android:layout_centerHorizontal="true"/>
 
     <View
             android:id="@+id/owDivider"
             android:layout_width="fill_parent"
             android:layout_height="1sp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="0dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:background="#ffc9c9cd"
-            android:layout_below="@id/missionText"/>
+            android:visibility="invisible"
+            android:layout_below="@id/missionButton"/>
 
 
     <!-- End Mission Chooser -->
@@ -167,7 +171,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginLeft="0dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="65dp"
             android:layout_below="@id/owDivider"
             android:layout_alignParentLeft="true"
             android:visibility="invisible"
@@ -178,7 +182,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="20dp"
         android:fontFamily="sans-serif-light"
         android:layout_alignBottom="@id/fbImage"
         android:text="@string/post_to_fb"
@@ -247,8 +250,11 @@
             android:background="@drawable/green_button_bg"
             android:layout_below="@id/twitterSwitch"
             android:layout_marginTop="30dp"
-            android:layout_width="250dp"
+            android:layout_marginLeft="15dp"
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
+            android:layout_alignLeft="@id/twitterImage"
+            android:layout_alignRight="@id/twitterSwitch"
             android:fontFamily="sans-serif-light"
             android:layout_centerHorizontal="true"
             android:onClick="onDoneButtonClick"

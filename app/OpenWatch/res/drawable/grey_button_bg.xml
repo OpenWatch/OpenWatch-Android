@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Thanks! http://android.onyou.ch/2011/01/25/simple-custom-button-using-a-selector-xml-layout/ -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- disabled -->
+    <item android:state_enabled="false"><shape>
+        <solid android:color="#ff8e9487"/>
+        <!--<gradient android:angle="270" android:endColor="#c1cdc3" android:startColor="#d6e2d8" />-->
+        <stroke android:color="#ff252525" android:width="1dp"/>
+        <corners android:radius="8dp" />
+    </shape></item>
+
+    <!-- pressed -->
+    <item android:state_pressed="true"><shape>
+        <solid android:color="#ff797574"/>
+            <!--<gradient android:angle="270" android:endColor="#70c170" android:startColor="#52a452" />-->
+            <stroke android:color="#ff6e6a69" android:width="1dp"/>
+            <corners android:radius="8dp" />
+    </shape></item>
+
+    <!-- focused -->
+    <item android:state_focused="true"><shape>
+        <solid android:color="#ffe8e0de"/>
+        <!--<gradient android:angle="270" android:endColor="#70c170" android:startColor="#52a452" />-->
+        <stroke android:color="#ffd3cbc9" android:width="1dp"/>
+        <corners android:radius="8dp" />
+    </shape></item>
+
+    <!-- default -->
+    <item><shape>
+        <solid android:color="#ffe8e0de"/>
+        <!--<gradient android:angle="270" android:endColor="#70c170" android:startColor="#52a452" />-->
+        <stroke android:color="#ffd3cbc9" android:width="1dp"/>
+        <corners android:radius="8dp" />
+    </shape></item>
+
+</selector>

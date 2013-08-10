@@ -165,14 +165,20 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
     public void onJoinButtonClick(View v){
         OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
         OWMission mission = serverObject.mission.get(getApplicationContext());
-        if(mission.joined.get() != null){
+        if(mission.joined.get() != null && mission.joined.get().length() > 0){
             mission.joined.set(null);
         }else
             mission.joined.set(Constants.utc_formatter.format(new Date()));
 
         mission.save(getApplicationContext());
+        OWMission.ACTION action = setJoinMissionButtonWithMission(mission);
+        mission.save(getApplicationContext());
+        OWServiceRequests.postMissionAction(getApplicationContext(), serverObject, action);
+    }
+
+    private OWMission.ACTION setJoinMissionButtonWithMission(OWMission mission){
         OWMission.ACTION action;
-        if(mission.joined.get() != null){
+        if(mission.joined.get() != null && mission.joined.get().length() > 0){
             action = OWMission.ACTION.JOINED;
             findViewById(R.id.join_button).setBackgroundResource(R.drawable.red_button_bg);
             ((TextView) findViewById(R.id.join_button)).setText(getString(R.string.leave_mission));
@@ -181,8 +187,7 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
             findViewById(R.id.join_button).setBackgroundResource(R.drawable.green_button_bg);
             ((TextView) findViewById(R.id.join_button)).setText(getString(R.string.join_mission));
         }
-        mission.save(getApplicationContext());
-        OWServiceRequests.postMissionAction(getApplicationContext(), serverObject, action);
+        return action;
     }
 
     public void onMapButtonClick(View v){
@@ -259,6 +264,8 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
                 }
             }
         });
+
+        setJoinMissionButtonWithMission(mission);
 
     }
 }
