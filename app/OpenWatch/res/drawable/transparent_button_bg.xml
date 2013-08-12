@@ -8,7 +8,7 @@
 
     <!-- pressed -->
     <item android:state_pressed="true"><shape>
-        <solid android:color="#ffaeaeae"/>
+        <solid android:color="#ffdadada"/>
             <corners android:radius="8dp" />
     </shape></item>
 

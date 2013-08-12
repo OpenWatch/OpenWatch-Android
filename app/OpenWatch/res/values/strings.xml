@@ -241,7 +241,7 @@
     <string name="view_media">Media</string>
     <string name="choose_mission">Choose a Mission</string>
     <string name="no_mission">No Mission</string>
-    <string name="select_mission">Select Mission</string>
+    <string name="select_mission">Attach to Mission</string>
 
 
 </resources>

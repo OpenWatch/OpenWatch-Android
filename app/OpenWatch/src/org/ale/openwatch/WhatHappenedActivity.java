@@ -36,6 +36,8 @@ import org.ale.openwatch.share.Share;
 import org.ale.openwatch.twitter.TwitterUtils;
 import org.json.JSONObject;
 
+import java.util.Date;
+
 public class WhatHappenedActivity extends SherlockFragmentActivity implements FBUtils.FaceBookSessionActivity {
 
     TextView editTitle;
@@ -46,6 +48,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 	String recording_uuid;
     String hq_filepath;
     String missionTag;
+    int missionId = 0;
 
     boolean video_playing = false;
     boolean isResumed = false;
@@ -58,6 +61,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
     CompoundButton fbToggle;
     CompoundButton twitterToggle;
     CompoundButton owToggle;
+    Button missionButton;
 
     // Keep track of OW-Sync before Sharing to FB / Twitter
     boolean syncedWithOW = false;
@@ -70,6 +74,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 		setContentView(R.layout.activity_what_happened);
 		this.getSupportActionBar().setTitle(getString(R.string.what_happened));
 
+        missionButton = ((Button)findViewById(R.id.missionButton));
         ((CompoundButton) findViewById(R.id.owSwitch)).setChecked(true);
 
         fbToggle = (CompoundButton) findViewById(R.id.fbSwitch);
@@ -99,9 +104,11 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
                     fbToggle.setEnabled(false);
                     twitterToggle.setChecked(false);
                     twitterToggle.setEnabled(false);
+                    missionButton.setEnabled(false);
                 }else{
                     fbToggle.setEnabled(true);
                     twitterToggle.setEnabled(true);
+                    missionButton.setEnabled(true);
                 }
             }
         });
@@ -154,11 +161,19 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
         filter.is("joined", "!=","NULL");
         QuerySet<OWMission> joinedMissions = OWMission.objects(getApplicationContext(), OWMission.class).filter(filter).orderBy("-joined");
         int mostRecentJoinedMissionServerObjectId = 0;
+        OWMission mostRecentJoinedMission = null;
         for(OWMission mission : joinedMissions){
             mostRecentJoinedMissionServerObjectId = mission.media_object.get(getApplicationContext()).getId();
+            mostRecentJoinedMission = mission;
             break;
         }
-        onMissionSelected(mostRecentJoinedMissionServerObjectId);
+        SharedPreferences prefs = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
+        String lastSelectedMissionDate = prefs.getString(Constants.LAST_MISSION_DATE,"2012");
+        if(mostRecentJoinedMission == null || lastSelectedMissionDate.compareTo(mostRecentJoinedMission.joined.get()) > 0)
+            onMissionSelected(prefs.getInt(Constants.LAST_MISSION_ID,0));
+        else if(mostRecentJoinedMission != null)
+            onMissionSelected(mostRecentJoinedMissionServerObjectId);
+
     }
 
     public void syncAndPostSocial(final OWUtils.SOCIAL_TYPE type){
@@ -297,6 +312,10 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 	}
 
     public void onDoneButtonClick(View v){
+        SharedPreferences.Editor prefs = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE).edit();
+        prefs.putInt(Constants.LAST_MISSION_ID, missionId);
+        prefs.putString(Constants.LAST_MISSION_DATE, Constants.utc_formatter.format(new Date()));
+        prefs.commit();
         Intent feedFragmentIntent = new Intent(getApplicationContext(), FeedFragmentActivity.class);
         feedFragmentIntent.putExtra(Constants.FEED_TYPE, Constants.OWFeedType.USER);
         feedFragmentIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -535,18 +554,19 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
     }
 
     public void onMissionSelected(int model_id){
+        missionId = model_id;
         // Remove previous missionTag from editTitle if present
         String titleText = ((TextView)this.findViewById(R.id.editTitle)).getText().toString();
         if(missionTag != null && titleText.contains("#"+missionTag))
             titleText = titleText.replace(" #"+missionTag,"").replace("#"+missionTag,"");
 
         if(model_id == 0){
-            ((Button)findViewById(R.id.missionButton)).setText(R.string.select_mission);
+            missionButton.setText(R.string.select_mission);
             ((TextView)this.findViewById(R.id.editTitle)).setText(titleText);
             missionTag = null;
         }else{
             OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
-            ((Button)findViewById(R.id.missionButton)).setText(serverObject.title.get());
+            missionButton.setText(serverObject.title.get());
             missionTag = serverObject.mission.get(getApplicationContext()).tag.get();
             ((TextView)this.findViewById(R.id.editTitle)).setText(titleText + " #" + missionTag);
         }

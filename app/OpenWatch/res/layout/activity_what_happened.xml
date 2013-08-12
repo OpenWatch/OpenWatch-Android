@@ -1,17 +1,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".WhatHappenedActivity" >
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                tools:context=".WhatHappenedActivity" >
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/sync_progress_container"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginBottom="5dp"
-            android:background="#c5eaf8">
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:id="@+id/sync_progress_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="5dp"
+                    android:visibility="gone"
+                    android:background="#c5eaf8">
 
         <TextView
                 android:id="@+id/sync_progress_text"
@@ -55,153 +56,223 @@
             android:id="@+id/videoview"
             android:layout_below="@id/sync_progress_container"
             android:layout_alignParentRight="true"
-            android:layout_margin="5dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="5dp"
             android:layout_width="144dp"
             android:layout_height="96dp"
             android:layout_gravity="center" />
 
 
     <FrameLayout
-        android:id="@+id/infoFragmentLayout"
-        android:layout_toLeftOf="@id/videoview"
-        android:layout_alignBottom="@id/videoview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+            android:id="@+id/infoFragmentLayout"
+            android:layout_toLeftOf="@id/videoview"
+            android:layout_alignBottom="@id/videoview"
+            android:layout_marginLeft="15dp"
+            android:layout_marginBottom="-4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
         <fragment
-            android:id="@+id/media_object_info"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            class="org.ale.openwatch.OWMediaObjectInfoFragment"
-            tools:layout="@layout/user_media_object_info_view"/>
+                android:id="@+id/media_object_info"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                class="org.ale.openwatch.OWMediaObjectInfoFragment"
+                tools:layout="@layout/user_media_object_info_view"/>
 
     </FrameLayout>
 
-    <ImageView
-            android:id="@+id/owImage"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginLeft="0dp"
-            android:layout_marginTop="60dp"
-            android:layout_below="@id/infoFragmentLayout"
-            android:layout_alignParentLeft="true"
-            android:src="@drawable/ic_ab_icon" />
-
-    <TextView
-            android:id="@+id/owText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+    <Button
+            android:id="@+id/missionButton"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="15dp"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="20dp"
-            android:fontFamily="sans-serif-light"
-            android:layout_alignBottom="@id/owImage"
-            android:text="@string/public_on_ow"
-            android:textSize="20sp"
-            android:layout_toRightOf="@id/owImage"/>
-
-
-
-    <ToggleButton
-            android:id="@+id/owSwitch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:thumbTextPadding="10dp"
-            android:switchTextAppearance="@style/Theme.openwatch.SwitchTextAppearance"
-            android:thumb="@drawable/ow_toggle_bg"
-            android:textOn="@string/yes"
-            android:textOff="@string/no"
             android:layout_marginRight="15dp"
-            android:layout_alignBottom="@id/owImage"
             android:layout_alignParentRight="true"
-            tools:ignore="NewApi"/>
+            android:fontFamily="sans-serif-light"
+            android:layout_alignBottom="@id/missionImage"
+            android:layout_toRightOf="@id/missionImage"
+            android:drawableLeft="@drawable/mission"
+            android:drawableRight="@drawable/plus"
+            android:text="@string/select_mission"
+            android:background="@drawable/grey_button_bg"
+            android:onClick="onSelectMissionClick"
+            android:layout_below="@id/infoFragmentLayout"
+            android:clickable="true"
+            android:paddingRight="15dp"
+            android:paddingLeft="5dp"
+            android:gravity="left|center_vertical"
+            android:textSize="18sp"
+            android:layout_centerHorizontal="true"/>
 
-    <ImageView
-            android:id="@+id/fbImage"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginLeft="0dp"
-            android:layout_marginTop="60dp"
-            android:layout_below="@id/owImage"
-            android:layout_alignParentLeft="true"
-            android:visibility="invisible"
-            android:src="@drawable/fb" />
-
-    <TextView
-        android:id="@+id/fbText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="20dp"
-        android:fontFamily="sans-serif-light"
-        android:layout_alignBottom="@id/fbImage"
-        android:text="@string/post_to_fb"
-        android:textSize="20sp"
-        android:layout_toRightOf="@id/fbImage"/>
-
-
-
-    <ToggleButton
-        android:id="@+id/fbSwitch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:switchTextAppearance="@style/Theme.openwatch.SwitchTextAppearance"
-        android:thumbTextPadding="10dp"
-        android:thumb="@drawable/ow_toggle_bg"
-        android:textOn="@string/yes"
-        android:textOff="@string/no"
-        android:layout_marginRight="15dp"
-        android:layout_alignBottom="@id/fbImage"
-        android:layout_alignParentRight="true"
-        tools:ignore="NewApi"/>
-
-    <ImageView
-            android:id="@+id/twitterImage"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="60dp"
-            android:layout_marginLeft="0dp"
-            android:layout_below="@id/fbImage"
-            android:layout_alignParentLeft="true"
-            android:visibility="invisible"
-            android:src="@drawable/twitter" />
-
-    <TextView
-        android:id="@+id/twitterText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-light"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="30dp"
-        android:layout_below="@id/fbText"
-        android:layout_toRightOf="@id/twitterImage"
-        android:layout_alignBottom="@id/twitterImage"
-        android:text="@string/post_to_twitter"
-        android:textSize="20sp"/>
+    <!-- Mission Chooser -->
+    <!--
+        <ImageView
+                android:id="@+id/missionImage"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="-5dp"
+                android:layout_marginTop="15dp"
+                android:paddingBottom="5dp"
+                android:layout_below="@id/owImage"
+                android:layout_alignLeft="@id/owText"
+                android:onClick="onSelectMissionClick"
+                android:src="@drawable/mission" />
+    -->
 
 
-    <ToggleButton
-        android:id="@+id/twitterSwitch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:thumbTextPadding="10dp"
-        android:switchTextAppearance="@style/Theme.openwatch.SwitchTextAppearance"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="20dp"
-        android:thumb="@drawable/ow_toggle_bg"
-        android:layout_alignBottom="@id/twitterImage"
-        android:textOn="@string/yes"
-        android:textOff="@string/no"
-        android:layout_alignParentRight="true"
-        tools:ignore="NewApi"/>
 
+    <!-- End Mission Chooser -->
+
+    <RelativeLayout
+            android:id="@+id/toggleContainer"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:paddingBottom="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/missionButton"
+            android:background="@drawable/grey_button_bg"
+            android:visibility="visible">
+
+        <ImageView
+                android:id="@+id/owImage"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="15dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:src="@drawable/ic_ab_icon" />
+
+        <TextView
+                android:id="@+id/owText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:fontFamily="sans-serif-light"
+                android:layout_alignBottom="@id/owImage"
+                android:text="@string/public_on_ow"
+                android:textSize="18sp"
+                android:layout_toRightOf="@id/owImage"/>
+
+        <ToggleButton
+                android:id="@+id/owSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:thumbTextPadding="5dp"
+                android:switchTextAppearance="@style/Theme.openwatch.SwitchTextAppearance"
+                android:thumb="@drawable/ow_toggle_bg"
+                android:textOn="@string/yes"
+                android:textOff="@string/no"
+                android:layout_alignBaseline="@id/owText"
+                android:layout_marginRight="12dp"
+                android:layout_alignBottom="@id/owImage"
+                android:layout_alignParentRight="true"
+                tools:ignore="NewApi"/>
+
+        <View
+                android:id="@+id/owDivider"
+                android:layout_below="@id/owText"
+                android:layout_width="match_parent"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:background="#ffd3cbc9"
+                android:layout_height="1dp"/>
+
+        <ImageView
+                android:id="@+id/fbImage"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginLeft="12dp"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@id/owDivider"
+                android:visibility="visible"
+                android:src="@drawable/fb" />
+
+        <TextView
+                android:id="@+id/fbText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:fontFamily="sans-serif-light"
+                android:layout_alignBottom="@id/fbImage"
+                android:text="@string/post_to_fb"
+                android:textSize="18sp"
+                android:layout_toRightOf="@id/fbImage"/>
+
+
+
+        <ToggleButton
+                android:id="@+id/fbSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:switchTextAppearance="@style/Theme.openwatch.SwitchTextAppearance"
+                android:thumbTextPadding="5dp"
+                android:thumb="@drawable/ow_toggle_bg"
+                android:textOn="@string/yes"
+                android:textOff="@string/no"
+                android:layout_marginRight="12dp"
+                android:layout_alignBaseline="@id/fbText"
+                android:layout_alignParentRight="true"
+                tools:ignore="NewApi"/>
+
+        <View
+                android:id="@+id/socialDivider"
+                android:layout_below="@id/fbImage"
+                android:layout_width="match_parent"
+                android:layout_marginTop="15dp"
+                android:background="#ffd3cbc9"
+                android:layout_height="1dp"/>
+
+        <ImageView
+                android:id="@+id/twitterImage"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="12dp"
+                android:layout_below="@id/socialDivider"
+                android:layout_alignParentLeft="true"
+                android:visibility="visible"
+                android:src="@drawable/twitter" />
+
+        <TextView
+                android:id="@+id/twitterText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/twitterImage"
+                android:layout_alignBottom="@id/twitterImage"
+                android:text="@string/post_to_twitter"
+                android:textSize="18sp"/>
+
+
+        <ToggleButton
+                android:id="@+id/twitterSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:switchTextAppearance="@style/Theme.openwatch.SwitchTextAppearance"
+                android:thumbTextPadding="0dp"
+                android:layout_marginTop="10dp"
+                android:thumb="@drawable/ow_toggle_bg"
+                android:textOn="@string/yes"
+                android:textOff="@string/no"
+                android:layout_below="@id/socialDivider"
+                tools:ignore="NewApi"
+                android:layout_alignLeft="@+id/fbSwitch"/>
+    </RelativeLayout>
 
     <Button
             android:id="@+id/doneButton"
             android:background="@drawable/green_button_bg"
-            android:layout_below="@id/twitterSwitch"
+            android:layout_below="@id/toggleContainer"
             android:layout_marginTop="30dp"
-            android:layout_width="250dp"
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
+            android:layout_alignLeft="@id/toggleContainer"
+            android:layout_alignRight="@id/toggleContainer"
             android:fontFamily="sans-serif-light"
             android:layout_centerHorizontal="true"
             android:onClick="onDoneButtonClick"

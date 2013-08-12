@@ -34,6 +34,8 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_toRightOf="@id/thumbnail"
             android:layout_above="@id/expires"
+            android:layout_alignParentTop="true"
+            android:gravity="top|left"
             android:id="@+id/title"/>
 
 

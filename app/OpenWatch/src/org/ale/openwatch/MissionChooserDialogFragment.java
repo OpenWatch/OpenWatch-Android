@@ -46,7 +46,7 @@ public class MissionChooserDialogFragment extends SherlockDialogFragment impleme
         Uri baseUri = OWContentProvider.getMissionUri();
         String selection = null;
         String[] selectionArgs = null;
-        String order = null;
+        String order = "expires ASC";
         return new CursorLoader(getActivity(), baseUri, PROJECTION, selection, selectionArgs, order);
     }
 

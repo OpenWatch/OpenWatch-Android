@@ -220,7 +220,7 @@ public class OWContentProvider extends ContentProvider {
 				break;
             case MISSIONS:
                 // Get missions that haven't yet expired
-                queryString = select.replace("_id",DBConstants.MEDIA_OBJECT_TABLENAME + "._id").replace("expires","owmission.expires") + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " JOIN " + "owmission" + " ON " + " owmission._id = owserverobject.mission where owmission.expires > '" + Constants.utc_formatter.format(new Date())+ "' " + sortby;
+                queryString = select.replace("_id",DBConstants.MEDIA_OBJECT_TABLENAME + "._id").replace("expires","owmission.expires") + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " JOIN " + "owmission" + " ON " + " owmission._id = owserverobject.mission where owmission.expires > '" + Constants.utc_formatter.format(new Date())+ "'  ORDER BY " + sortby;
                 //Log.i(TAG, String.format("Mission Query: %s", queryString));
                 result = adapter.open().query(queryString);
                 break;
