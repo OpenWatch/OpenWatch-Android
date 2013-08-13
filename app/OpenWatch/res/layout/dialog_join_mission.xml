@@ -22,13 +22,14 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/title"
             android:src="@drawable/hash"/>
+
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:fontFamily="sans-serif-light"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="New videos will be automatically tagged until you decide otherwise."
+            android:text="Videos you record will be automatically tagged until you decide otherwise."
             android:id="@+id/body"
             android:layout_toRightOf="@id/hash"
             android:layout_alignTop="@id/hash"
@@ -50,7 +51,7 @@
             android:layout_marginTop="15dp"
             android:layout_marginLeft="15dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="You will receive push alerts if more video is needed."
+            android:text="You will receive push alerts as this story develops."
             android:id="@+id/body2"
             android:layout_below="@+id/body"
             android:layout_toRightOf="@id/alert"

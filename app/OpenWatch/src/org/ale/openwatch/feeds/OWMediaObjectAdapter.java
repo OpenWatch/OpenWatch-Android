@@ -137,6 +137,8 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
             view_cache.playButton.setVisibility(View.GONE);
             view_cache.userThumbnail.setVisibility(View.GONE);
             view_cache.username.setVisibility(View.GONE);
+            // TODO: Join expires time within OWContentProvider
+            // and report expires time for mission, not last edited
         }
         try{
             if(!cursor.isNull(view_cache.last_edited_col))

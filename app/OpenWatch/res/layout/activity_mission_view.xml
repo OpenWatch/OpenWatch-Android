@@ -35,19 +35,80 @@
                     android:textSize="28sp"
                     android:background="@drawable/side_banner_green"/>
 
+
+            <TextView
+                    android:id="@+id/members"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:paddingLeft="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:paddingRight="15dp"
+                    android:drawablePadding="5dp"
+                    android:fontFamily="sans-serif-black"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignBottom="@id/missionImage"
+                    android:visibility="visible"
+                    android:enabled="false"
+                    android:singleLine="true"
+                    android:gravity="center_vertical"
+                    android:textSize="20sp"
+                    android:textColor="#fff"
+                    android:shadowColor="#ff212121"
+                    android:shadowDy="-2"
+                    android:shadowRadius=".1"
+                    android:drawableLeft="@drawable/user"
+                    android:background="@android:color/transparent"/>
+
+
+            <!--
+            <TextView
+                    android:id="@+id/submissions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="15dp"
+                    android:drawablePadding="5dp"
+                    android:fontFamily="sans-serif-black"
+                    android:layout_toRightOf="@id/members"
+                    android:layout_alignBottom="@id/missionImage"
+                    android:visibility="visible"
+                    android:enabled="false"
+                    android:singleLine="true"
+                    android:gravity="center_vertical"
+                    android:textSize="20sp"
+                    android:drawableLeft="@drawable/saved_button"
+                    android:background="#ffff"/>
+            -->
+
             <TextView
                     android:id="@+id/title"
                     android:fontFamily="sans-serif-black"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/missionImage"
-                    android:padding="10dp"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="0dp"
+                    android:paddingLeft="10dp"
+                    android:gravity="bottom"
                     android:textSize="32sp"/>
+
+            <TextView
+                    android:id="@+id/expiry"
+                    android:layout_marginTop="0dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
+                    android:layout_alignLeft="@id/title"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:textStyle="italic"
+                    android:layout_below="@id/title"
+                    android:gravity="center" />
 
     <RelativeLayout
             android:id="@+id/buttonLayout"
             android:layout_gravity="center"
-            android:layout_below="@id/title"
+            android:layout_below="@id/expiry"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -67,13 +128,13 @@
                     android:layout_centerHorizontal="true"/>
 
             <Button
-                    android:layout_width="wrap_content"
+                    android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
-                    android:background="@drawable/transparent_button_bg"
+                    android:background="@drawable/grey_button_bg"
                     android:drawableLeft="@drawable/local_button"
-                    android:drawablePadding="10dp"
-                    android:padding="10dp"
+                    android:drawablePadding="0dp"
+                    android:paddingRight="15dp"
                     android:text="@string/tab_map"
                     android:onClick="onMapButtonClick"
                     android:id="@+id/map_button"
@@ -85,19 +146,41 @@
 
             <Button
                     android:id="@+id/media_button"
-                    android:layout_width="wrap_content"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="5dp"
+                    android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
                     android:drawableLeft="@drawable/saved_button"
                     android:drawablePadding="10dp"
-                    android:background="@drawable/transparent_button_bg"
-                    android:paddingRight="10dp"
-                    android:padding="10dp"
+                    android:background="@drawable/grey_button_bg"
                     android:text="@string/view_media"
                     android:onClick="onMediaButtonClick"
                     android:textSize="24sp"
                     android:layout_alignBaseline="@+id/map_button"
                     android:layout_alignRight="@+id/join_button"/>
+
+            <TextView
+                    android:id="@+id/submissions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:paddingLeft="6dp"
+                    android:paddingRight="5dp"
+                    android:paddingBottom="0dp"
+                    android:drawablePadding="5dp"
+                    android:layout_marginBottom="2dp"
+                    android:fontFamily="sans-serif-black"
+                    android:visibility="visible"
+                    android:enabled="false"
+                    android:singleLine="true"
+                    android:gravity="center_vertical|left"
+                    android:textSize="16sp"
+                    android:textColor="#606060"
+                    android:text="0"
+                    android:background="@drawable/badge_bg"
+                    android:layout_alignBottom="@id/map_button"
+                    android:layout_alignRight="@id/media_button"
+                    android:layout_marginRight="90dp"/>
 
         </RelativeLayout>
 <!--

@@ -7,10 +7,7 @@ import com.orm.androrm.DatabaseAdapter;
 import com.orm.androrm.Filter;
 import com.orm.androrm.Model;
 import com.orm.androrm.QuerySet;
-import com.orm.androrm.field.BooleanField;
-import com.orm.androrm.field.CharField;
-import com.orm.androrm.field.DoubleField;
-import com.orm.androrm.field.ForeignKeyField;
+import com.orm.androrm.field.*;
 import com.orm.androrm.migration.Migrator;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.Constants.CONTENT_TYPE;
@@ -36,6 +33,8 @@ public class OWMission extends Model implements OWServerObjectInterface{
     public CharField joined = new CharField();
     public BooleanField viewed_push = new BooleanField();
     public BooleanField viewed_mission = new BooleanField();
+    public IntegerField members = new IntegerField();
+    public IntegerField submissions = new IntegerField();
 
     public static enum ACTION {JOINED, LEFT, RECEIVED_PUSH, VIEWED_PUSH, VIEWED_MISSION};
 
@@ -90,6 +89,9 @@ public class OWMission extends Model implements OWServerObjectInterface{
         migrator.addField("viewed_mission", new BooleanField());
 
         migrator.addField("expires", new CharField());
+        migrator.addField("members", new IntegerField());
+        migrator.addField("submissions", new IntegerField());
+
 
         // roll out all migrations
         migrator.migrate(context);
@@ -133,6 +135,10 @@ public class OWMission extends Model implements OWServerObjectInterface{
                 expires.set(json.getString(Constants.OW_EXPIRES));
             if(json.has("joined"))
                 joined.set(json.getString("joined"));
+            if(json.has(Constants.OW_AGENTS))
+                members.set(json.getInt(Constants.OW_AGENTS));
+            if(json.has(Constants.OW_SUBMISSIONS))
+                submissions.set(json.getInt(Constants.OW_SUBMISSIONS));
 		}catch(JSONException e){
 			Log.e(TAG, "Error deserializing story");
 			e.printStackTrace();
@@ -321,6 +327,11 @@ public class OWMission extends Model implements OWServerObjectInterface{
                 json_obj.put(Constants.OW_END_LON, lon.get());
             if (expires.get() != null)
                 json_obj.put(Constants.OW_EXPIRES, expires.get());
+            if (members.get() != null)
+                json_obj.put(Constants.OW_AGENTS, members.get());
+            if (submissions.get() != null)
+                json_obj.put(Constants.OW_SUBMISSIONS, submissions.get());
+
 
 		}catch(JSONException e){
 			Log.e(TAG, "Error serializing recording to json");

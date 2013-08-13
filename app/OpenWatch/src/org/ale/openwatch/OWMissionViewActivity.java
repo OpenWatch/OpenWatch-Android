@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import org.ale.openwatch.model.OWServerObject;
 import org.ale.openwatch.share.Share;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.util.Date;
 
 /**
@@ -253,6 +255,25 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
             findViewById(R.id.map_button).setEnabled(true);
         }else{
             findViewById(R.id.map_button).setEnabled(false);
+        }
+        if(mission.members.get() != null && mission.members.get() != 0){
+            ((TextView)findViewById(R.id.members)).setText(String.valueOf(mission.members.get()));
+        }else{
+            findViewById(R.id.members).setVisibility(View.INVISIBLE);
+        }
+
+        if(mission.submissions.get() != null && mission.submissions.get() != 0){
+            ((TextView)findViewById(R.id.submissions)).setText(String.valueOf(mission.submissions.get()));
+        }else{
+            findViewById(R.id.submissions).setVisibility(View.INVISIBLE);
+        }
+
+        if(mission.expires.get() != null && mission.expires.get().length() > 0){
+            try {
+                ((TextView)findViewById(R.id.expiry)).setText(getString(R.string.expires) + " " + DateUtils.getRelativeTimeSpanString(Constants.utc_formatter.parse(mission.expires.get()).getTime()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
 
         /*

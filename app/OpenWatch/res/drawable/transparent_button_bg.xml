@@ -4,6 +4,7 @@
 
     <!-- disabled -->
     <item android:state_enabled="false"><shape>
+        <solid android:color="@android:color/transparent"/>
     </shape></item>
 
     <!-- pressed -->
