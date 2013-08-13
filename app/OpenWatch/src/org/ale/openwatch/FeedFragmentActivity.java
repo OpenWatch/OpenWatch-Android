@@ -98,6 +98,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(TAG, "onCreate");
 
         mPullToRefreshAttacher =  PullToRefreshAttacher.get(this);
         //mTabHost.setOn
@@ -214,6 +215,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     @Override
     public void onResume(){
         super.onResume();
+        Log.i(TAG, "onResume");
         if(internal_user_id > 0){
             RelativeLayout profileDrawerItem = (RelativeLayout) findViewById(R.id.profileRow);
             if(profileDrawerItem != null){
@@ -262,7 +264,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
                 Log.i(feedType.toString(), "force refresh feed now!");
             }
             mTitleIndicator.setCurrentItem(mTitleToTabId.get(feedType.toString().toLowerCase() ));
-
+            return true;
         }
 
         return false;

@@ -3,6 +3,7 @@
 
     <item android:drawable="@drawable/location_pressed" android:state_pressed="true"/>
     <item android:drawable="@drawable/location" android:state_hovered="true"/>
+    <item android:drawable="@drawable/location_disabled" android:state_enabled="false"/>
     <item android:drawable="@drawable/location"/>
 
 </selector>

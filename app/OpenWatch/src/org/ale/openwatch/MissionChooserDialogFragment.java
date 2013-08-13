@@ -79,8 +79,6 @@ public class MissionChooserDialogFragment extends SherlockDialogFragment impleme
 
         dialog = new AlertDialog.Builder(getActivity())
                 .setView(v)
-                .setIcon(R.drawable.mission)
-                .setTitle(getString(R.string.choose_mission))
                 .setNegativeButton(R.string.no_mission,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {

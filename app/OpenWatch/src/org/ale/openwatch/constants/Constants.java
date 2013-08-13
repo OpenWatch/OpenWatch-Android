@@ -123,6 +123,7 @@ public class Constants {
     public static final String TWITTER_SECRET = "tsecret";
     public static final String LAST_MISSION_DATE = "last_mission_date";
     public static final String LAST_MISSION_ID = "last_mission_id";
+    public static final String JOINED_FIRST_MISSION = "joined_first_mission";
 
 	
 	// Email REGEX

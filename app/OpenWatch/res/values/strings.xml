@@ -208,9 +208,9 @@
     <string name="tap_to_dismiss">Touch to dismiss</string>
     <string name="login_failed_dialog_title">We couldn\'t successfully authenticate your account with Facebook. Sorry!
     </string>
-    <string name="public_on_ow">Public on OpenWatch</string>
+    <string name="public_on_ow">Post to OpenWatch</string>
     <string name="post_to_fb">Post to Facebook</string>
-    <string name="post_to_twitter">Tweet</string>
+    <string name="post_to_twitter">Post to Twitter</string>
     <string name="post_to">Post to</string>
     <string name="done">Done!</string>
     <string name="yes">YES</string>

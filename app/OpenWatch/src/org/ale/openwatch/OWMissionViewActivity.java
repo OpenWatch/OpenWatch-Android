@@ -1,7 +1,10 @@
 package org.ale.openwatch;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -17,10 +20,7 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.orm.androrm.Filter;
-import com.orm.androrm.QuerySet;
 import org.ale.openwatch.constants.Constants;
-import org.ale.openwatch.constants.DBConstants;
 import org.ale.openwatch.http.OWServiceRequests;
 import org.ale.openwatch.model.OWMission;
 import org.ale.openwatch.model.OWServerObject;
@@ -162,13 +162,23 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
         return super.onOptionsItemSelected(item);
     }
 
+    public final boolean testJoinDialog = true;
     public void onJoinButtonClick(View v){
         OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
         OWMission mission = serverObject.mission.get(getApplicationContext());
         if(mission.joined.get() != null && mission.joined.get().length() > 0){
             mission.joined.set(null);
-        }else
+        }else{
             mission.joined.set(Constants.utc_formatter.format(new Date()));
+
+            SharedPreferences prefs = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
+            if(testJoinDialog || !prefs.getBoolean(Constants.JOINED_FIRST_MISSION, false)){
+                showJoinedFirstMissionDialog();
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putBoolean(Constants.JOINED_FIRST_MISSION, true);
+                editor.commit();
+            }
+        }
 
         mission.save(getApplicationContext());
         OWMission.ACTION action = setJoinMissionButtonWithMission(mission);
@@ -267,5 +277,17 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
 
         setJoinMissionButtonWithMission(mission);
 
+    }
+
+    private void showJoinedFirstMissionDialog(){
+        View v = getLayoutInflater().inflate(R.layout.dialog_join_mission, null);
+        new AlertDialog.Builder(this)
+                .setView(v)
+                .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
     }
 }
