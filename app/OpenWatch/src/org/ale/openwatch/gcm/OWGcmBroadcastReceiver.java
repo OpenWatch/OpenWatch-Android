@@ -48,7 +48,9 @@ public class OWGcmBroadcastReceiver extends BroadcastReceiver {
     // Put the GCM message into a notification and post it.
     private void sendNotification(Bundle gcmData) {
         String msg = gcmData.getString("message");
-        int missionId = Integer.parseInt(gcmData.getString("m"));
+        int missionId = 0;
+        if(gcmData.containsKey("m"))
+            missionId = Integer.parseInt(gcmData.getString("m"));
         mNotificationManager = (NotificationManager)
                 ctx.getSystemService(Context.NOTIFICATION_SERVICE);
 
