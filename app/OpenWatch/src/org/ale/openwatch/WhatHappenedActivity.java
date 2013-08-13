@@ -167,13 +167,17 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
             mostRecentJoinedMission = mission;
             break;
         }
-        SharedPreferences prefs = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
-        String lastSelectedMissionDate = prefs.getString(Constants.LAST_MISSION_DATE,"2012");
-        if(mostRecentJoinedMission == null || lastSelectedMissionDate.compareTo(mostRecentJoinedMission.joined.get()) > 0)
-            onMissionSelected(prefs.getInt(Constants.LAST_MISSION_ID,0));
-        else if(mostRecentJoinedMission != null)
-            onMissionSelected(mostRecentJoinedMissionServerObjectId);
 
+        if(getIntent().hasExtra(Constants.MISSION_SERVER_OBJ_ID))
+            onMissionSelected(getIntent().getIntExtra(Constants.MISSION_SERVER_OBJ_ID,0));
+        else{
+            SharedPreferences prefs = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
+            String lastSelectedMissionDate = prefs.getString(Constants.LAST_MISSION_DATE,"2012");
+            if(mostRecentJoinedMission == null || lastSelectedMissionDate.compareTo(mostRecentJoinedMission.joined.get()) > 0)
+                onMissionSelected(prefs.getInt(Constants.LAST_MISSION_ID,0));
+            else if(mostRecentJoinedMission != null)
+                onMissionSelected(mostRecentJoinedMissionServerObjectId);
+        }
     }
 
     public void syncAndPostSocial(final OWUtils.SOCIAL_TYPE type){

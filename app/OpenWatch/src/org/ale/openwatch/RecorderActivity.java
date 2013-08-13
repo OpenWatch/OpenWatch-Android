@@ -332,6 +332,8 @@ public class RecorderActivity extends SherlockActivity implements
             if(this.getIntent().hasExtra(Constants.OBLIGATORY_TAG)){
                 i.putExtra(Constants.OBLIGATORY_TAG, this.getIntent().getStringExtra(Constants.OBLIGATORY_TAG));
             }
+            if(this.getIntent().hasExtra(Constants.MISSION_SERVER_OBJ_ID))
+                i.putExtra(Constants.MISSION_SERVER_OBJ_ID, getIntent().getIntExtra(Constants.MISSION_SERVER_OBJ_ID,0));
 			if(media_object_id > 0){
 				i.putExtra(Constants.INTERNAL_DB_ID,media_object_id);
 				Log.i(TAG, "Bundling media_obj_id: " + String.valueOf(media_object_id));

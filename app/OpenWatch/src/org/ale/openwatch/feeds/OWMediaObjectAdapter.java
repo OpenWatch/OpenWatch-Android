@@ -2,6 +2,7 @@ package org.ale.openwatch.feeds;
 
 import android.text.format.DateUtils;
 import android.text.util.Linkify;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import org.ale.openwatch.R;
 import org.ale.openwatch.constants.Constants;
@@ -49,8 +50,9 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         	view_cache.title = (TextView) view.findViewById(R.id.title);
         	view_cache.username = (TextView) view.findViewById(R.id.username);
         	view_cache.thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
-        	//view_cache.views = (TextView) view.findViewById(R.id.view_count);
-        	//view_cache.actions = (TextView) view.findViewById(R.id.action_count);
+        	view_cache.members = (TextView) view.findViewById(R.id.members);
+        	view_cache.submissions = (TextView) view.findViewById(R.id.submissions);
+            view_cache.iconContainer = (LinearLayout) view.findViewById(R.id.iconContainer);
             //view_cache.typeIcon = (ImageView) view.findViewById(R.id.type_icon);
             view_cache.playButton = (ImageView) view.findViewById(R.id.playButton);
             view_cache.progressBar = (ProgressBar) view.findViewById(R.id.videoProgress);
@@ -61,8 +63,9 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         	view_cache.title_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_TITLE);   
         	view_cache.username_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_USERNAME);   
         	view_cache.thumbnail_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_THUMB_URL);
-        	//view_cache.views_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_VIEWS);
-        	//view_cache.actions_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_ACTIONS);
+        	view_cache.members_col = cursor.getColumnIndex("members");
+        	view_cache.submissions_col = cursor.getColumnIndex("submissions");
+            view_cache.expires_col = cursor.getColumnIndex("expires");
             view_cache.audio_col = cursor.getColumnIndexOrThrow(DBConstants.MEDIA_OBJECT_AUDIO);
             view_cache.photo_col = cursor.getColumnIndexOrThrow(DBConstants.MEDIA_OBJECT_PHOTO);
             view_cache.video_col = cursor.getColumnIndexOrThrow(DBConstants.MEDIA_OBJECT_VIDEO);
@@ -112,6 +115,8 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         	view_cache.thumbnail.setImageResource(R.drawable.thumbnail_placeholder);
         }
 
+        view_cache.iconContainer.setVisibility(View.GONE);
+
         if(!cursor.isNull(view_cache.audio_col)){
             //view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.microphone_icon));
             view_cache.playButton.setVisibility(View.GONE);
@@ -137,12 +142,29 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
             view_cache.playButton.setVisibility(View.GONE);
             view_cache.userThumbnail.setVisibility(View.GONE);
             view_cache.username.setVisibility(View.GONE);
-            // TODO: Join expires time within OWContentProvider
+            view_cache.iconContainer.setVisibility(View.VISIBLE);
+            view_cache.iconContainer.bringToFront();
+            view_cache.members.bringToFront();
+            view_cache.submissions.bringToFront();
+            if(cursor.getString(view_cache.members_col) != null && cursor.getString(view_cache.members_col).length() > 0){
+                view_cache.members.setText(cursor.getString(view_cache.members_col));
+            }else{
+                view_cache.members.setText("0");
+            }
+
+            if(cursor.getString(view_cache.submissions_col) != null && cursor.getString(view_cache.submissions_col).length() > 0){
+                view_cache.submissions.setText(cursor.getString(view_cache.submissions_col));
+            }else{
+                view_cache.submissions.setText("0");
+            }
             // and report expires time for mission, not last edited
         }
         try{
-            if(!cursor.isNull(view_cache.last_edited_col))
+            if(cursor.isNull(view_cache.mission_col) && !cursor.isNull(view_cache.last_edited_col))
                 view_cache.lastEdited.setText(DateUtils.getRelativeTimeSpanString(Constants.utc_formatter.parse(cursor.getString(view_cache.last_edited_col)).getTime()) );
+            else if(!cursor.isNull(view_cache.mission_col)){
+                view_cache.lastEdited.setText("Expires " + DateUtils.getRelativeTimeSpanString(Constants.utc_formatter.parse(cursor.getString(view_cache.expires_col)).getTime()) );
+            }
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -164,8 +186,9 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         ImageView playButton;
         ImageView userThumbnail;
         ProgressBar progressBar;
-        //TextView views;
-        //TextView actions;
+        TextView members;
+        TextView submissions;
+        LinearLayout iconContainer;
         
         int last_seen_id;
                 
@@ -175,8 +198,9 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         int user_thumbnail_col;
         int last_edited_col;
         int location_col;
-        //int views_col;
-        //int actions_col;
+        int members_col;
+        int submissions_col;
+        int expires_col;
         int _id_col;
 
         int audio_col;

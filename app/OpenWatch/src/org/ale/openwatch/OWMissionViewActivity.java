@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -53,6 +54,7 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
         c = getApplicationContext();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         OWUtils.setReadingFontOnChildren((ViewGroup) findViewById(R.id.relativeLayout));
+        this.getSupportActionBar().setTitle("");
 
         try{
             Bundle extras = getIntent().getExtras();
@@ -76,7 +78,7 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
                 populateViews(model_id, c);
             } else if(OWServerObject.objects(this, OWServerObject.class).get(model_id).title.get() != null){
                 ((TextView)findViewById(R.id.title)).setText(OWServerObject.objects(this, OWServerObject.class).get(model_id).title.get());
-                this.getSupportActionBar().setTitle(OWServerObject.objects(this, OWServerObject.class).get(model_id).title.get());
+                //this.getSupportActionBar().setTitle(OWServerObject.objects(this, OWServerObject.class).get(model_id).title.get());
                 final Context c = this.c;
                 OWServiceRequests.getOWServerObjectMeta(c, serverObject, "", new JsonHttpResponseHandler(){
                     @Override
@@ -124,6 +126,14 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
         startActivityForResult(takePictureIntent, Constants.CAMERA_ACTION_CODE);
     }
 */
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getSupportMenuInflater().inflate(R.menu.activity_mission_view, menu);
+        return true;
+    }
+
+
     public void camcorderButtonClick(View v){
         Intent i = new Intent(this, RecorderActivity.class);
         i.putExtra(Constants.OBLIGATORY_TAG, missionTag);
@@ -153,13 +163,18 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
-            case R.id.menu_share:
+            case R.id.tab_share:
                 if(server_id > 0){
                     OWServerObject object = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
-                    Share.showShareDialogWithInfo(this, getString(R.string.share_investigation), object.getTitle(getApplicationContext()), OWUtils.urlForOWServerObject(object, getApplicationContext()));
+                    Share.showShareDialogWithInfo(this, getString(R.string.share_mission), object.getTitle(getApplicationContext()), OWUtils.urlForOWServerObject(object, getApplicationContext()));
                     OWServiceRequests.increaseHitCount(getApplicationContext(), server_id, model_id, Constants.CONTENT_TYPE.INVESTIGATION, Constants.HIT_TYPE.CLICK);
                 }
                 break;
+            case R.id.tab_record:
+                Intent i = new Intent(this, RecorderActivity.class);
+                i.putExtra(Constants.MISSION_SERVER_OBJ_ID, model_id);
+                startActivity(i);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -233,7 +248,7 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
 
         OWMission mission = serverObject.mission.get(c);
         missionTag = mission.tag.get();
-        this.getSupportActionBar().setTitle(serverObject.getTitle(c));
+        //this.getSupportActionBar().setTitle(serverObject.getTitle(c));
         ((TextView) this.findViewById(R.id.title)).setText(serverObject.getTitle(c));
         if(mission.media_url.get() != null)
             ImageLoader.getInstance().displayImage(mission.media_url.get(), (ImageView) findViewById(R.id.missionImage));
@@ -259,13 +274,13 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
         if(mission.members.get() != null && mission.members.get() != 0){
             ((TextView)findViewById(R.id.members)).setText(String.valueOf(mission.members.get()));
         }else{
-            findViewById(R.id.members).setVisibility(View.INVISIBLE);
+            ((TextView)findViewById(R.id.members)).setText("0");
         }
 
         if(mission.submissions.get() != null && mission.submissions.get() != 0){
             ((TextView)findViewById(R.id.submissions)).setText(String.valueOf(mission.submissions.get()));
         }else{
-            findViewById(R.id.submissions).setVisibility(View.INVISIBLE);
+            ((TextView)findViewById(R.id.submissions)).setText("0");
         }
 
         if(mission.expires.get() != null && mission.expires.get().length() > 0){

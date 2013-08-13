@@ -36,28 +36,60 @@
                     android:background="@drawable/side_banner_green"/>
 
 
-            <TextView
-                    android:id="@+id/members"
+            <LinearLayout
+                    android:id="@+id/iconContainer"
+                    android:layout_height="35dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="25dp"
-                    android:paddingLeft="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:paddingRight="15dp"
-                    android:drawablePadding="5dp"
-                    android:fontFamily="sans-serif-black"
-                    android:layout_alignParentLeft="true"
                     android:layout_alignBottom="@id/missionImage"
-                    android:visibility="visible"
-                    android:enabled="false"
-                    android:singleLine="true"
-                    android:gravity="center_vertical"
-                    android:textSize="20sp"
-                    android:textColor="#fff"
-                    android:shadowColor="#ff212121"
-                    android:shadowDy="-2"
-                    android:shadowRadius=".1"
-                    android:drawableLeft="@drawable/user"
-                    android:background="@android:color/transparent"/>
+                    android:layout_alignParentLeft="true"
+                    android:layout_margin="5dp"
+                    android:paddingTop="2dp"
+                    android:background="@drawable/members_bg">
+
+                <TextView
+                        android:id="@+id/members"
+                        android:layout_width="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_height="fill_parent"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="15dp"
+                        android:drawablePadding="5dp"
+                        android:fontFamily="sans-serif-black"
+                        android:visibility="visible"
+                        android:enabled="false"
+                        android:singleLine="true"
+                        android:gravity="center_vertical"
+                        android:textSize="20sp"
+                        android:textColor="#606060"
+                        android:text="0"
+                        android:shadowColor="#ff212121"
+                        android:shadowDy="-2"
+                        android:shadowRadius=".1"
+                        android:drawableLeft="@drawable/user"
+                        android:background="@android:color/transparent"/>
+
+                <TextView
+                        android:id="@+id/submissions"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="15dp"
+                        android:drawablePadding="5dp"
+                        android:fontFamily="sans-serif-black"
+                        android:visibility="visible"
+                        android:enabled="false"
+                        android:singleLine="true"
+                        android:textSize="20sp"
+                        android:gravity="center_vertical"
+                        android:textColor="#606060"
+                        android:shadowColor="#ff212121"
+                        android:shadowDy="-2"
+                        android:shadowRadius=".1"
+                        android:text="0"
+                        android:drawableLeft="@drawable/recording_shadow"
+                        android:background="@android:color/transparent"/>
+
+            </LinearLayout>
 
 
             <!--
@@ -160,27 +192,7 @@
                     android:layout_alignBaseline="@+id/map_button"
                     android:layout_alignRight="@+id/join_button"/>
 
-            <TextView
-                    android:id="@+id/submissions"
-                    android:layout_width="wrap_content"
-                    android:layout_height="25dp"
-                    android:paddingLeft="6dp"
-                    android:paddingRight="5dp"
-                    android:paddingBottom="0dp"
-                    android:drawablePadding="5dp"
-                    android:layout_marginBottom="2dp"
-                    android:fontFamily="sans-serif-black"
-                    android:visibility="visible"
-                    android:enabled="false"
-                    android:singleLine="true"
-                    android:gravity="center_vertical|left"
-                    android:textSize="16sp"
-                    android:textColor="#606060"
-                    android:text="0"
-                    android:background="@drawable/badge_bg"
-                    android:layout_alignBottom="@id/map_button"
-                    android:layout_alignRight="@id/media_button"
-                    android:layout_marginRight="90dp"/>
+
 
         </RelativeLayout>
 <!--

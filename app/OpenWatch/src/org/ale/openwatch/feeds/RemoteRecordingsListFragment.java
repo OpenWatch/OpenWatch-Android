@@ -50,6 +50,9 @@ import org.ale.openwatch.model.OWVideoRecording;
 import org.ale.openwatch.share.Share;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 
 public  class RemoteRecordingsListFragment extends ListFragment
             implements LoaderManager.LoaderCallbacks<Cursor>,
@@ -492,12 +495,12 @@ public  class RemoteRecordingsListFragment extends ListFragment
 		}
 		
 		static final String[] PROJECTION = new String[] {
-			DBConstants.ID,
-			DBConstants.RECORDINGS_TABLE_TITLE,
-			DBConstants.VIEWS,
-			DBConstants.ACTIONS,
-			DBConstants.RECORDINGS_TABLE_THUMB_URL,
-			DBConstants.RECORDINGS_TABLE_USERNAME,
+            DBConstants.ID,
+            DBConstants.RECORDINGS_TABLE_TITLE,
+            DBConstants.VIEWS,
+            DBConstants.ACTIONS,
+            DBConstants.RECORDINGS_TABLE_THUMB_URL,
+            DBConstants.RECORDINGS_TABLE_USERNAME,
             DBConstants.MEDIA_OBJECT_STORY,
             DBConstants.MEDIA_OBJECT_AUDIO,
             DBConstants.MEDIA_OBJECT_VIDEO,
@@ -508,16 +511,28 @@ public  class RemoteRecordingsListFragment extends ListFragment
             DBConstants.LAST_EDITED,
             DBConstants.MEDIA_OBJECT_METRO_CODE
 
-	    };
+        };
+
+        static final String[] MISSION_PROJECTION = new String[]{
+          "members", "expires", "submissions"
+        };
+
+
 
 		@Override
 		public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
             Uri baseUri = OWContentProvider.getFeedUri(feed);
+            String[] projection = null;
 			String selection = null;
             String[] selectionArgs = null;
             String order = null;
 			Log.i("URI"+feed.toString(), "createLoader on uri: " + baseUri.toString());
-			return new CursorLoader(getActivity(), baseUri, PROJECTION, selection, selectionArgs, order);
+            if(feed.compareTo(Constants.OWFeedType.MISSION.toString().toLowerCase()) == 0){
+                // Java is gross
+                projection = new ArrayList<String>(){{addAll(Arrays.asList(PROJECTION)); addAll(Arrays.asList(MISSION_PROJECTION));}}.toArray(new String[0]);
+            }else
+                projection = PROJECTION;
+			return new CursorLoader(getActivity(), baseUri, projection, selection, selectionArgs, order);
 		}
 
 

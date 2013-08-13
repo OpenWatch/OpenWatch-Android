@@ -26,6 +26,61 @@
             android:visibility="gone"
             android:src="@drawable/play_btn" />
 
+    <LinearLayout
+            android:id="@+id/iconContainer"
+            android:layout_height="35dp"
+            android:layout_width="wrap_content"
+            android:layout_alignBottom="@id/thumbnail"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="5dp"
+            android:paddingTop="2dp"
+            android:background="@drawable/members_bg">
+
+    <TextView
+            android:id="@+id/members"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_height="fill_parent"
+            android:paddingLeft="5dp"
+            android:paddingRight="15dp"
+            android:drawablePadding="5dp"
+            android:fontFamily="sans-serif-black"
+            android:visibility="visible"
+            android:enabled="false"
+            android:singleLine="true"
+            android:textSize="20sp"
+            android:textColor="#606060"
+            android:text="0"
+            android:gravity="center_vertical"
+            android:shadowColor="#ff212121"
+            android:shadowDy="-2"
+            android:shadowRadius=".1"
+            android:drawableLeft="@drawable/user"
+            android:background="@android:color/transparent"/>
+
+    <TextView
+            android:id="@+id/submissions"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:paddingLeft="5dp"
+            android:paddingRight="15dp"
+            android:drawablePadding="5dp"
+            android:fontFamily="sans-serif-black"
+            android:visibility="visible"
+            android:enabled="false"
+            android:singleLine="true"
+            android:textSize="20sp"
+            android:textColor="#606060"
+            android:shadowColor="#ff212121"
+            android:shadowDy="-2"
+            android:shadowRadius=".1"
+            android:text="3"
+            android:gravity="center_vertical"
+            android:drawableLeft="@drawable/recording_shadow"
+            android:background="@android:color/transparent"/>
+
+    </LinearLayout>
+
 
     <ImageView
             android:id="@+id/userImage"

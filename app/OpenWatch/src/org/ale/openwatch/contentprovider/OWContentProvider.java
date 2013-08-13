@@ -62,7 +62,10 @@ public class OWContentProvider extends ContentProvider {
     	 return MEDIA_OBJECT_URI.buildUpon().appendEncodedPath(Constants.feedInternalEndpointFromType(feed_type)).build();
      }
      public static Uri getFeedUri(String feed_name){
-    	 return MEDIA_OBJECT_URI.buildUpon().appendEncodedPath(feed_name.trim().toLowerCase()).build();
+         if(feed_name.compareTo(OWFeedType.MISSION.toString().toLowerCase()) == 0)
+             return MISSION_OBJECT_URI;
+         else
+    	    return MEDIA_OBJECT_URI.buildUpon().appendEncodedPath(feed_name.trim().toLowerCase()).build();
      }
      public static Uri getMediaObjectUri(int model_id){
     	 return MEDIA_OBJECT_URI.buildUpon().appendEncodedPath(String.valueOf(model_id)).build();
@@ -220,7 +223,9 @@ public class OWContentProvider extends ContentProvider {
 				break;
             case MISSIONS:
                 // Get missions that haven't yet expired
-                queryString = select.replace("_id",DBConstants.MEDIA_OBJECT_TABLENAME + "._id").replace("expires","owmission.expires") + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " JOIN " + "owmission" + " ON " + " owmission._id = owserverobject.mission where owmission.expires > '" + Constants.utc_formatter.format(new Date())+ "'  ORDER BY " + sortby;
+                queryString = select.replace("_id",DBConstants.MEDIA_OBJECT_TABLENAME + "._id").replace("expires","owmission.expires").replace("submissions","owmission.submissions").replace("members","owmission.members") + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " JOIN " + "owmission" + " ON " + " owmission._id = owserverobject.mission where owmission.expires > '" + Constants.utc_formatter.format(new Date())+ "'";
+                if(sortby != null && sortby.trim().length() > 0)
+                    queryString += " ORDER BY " + sortby;
                 //Log.i(TAG, String.format("Mission Query: %s", queryString));
                 result = adapter.open().query(queryString);
                 break;
