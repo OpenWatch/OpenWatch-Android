@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -33,8 +32,8 @@ public class MissionChooserDialogFragment extends SherlockDialogFragment impleme
     }
 
     public String[] PROJECTION = {
-            DBConstants.ID,
-            DBConstants.EXPIRES,
+            DBConstants.MEDIA_OBJECT_TABLENAME + "." + DBConstants.ID,
+            DBConstants.MISSION_TABLENAME + "." + DBConstants.EXPIRES,
             DBConstants.RECORDINGS_TABLE_THUMB_URL,
             DBConstants.RECORDINGS_TABLE_TITLE,
             DBConstants.MEDIA_OBJECT_MISSION

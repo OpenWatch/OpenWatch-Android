@@ -495,10 +495,8 @@ public  class RemoteRecordingsListFragment extends ListFragment
 		}
 		
 		static final String[] PROJECTION = new String[] {
-            DBConstants.ID,
+            DBConstants.MEDIA_OBJECT_TABLENAME + "." + DBConstants.ID,
             DBConstants.RECORDINGS_TABLE_TITLE,
-            DBConstants.VIEWS,
-            DBConstants.ACTIONS,
             DBConstants.RECORDINGS_TABLE_THUMB_URL,
             DBConstants.RECORDINGS_TABLE_USERNAME,
             DBConstants.MEDIA_OBJECT_STORY,
@@ -514,10 +512,8 @@ public  class RemoteRecordingsListFragment extends ListFragment
         };
 
         static final String[] MISSION_PROJECTION = new String[]{
-          "members", "expires", "submissions"
+          DBConstants.MISSION_TABLENAME + ".members", DBConstants.MISSION_TABLENAME + ".expires", DBConstants.MISSION_TABLENAME + ".submissions"
         };
-
-
 
 		@Override
 		public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {

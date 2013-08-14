@@ -62,10 +62,7 @@ public class OWContentProvider extends ContentProvider {
     	 return MEDIA_OBJECT_URI.buildUpon().appendEncodedPath(Constants.feedInternalEndpointFromType(feed_type)).build();
      }
      public static Uri getFeedUri(String feed_name){
-         if(feed_name.compareTo(OWFeedType.MISSION.toString().toLowerCase()) == 0)
-             return MISSION_OBJECT_URI;
-         else
-    	    return MEDIA_OBJECT_URI.buildUpon().appendEncodedPath(feed_name.trim().toLowerCase()).build();
+        return MEDIA_OBJECT_URI.buildUpon().appendEncodedPath(feed_name.trim().toLowerCase()).build();
      }
      public static Uri getMediaObjectUri(int model_id){
     	 return MEDIA_OBJECT_URI.buildUpon().appendEncodedPath(String.valueOf(model_id)).build();
@@ -158,32 +155,24 @@ public class OWContentProvider extends ContentProvider {
 		sortOrder	How the rows in the cursor should be sorted. If null then the provider is free to define the sort order.
 		 */
 		DatabaseAdapter adapter = DatabaseAdapter.getInstance(getContext().getApplicationContext());
-		//Log.i(TAG, adapter.getDatabaseName());
-		//Log.i(TAG, uri.toString());
 		String query;
 		switch(uriType){
 			case MEDIA_OBJS_BY_USER:
-				//Log.i(TAG, "MediaObjs by user");
 				query = select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " WHERE " + DBConstants.MEDIA_OBJECT_USER + " = " + uri.getLastPathSegment() + " AND (" + DBConstants.MEDIA_OBJECT_VIDEO + " IS NOT NULL" + " OR " + DBConstants.MEDIA_OBJECT_AUDIO + " IS NOT NULL OR " + DBConstants.MEDIA_OBJECT_PHOTO + " IS NOT NULL )" ;
-				//Log.i(TAG, query);
 				result = adapter.open().query(query);
 				break;
 			case LOCAL_RECORDINGS:
-				//Log.i(TAG, select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " WHERE " + DBConstants.MEDIA_OBJECT_LOCAL_VIDEO + " IS NOT NULL " + sortby);
 				result = adapter.open().query(select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " WHERE " + DBConstants.MEDIA_OBJECT_LOCAL_VIDEO + " IS NOT NULL " + " ORDER BY " + sortby);
 				break;
 			case LOCAL_RECORDING_ID:
-				//Log.i(TAG, select + " FROM " + DBConstants.RECORDINGS_TABLENAME + "WHERE _id="+uri.getLastPathSegment());
 				result = adapter.open().query(select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " WHERE " + DBConstants.MEDIA_OBJECT_LOCAL_VIDEO + " IS NOT NULL AND " + DBConstants.ID + "=" +uri.getLastPathSegment());
 				//adapter.close();
 				break;
 			case MEDIA_OBJS_BY_FEED:
-				//Log.i("URI"+uri.getLastPathSegment(), "Query CP for Feed ");
 				int feed_id = -1;
-				//Log.i(TAG, "get feed _id query:" + " SELECT " + DBConstants.ID + " from owfeed where NAME = \"" + uri.getLastPathSegment() + "\"");
                 String queryString = "SELECT " + DBConstants.ID + "  from " + DBConstants.FEED_TABLENAME +" WHERE " + DBConstants.FEED_NAME+ "= \"" + uri.getLastPathSegment() + "\"";
                 Log.i(TAG, String.format("getFeed query: %s",queryString));
-				Cursor feed_cursor = adapter.open().query("SELECT " + DBConstants.ID + "  from " + DBConstants.FEED_TABLENAME +" WHERE " + DBConstants.FEED_NAME+ "= \"" + uri.getLastPathSegment() + "\""); // empty
+				Cursor feed_cursor = adapter.open().query(queryString);
 				if(feed_cursor.moveToFirst()){
 					feed_id = feed_cursor.getInt(0);
 					//Log.i(TAG, String.format("got feed_id: %d", feed_id));
@@ -194,15 +183,15 @@ public class OWContentProvider extends ContentProvider {
 					return null;
 				}			
 				//Log.i(TAG, String.format("fetching feed id: %d", feed_id));
-
-				query = select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " JOIN " + DBConstants.FEED_MEDIA_OBJ_TABLENAME + " ON " + DBConstants.FEED_MEDIA_OBJ_TABLENAME+"."+DBConstants.MEDIA_OBJECT_TABLENAME + "=" + DBConstants.MEDIA_OBJECT_TABLENAME+"." + DBConstants.ID + " WHERE " + DBConstants.FEED_MEDIA_OBJ_TABLENAME + "." + DBConstants.FEED_TABLENAME + "=" + String.valueOf(feed_id);
+                queryString = select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " JOIN " + DBConstants.FEED_MEDIA_OBJ_TABLENAME + " ON " + DBConstants.FEED_MEDIA_OBJ_TABLENAME+"."+DBConstants.MEDIA_OBJECT_TABLENAME + "=" + DBConstants.MEDIA_OBJECT_TABLENAME+"." + DBConstants.ID;
+				if(uri.getLastPathSegment().compareTo(OWFeedType.MISSION.toString().toLowerCase()) == 0)
+                    queryString += " JOIN owmission ON " + DBConstants.MEDIA_OBJECT_TABLENAME + "." + DBConstants.MEDIA_OBJECT_MISSION + " = " + "owmission._id" ;
+                query =  queryString + " WHERE " + DBConstants.FEED_MEDIA_OBJ_TABLENAME + "." + DBConstants.FEED_TABLENAME + "=" + String.valueOf(feed_id);
 				//Log.i(TAG, "Query: " + query);
                 Log.i(TAG, String.format("getFeedItems query: %s",query));
 				result = adapter.open().query(query);
 				if(result == null)
 					Log.i(TAG, "Feed query was null!");
-				//if(result.moveToFirst())
-				//	Log.i(TAG, "Got feed cursor: " + result.getColumnCount());
 				break;
 			case REMOTE_RECORDINGS:
 				result = adapter.open().query(select + " FROM " + DBConstants.RECORDINGS_TABLENAME + " " + where + sortby);
@@ -211,22 +200,15 @@ public class OWContentProvider extends ContentProvider {
 				result = adapter.open().query(select + " FROM " + DBConstants.RECORDINGS_TABLENAME + " WHERE " + DBConstants.ID + "=" + uri.getLastPathSegment());
 				break;
 			case TAGS:
-				//Log.i(TAG, select + " FROM " + DBConstants.TAG_TABLE_NAME + where + sortby);
 				result = adapter.open().query(select + " FROM " + DBConstants.TAG_TABLENAME + " " + where + sortby);
 				break;
 			case TAG_SEARCH:
-				//queryBuilder.setTables(DBConstants.TAG_TABLENAME);
-				//queryBuilder.appendWhere(DBConstants.TAG_TABLE_NAME + " LIKE \"%" + uri.getLastPathSegment() + "%\"");
-				//Log.i(TAG, select + " FROM " + DBConstants.TAG_TABLENAME + " where name LIKE \"%" + uri.getLastPathSegment() + "%\"" + sortby);
 				result = adapter.open().query(select + " FROM " + DBConstants.TAG_TABLENAME + " where name LIKE \"%" + uri.getLastPathSegment() + "%\"" + sortby);
-				//Log.i(TAG, String.valueOf(result.getCount()));
 				break;
             case MISSIONS:
-                // Get missions that haven't yet expired
                 queryString = select.replace("_id",DBConstants.MEDIA_OBJECT_TABLENAME + "._id").replace("expires","owmission.expires").replace("submissions","owmission.submissions").replace("members","owmission.members") + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " JOIN " + "owmission" + " ON " + " owmission._id = owserverobject.mission where owmission.expires > '" + Constants.utc_formatter.format(new Date())+ "'";
                 if(sortby != null && sortby.trim().length() > 0)
                     queryString += " ORDER BY " + sortby;
-                //Log.i(TAG, String.format("Mission Query: %s", queryString));
                 result = adapter.open().query(queryString);
                 break;
 		}
