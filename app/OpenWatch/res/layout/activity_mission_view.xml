@@ -131,7 +131,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
                     android:layout_alignLeft="@id/title"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginLeft="10dp"
                     android:layout_marginBottom="15dp"
                     android:textStyle="italic"
                     android:layout_below="@id/title"
@@ -142,11 +142,14 @@
             android:layout_gravity="center"
             android:layout_below="@id/expiry"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp" >
 
             <Button
-                    android:layout_width="300dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
                     android:background="@drawable/green_button_bg"
                     android:fontFamily="sans-serif-light"
                     android:text="@string/join_mission"
@@ -159,8 +162,18 @@
                     android:shadowRadius=".1"
                     android:layout_centerHorizontal="true"/>
 
+        <LinearLayout
+                android:id="@+id/splitButtonContainer"
+                android:layout_below="@id/join_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="1.0">
+
             <Button
-                    android:layout_width="140dp"
+                    android:layout_width="0dp"
+                    android:layout_weight=".5"
+                    android:layout_marginRight="7dp"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
                     android:background="@drawable/grey_button_bg"
@@ -171,26 +184,28 @@
                     android:onClick="onMapButtonClick"
                     android:id="@+id/map_button"
                     android:enabled="false"
-                    android:layout_below="@+id/join_button"
-                    android:layout_alignLeft="@+id/join_button"
                     android:textSize="24sp"
+                    android:layout_gravity="bottom"
                     android:layout_marginTop="19dp"/>
 
             <Button
                     android:id="@+id/media_button"
+                    android:layout_marginLeft="5dp"
                     android:paddingRight="10dp"
-                    android:paddingLeft="5dp"
-                    android:layout_width="140dp"
+                    android:paddingLeft="7dp"
+                    android:layout_width="0dp"
+                    android:layout_weight=".5"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
                     android:drawableLeft="@drawable/saved_button"
                     android:drawablePadding="10dp"
+                    android:layout_gravity="bottom"
                     android:background="@drawable/grey_button_bg"
                     android:text="@string/view_media"
                     android:onClick="onMediaButtonClick"
-                    android:textSize="24sp"
-                    android:layout_alignBaseline="@+id/map_button"
-                    android:layout_alignRight="@+id/join_button"/>
+                    android:textSize="24sp"/>
+
+        </LinearLayout>
 
 
 
