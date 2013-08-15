@@ -34,10 +34,12 @@ import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.file.FileUtils;
 import org.ale.openwatch.http.OWServiceRequests;
 import org.ale.openwatch.model.OWUser;
+import org.ale.openwatch.twitter.TwitterUtils;
 import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -52,6 +54,7 @@ public class LoginActivity extends SherlockActivity {
 	private static final String TAG = "LoginActivity";
     private static final int SELECT_PHOTO = 100;
     private static final int TAKE_PHOTO = 101;
+    int model_id = 0;
 
 	// Values for mEmailView and password at the time of the login attempt.
 	private String mEmail;
@@ -63,6 +66,8 @@ public class LoginActivity extends SherlockActivity {
 	private View mLoginFormView;
 	private View mLoginStatusView;
 	private TextView mLoginStatusMessageView;
+
+    public File cameraPhotoLocation;
 
 	@Override
 	public void onCreate(Bundle icicle) {
@@ -118,17 +123,19 @@ public class LoginActivity extends SherlockActivity {
 				Constants.PROFILE_PREFS, MODE_PRIVATE);
 		if (profile.contains(Constants.EMAIL)) {
 			mEmailView.setText(profile.getString(Constants.EMAIL, ""));
+            if(profile.contains(Constants.INTERNAL_USER_ID)){
+                OWUser user = OWUser.objects(getApplicationContext(), OWUser.class).get(profile.getInt(Constants.INTERNAL_USER_ID,0));
+                model_id = user.getId();
+                if(user != null){
+                    OWUtils.loadProfilePicture(getApplicationContext(), user, ((ImageView) findViewById(R.id.user_thumbnail)));
+                }
+            }
 			if (profile.getBoolean(Constants.AUTHENTICATED, false)){
 				setViewsAsAuthenticated();
 				return;
 			}
 		}
-        if(profile.contains(Constants.INTERNAL_USER_ID)){
-            OWUser user = OWUser.objects(getApplicationContext(), OWUser.class).get(profile.getInt(Constants.INTERNAL_USER_ID,0));
-            if(user != null){
-                loadProfilePicture(user, ((ImageView) findViewById(R.id.user_thumbnail)));
-            }
-        }
+
 
         Bundle extras = getIntent().getExtras();
         if(extras != null && extras.containsKey("message")){
@@ -142,35 +149,18 @@ public class LoginActivity extends SherlockActivity {
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) { 
-	    super.onActivityResult(requestCode, resultCode, imageReturnedIntent); 
-	    
-	    switch(requestCode) { 
-	    case SELECT_PHOTO:
-	        if(resultCode == RESULT_OK){  
-	        	Uri selectedImage = imageReturnedIntent.getData();
-	            InputStream imageStream;
-	    		try {
-	    			Bitmap yourSelectedImage = FileUtils.decodeUri(getApplicationContext(), selectedImage, 100);
-	    			((ImageView)this.findViewById(R.id.user_thumbnail)).setImageBitmap(yourSelectedImage);
-	    			//TODO: Send thumbnail to server
-	    		} catch (FileNotFoundException e) {
-	    			e.printStackTrace();
-	    		}
-	            break;
-	        }
-	    case TAKE_PHOTO:
-	    	if(resultCode == RESULT_OK){
-	    		((ImageView)this.findViewById(R.id.user_thumbnail)).setImageBitmap((Bitmap)imageReturnedIntent.getExtras().get("data"));
-	            break;
-	    	}
-	    }
-	   
+	    super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+        if(cameraPhotoLocation != null){
+            OWUtils.handleSetUserAvatarResult(requestCode, resultCode, imageReturnedIntent, ((ImageView)this.findViewById(R.id.user_thumbnail)), this, OWUser.objects(getApplicationContext(), OWUser.class).get(model_id), cameraPhotoLocation.getAbsolutePath());
+            cameraPhotoLocation = null;
+        }
 	}
 
 	private void setViewsAsAuthenticated() {
 		((TextView) this.findViewById(R.id.login_state_message)).setText(getString(R.string.message_account_stored));
 		this.findViewById(R.id.login_state_message).setVisibility(View.VISIBLE);
 		this.findViewById(R.id.sign_in_button).setVisibility(View.GONE);
+        this.findViewById(R.id.profileImageAdd).setVisibility(View.GONE);
 		mEmailView.setEnabled(false);
 		mPasswordView.setVisibility(View.GONE);
 	}
@@ -184,6 +174,7 @@ public class LoginActivity extends SherlockActivity {
 	private void setViewsAsNotAuthenticated() {
 		this.findViewById(R.id.login_state_message).setVisibility(View.GONE);
 		this.findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
+        this.findViewById(R.id.profileImageAdd).setVisibility(View.VISIBLE);
 		mEmailView.setEnabled(true);
 		mPasswordView.setVisibility(View.VISIBLE);
 	}
@@ -517,30 +508,17 @@ public class LoginActivity extends SherlockActivity {
 		startActivity(i);
 	}
 
-    private void loadProfilePicture(OWUser user, final ImageView profileImage){
-        final int userId = user.getId();
-        final Context c = getApplicationContext();
-        if(user == null)
-            return;
-        if(user.thumbnail_url.get() != null && user.thumbnail_url.get().compareTo("") != 0){
-            ImageLoader.getInstance().displayImage(user.thumbnail_url.get(), profileImage);
+    public void getUserAvatarFromDevice(View v){
+        SharedPreferences profile = getSharedPreferences(
+                Constants.PROFILE_PREFS, MODE_PRIVATE);
+        if(profile.getBoolean(Constants.AUTHENTICATED, false)){
+            OWUtils.setUserAvatar(this, v, OWUtils.SELECT_PHOTO, OWUtils.TAKE_PHOTO, new OWUtils.TakePictureCallback() {
+                @Override
+                public void gotPotentialPictureLocation(File image) {
+                    cameraPhotoLocation = image;
+                }
+            });
         }
-
-        OWServiceRequests.syncOWUser(getApplicationContext(), user, new OWServiceRequests.RequestCallback() {
-            @Override
-            public void onFailure() {
-
-            }
-
-            @Override
-            public void onSuccess() {
-                String url = OWUser.objects(c, OWUser.class).get(userId).thumbnail_url.get();
-                if(url != null && url.compareTo("") != 0){
-                    ImageLoader.getInstance().displayImage(url, profileImage);
-                }else
-                    Log.i(TAG, "User has no thumbnail set");
-            }
-        });
     }
 
 }

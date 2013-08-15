@@ -65,9 +65,23 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
                 server_id = serverObject.server_id.get();
             }else if(extras.containsKey(Constants.SERVER_ID)){
                 server_id = extras.getInt(Constants.SERVER_ID);
-                serverObject = OWMission.getByServerId(getApplicationContext(), server_id);
+                serverObject = OWMission.getOWServerObjectByOWMissionServerId(getApplicationContext(), server_id);
                 if(serverObject != null)
                     model_id = serverObject.getId();
+                else{
+                    OWServiceRequests.updateOrCreateOWServerObject(getApplicationContext(), Constants.CONTENT_TYPE.MISSION, String.valueOf(server_id), "", new OWServiceRequests.RequestCallback() {
+                        @Override
+                        public void onFailure() {}
+
+                        @Override
+                        public void onSuccess() {
+                            OWServerObject serverObject = OWMission.getOWServerObjectByOWMissionServerId(getApplicationContext(), server_id);
+                            if(serverObject != null)
+                                populateViews(serverObject.getId(), getApplicationContext());
+                        }
+                    });
+                }
+
             }
 
             if(extras.containsKey("viewed_push") && serverObject != null){

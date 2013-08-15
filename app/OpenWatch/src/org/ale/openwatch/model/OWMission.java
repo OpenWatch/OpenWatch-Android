@@ -396,7 +396,7 @@ public class OWMission extends Model implements OWServerObjectInterface{
 		return CONTENT_TYPE.MISSION;
 	}
 
-    public static OWServerObject getByServerId(Context c, int serverId){
+    public static OWServerObject getOWServerObjectByOWMissionServerId(Context c, int serverId){
         Filter filter = new Filter();
         filter.is(DBConstants.SERVER_ID, serverId);
         filter.is(DBConstants.MEDIA_OBJECT_MISSION, "!=","NULL");

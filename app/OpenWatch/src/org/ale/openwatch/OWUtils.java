@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.*;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -41,6 +42,9 @@ import org.ale.openwatch.twitter.TwitterUtils;
 
 public class OWUtils {
     private static final String TAG = "OWUtils";
+
+    public static final int SELECT_PHOTO = 100;
+    public static final int TAKE_PHOTO = 101;
 	
 	public static String generateRecordingIdentifier()
 	{
@@ -382,6 +386,48 @@ public class OWUtils {
 
     }
 
+    public static void handleSetUserAvatarResult(int requestCode, int resultCode, Intent data, ImageView imageView, Activity act, OWUser u, String photoPath){
+        switch(requestCode){
+            case SELECT_PHOTO:
+                if(resultCode == Activity.RESULT_OK){
+                    Uri selectedImageUri = data.getData();
+                    //Log.i("selected_image_uri", selectedImageUri.toString());
+                    String path = FileUtils.getRealPathFromURI(act.getApplicationContext(), selectedImageUri);
+                    try{
+                        File imageFile = new File(path);
+                        OWServiceRequests.sendOWUserAvatar(act.getApplicationContext(), u, imageFile, null);
+                        OWUtils.removeUriFromImageCache(selectedImageUri.toString());
+                        Bitmap selectedImage = FileUtils.decodeUri(act.getApplicationContext(), selectedImageUri, 100);
+                        imageView.setImageBitmap(selectedImage);
+                    }catch(NullPointerException e){
+                        new AlertDialog.Builder(act)
+                                .setTitle(act.getString(R.string.cant_get_image))
+                                .setMessage(act.getString(R.string.cant_get_image_message))
+                                .setPositiveButton(act.getString(R.string.dialog_bummer), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .show();
+                    }catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                }
+            case TAKE_PHOTO:
+                if(resultCode == Activity.RESULT_OK){
+                    String imageFilePath = photoPath;
+                    if(!imageFilePath.contains("file://"))
+                        imageFilePath = "file://" + imageFilePath;
+                    OWUtils.removeUriFromImageCache(imageFilePath);
+                    ImageLoader.getInstance().displayImage(imageFilePath, imageView);
+                    OWServiceRequests.sendOWUserAvatar(act.getApplicationContext(), u, new File(photoPath), null);
+                    break;
+                }
+        }
+    }
+
     public static void goToLoginActivityWithMessage(Context c, String message){
         Intent i = new Intent(c, LoginActivity.class);
         i.putExtra("message", message);
@@ -445,6 +491,31 @@ public class OWUtils {
             OWApplication.user_data = c.getSharedPreferences(Constants.PROFILE_PREFS, c.MODE_PRIVATE).getAll();
         }
 
+    }
+
+    public static void loadProfilePicture(final Context c, OWUser user, final ImageView profileImage){
+        final int userId = user.getId();
+        if(user == null)
+            return;
+        if(user.thumbnail_url.get() != null && user.thumbnail_url.get().compareTo("") != 0){
+            ImageLoader.getInstance().displayImage(user.thumbnail_url.get(), profileImage);
+        }
+
+        OWServiceRequests.syncOWUser(c, user, new OWServiceRequests.RequestCallback() {
+            @Override
+            public void onFailure() {
+
+            }
+
+            @Override
+            public void onSuccess() {
+                String url = OWUser.objects(c, OWUser.class).get(userId).thumbnail_url.get();
+                if(url != null && url.compareTo("") != 0){
+                    ImageLoader.getInstance().displayImage(url, profileImage);
+                }else
+                    Log.i(TAG, "User has no thumbnail set");
+            }
+        });
     }
 
 }

@@ -14,7 +14,6 @@ import android.widget.*;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.facebook.model.GraphUser;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.fb.FBUtils;
@@ -27,7 +26,6 @@ import twitter4j.User;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 
 /**
  * Created by davidbrodsky on 7/10/13.
@@ -36,10 +34,7 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
 
     private static final String TAG = "FaceBookSherlockActivity";
 
-    private static final int SELECT_PHOTO = 100;
-    private static final int TAKE_PHOTO = 101;
-
-    ImageView profileImage;
+    ImageView profileImageView;
     TextView firstName;
     TextView lastName;
     TextView blurb;
@@ -63,7 +58,7 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
         firstName = (TextView) findViewById(R.id.firstName);
         lastName = (TextView) findViewById(R.id.lastName);
         blurb = (TextView) findViewById(R.id.bio);
-        profileImage = (ImageView) findViewById(R.id.profileImage);
+        profileImageView = (ImageView) findViewById(R.id.profileImage);
         twitterButton = (Button) findViewById(R.id.twitterButton);
         fbButton = (Button) findViewById(R.id.fbButton);
         agentToggle = (CheckBox) findViewById(R.id.agentToggle);
@@ -117,7 +112,7 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
     }
 
     public void getUserAvatarFromDevice(View v){
-        OWUtils.setUserAvatar(this, v, SELECT_PHOTO, TAKE_PHOTO, new OWUtils.TakePictureCallback() {
+        OWUtils.setUserAvatar(this, v, OWUtils.SELECT_PHOTO, OWUtils.TAKE_PHOTO, new OWUtils.TakePictureCallback() {
             @Override
             public void gotPotentialPictureLocation(File image) {
                 cameraPhotoLocation = image;
@@ -136,34 +131,7 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
             blurb.setText(user.blurb.get());
         agentToggle.setChecked(user.agent_applicant.get());
 
-        loadProfilePicture(user);
-    }
-
-
-    private void loadProfilePicture(OWUser user){
-        if(user == null)
-            user = getUser();
-        if(user.thumbnail_url.get() != null && user.thumbnail_url.get().compareTo("") != 0){
-            profileImageSet = true;
-            ImageLoader.getInstance().displayImage(user.thumbnail_url.get(), profileImage);
-        }
-
-        OWServiceRequests.syncOWUser(getApplicationContext(), user, new OWServiceRequests.RequestCallback() {
-            @Override
-            public void onFailure() {
-
-            }
-
-            @Override
-            public void onSuccess() {
-                String url = OWProfileActivity.this.getUser().thumbnail_url.get();
-                if(url != null && url.compareTo("") != 0){
-                    profileImageSet = true;
-                    ImageLoader.getInstance().displayImage(url, profileImage);
-                }else
-                    Log.i(TAG, "User has no thumbnail set");
-            }
-        });
+        OWUtils.loadProfilePicture(getApplicationContext(), user, profileImageView);
     }
 
     @Override
@@ -179,7 +147,7 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
                         // TODO: Download image, upload to OW
                         owUser.thumbnail_url.set(url);
 
-                        ImageLoader.getInstance().displayImage(url, profileImage);
+                        ImageLoader.getInstance().displayImage(url, profileImageView);
                         profileImageSet = true;
                     }
                     if((owUser.first_name.get() == null || owUser.first_name.get().compareTo("") == 0) && user.getFirstName() != null){
@@ -233,7 +201,7 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
                     }
                     if (user.thumbnail_url.get() == null || user.thumbnail_url.get().compareTo("") == 0) {
                         user.thumbnail_url.set(twitterUser.getProfileImageURLHttps());
-                        ImageLoader.getInstance().displayImage(twitterUser.getProfileImageURLHttps(), profileImage);
+                        ImageLoader.getInstance().displayImage(twitterUser.getProfileImageURLHttps(), profileImageView);
                         // TODO: Download Image, upload to OW
                     }
                     user.save(OWProfileActivity.this);
@@ -262,44 +230,8 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
                     Log.e(TAG, "onActivityResult did not provide Intent data with twitter oauth callback url");
                 }
                 break;
-            case SELECT_PHOTO:
-                if(resultCode == RESULT_OK){
-                    Uri selectedImageUri = data.getData();
-                    //Log.i("selected_image_uri", selectedImageUri.toString());
-                    String path = FileUtils.getRealPathFromURI(getApplicationContext(), selectedImageUri);
-                    try{
-                        File imageFile = new File(path);
-                        OWServiceRequests.sendOWUserAvatar(getApplicationContext(), getUser(), imageFile, null);
-                        OWUtils.removeUriFromImageCache(selectedImageUri.toString());
-                        Bitmap selectedImage = FileUtils.decodeUri(getApplicationContext(), selectedImageUri, 100);
-                        profileImage.setImageBitmap(selectedImage);
-                    }catch(NullPointerException e){
-                        new AlertDialog.Builder(OWProfileActivity.this)
-                                .setTitle(getString(R.string.cant_get_image))
-                                .setMessage(getString(R.string.cant_get_image_message))
-                                .setPositiveButton(getString(R.string.dialog_bummer), new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                })
-                                .show();
-                    }catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                }
-            case TAKE_PHOTO:
-                if(resultCode == RESULT_OK){
-                    String imageFilePath = OWProfileActivity.this.cameraPhotoLocation.getAbsolutePath();
-                    if(!imageFilePath.contains("file://"))
-                        imageFilePath = "file://" + imageFilePath;
-                    OWUtils.removeUriFromImageCache(imageFilePath);
-                    ImageLoader.getInstance().displayImage(imageFilePath, profileImage);
-                    OWServiceRequests.sendOWUserAvatar(getApplicationContext(), getUser(), new File(OWProfileActivity.this.cameraPhotoLocation.getAbsolutePath()), null);
-                    break;
-                }
         }
+        OWUtils.handleSetUserAvatarResult(requestCode, resultCode, data, profileImageView, this, getUser(), cameraPhotoLocation.getAbsolutePath());
 
     }
 

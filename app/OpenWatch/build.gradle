@@ -29,6 +29,15 @@ android {
         packageName 'org.ale.openwatch'
     }
 
+    buildTypes {
+        debug {
+
+        }
+        release {
+
+        }
+    }
+
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'

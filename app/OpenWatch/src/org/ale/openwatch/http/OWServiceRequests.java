@@ -546,6 +546,13 @@ public class OWServiceRequests {
 		else
 			return Constants.OW_API_URL + Constants.API_ENDPOINT_BY_CONTENT_TYPE.get(contentType) + "/" + object.getServerId(c) +"/";
 	}
+
+    private static String instanceEndpointForOWMediaObject(Context c, CONTENT_TYPE contentType, String serverIdOrUUID){
+        if(contentType == CONTENT_TYPE.VIDEO || contentType == CONTENT_TYPE.AUDIO || contentType == CONTENT_TYPE.PHOTO)
+            return Constants.OW_API_URL + Constants.API_ENDPOINT_BY_CONTENT_TYPE.get(contentType) + "/" + serverIdOrUUID +"/";
+        else
+            return Constants.OW_API_URL + Constants.API_ENDPOINT_BY_CONTENT_TYPE.get(contentType) + "/" + serverIdOrUUID +"/";
+    }
 	
 	private static String endpointForContentType(CONTENT_TYPE type){
 		return Constants.OW_API_URL + Constants.API_ENDPOINT_BY_CONTENT_TYPE.get(type) + "/";
@@ -730,6 +737,30 @@ public class OWServiceRequests {
 		Log.i(TAG, "Commencing Get Recording Meta: " + instanceEndpointForOWMediaObject(app_context, object) + http_get_string);
 		http_client.get(instanceEndpointForOWMediaObject(app_context, object) + http_get_string, response_handler);
 	}
+
+    public static void updateOrCreateOWServerObject(final Context app_context, CONTENT_TYPE contentType, String serverIdOrUUID, String http_get_string, final RequestCallback cb) {
+        JsonHttpResponseHandler response_handler = new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(JSONObject response) {
+                //Log.i(TAG, "flag object success " + response.toString());
+                try {
+                    String type = response.getString("type");
+                    if(type.compareTo(CONTENT_TYPE.MISSION.toString().toLowerCase()) == 0)
+                        OWMission.createOrUpdateOWMissionWithJson(app_context, response);
+                    // TODO: The rest
+                    if(cb != null)
+                        cb.onSuccess();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
+        if(http_get_string == null)
+            http_get_string = "";
+        Log.i(TAG, "Commencing Get Object Meta: " + instanceEndpointForOWMediaObject(app_context, contentType, serverIdOrUUID) + http_get_string);
+        http_client.get(instanceEndpointForOWMediaObject(app_context, contentType, serverIdOrUUID) + http_get_string, response_handler);
+    }
 
 	/**
 	 * Post recording data to server. object should be a child OW object. i.e: NOT OWServerObject

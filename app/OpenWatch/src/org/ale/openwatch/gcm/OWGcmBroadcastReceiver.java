@@ -13,6 +13,7 @@ import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import org.ale.openwatch.*;
 import org.ale.openwatch.constants.Constants;
+import org.ale.openwatch.database.DatabaseManager;
 import org.ale.openwatch.http.OWServiceRequests;
 import org.ale.openwatch.model.OWMission;
 import org.ale.openwatch.model.OWServerObject;
@@ -47,25 +48,45 @@ public class OWGcmBroadcastReceiver extends BroadcastReceiver {
 
     // Put the GCM message into a notification and post it.
     private void sendNotification(Bundle gcmData) {
+        DatabaseManager.registerModels(ctx);
         String msg = gcmData.getString("message");
         int missionId = 0;
         if(gcmData.containsKey("m"))
             missionId = Integer.parseInt(gcmData.getString("m"));
         mNotificationManager = (NotificationManager)
                 ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-
+        final int finalMissionServerId = missionId;
         Intent notificationIntent;
+        PendingIntent contentIntent;
         if(missionId > 0){
-            OWServerObject serverObject = OWMission.getByServerId(ctx, missionId);
-            OWServiceRequests.postMissionAction(ctx, serverObject, OWMission.ACTION.RECEIVED_PUSH);
+            OWServerObject serverObject = OWMission.getOWServerObjectByOWMissionServerId(ctx, missionId);
+            if(serverObject == null){
+                OWServiceRequests.updateOrCreateOWServerObject(ctx, Constants.CONTENT_TYPE.MISSION, String.valueOf(missionId), "", new OWServiceRequests.RequestCallback() {
+                    @Override
+                    public void onFailure() {}
+
+                    @Override
+                    public void onSuccess() {
+                        OWServerObject serverObject = OWMission.getOWServerObjectByOWMissionServerId(ctx, finalMissionServerId);
+                        if(serverObject != null){
+                            OWServiceRequests.postMissionAction(ctx, serverObject, OWMission.ACTION.RECEIVED_PUSH);
+                        }
+                    }
+                });
+            }
             notificationIntent  = new Intent(ctx, OWMissionViewActivity.class);
-            notificationIntent.putExtra(Constants.SERVER_ID, missionId);
+            notificationIntent.putExtra(Constants.SERVER_ID, finalMissionServerId);
             notificationIntent.putExtra("viewed_push", true);
-        }else
+            contentIntent = PendingIntent.getActivity(ctx, 0, notificationIntent, 0);
+        }else{
             notificationIntent  = new Intent(ctx, RecorderActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, notificationIntent, 0);
+            contentIntent = PendingIntent.getActivity(ctx, 0, notificationIntent, 0);
+        }
 
+        showNotificationWithContentIntent(ctx, mNotificationManager, msg, contentIntent);
+    }
 
+    private static void showNotificationWithContentIntent(Context ctx, NotificationManager notificationManager, String msg, PendingIntent contentIntent){
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(ctx)
                         .setSmallIcon(R.drawable.ic_ab_icon)
@@ -79,6 +100,6 @@ public class OWGcmBroadcastReceiver extends BroadcastReceiver {
                         .setContentText(msg);
 
         mBuilder.setContentIntent(contentIntent);
-        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+        notificationManager.notify(NOTIFICATION_ID, mBuilder.build());
     }
 }

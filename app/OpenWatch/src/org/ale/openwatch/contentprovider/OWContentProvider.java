@@ -206,7 +206,7 @@ public class OWContentProvider extends ContentProvider {
 				result = adapter.open().query(select + " FROM " + DBConstants.TAG_TABLENAME + " where name LIKE \"%" + uri.getLastPathSegment() + "%\"" + sortby);
 				break;
             case MISSIONS:
-                queryString = select.replace("_id",DBConstants.MEDIA_OBJECT_TABLENAME + "._id").replace("expires","owmission.expires").replace("submissions","owmission.submissions").replace("members","owmission.members") + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " JOIN " + "owmission" + " ON " + " owmission._id = owserverobject.mission where owmission.expires > '" + Constants.utc_formatter.format(new Date())+ "'";
+                queryString = select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " JOIN " + "owmission" + " ON " + " owmission._id = owserverobject.mission where owmission.expires > '" + Constants.utc_formatter.format(new Date())+ "'";
                 if(sortby != null && sortby.trim().length() > 0)
                     queryString += " ORDER BY " + sortby;
                 result = adapter.open().query(queryString);
