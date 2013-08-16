@@ -48,6 +48,7 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
     boolean firstNameSet = false;
     boolean lastNameSet = false;
     boolean blurbSet = false;
+    String lastProfileImageUrl;
 
     int model_id = -1;
 
@@ -131,7 +132,10 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
             blurb.setText(user.blurb.get());
         agentToggle.setChecked(user.agent_applicant.get());
 
-        OWUtils.loadProfilePicture(getApplicationContext(), user, profileImageView);
+        if(lastProfileImageUrl == null || lastProfileImageUrl.compareTo(user.thumbnail_url.get()) != 0){
+            OWUtils.loadProfilePicture(getApplicationContext(), user, profileImageView);
+            lastProfileImageUrl = user.thumbnail_url.get();
+        }
     }
 
     @Override

@@ -244,6 +244,9 @@
     <string name="select_mission">Attach to Mission</string>
     <string name="expires">Expires</string>
     <string name="share_mission">Share Mission</string>
+    <string name="about_yourself">Tell us about yourself!</string>
+    <string name="receive_alerts">Receive alerts for nearby events</string>
+    <string name="connect_a_social_account">Connect a social account to quickly complete your profile</string>
 
 
 </resources>

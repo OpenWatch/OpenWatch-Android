@@ -58,30 +58,34 @@
             android:layout_below="@+id/profileImage"
             android:fontFamily="sans-serif-light"
             android:layout_marginTop="10dp"
-            android:hint="Tell us about yourself!"
+            android:hint="@string/about_yourself"
             android:singleLine="false"
             android:layout_alignParentRight="true"
             android:layout_alignParentLeft="true"/>
 
 
+    <CheckBox
+            android:id="@+id/agentToggle"
+            android:layout_below="@id/bio"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
     <TextView
             android:id="@+id/agentText"
             android:layout_below="@id/bio"
             android:fontFamily="sans-serif-light"
+            android:layout_toLeftOf="@id/agentToggle"
+            android:layout_alignBaseline="@id/agentToggle"
             android:textSize="20sp"
+            android:layout_alignParentLeft="true"
             android:layout_marginTop="10dp"
             android:layout_marginRight="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Receive alerts for nearby events"/>
+            android:text="@string/receive_alerts"/>
 
-    <CheckBox
-            android:id="@+id/agentToggle"
-            android:layout_alignBaseline="@id/agentText"
-            android:layout_below="@id/bio"
-            android:layout_toRightOf="@id/agentText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
 
     <TextView
             android:id="@+id/socialTip"
@@ -90,7 +94,7 @@
             android:layout_below="@id/agentText"
             android:textColor="@color/text_light"
             android:layout_centerHorizontal="true"
-            android:text="Connect a social account to quickly complete your profile"
+            android:text="@string/connect_a_social_account"
             android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
