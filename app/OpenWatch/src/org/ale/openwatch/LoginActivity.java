@@ -160,7 +160,7 @@ public class LoginActivity extends SherlockActivity {
 		((TextView) this.findViewById(R.id.login_state_message)).setText(getString(R.string.message_account_stored));
 		this.findViewById(R.id.login_state_message).setVisibility(View.VISIBLE);
 		this.findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-        this.findViewById(R.id.profileImageAdd).setVisibility(View.GONE);
+        this.findViewById(R.id.profileImageAdd).setVisibility(View.VISIBLE);
 		mEmailView.setEnabled(false);
 		mPasswordView.setVisibility(View.GONE);
 	}
@@ -169,12 +169,13 @@ public class LoginActivity extends SherlockActivity {
         setViewsAsNotAuthenticated();
         this.findViewById(R.id.login_state_message).setVisibility(View.VISIBLE);
         ((TextView)this.findViewById(R.id.login_state_message)).setText(message);
+        this.findViewById(R.id.profileImageAdd).setVisibility(View.GONE);
     }
 
 	private void setViewsAsNotAuthenticated() {
 		this.findViewById(R.id.login_state_message).setVisibility(View.GONE);
 		this.findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
-        this.findViewById(R.id.profileImageAdd).setVisibility(View.VISIBLE);
+        this.findViewById(R.id.profileImageAdd).setVisibility(View.GONE);
 		mEmailView.setEnabled(true);
 		mPasswordView.setVisibility(View.VISIBLE);
 	}

@@ -2,6 +2,7 @@ package org.ale.openwatch.model;
 
 import android.content.Context;
 import android.util.Log;
+import com.orm.androrm.DatabaseAdapter;
 import com.orm.androrm.Model;
 import com.orm.androrm.field.*;
 
@@ -118,11 +119,13 @@ public class OWUser extends Model{
             this.tags.reset();
             JSONArray tag_array =  json.getJSONArray("tags");
             OWTag tag = null;
+            DatabaseAdapter.getInstance(c).beginTransaction();
             for(int x=0;x<tag_array.length();x++){
                 tag = OWTag.getOrCreateTagFromJson(c, tag_array.getJSONObject(x));
                 tag.save(c);
                 this.addTag(c, tag, false);
             }
+            DatabaseAdapter.getInstance(c).commitTransaction();
         } // end tags update
 			this.save(c);
 		} catch (JSONException e) {

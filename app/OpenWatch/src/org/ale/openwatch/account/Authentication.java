@@ -107,7 +107,6 @@ public class Authentication {
                         if(myself == null)
                             myself = new OWUser();
                         myself.updateWithJson(c, server_response);
-                        Log.i(TAG, "Created user in db with #tags: " + String.valueOf(myself.tags.get(c, myself).count()));
                         editor.putInt(Constants.INTERNAL_USER_ID, myself.getId());
                     }
                 } else {
@@ -116,6 +115,7 @@ public class Authentication {
                 }
                 editor.putString(Constants.EMAIL, expectedEmail); // save email even if login unsuccessful
                 editor.commit();
+                Log.i(TAG, "committetd sharedPrefs");
                 // TODO: stop using user_data
                 OWApplication.user_data = c.getSharedPreferences(Constants.PROFILE_PREFS, c.MODE_PRIVATE).getAll();
             } catch (JSONException e) {
