@@ -76,11 +76,12 @@ public class OWGcmBroadcastReceiver extends BroadcastReceiver {
             }
             notificationIntent  = new Intent(ctx, OWMissionViewActivity.class);
             notificationIntent.putExtra(Constants.SERVER_ID, finalMissionServerId);
+            Log.i("PUSH", "Bundling mission server_id " + String.valueOf(finalMissionServerId));
             notificationIntent.putExtra("viewed_push", true);
-            contentIntent = PendingIntent.getActivity(ctx, 0, notificationIntent, 0);
+            contentIntent = PendingIntent.getActivity(ctx, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         }else{
             notificationIntent  = new Intent(ctx, RecorderActivity.class);
-            contentIntent = PendingIntent.getActivity(ctx, 0, notificationIntent, 0);
+            contentIntent = PendingIntent.getActivity(ctx, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         }
 
         showNotificationWithContentIntent(ctx, mNotificationManager, msg, contentIntent);

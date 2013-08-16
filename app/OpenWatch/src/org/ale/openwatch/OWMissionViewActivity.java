@@ -44,7 +44,8 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
     private static int owphoto_id = -1;
     private static int owphoto_parent_id = -1;
 
-    private String missionTag;
+    String missionTag;
+    String lastBounty; // only animate bounty view if value changes
 
     Context c;
 
@@ -56,90 +57,9 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
         OWUtils.setReadingFontOnChildren((ViewGroup) findViewById(R.id.relativeLayout));
         this.getSupportActionBar().setTitle("");
 
-        try{
-            Bundle extras = getIntent().getExtras();
-            OWServerObject serverObject = null;
-            if(extras.containsKey(Constants.INTERNAL_DB_ID)){
-                model_id = extras.getInt(Constants.INTERNAL_DB_ID);
-                serverObject = OWServerObject.objects(this, OWServerObject.class).get(model_id);
-                server_id = serverObject.server_id.get();
-            }else if(extras.containsKey(Constants.SERVER_ID)){
-                server_id = extras.getInt(Constants.SERVER_ID);
-                serverObject = OWMission.getOWServerObjectByOWMissionServerId(getApplicationContext(), server_id);
-                if(serverObject != null)
-                    model_id = serverObject.getId();
-                else{
-                    OWServiceRequests.updateOrCreateOWServerObject(getApplicationContext(), Constants.CONTENT_TYPE.MISSION, String.valueOf(server_id), "", new OWServiceRequests.RequestCallback() {
-                        @Override
-                        public void onFailure() {}
+        processMissionFromIntent(getIntent());
 
-                        @Override
-                        public void onSuccess() {
-                            OWServerObject serverObject = OWMission.getOWServerObjectByOWMissionServerId(getApplicationContext(), server_id);
-                            if(serverObject != null)
-                                populateViews(serverObject.getId(), getApplicationContext());
-                        }
-                    });
-                }
-
-            }
-
-            if(extras.containsKey("viewed_push") && serverObject != null){
-                OWServiceRequests.postMissionAction(getApplicationContext(), serverObject, OWMission.ACTION.VIEWED_PUSH);
-            }
-
-            if( OWServerObject.objects(this, OWServerObject.class).get(model_id).mission.get(c) != null && OWServerObject.objects(this, OWServerObject.class).get(model_id).mission.get(c).body.get() != null){
-                populateViews(model_id, c);
-            } else if(OWServerObject.objects(this, OWServerObject.class).get(model_id).title.get() != null){
-                ((TextView)findViewById(R.id.title)).setText(OWServerObject.objects(this, OWServerObject.class).get(model_id).title.get());
-                //this.getSupportActionBar().setTitle(OWServerObject.objects(this, OWServerObject.class).get(model_id).title.get());
-                final Context c = this.c;
-                OWServiceRequests.getOWServerObjectMeta(c, serverObject, "", new JsonHttpResponseHandler(){
-                    @Override
-                    public void onSuccess(JSONObject response) {
-                        Log.i(TAG, " success : " + response.toString());
-
-                        if (OWServerObject.objects(c, OWServerObject.class).get(model_id).mission.get(c).body.get() != null) {
-                            OWMissionViewActivity.this.populateViews(model_id, c);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Throwable e, String response) {
-                        Log.i(TAG, " failure: " + response);
-
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        Log.i(TAG, " finish: ");
-
-                    }
-
-                });
-            }
-            OWServiceRequests.increaseHitCount(c, server_id , model_id, serverObject.getContentType(c), Constants.HIT_TYPE.VIEW);
-            OWServiceRequests.postMissionAction(getApplicationContext(), serverObject, OWMission.ACTION.VIEWED_MISSION);
-        }catch(Exception e){
-            Log.e(TAG, "Error retrieving model");
-            e.printStackTrace();
-        }
     }
-
-/*
-    public void cameraButtonClick(View v){
-        String uuid = OWUtils.generateRecordingIdentifier();
-        OWPhoto photo  = OWPhoto.initializeOWPhoto(getApplicationContext(), uuid);
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        takePictureIntent.putExtra("uuid", uuid);
-        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.parse(photo.filepath.get()));
-        owphoto_id = photo.getId();
-        owphoto_parent_id = photo.media_object.get(getApplicationContext()).getId();
-        Log.i("MainActivity-cameraButtonClick", "get owphoto_id: " + String.valueOf(owphoto_id));
-        DeviceLocation.setOWServerObjectLocation(getApplicationContext(), owphoto_parent_id, false);
-        startActivityForResult(takePictureIntent, Constants.CAMERA_ACTION_CODE);
-    }
-*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -267,17 +187,18 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
         if(mission.media_url.get() != null)
             ImageLoader.getInstance().displayImage(mission.media_url.get(), (ImageView) findViewById(R.id.missionImage));
 
-        boolean bounty = false;
+        lastBounty =  ((TextView) this.findViewById(R.id.bounty)).getText().toString();
+        String thisBounty = null;
         if(mission.usd.get() != null && mission.usd.get() != 0.0){
-            ((TextView) this.findViewById(R.id.bounty)).setText(Constants.USD + String.format("%.2f",mission.usd.get()));
-            bounty = true;
+            thisBounty = Constants.USD + String.format("%.2f",mission.usd.get());
         } else if(mission.usd.get() != null && mission.karma.get() != 0.0){
-            ((TextView) this.findViewById(R.id.bounty)).setText(String.format("%.0f",mission.karma.get()) + " " + getString(R.string.karma));
-            bounty = true;
+            thisBounty = String.format("%.0f",mission.karma.get()) + " " + getString(R.string.karma);
         }
-        if(bounty){
+        if(thisBounty != null && (lastBounty == null || (lastBounty.compareTo(thisBounty) != 0) ) ){
             this.findViewById(R.id.bounty).startAnimation(AnimationUtils.loadAnimation(c, R.anim.slide_left));
             this.findViewById(R.id.bounty).setVisibility(View.VISIBLE);
+            ((TextView) this.findViewById(R.id.bounty)).setText(thisBounty);
+            lastBounty = thisBounty;
         }
 
         if(mission.lat.get() != null && mission.lat.get() != 0){
@@ -339,5 +260,85 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
                         dialog.dismiss();
                     }
                 }).show();
+    }
+
+    @Override
+    protected void onNewIntent (Intent intent){
+        processMissionFromIntent(intent);
+    }
+
+    private void processMissionFromIntent(Intent intent){
+        model_id = 0;
+        server_id = 0;
+        Bundle extras = intent.getExtras();
+        OWServerObject serverObject = null;
+        final boolean viewedPush = extras.getBoolean("viewed_push", false);
+        boolean beganMissionUpdate = false;
+        if(extras.containsKey(Constants.INTERNAL_DB_ID)){
+            model_id = extras.getInt(Constants.INTERNAL_DB_ID);
+            serverObject = OWServerObject.objects(this, OWServerObject.class).get(model_id);
+            server_id = serverObject.server_id.get();
+        }else if(extras.containsKey(Constants.SERVER_ID)){
+            server_id = extras.getInt(Constants.SERVER_ID);
+            Log.i("PUSH", "Got bundled mission server_id " + String.valueOf(server_id));
+            serverObject = OWMission.getOWServerObjectByOWMissionServerId(getApplicationContext(), server_id);
+            if(serverObject != null)
+                model_id = serverObject.getId();
+            else{
+                OWServiceRequests.updateOrCreateOWServerObject(getApplicationContext(), Constants.CONTENT_TYPE.MISSION, String.valueOf(server_id), "", new OWServiceRequests.RequestCallback() {
+                    @Override
+                    public void onFailure() {}
+
+                    @Override
+                    public void onSuccess() {
+                        OWServerObject serverObject = OWMission.getOWServerObjectByOWMissionServerId(getApplicationContext(), server_id);
+                        if(serverObject != null){
+                            populateViews(serverObject.getId(), getApplicationContext());
+                            if(viewedPush)
+                                OWServiceRequests.postMissionAction(getApplicationContext(), serverObject, OWMission.ACTION.VIEWED_PUSH);
+                        }
+                    }
+                });
+                beganMissionUpdate = true;
+            }
+
+        }
+
+        if(extras.containsKey("viewed_push") && serverObject != null){
+            OWServiceRequests.postMissionAction(getApplicationContext(), serverObject, OWMission.ACTION.VIEWED_PUSH);
+        }
+
+        if(serverObject == null)
+            return;
+
+        if( serverObject.mission.get(c) != null && serverObject.mission.get(c).body.get() != null){
+            populateViews(model_id, c);
+        } else if(serverObject.title.get() != null){
+            ((TextView)findViewById(R.id.title)).setText(serverObject.title.get());
+        }
+
+        if(!beganMissionUpdate){
+            final Context c = this.c;
+            OWServiceRequests.getOWServerObjectMeta(c, serverObject, "", new JsonHttpResponseHandler(){
+                @Override
+                public void onSuccess(JSONObject response) {
+                    Log.i(TAG, " success : " + response.toString());
+
+                    if (OWServerObject.objects(c, OWServerObject.class).get(model_id).mission.get(c).body.get() != null) {
+                        OWMissionViewActivity.this.populateViews(model_id, c);
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable e, String response) {Log.i(TAG, " failure: " + response);}
+
+                @Override
+                public void onFinish() {}
+
+            });
+        }
+
+        OWServiceRequests.increaseHitCount(c, server_id , model_id, serverObject.getContentType(c), Constants.HIT_TYPE.VIEW);
+        OWServiceRequests.postMissionAction(getApplicationContext(), serverObject, OWMission.ACTION.VIEWED_MISSION);
     }
 }
