@@ -30,6 +30,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
+            android:maxLines="2"
+            android:ellipsize="marquee"
             android:fontFamily="sans-serif-light"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_toRightOf="@id/thumbnail"

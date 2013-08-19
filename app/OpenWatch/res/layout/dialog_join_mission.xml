@@ -12,8 +12,9 @@
             android:layout_marginBottom="15dp"
             android:fontFamily="sans-serif-light"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="You joined a Mission!"
+            android:text="@string/you_joined_mission"
             android:layout_alignParentTop="true"
+            android:textSize="24sp"
             android:layout_centerHorizontal="true"/>
 
     <ImageView
@@ -29,7 +30,7 @@
             android:layout_marginLeft="15dp"
             android:fontFamily="sans-serif-light"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Videos you record will be automatically tagged until you decide otherwise."
+            android:text="@string/mission_videos_will_be_tagged"
             android:id="@+id/body"
             android:layout_toRightOf="@id/hash"
             android:layout_alignTop="@id/hash"
@@ -51,7 +52,7 @@
             android:layout_marginTop="15dp"
             android:layout_marginLeft="15dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="You will receive push alerts as this story develops."
+            android:text="@string/mission_receive_push_alert"
             android:id="@+id/body2"
             android:layout_below="@+id/body"
             android:layout_toRightOf="@id/alert"

@@ -16,7 +16,9 @@ package org.ale.openwatch;
  * limitations under the License.
  */
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -265,6 +267,18 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
             }
             mTitleIndicator.setCurrentItem(mTitleToTabId.get(feedType.toString().toLowerCase() ));
             return true;
+        }
+
+        if(intent.getBooleanExtra(Constants.VICTORY, false)){
+            View v = getLayoutInflater().inflate(R.layout.dialog_victory, null);
+            new AlertDialog.Builder(this)
+                    .setView(v)
+                    .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
         }
 
         return false;

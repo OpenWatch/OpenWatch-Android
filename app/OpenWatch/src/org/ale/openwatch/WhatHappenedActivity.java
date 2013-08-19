@@ -320,8 +320,9 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
         prefs.putInt(Constants.LAST_MISSION_ID, missionId);
         prefs.putString(Constants.LAST_MISSION_DATE, Constants.utc_formatter.format(new Date()));
         prefs.commit();
-        Intent feedFragmentIntent = new Intent(getApplicationContext(), FeedFragmentActivity.class);
-        feedFragmentIntent.putExtra(Constants.FEED_TYPE, Constants.OWFeedType.USER);
+        Intent feedFragmentIntent = new Intent(WhatHappenedActivity.this, FeedFragmentActivity.class);
+        feedFragmentIntent.putExtra(Constants.VICTORY, true);
+        feedFragmentIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         feedFragmentIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(feedFragmentIntent);
     }

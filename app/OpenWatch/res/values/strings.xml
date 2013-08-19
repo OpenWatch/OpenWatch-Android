@@ -245,8 +245,12 @@
     <string name="expires">Expires</string>
     <string name="share_mission">Share Mission</string>
     <string name="about_yourself">Tell us about yourself!</string>
-    <string name="receive_alerts">Receive alerts for nearby events</string>
+    <string name="receive_alerts">Alert me when new missions become available</string>
     <string name="connect_a_social_account">Connect a social account to quickly complete your profile</string>
+    <string name="you_joined_mission">You joined a Mission!</string>
+    <string name="mission_videos_will_be_tagged">Videos you record will be automatically tagged until you decide otherwise.</string>
+    <string name="mission_receive_push_alert">You will receive push alerts as this story develops.</string>
+    <string name="your_video_live">Your video is live! Thanks for contributing!</string>
 
 
 </resources>
