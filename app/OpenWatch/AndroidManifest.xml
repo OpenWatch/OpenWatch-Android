@@ -112,16 +112,19 @@
             android:name="org.ale.openwatch.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName="org.ale.openwatch.FeedFragmentActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="org.ale.openwatch.FeedFragmentActivity" />
         </activity>
         <activity
             android:name="org.ale.openwatch.OWPhotoReviewActivity"
             android:label="@string/title_activity_picture_review"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
-            android:parentActivityName="org.ale.openwatch.MainActivity" >
+            android:parentActivityName="org.ale.openwatch.FeedFragmentActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.ale.openwatch.MainActivity" />
+                android:value="org.ale.openwatch.FeedFragmentActivity" />
         </activity>
         <activity
             android:name="org.ale.openwatch.OWInvestigationViewActivity"
