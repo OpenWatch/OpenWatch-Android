@@ -69,6 +69,8 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
     boolean didTweet = false;
     boolean didFBShare = false;
 
+    boolean didClickDone = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -113,6 +115,8 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
                 }
             }
         });
+
+        didClickDone = false;
 
 		Log.i(TAG, "onCreate");
 		try{
@@ -317,7 +321,9 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 	}
 
     public void onDoneButtonClick(View v){
-
+        if(didClickDone)
+            return;
+        didClickDone = true;
         try {
             JSONObject analyticsPayload = new JSONObject()
                     .put(Analytics.OW_PUBLIC, owToggle.isChecked())
@@ -332,10 +338,10 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
         prefs.putInt(Constants.LAST_MISSION_ID, missionId);
         prefs.putString(Constants.LAST_MISSION_DATE, Constants.utc_formatter.format(new Date()));
         prefs.commit();
-        Intent feedFragmentIntent = new Intent(WhatHappenedActivity.this, FeedFragmentActivity.class);
+        Intent feedFragmentIntent = new Intent(this, FeedFragmentActivity.class);
         feedFragmentIntent.putExtra(Constants.VICTORY, true);
-        feedFragmentIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        feedFragmentIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        feedFragmentIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        feedFragmentIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(feedFragmentIntent);
     }
 
