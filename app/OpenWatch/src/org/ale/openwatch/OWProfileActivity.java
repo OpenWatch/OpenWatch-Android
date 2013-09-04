@@ -1,11 +1,7 @@
 package org.ale.openwatch;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
@@ -18,14 +14,12 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.fb.FBUtils;
 import org.ale.openwatch.fb.FaceBookSherlockActivity;
-import org.ale.openwatch.file.FileUtils;
 import org.ale.openwatch.http.OWServiceRequests;
 import org.ale.openwatch.model.OWUser;
 import org.ale.openwatch.twitter.TwitterUtils;
 import twitter4j.User;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 
 /**
  * Created by davidbrodsky on 7/10/13.
@@ -217,7 +211,6 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         switch(requestCode) {
             case TwitterUtils.TWITTER_RESULT:
                 TwitterUtils.TwitterAuthCallback cb = new TwitterUtils.TwitterAuthCallback() {
@@ -234,9 +227,11 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
                     Log.e(TAG, "onActivityResult did not provide Intent data with twitter oauth callback url");
                 }
                 break;
+            case OWUtils.SELECT_PHOTO:
+            case OWUtils.TAKE_PHOTO:
+                OWUtils.handleSetUserAvatarResult(requestCode, resultCode, data, profileImageView, this, getUser(), cameraPhotoLocation.getAbsolutePath());
+                break;
         }
-        OWUtils.handleSetUserAvatarResult(requestCode, resultCode, data, profileImageView, this, getUser(), cameraPhotoLocation.getAbsolutePath());
-
     }
 
     @Override
