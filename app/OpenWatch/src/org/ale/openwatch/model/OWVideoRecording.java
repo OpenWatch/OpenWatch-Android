@@ -5,15 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 import com.orm.androrm.*;
-import com.orm.androrm.field.BooleanField;
 import com.orm.androrm.field.CharField;
 import com.orm.androrm.field.DoubleField;
 import com.orm.androrm.field.ForeignKeyField;
-
-import com.orm.androrm.migration.Migrator;
 import org.ale.openwatch.constants.Constants;
-import org.ale.openwatch.constants.DBConstants;
 import org.ale.openwatch.constants.Constants.CONTENT_TYPE;
+import org.ale.openwatch.constants.DBConstants;
 import org.ale.openwatch.contentprovider.OWContentProvider;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -307,6 +304,21 @@ public class OWVideoRecording extends Model implements OWServerObjectInterface{
 		}
 		return json_obj;
 	}
+
+    public JSONObject toMediaServerJsonObject(Context app_context) {
+        JSONObject json = toJsonObject(app_context);
+
+            try {
+                if (creation_time.get() != null)
+                    json.put("recording_start", creation_time.get());
+                if(local.get(app_context) != null && local.get(app_context).recording_end_time.get() != null){
+                    json.put("recording_end", local.get(app_context).recording_end_time.get());
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        return json;
+    }
 	
 	@Override
 	public boolean save(Context context) {

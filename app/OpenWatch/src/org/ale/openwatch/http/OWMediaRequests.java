@@ -146,7 +146,7 @@ public class OWMediaRequests {
 	public static void updateMeta(Context c, String upload_token,
 			OWVideoRecording recording) {
 		AsyncHttpClient client = HttpClient.setupAsyncHttpClient(c);
-        StringEntity params = Utils.JSONObjectToStringEntity(recording.toJsonObject(c));
+        StringEntity params = Utils.JSONObjectToStringEntity(recording.toMediaServerJsonObject(c));
 		Log.i(TAG, "updateMeta: " + params.toString());
 		String url = setupMediaURL(Constants.OW_MEDIA_UPDATE_META,
 				upload_token, recording.uuid.get());
