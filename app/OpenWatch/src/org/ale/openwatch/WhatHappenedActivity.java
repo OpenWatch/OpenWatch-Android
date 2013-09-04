@@ -34,6 +34,7 @@ import org.ale.openwatch.model.OWServerObject;
 import org.ale.openwatch.model.OWVideoRecording;
 import org.ale.openwatch.share.Share;
 import org.ale.openwatch.twitter.TwitterUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
@@ -316,6 +317,17 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 	}
 
     public void onDoneButtonClick(View v){
+
+        try {
+            JSONObject analyticsPayload = new JSONObject()
+                    .put(Analytics.OW_PUBLIC, owToggle.isChecked())
+                    .put(Analytics.TO_FB, fbToggle.isChecked())
+                    .put(Analytics.TO_TWITTER, twitterToggle.isChecked());
+            Analytics.trackEvent(getApplicationContext(), Analytics.POST_VIDEO, analyticsPayload);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         SharedPreferences.Editor prefs = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE).edit();
         prefs.putInt(Constants.LAST_MISSION_ID, missionId);
         prefs.putString(Constants.LAST_MISSION_DATE, Constants.utc_formatter.format(new Date()));

@@ -160,10 +160,13 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
             // and report expires time for mission, not last edited
         }
         try{
+            view_cache.lastEdited.setVisibility(View.VISIBLE);
             if(cursor.isNull(view_cache.mission_col) && !cursor.isNull(view_cache.last_edited_col))
                 view_cache.lastEdited.setText(DateUtils.getRelativeTimeSpanString(Constants.utc_formatter.parse(cursor.getString(view_cache.last_edited_col)).getTime()) );
-            else if(!cursor.isNull(view_cache.mission_col)){
+            else if(!cursor.isNull(view_cache.mission_col) && !cursor.isNull(view_cache.expires_col)){
                 view_cache.lastEdited.setText("Expires " + DateUtils.getRelativeTimeSpanString(Constants.utc_formatter.parse(cursor.getString(view_cache.expires_col)).getTime()) );
+            }else{
+                view_cache.lastEdited.setVisibility(View.INVISIBLE);
             }
         } catch (ParseException e) {
             e.printStackTrace();

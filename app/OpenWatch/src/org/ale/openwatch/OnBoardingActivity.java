@@ -11,6 +11,8 @@ import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.gcm.GCMUtils;
 import org.ale.openwatch.http.OWServiceRequests;
 import org.ale.openwatch.model.OWUser;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 /**
@@ -100,6 +102,13 @@ import org.ale.openwatch.model.OWUser;
                 OWServiceRequests.syncOWUser(getApplicationContext(), user);
             }
             */
+            try {
+                JSONObject analyticsPayload = new JSONObject()
+                        .put(Analytics.AGENT, agent_applicant);
+                Analytics.trackEvent(getApplicationContext(), Analytics.ONBOARD_COMPLETE, null);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             Intent i = new Intent(OnBoardingActivity.this, FeedFragmentActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                     | Intent.FLAG_ACTIVITY_CLEAR_TASK);

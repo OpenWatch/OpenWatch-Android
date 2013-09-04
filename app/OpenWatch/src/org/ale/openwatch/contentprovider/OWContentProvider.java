@@ -187,6 +187,8 @@ public class OWContentProvider extends ContentProvider {
 				if(uri.getLastPathSegment().compareTo(OWFeedType.MISSION.toString().toLowerCase()) == 0)
                     queryString += " JOIN owmission ON " + DBConstants.MEDIA_OBJECT_TABLENAME + "." + DBConstants.MEDIA_OBJECT_MISSION + " = " + "owmission._id" ;
                 query =  queryString + " WHERE " + DBConstants.FEED_MEDIA_OBJ_TABLENAME + "." + DBConstants.FEED_TABLENAME + "=" + String.valueOf(feed_id);
+                if(uri.getLastPathSegment().compareTo(OWFeedType.MISSION.toString().toLowerCase()) == 0)
+                    query += " AND owmission.expires > '" + Constants.utc_formatter.format(new Date()) + "'";
 				//Log.i(TAG, "Query: " + query);
                 Log.i(TAG, String.format("getFeedItems query: %s",query));
 				result = adapter.open().query(query);
@@ -212,13 +214,8 @@ public class OWContentProvider extends ContentProvider {
                 result = adapter.open().query(queryString);
                 break;
 		}
-		
-		// adapter is not closed!
-		//adapter.close();
-		// Make sure that potential listeners are getting notified
+
 		if(result != null){
-			//Log.i(TAG, String.valueOf(result.getCount()));
-			//Log.i("URI" + uri.getLastPathSegment(), " CP set notificationUri: " + uri.toString());
 			result.setNotificationUri(getContext().getContentResolver(), uri);
 		}
 		return result;

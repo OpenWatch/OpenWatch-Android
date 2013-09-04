@@ -1,6 +1,5 @@
 package org.ale.openwatch;
 
-import org.ale.openwatch.R;
 import android.app.AlertDialog;
 import android.content.*;
 import android.net.Uri;
@@ -18,7 +17,6 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.http.OWServiceRequests;
 import org.ale.openwatch.http.Utils;
@@ -146,7 +144,7 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
             server_id = server_obj.getServerId(getApplicationContext());
         if(!(server_id > 0) ){
             Log.i(TAG, "photo does not have a valid server_id. Cannot present share dialog");
-            Intent i = new Intent(OWPhotoReviewActivity.this, MainActivity.class);
+            Intent i = new Intent(OWPhotoReviewActivity.this, FeedFragmentActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
             this.finish();
@@ -176,7 +174,7 @@ public class OWPhotoReviewActivity extends SherlockFragmentActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                Intent i = new Intent(OWPhotoReviewActivity.this, MainActivity.class);
+                Intent i = new Intent(OWPhotoReviewActivity.this, FeedFragmentActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);
 

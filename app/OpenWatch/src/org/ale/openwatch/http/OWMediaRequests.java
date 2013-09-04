@@ -52,6 +52,7 @@ public class OWMediaRequests {
 			String recording_start) {
 		AsyncHttpClient client = HttpClient.setupAsyncHttpClient(c);
 		RequestParams params = new RequestParams();
+        Log.i("REC_START", recording_start);
 		params.put(Constants.OW_REC_START, recording_start);
 		String url = setupMediaURL(Constants.OW_MEDIA_START, upload_token,
 				recording_id);

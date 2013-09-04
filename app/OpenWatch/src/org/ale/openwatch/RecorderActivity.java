@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.hardware.Camera;
-import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -20,7 +19,6 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.file.FileUtils;
 import org.ale.openwatch.http.OWMediaRequests;
@@ -97,10 +95,9 @@ public class RecorderActivity extends SherlockActivity implements
                                 DeviceLocation.setOWServerObjectLocation(c, media_object_id , true);
 								//DeviceLocation.setRecordingLocation(c, public_upload_token, owrecording_id, true);
 							}
-	    	        		
+
 	    	        	});
-	    	        	
-	        			OWMediaRequests.start(c, public_upload_token, recording_uuid, command[1]);
+	        			OWMediaRequests.start(c, public_upload_token, recording_uuid, Constants.utc_formatter.format(new Date()));
         			}else
         				Log.e(TAG, "recording_uuid is null on send start signal!");
                 }

@@ -8,6 +8,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 
 import com.orm.androrm.Filter;
 import com.orm.androrm.QuerySet;
+import org.ale.openwatch.Analytics;
 import org.ale.openwatch.OWApplication;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
@@ -41,6 +42,7 @@ public class Authentication {
      *
      */
     public static void setUserAuthenticated(Context c, JSONObject server_response, String expected_email) {
+        Analytics.identifyUser(c, expected_email);
         new SetAuthedTask(c, expected_email).execute(server_response);
     }
 

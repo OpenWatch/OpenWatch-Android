@@ -4,16 +4,12 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -27,21 +23,15 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.gson.Gson;
 import com.loopj.android.http.JsonHttpResponseHandler;
-
-import com.nostra13.universalimageloader.core.ImageLoader;
 import org.ale.openwatch.account.Authentication;
 import org.ale.openwatch.constants.Constants;
-import org.ale.openwatch.file.FileUtils;
 import org.ale.openwatch.http.OWServiceRequests;
 import org.ale.openwatch.model.OWUser;
-import org.ale.openwatch.twitter.TwitterUtils;
 import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
@@ -105,6 +95,8 @@ public class LoginActivity extends SherlockActivity {
 						attemptLogin();
 					}
 				});
+
+        Analytics.trackEvent(getApplicationContext(), Analytics.VIEWING_LOGIN, null);
 
 	}
 
@@ -300,6 +292,7 @@ public class LoginActivity extends SherlockActivity {
 	 * mPassword are pre-populated from the EditText fields
 	 */
 	public void UserLogin() {
+        Analytics.trackEvent(getApplicationContext(), Analytics.LOGIN_ATTEMPT, null);
 		JsonHttpResponseHandler response_handler = new JsonHttpResponseHandler() {
 			private static final String TAG = "OWServiceRequests";
 
@@ -316,7 +309,7 @@ public class LoginActivity extends SherlockActivity {
 
 					if ((Boolean) response.getBoolean(Constants.OW_SUCCESS) == true) {
 						Log.i(TAG, "OW login success: " + response.toString());
-
+                        Analytics.trackEvent(LoginActivity.this.getApplicationContext(), Analytics.LOGIN_EXISTING, null);
 						returnToMainActivity(true);
 						return;
 					} else {
@@ -348,6 +341,8 @@ public class LoginActivity extends SherlockActivity {
 									.setNeutralButton(R.string.dialog_ok,
 											defaultDialogOnClickListener)
 									.show();
+                            Analytics.identifyUser(LoginActivity.this.getApplicationContext(), mEmail);
+                            Analytics.trackEvent(LoginActivity.this.getApplicationContext(), Analytics.LOGIN_FAILED, null);
 							break;
 						}
 						showProgress(false);
@@ -397,7 +392,7 @@ public class LoginActivity extends SherlockActivity {
 						Log.i(TAG, "OW signup success: " + response.toString());
 						// Set authed preference
 						Authentication.setUserAuthenticated(getApplicationContext(), response, mEmail);
-
+                        Analytics.trackEvent(LoginActivity.this.getApplicationContext(), Analytics.LOGIN_NEW, null);
 						toWelcomeActivity();
 						return;
 					} else {

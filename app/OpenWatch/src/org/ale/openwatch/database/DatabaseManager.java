@@ -1,46 +1,20 @@
 package org.ale.openwatch.database;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 import com.orm.androrm.DatabaseAdapter;
 import com.orm.androrm.Model;
+import org.ale.openwatch.constants.DBConstants;
+import org.ale.openwatch.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.ale.openwatch.constants.Constants;
-import org.ale.openwatch.constants.DBConstants;
-import org.ale.openwatch.model.*;
 
 public class DatabaseManager {
 	
 	private static final String TAG = "DatabaseManager";
 	
-	private static final boolean DEBUG = false;
 	private static boolean models_registered = false; // ensure this is only called once per app launch
-	
-	public static void setupDB(final Context app_context){
-		
-		registerModels(app_context);
-		
-		if(DEBUG){
-			testDB(app_context);
-		}
-		
-		new Thread(new Runnable(){
-			@Override
-			public void run(){
-				SharedPreferences profile = app_context.getSharedPreferences(Constants.PROFILE_PREFS, 0);
-				SharedPreferences.Editor editor = profile.edit();
-				editor.putBoolean(Constants.DB_READY, true);
-				editor.commit();
-				Log.i(TAG, "db ready");
-				
-			}
-		}).start();
-		
-	}
 	
 	public static void registerModels(Context app_context){
 		if(models_registered)

@@ -21,14 +21,10 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.VideoView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.MemoryCacheUtil;
 import org.ale.openwatch.constants.Constants;
@@ -39,6 +35,12 @@ import org.ale.openwatch.http.OWServiceRequests;
 import org.ale.openwatch.model.OWServerObject;
 import org.ale.openwatch.model.OWUser;
 import org.ale.openwatch.twitter.TwitterUtils;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 public class OWUtils {
     private static final String TAG = "OWUtils";
@@ -243,7 +245,7 @@ public class OWUtils {
                 MediaController mc = new MediaController(
                         c);
                 videoView.setMediaController(mc);
-                mc.setAnchorView(videoView);
+                mc.setAnchorView((View) videoView.getParent());
                 */
 
                 videoView.requestFocus();

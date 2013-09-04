@@ -719,6 +719,7 @@ public class OWServiceRequests {
                         Constants.PROFILE_PREFS, app_context.MODE_PRIVATE);
                 if(profile.contains(Constants.EMAIL) && profile.getBoolean(Constants.AUTHENTICATED, false)){
                     // Auth cookie wrong / missing. Prompt user to re-login
+                    Analytics.trackEvent(app_context, Analytics.SESSION_EXPIRED, null);
                     Authentication.logOut(app_context);
                     OWUtils.goToLoginActivityWithMessage(app_context, app_context.getString(R.string.message_account_expired));
                 }

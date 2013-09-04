@@ -123,6 +123,8 @@ public class FancyLoginActivity extends SherlockActivity {
                         return false;
                     }
                 });
+
+        Analytics.trackEvent(getApplicationContext(), Analytics.VIEWING_FANCY_LOGIN, null);
     }
 
     @SuppressLint("NewApi")
@@ -353,6 +355,8 @@ public class FancyLoginActivity extends SherlockActivity {
      * mPassword are pre-populated from the EditText fields
      */
     public void UserLogin() {
+        Log.i("OWServiceRequests", "Commencing User Login from FLA");
+        Analytics.trackEvent(getApplicationContext(), Analytics.LOGIN_ATTEMPT, null);
         JsonHttpResponseHandler response_handler = new JsonHttpResponseHandler() {
             private static final String TAG = "OWServiceRequests";
 
@@ -365,11 +369,11 @@ public class FancyLoginActivity extends SherlockActivity {
             public void onSuccess(JSONObject response) {
                 Log.i("OWServiceRequests", "OW login success: " + response.toString());
                 try {
+                    Analytics.trackEvent(FancyLoginActivity.this.getApplicationContext(), Analytics.LOGIN_EXISTING, null);
                     Authentication.setUserAuthenticated(getApplicationContext(), response, mEmail);
 
                     if ((Boolean) response.getBoolean(Constants.OW_SUCCESS) == true) {
                         Log.i(TAG, "OW login success: " + response.toString());
-
                         navigateToOnBoardingActivity(true);
                         return;
                     } else {
@@ -390,6 +394,8 @@ public class FancyLoginActivity extends SherlockActivity {
                                         .setNeutralButton(R.string.dialog_ok,
                                                 defaultDialogOnClickListener)
                                         .show();
+                                Analytics.identifyUser(FancyLoginActivity.this.getApplicationContext(), mEmail);
+                                Analytics.trackEvent(FancyLoginActivity.this.getApplicationContext(), Analytics.LOGIN_FAILED, null);
                                 break;
                         }
                         showProgress(false);
@@ -488,10 +494,12 @@ public class FancyLoginActivity extends SherlockActivity {
 
     private void quickUserSignup(){
         final String email = mEmail;
+        Analytics.trackEvent(getApplicationContext(), Analytics.LOGIN_ATTEMPT, null);
         OWServiceRequests.quickUserSignup(getApplicationContext(), mEmail, new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(JSONObject response) {
                 Log.i(TAG, "OW quicksignup success: " + response.toString());
+                Analytics.trackEvent(FancyLoginActivity.this.getApplicationContext(), Analytics.LOGIN_NEW, null);
                 Authentication.setUserAuthenticated(getApplicationContext(), response, email);
                 navigateToOnBoardingActivity(true);
             }

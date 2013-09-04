@@ -25,7 +25,10 @@ import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.*;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -38,18 +41,20 @@ import com.bugsense.trace.BugSenseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.orm.androrm.QuerySet;
 import com.viewpagerindicator.TitlePageIndicator;
-
-import java.util.*;
-
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.Constants.OWFeedType;
-import org.ale.openwatch.database.DatabaseManager;
 import org.ale.openwatch.feeds.RemoteRecordingsListFragment;
 import org.ale.openwatch.gcm.GCMUtils;
-import org.ale.openwatch.http.OWServiceRequests;
 import org.ale.openwatch.model.OWTag;
 import org.ale.openwatch.model.OWUser;
+import org.json.JSONException;
+import org.json.JSONObject;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 import static org.ale.openwatch.OWUtils.checkUserStatus;
 
@@ -191,6 +196,13 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
 
             @Override
             public void onPageSelected(int i) {
+                try {
+                    JSONObject analyticsPayload = new JSONObject().put(Analytics.FEED,FeedFragmentActivity.this.mTabsAdapter.getPageTitle(i));
+                    Analytics.trackEvent(getApplicationContext(), Analytics.SELECTED_FEED, analyticsPayload);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
                 if(mPullToRefreshAttacher != null)
                     mPullToRefreshAttacher.setRefreshComplete();
                 Log.i(TAG, String.format("page %d selected", i));
@@ -860,6 +872,12 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
             videoViewHostCell = null;
         }
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        Analytics.cleanUp();
+        super.onDestroy();
     }
 
 }
