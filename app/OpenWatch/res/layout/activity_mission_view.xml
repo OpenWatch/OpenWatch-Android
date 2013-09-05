@@ -123,7 +123,7 @@
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
                     android:gravity="bottom"
-                    android:textSize="32sp"/>
+                    android:textSize="28sp"/>
 
             <TextView
                     android:id="@+id/expiry"
@@ -132,7 +132,6 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
                     android:layout_alignLeft="@id/title"
-                    android:layout_marginLeft="15dp"
                     android:layout_marginBottom="15dp"
                     android:textStyle="italic"
                     android:layout_below="@id/title"
