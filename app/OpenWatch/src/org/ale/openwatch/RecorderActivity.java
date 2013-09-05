@@ -66,6 +66,7 @@ public class RecorderActivity extends SherlockActivity implements
 	String recording_end;
 
     private final int VIDEO_WIDTH = 720;
+    private final int SUPPORT_VIDEO_WIDTH = 640; // if 720x480 fails go with 640x480
     private final int VIDEO_HEIGHT = 480;
 	
 	class MediaSignalTask extends AsyncTask<String, Void, Void> {
@@ -392,7 +393,18 @@ public class RecorderActivity extends SherlockActivity implements
             mCamera.setPreviewDisplay(mCameraPreview.getHolder());
             mCamera.startPreview();
         } catch (IOException e) {
+            showCameraError();
             e.printStackTrace();
+        } catch(RuntimeException e){
+            try{
+            Camera.Parameters parameters = mCamera.getParameters();
+            parameters.setPreviewSize(SUPPORT_VIDEO_WIDTH, VIDEO_HEIGHT);
+            mCamera.setParameters(parameters);
+            mCamera.setPreviewDisplay(mCameraPreview.getHolder());
+            mCamera.startPreview();
+            }catch(IOException e2){
+                showCameraError();
+            }
         }
 
     }
