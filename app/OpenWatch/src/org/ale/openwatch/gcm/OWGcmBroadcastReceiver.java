@@ -11,9 +11,9 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import org.ale.openwatch.FeedFragmentActivity;
 import org.ale.openwatch.OWMissionViewActivity;
 import org.ale.openwatch.R;
-import org.ale.openwatch.RecorderActivity;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.database.DatabaseManager;
 import org.ale.openwatch.http.OWServiceRequests;
@@ -80,11 +80,10 @@ public class OWGcmBroadcastReceiver extends BroadcastReceiver {
             }
             notificationIntent  = new Intent(ctx, OWMissionViewActivity.class);
             notificationIntent.putExtra(Constants.SERVER_ID, finalMissionServerId);
-            Log.i("PUSH", "Bundling mission server_id " + String.valueOf(finalMissionServerId));
             notificationIntent.putExtra("viewed_push", true);
             contentIntent = PendingIntent.getActivity(ctx, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         }else{
-            notificationIntent  = new Intent(ctx, RecorderActivity.class);
+            notificationIntent  = new Intent(ctx, FeedFragmentActivity.class);
             contentIntent = PendingIntent.getActivity(ctx, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         }
 
