@@ -7,10 +7,8 @@ import android.text.format.DateUtils;
 import android.text.util.Linkify;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import org.ale.openwatch.R;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
 
@@ -51,7 +49,7 @@ public class OWMissionAdapter extends SimpleCursorAdapter {
             view_cache.mission_col = cursor.getColumnIndexOrThrow(DBConstants.MEDIA_OBJECT_MISSION);
             view_cache.title_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_TITLE);
             view_cache.thumbnail_col = cursor.getColumnIndexOrThrow(DBConstants.RECORDINGS_TABLE_THUMB_URL);
-            view_cache.expires_col = cursor.getColumnIndexOrThrow(DBConstants.EXPIRES); // TODO: "owmission.expires"?
+            view_cache.expires_col = cursor.getColumnIndexOrThrow(DBConstants.EXPIRES);
             view_cache._id_col = cursor.getColumnIndexOrThrow(DBConstants.ID);
             view.setTag(R.id.list_item_cache, view_cache);
 

@@ -1,24 +1,21 @@
 package org.ale.openwatch.feeds;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.format.DateUtils;
 import android.text.util.Linkify;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import org.ale.openwatch.R;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.constants.DBConstants;
 
-import android.content.Context;
-import android.database.Cursor;
-import android.support.v4.widget.SimpleCursorAdapter;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-import com.nostra13.universalimageloader.core.ImageLoader;
-
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -140,8 +137,8 @@ public class OWMediaObjectAdapter extends SimpleCursorAdapter {
         }else if(!cursor.isNull(view_cache.mission_col)){
             //view_cache.typeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.mission_icon));
             view_cache.playButton.setVisibility(View.GONE);
-            view_cache.userThumbnail.setVisibility(View.GONE);
-            view_cache.username.setVisibility(View.GONE);
+            //view_cache.userThumbnail.setVisibility(View.GONE);
+            //view_cache.username.setVisibility(View.GONE);
             view_cache.iconContainer.setVisibility(View.VISIBLE);
             view_cache.iconContainer.bringToFront();
             view_cache.members.bringToFront();
