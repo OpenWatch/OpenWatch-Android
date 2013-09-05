@@ -11,7 +11,9 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import org.ale.openwatch.*;
+import org.ale.openwatch.OWMissionViewActivity;
+import org.ale.openwatch.R;
+import org.ale.openwatch.RecorderActivity;
 import org.ale.openwatch.constants.Constants;
 import org.ale.openwatch.database.DatabaseManager;
 import org.ale.openwatch.http.OWServiceRequests;
@@ -73,6 +75,8 @@ public class OWGcmBroadcastReceiver extends BroadcastReceiver {
                         }
                     }
                 });
+            }else{
+                OWServiceRequests.postMissionAction(ctx, serverObject, OWMission.ACTION.RECEIVED_PUSH);
             }
             notificationIntent  = new Intent(ctx, OWMissionViewActivity.class);
             notificationIntent.putExtra(Constants.SERVER_ID, finalMissionServerId);

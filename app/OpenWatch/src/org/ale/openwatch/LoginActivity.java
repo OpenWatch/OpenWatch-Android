@@ -341,8 +341,8 @@ public class LoginActivity extends SherlockActivity {
 									.setNeutralButton(R.string.dialog_ok,
 											defaultDialogOnClickListener)
 									.show();
-                            Analytics.identifyUser(LoginActivity.this.getApplicationContext(), mEmail);
-                            Analytics.trackEvent(LoginActivity.this.getApplicationContext(), Analytics.LOGIN_FAILED, null);
+                            JSONObject analyticsPayload = new JSONObject().put("email", mEmail);
+                            Analytics.trackEvent(LoginActivity.this.getApplicationContext(), Analytics.LOGIN_FAILED, analyticsPayload);
 							break;
 						}
 						showProgress(false);

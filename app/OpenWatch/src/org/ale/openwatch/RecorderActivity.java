@@ -177,6 +177,8 @@ public class RecorderActivity extends SherlockActivity implements
         });
 
 		c = this;
+
+        Analytics.trackEvent(getApplicationContext(), Analytics.SHOWED_RECORDING_SCREEN);
 	}
 
 	@Override
@@ -292,17 +294,21 @@ public class RecorderActivity extends SherlockActivity implements
 
                 // inform the user that recording has started
                 is_recording = true;
+                Analytics.trackEvent(getApplicationContext(), Analytics.STARTED_RECORDING);
             } else {
             	Log.e(TAG, "failed to start recording");
                 // prepare didn't work, release the camera
                 releaseMediaRecorder();
                 // inform user
+                Analytics.trackEvent(getApplicationContext(), Analytics.FAILED_TO_START_RECORDING);
             }
 			Log.d(TAG, "startRecording()");
 		} catch (Exception e) {
+            Analytics.trackEvent(getApplicationContext(), Analytics.FAILED_TO_START_RECORDING);
 			Log.e(TAG, "failed to start recording");
 			e.printStackTrace();
 		}
+
 	}
 	
 	/**
@@ -322,7 +328,9 @@ public class RecorderActivity extends SherlockActivity implements
                 mCamera.lock();
                 // Make sure the media file is finalized before syncing.
                 new MediaSignalTask().execute("hq", output_filename);
+                Analytics.trackEvent(getApplicationContext(), Analytics.STOPPED_RECORDING);
             }catch( NullPointerException e){
+                Analytics.trackEvent(getApplicationContext(), Analytics.FAILED_TO_STOP_RECORDING);
                 Log.i(TAG, "mMediaRecorder was null on stop recording. figure this out");
             }
 			Intent i = new Intent(RecorderActivity.this, WhatHappenedActivity.class);

@@ -326,9 +326,9 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
         didClickDone = true;
         try {
             JSONObject analyticsPayload = new JSONObject()
-                    .put(Analytics.OW_PUBLIC, owToggle.isChecked())
-                    .put(Analytics.TO_FB, fbToggle.isChecked())
-                    .put(Analytics.TO_TWITTER, twitterToggle.isChecked());
+                    .put(Analytics.ow_public, owToggle.isChecked())
+                    .put(Analytics.to_fb, fbToggle.isChecked())
+                    .put(Analytics.to_twitter, twitterToggle.isChecked());
             Analytics.trackEvent(getApplicationContext(), Analytics.POST_VIDEO, analyticsPayload);
         } catch (JSONException e) {
             e.printStackTrace();

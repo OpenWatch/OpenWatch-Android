@@ -42,7 +42,11 @@ public class Authentication {
      *
      */
     public static void setUserAuthenticated(Context c, JSONObject server_response, String expected_email) {
-        Analytics.identifyUser(c, expected_email);
+        try {
+            Analytics.identifyUser(c, String.valueOf(server_response.getInt(DBConstants.USER_SERVER_ID)));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         new SetAuthedTask(c, expected_email).execute(server_response);
     }
 

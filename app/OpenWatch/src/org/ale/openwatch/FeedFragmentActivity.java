@@ -150,12 +150,10 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
             mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
         }else{
             // set default tab to Top Stories
-            mTitleIndicator.setCurrentItem(1);
+            mTitleIndicator.setCurrentItem(2);
         }
         
         onCreateWon = true;
-
-        // Drawer
 
         ListView mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
@@ -197,7 +195,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
             @Override
             public void onPageSelected(int i) {
                 try {
-                    JSONObject analyticsPayload = new JSONObject().put(Analytics.FEED,FeedFragmentActivity.this.mTabsAdapter.getPageTitle(i));
+                    JSONObject analyticsPayload = new JSONObject().put(Analytics.feed,FeedFragmentActivity.this.mTabsAdapter.getPageTitle(i));
                     Analytics.trackEvent(getApplicationContext(), Analytics.SELECTED_FEED, analyticsPayload);
                 } catch (JSONException e) {
                     e.printStackTrace();

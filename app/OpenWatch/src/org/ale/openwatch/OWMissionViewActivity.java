@@ -27,6 +27,7 @@ import org.ale.openwatch.http.OWServiceRequests;
 import org.ale.openwatch.model.OWMission;
 import org.ale.openwatch.model.OWServerObject;
 import org.ale.openwatch.share.Share;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.ParseException;
@@ -113,7 +114,7 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
         return super.onOptionsItemSelected(item);
     }
 
-    public final boolean testJoinDialog = true;
+    public final boolean testJoinDialog = false;
     public void onJoinButtonClick(View v){
         OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
         OWMission mission = serverObject.mission.get(getApplicationContext());
@@ -121,7 +122,6 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
             mission.joined.set(null);
         }else{
             mission.joined.set(Constants.utc_formatter.format(new Date()));
-
             SharedPreferences prefs = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
             if(testJoinDialog || !prefs.getBoolean(Constants.JOINED_FIRST_MISSION, false)){
                 showJoinedFirstMissionDialog();
@@ -139,14 +139,23 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
 
     private OWMission.ACTION setJoinMissionButtonWithMission(OWMission mission){
         OWMission.ACTION action;
+        String analyticsEvent = null;
         if(mission.joined.get() != null && mission.joined.get().length() > 0){
             action = OWMission.ACTION.JOINED;
             findViewById(R.id.join_button).setBackgroundResource(R.drawable.red_button_bg);
             ((TextView) findViewById(R.id.join_button)).setText(getString(R.string.leave_mission));
+            analyticsEvent = Analytics.JOINED_MISSION;
         }else{
             action = OWMission.ACTION.LEFT;
             findViewById(R.id.join_button).setBackgroundResource(R.drawable.green_button_bg);
             ((TextView) findViewById(R.id.join_button)).setText(getString(R.string.join_mission));
+            analyticsEvent = Analytics.LEFT_MISSION;
+        }
+        try {
+            JSONObject analyticsPayload = new JSONObject().put(Analytics.mission, server_id);
+            Analytics.trackEvent(getApplicationContext(), analyticsEvent, analyticsPayload);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
         return action;
     }
@@ -282,9 +291,11 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
             server_id = extras.getInt(Constants.SERVER_ID);
             Log.i("PUSH", "Got bundled mission server_id " + String.valueOf(server_id));
             serverObject = OWMission.getOWServerObjectByOWMissionServerId(getApplicationContext(), server_id);
-            if(serverObject != null)
+            if(serverObject != null){
                 model_id = serverObject.getId();
-            else{
+                if(viewedPush)
+                    onViewedMissionFromPushAlert();
+            }else{
                 OWServiceRequests.updateOrCreateOWServerObject(getApplicationContext(), Constants.CONTENT_TYPE.MISSION, String.valueOf(server_id), "", new OWServiceRequests.RequestCallback() {
                     @Override
                     public void onFailure() {}
@@ -295,17 +306,13 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
                         if(serverObject != null){
                             populateViews(serverObject.getId(), getApplicationContext());
                             if(viewedPush)
-                                OWServiceRequests.postMissionAction(getApplicationContext(), serverObject, OWMission.ACTION.VIEWED_PUSH);
+                                onViewedMissionFromPushAlert();
                         }
                     }
                 });
                 beganMissionUpdate = true;
             }
 
-        }
-
-        if(extras.containsKey("viewed_push") && serverObject != null){
-            OWServiceRequests.postMissionAction(getApplicationContext(), serverObject, OWMission.ACTION.VIEWED_PUSH);
         }
 
         if(serverObject == null)
@@ -337,8 +344,31 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
 
             });
         }
+        onViewedMission();
 
+    }
+
+    private void onViewedMissionFromPushAlert(){
+        OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
+        if(serverObject != null)
+            OWServiceRequests.postMissionAction(getApplicationContext(), serverObject, OWMission.ACTION.VIEWED_PUSH);
+        try {
+            JSONObject analyticsPayload = new JSONObject().put(Analytics.mission, server_id);
+            Analytics.trackEvent(getApplicationContext(), Analytics.VIEWED_MISSION_PUSH, analyticsPayload);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void onViewedMission(){
+        OWServerObject serverObject = OWServerObject.objects(getApplicationContext(), OWServerObject.class).get(model_id);
         OWServiceRequests.increaseHitCount(c, server_id , model_id, serverObject.getContentType(c), Constants.HIT_TYPE.VIEW);
         OWServiceRequests.postMissionAction(getApplicationContext(), serverObject, OWMission.ACTION.VIEWED_MISSION);
+        try {
+            JSONObject analyticsPayload = new JSONObject().put(Analytics.mission, server_id);
+            Analytics.trackEvent(getApplicationContext(), Analytics.VIEWED_MISSION, analyticsPayload);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

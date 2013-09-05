@@ -225,6 +225,7 @@ public class FancyLoginActivity extends SherlockActivity {
     }
 
     public void onForgotPasswordClick(View v){
+        Analytics.trackEvent(getApplicationContext(), Analytics.FORGOT_PASSWORD, null);
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.OW_URL + Constants.PASSWORD_RESET_ENDPOINT));
         startActivity(browserIntent);
     }
@@ -255,6 +256,7 @@ public class FancyLoginActivity extends SherlockActivity {
                         quickUserSignup();
                     }else if(response.getBoolean("available") == false){
                         // Collect password and login account
+                        Analytics.trackEvent(getApplicationContext(), Analytics.LOGIN_PROGRESS, null);
                         showPasswordField();
                     }
                 } catch (JSONException e) {
@@ -394,8 +396,8 @@ public class FancyLoginActivity extends SherlockActivity {
                                         .setNeutralButton(R.string.dialog_ok,
                                                 defaultDialogOnClickListener)
                                         .show();
-                                Analytics.identifyUser(FancyLoginActivity.this.getApplicationContext(), mEmail);
-                                Analytics.trackEvent(FancyLoginActivity.this.getApplicationContext(), Analytics.LOGIN_FAILED, null);
+                                JSONObject analyticsPayload = new JSONObject().put("email", mEmail);
+                                Analytics.trackEvent(FancyLoginActivity.this.getApplicationContext(), Analytics.LOGIN_FAILED, analyticsPayload);
                                 break;
                         }
                         showProgress(false);

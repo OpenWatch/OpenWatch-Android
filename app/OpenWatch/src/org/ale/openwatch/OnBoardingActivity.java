@@ -104,7 +104,7 @@ import org.json.JSONObject;
             */
             try {
                 JSONObject analyticsPayload = new JSONObject()
-                        .put(Analytics.AGENT, agent_applicant);
+                        .put(Analytics.agent, agent_applicant);
                 Analytics.trackEvent(getApplicationContext(), Analytics.ONBOARD_COMPLETE, analyticsPayload);
             } catch (JSONException e) {
                 e.printStackTrace();
