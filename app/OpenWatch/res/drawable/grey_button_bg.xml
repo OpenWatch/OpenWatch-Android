@@ -4,7 +4,7 @@
 
     <!-- disabled -->
     <item android:state_enabled="false"><shape>
-        <solid android:color="#ffd5d5d8"/>
+        <solid android:color="@android:color/transparent"/>
         <!--<gradient android:angle="270" android:endColor="#c1cdc3" android:startColor="#d6e2d8" />-->
         <stroke android:color="#ffd3cbc9" android:width="1dp"/>
         <corners android:radius="8dp" />

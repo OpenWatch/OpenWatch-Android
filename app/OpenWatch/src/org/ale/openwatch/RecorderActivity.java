@@ -406,7 +406,6 @@ public class RecorderActivity extends SherlockActivity implements
                 showCameraError();
             }
         }
-
     }
 
 	private boolean h263Fallback = false;
