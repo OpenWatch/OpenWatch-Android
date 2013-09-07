@@ -138,17 +138,25 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
     }
 
     private OWMission.ACTION setJoinMissionButtonWithMission(OWMission mission){
+        int missionMembers = 0;
+        try{
+            missionMembers = Integer.parseInt(((TextView) findViewById(R.id.members)).getText().toString());
+        }catch(NumberFormatException e){}
+
         OWMission.ACTION action;
         String analyticsEvent = null;
         if(mission.joined.get() != null && mission.joined.get().length() > 0){
             action = OWMission.ACTION.JOINED;
             findViewById(R.id.join_button).setBackgroundResource(R.drawable.red_button_bg);
             ((TextView) findViewById(R.id.join_button)).setText(getString(R.string.leave_mission));
+            ((TextView) findViewById(R.id.members)).setText(String.valueOf(missionMembers+1));
             analyticsEvent = Analytics.JOINED_MISSION;
         }else{
             action = OWMission.ACTION.LEFT;
             findViewById(R.id.join_button).setBackgroundResource(R.drawable.green_button_bg);
             ((TextView) findViewById(R.id.join_button)).setText(getString(R.string.join_mission));
+            if(missionMembers != 0)
+                ((TextView) findViewById(R.id.members)).setText(String.valueOf(missionMembers-1));
             analyticsEvent = Analytics.LEFT_MISSION;
         }
         try {
