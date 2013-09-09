@@ -349,11 +349,13 @@ public  class RemoteRecordingsListFragment extends ListFragment
             @Override
             public void onPrepared(ViewGroup parent) {
                 Log.i(TAG, "onPrepared");
-                //parent.findViewById(R.id.videoProgress).setVisibility(View.GONE);
-                //progressBar.setVisibility(View.GONE);
-                parent.removeView(parent.findViewById(R.id.videoProgress));
-                if(Build.VERSION.SDK_INT >= 11)
-                    parentActivity.videoView.setAlpha(1);
+                parentActivity.videoViewParent.removeView(parentActivity.videoViewParent.findViewById(R.id.videoProgress));
+                if(parentActivity.textureView != null){
+                    parentActivity.textureView.bringToFront();
+                    //parentActivity.videoViewParent.findViewById(R.id.thumbnail).setVisibility(View.INVISIBLE);
+                }else if(parentActivity.videoView != null)
+                    parentActivity.textureView.bringToFront();
+                //parent.removeView(parent.findViewById(R.id.videoProgress));
             }
 
             @Override
@@ -411,31 +413,32 @@ public  class RemoteRecordingsListFragment extends ListFragment
         		Intent i = null;
         		switch(server_object.getContentType(getActivity().getApplicationContext())){
         		case INVESTIGATION:
-        			//TODO: InvestigationViewActivity
         			i = new Intent(this.getActivity(), OWInvestigationViewActivity.class);
         			break;
         		case VIDEO:
                     // play video inline
-                    v.findViewById(R.id.playButton).setVisibility(View.GONE);
-
-                    parentActivity.removeVideoView(); // remove prior VideoView if it exists
-
-                    LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(parentActivity.LAYOUT_INFLATER_SERVICE);
-                    //videoViewParent = (ViewGroup) v;
-                    parentActivity.videoViewHostCell = (ViewGroup) v;
-                    parentActivity.videoViewParent = (ViewGroup) layoutInflater.inflate(R.layout.feed_video_view, (ViewGroup) v, true);
-                    parentActivity.videoView = (VideoView) parentActivity.videoViewParent.findViewById(R.id.videoView);
-
-                    if(Build.VERSION.SDK_INT >= 11)
-                        parentActivity.videoView.setAlpha(0);
-                    parentActivity.progressBar = (ProgressBar) parentActivity.videoViewParent.findViewById(R.id.videoProgress);
-                    parentActivity.progressBar.setVisibility(View.VISIBLE);
-
-                    //Log.i(TAG, progressBar.toString());
-                    //RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)videoView.getLayoutParams();
                     String url = ((OWVideoRecording) server_object.getChildObject(getActivity().getApplicationContext())).getMediaFilepath(getActivity().getApplicationContext());
-                    OWUtils.setupVideoView(getActivity(), parentActivity.videoView, url, videoViewCallback, parentActivity.progressBar);
-                    Log.i(TAG, "created VideoView");
+                    v.findViewById(R.id.playButton).setVisibility(View.GONE);
+                    LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(parentActivity.LAYOUT_INFLATER_SERVICE);
+                    parentActivity.removeVideoView(); // remove prior VideoView if it exists
+                    parentActivity.videoViewHostCell = (ViewGroup) v;
+
+                    if(Build.VERSION.SDK_INT < 14){
+                        parentActivity.videoViewParent = (ViewGroup) layoutInflater.inflate(R.layout.feed_video_view, (ViewGroup) v, true);
+                        parentActivity.videoView = (VideoView) parentActivity.videoViewParent.findViewById(R.id.videoView);
+                        parentActivity.progressBar = (ProgressBar) parentActivity.videoViewParent.findViewById(R.id.videoProgress);
+                        parentActivity.progressBar.setVisibility(View.VISIBLE);
+                        OWUtils.setupVideoView(getActivity(), parentActivity.videoView, url, videoViewCallback, parentActivity.progressBar);
+                    }else{
+                        Log.i("TextureView", "inflate");
+                        parentActivity.videoViewParent = (ViewGroup) layoutInflater.inflate(R.layout.feed_texture_view, (ViewGroup) v, true);
+                        parentActivity.progressBar = (ProgressBar) parentActivity.videoViewParent.findViewById(R.id.videoProgress);
+                        parentActivity.progressBar.setVisibility(View.VISIBLE);
+                        parentActivity.textureView = (TextureView) parentActivity.videoViewParent.findViewById(R.id.textureView);
+                        parentActivity.textureView.setSurfaceTextureListener(new OWUtils.VideoTextureListener(url, parentActivity.progressBar, videoViewCallback));
+                        parentActivity.textureView.setOnTouchListener(OWUtils.textureOnTouchListener);
+
+                    }
                     parentActivity.videoViewListIndex = position;
         			break;
                 case AUDIO:

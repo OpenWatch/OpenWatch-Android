@@ -72,6 +72,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     int nextPagerViewId;
 
     public VideoView videoView;
+    public TextureView textureView;
     public ProgressBar progressBar;
     public ViewGroup videoViewParent;
     public ViewGroup videoViewHostCell;
@@ -855,17 +856,23 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     }
 
     public void removeVideoView(){
-        if(videoViewParent != null && videoViewHostCell != null && videoView != null){
-            if(videoView.isPlaying())
+        if(videoViewParent != null && videoViewHostCell != null && (videoView != null || textureView != null)){
+            if(videoView != null && videoView.isPlaying()){
                 videoView.stopPlayback();
+                videoViewParent.removeView(videoView);
+                videoView = null;
+            }else if(textureView != null && OWUtils.mediaPlayer.isPlaying()){
+                OWUtils.mediaPlayer.stop();
+                videoViewParent.removeView(textureView);
+                textureView = null;
+            }
             Log.i(TAG, "removing videoView");
 
-            videoViewParent.removeView(videoView);
+
             videoViewHostCell.removeView(videoViewParent);
             videoViewHostCell.findViewById(R.id.thumbnail).setVisibility(View.VISIBLE);
             videoViewHostCell.findViewById(R.id.playButton).setVisibility(View.VISIBLE);
             videoViewHostCell.findViewById(R.id.playButton).bringToFront();
-            videoView = null;
             videoViewParent = null;
             videoViewHostCell = null;
         }

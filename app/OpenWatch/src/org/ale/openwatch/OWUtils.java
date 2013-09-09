@@ -1,5 +1,6 @@
 package org.ale.openwatch;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -11,20 +12,17 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.SurfaceTexture;
 import android.graphics.Typeface;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.VideoView;
+import android.view.*;
+import android.widget.*;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.MemoryCacheUtil;
 import org.ale.openwatch.constants.Constants;
@@ -38,6 +36,7 @@ import org.ale.openwatch.twitter.TwitterUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -148,7 +147,7 @@ public class OWUtils {
         public void onError(ViewGroup parent);
     }
 
-    public static View.OnTouchListener videoOnClickListener = new View.OnTouchListener() {
+    public static View.OnTouchListener videoOnTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
 
@@ -168,7 +167,7 @@ public class OWUtils {
     };
 
     /**
-     * Setup a VideoView. Context c should not be an Activity Context for showing AlertDialogs
+     * Setup a VideoView. Context c is used for showing AlertDialogs, so cannot be an ApplicationContext
      * @param c
      * @param videoView
      * @param filepath
@@ -249,7 +248,7 @@ public class OWUtils {
                 */
 
                 videoView.requestFocus();
-                videoView.setOnTouchListener(videoOnClickListener);
+                videoView.setOnTouchListener(videoOnTouchListener);
                 videoView.start();
                 //((ViewGroup) videoView.getParent()).findViewById(R.id.videoProgress).setVisibility(View.GONE);
                 progressBar.setVisibility(View.GONE);
@@ -264,7 +263,7 @@ public class OWUtils {
                         //video_view.setLayoutParams( new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 
                         videoView.requestFocus();
-                        videoView.setOnTouchListener(videoOnClickListener);
+                        videoView.setOnTouchListener(videoOnTouchListener);
                         videoView.start();
                         progressBar.setVisibility(View.GONE);
                         //((ViewGroup) videoView.getParent()).findViewById(R.id.videoProgress).setVisibility(View.GONE);
@@ -287,6 +286,96 @@ public class OWUtils {
         //video_view.start();
         //((ViewGroup) videoView.getParent()).requestFocus();
     }
+
+    public static MediaPlayer mediaPlayer;
+
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    public static class VideoTextureListener implements TextureView.SurfaceTextureListener {
+
+        String mediaUrl;
+        ProgressBar progressBar;
+        VideoViewCallback cb;
+
+        public VideoTextureListener(String mediaUrl, ProgressBar progressBar, VideoViewCallback cb){
+            this.mediaUrl = mediaUrl;
+            this.progressBar = progressBar;
+            this.cb = cb;
+        }
+
+        @Override
+        public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+            Log.i("TextureView", "available");
+            if(mediaUrl == null || progressBar == null)
+                return;
+            Surface s = new Surface(surface);
+            mediaPlayer= new MediaPlayer();
+            try {
+                mediaPlayer.setDataSource(mediaUrl);
+                mediaPlayer.setSurface(s);
+                //mMediaPlayer.setOnBufferingUpdateListener(this);
+                //mMediaPlayer.setOnCompletionListener(this);
+                //mMediaPlayer.setOnPreparedListener(this);
+                //mMediaPlayer.setOnVideoSizeChangedListener(this);
+                //mediaPlayer.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT);
+                mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                //mMediaPlayer.setLooping(true);
+                mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mp) {
+                        Log.i("TextureView", "playing");
+                        if(cb != null)
+                            cb.onPrepared(null);
+                        progressBar.setVisibility(View.GONE);
+                        mp.start();
+                    }
+                });
+                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        if(cb != null)
+                            cb.onPlaybackComplete(null);
+                    }
+                });
+                mediaPlayer.prepareAsync();
+                //mediaPlayer.prepare();
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        @Override
+        public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+
+        }
+
+        @Override
+        public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+            return false;
+        }
+
+        @Override
+        public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+
+        }
+    }
+
+    public static View.OnTouchListener textureOnTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            if(event.getAction() == MotionEvent.ACTION_DOWN){
+                if(mediaPlayer != null && mediaPlayer.isPlaying()){
+                    mediaPlayer.pause();
+                    ((ViewGroup) v.getParent()).findViewById(R.id.playButton).setVisibility(View.VISIBLE);
+                    ((ViewGroup) v.getParent()).findViewById(R.id.playButton).bringToFront();
+                }else if(mediaPlayer != null){
+                    ((ViewGroup) v.getParent()).findViewById(R.id.playButton).setVisibility(View.GONE);
+                    mediaPlayer.start();
+                }
+            }
+            return true;
+        }
+    };
 
     public static void setReadingFontOnChildren(ViewGroup container){
         Typeface font = Typeface.createFromAsset(container.getContext().getAssets(), "Palatino.ttc");
