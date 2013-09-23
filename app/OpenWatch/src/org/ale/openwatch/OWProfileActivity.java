@@ -70,7 +70,7 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
         twitterButton.setOnClickListener(twitterButtonClickListener);
 
         SharedPreferences prefs = getSharedPreferences(Constants.PROFILE_PREFS, MODE_PRIVATE);
-        model_id = prefs.getInt(Constants.INTERNAL_USER_ID, 0);
+        model_id = prefs.getInt(Constants.INTERNAL_USER_ID, 0); // TODO: Wrap call and handle if user does not exist
 
         if(model_id > 0)
             populateViews(null);
@@ -259,10 +259,12 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             OWUser user = getUser();
-            user.agent_applicant.set(isChecked);
-            user.save(getApplicationContext());
-            if(isChecked)
-                OWServiceRequests.syncOWUser(getApplicationContext(), user, null);
+            if(user != null){
+                user.agent_applicant.set(isChecked);
+                user.save(getApplicationContext());
+                if(isChecked)
+                    OWServiceRequests.syncOWUser(getApplicationContext(), user, null);
+            }
         }
     };
 

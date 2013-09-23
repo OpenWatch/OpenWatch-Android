@@ -1,0 +1,7 @@
+[main]
+host = https://www.transifex.com/projects/p/openwatch/
+
+[openwatch.stringsxml]
+source_file = app/OpenWatch/res/values/strings.xml
+source_lang = en
+

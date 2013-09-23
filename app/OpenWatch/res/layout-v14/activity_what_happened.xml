@@ -1,18 +1,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".WhatHappenedActivity" >
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                tools:context=".WhatHappenedActivity">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/sync_progress_container"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginBottom="5dp"
-            android:visibility="gone"
-            android:background="#c5eaf8">
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:id="@+id/sync_progress_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="5dp"
+                    android:visibility="gone"
+                    android:background="#c5eaf8">
 
 
         <TextView
@@ -61,24 +61,24 @@
             android:layout_marginTop="5dp"
             android:layout_width="144dp"
             android:layout_height="96dp"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"/>
 
 
     <FrameLayout
-        android:id="@+id/infoFragmentLayout"
-        android:layout_toLeftOf="@id/videoview"
-        android:layout_alignBottom="@id/videoview"
-        android:layout_marginLeft="15dp"
-        android:layout_marginBottom="-4dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+            android:id="@+id/infoFragmentLayout"
+            android:layout_toLeftOf="@id/videoview"
+            android:layout_alignBottom="@id/videoview"
+            android:layout_marginLeft="15dp"
+            android:layout_marginBottom="-4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
         <fragment
-            android:id="@+id/media_object_info"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            class="org.ale.openwatch.OWMediaObjectInfoFragment"
-            tools:layout="@layout/user_media_object_info_view"/>
+                android:id="@+id/media_object_info"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                class="org.ale.openwatch.OWMediaObjectInfoFragment"
+                tools:layout="@layout/user_media_object_info_view"/>
 
     </FrameLayout>
 
@@ -107,20 +107,19 @@
             android:layout_centerHorizontal="true"/>
 
     <!-- Mission Chooser -->
-<!--
-    <ImageView
-            android:id="@+id/missionImage"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="-5dp"
-            android:layout_marginTop="15dp"
-            android:paddingBottom="5dp"
-            android:layout_below="@id/owImage"
-            android:layout_alignLeft="@id/owText"
-            android:onClick="onSelectMissionClick"
-            android:src="@drawable/mission" />
--->
-
+    <!--
+        <ImageView
+                android:id="@+id/missionImage"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="-5dp"
+                android:layout_marginTop="15dp"
+                android:paddingBottom="5dp"
+                android:layout_below="@id/owImage"
+                android:layout_alignLeft="@id/owText"
+                android:onClick="onSelectMissionClick"
+                android:src="@drawable/mission" />
+    -->
 
 
     <!-- End Mission Chooser -->
@@ -145,7 +144,7 @@
                 android:layout_marginTop="15dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:src="@drawable/ic_ab_icon" />
+                android:src="@drawable/ic_ab_icon"/>
 
         <TextView
                 android:id="@+id/owText"
@@ -182,42 +181,41 @@
                 android:background="#ffd3cbc9"
                 android:layout_height="1dp"/>
 
-    <ImageView
-            android:id="@+id/fbImage"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginLeft="12dp"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@id/owDivider"
-            android:visibility="visible"
-            android:src="@drawable/fb" />
+        <ImageView
+                android:id="@+id/fbImage"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginLeft="12dp"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@id/owDivider"
+                android:visibility="visible"
+                android:src="@drawable/fb"/>
 
-   <TextView
-        android:id="@+id/fbText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:fontFamily="sans-serif-light"
-        android:layout_alignBottom="@id/fbImage"
-        android:text="@string/post_to_fb"
-        android:textSize="18sp"
-        android:layout_toRightOf="@id/fbImage"/>
+        <TextView
+                android:id="@+id/fbText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:fontFamily="sans-serif-light"
+                android:layout_alignBottom="@id/fbImage"
+                android:text="@string/post_to_fb"
+                android:textSize="18sp"
+                android:layout_toRightOf="@id/fbImage"/>
 
 
-
-    <Switch
-        android:id="@+id/fbSwitch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:switchTextAppearance="@style/Theme.openwatch.SwitchTextAppearance"
-        android:thumbTextPadding="5dp"
-        android:thumb="@drawable/ow_toggle_bg"
-        android:textOn="@string/yes"
-        android:textOff="@string/no"
-        android:layout_marginRight="12dp"
-        android:layout_alignBaseline="@id/fbText"
-        android:layout_alignParentRight="true"
-        tools:ignore="NewApi"/>
+        <Switch
+                android:id="@+id/fbSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:switchTextAppearance="@style/Theme.openwatch.SwitchTextAppearance"
+                android:thumbTextPadding="5dp"
+                android:thumb="@drawable/ow_toggle_bg"
+                android:textOn="@string/yes"
+                android:textOff="@string/no"
+                android:layout_marginRight="12dp"
+                android:layout_alignBaseline="@id/fbText"
+                android:layout_alignParentRight="true"
+                tools:ignore="NewApi"/>
 
         <View
                 android:id="@+id/socialDivider"
@@ -227,27 +225,27 @@
                 android:background="#ffd3cbc9"
                 android:layout_height="1dp"/>
 
-    <ImageView
-            android:id="@+id/twitterImage"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="12dp"
-            android:layout_below="@id/socialDivider"
-            android:layout_alignParentLeft="true"
-            android:visibility="visible"
-            android:src="@drawable/twitter" />
+        <ImageView
+                android:id="@+id/twitterImage"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="12dp"
+                android:layout_below="@id/socialDivider"
+                android:layout_alignParentLeft="true"
+                android:visibility="visible"
+                android:src="@drawable/twitter"/>
 
-    <TextView
-        android:id="@+id/twitterText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-light"
-        android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@id/twitterImage"
-        android:layout_alignBottom="@id/twitterImage"
-        android:text="@string/post_to_twitter"
-        android:textSize="18sp"/>
+        <TextView
+                android:id="@+id/twitterText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/twitterImage"
+                android:layout_alignBottom="@id/twitterImage"
+                android:text="@string/post_to_twitter"
+                android:textSize="18sp"/>
 
 
         <Switch
@@ -264,7 +262,7 @@
                 android:layout_alignBottom="@id/twitterText"
                 android:layout_alignParentRight="true"
                 tools:ignore="NewApi"/>
-   </RelativeLayout>
+    </RelativeLayout>
 
     <Button
             android:id="@+id/doneButton"

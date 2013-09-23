@@ -43,59 +43,75 @@ import java.util.List;
 import java.util.UUID;
 
 public class OWUtils {
-    private static final String TAG = "OWUtils";
-
     public static final int SELECT_PHOTO = 100;
     public static final int TAKE_PHOTO = 101;
-	
-	public static String generateRecordingIdentifier()
-	{
-		return UUID.randomUUID().toString();
-	}
-	
-	public static void loadScaledPicture(String image_path, ImageView target) {
-	    // Get the dimensions of the View
-	    int targetW = target.getWidth();
-	    int targetH = target.getHeight();
-	  
-	    // Get the dimensions of the bitmap
-	    BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-	    bmOptions.inJustDecodeBounds = true;
-	    BitmapFactory.decodeFile(image_path, bmOptions);
-	    int photoW = bmOptions.outWidth;
-	    int photoH = bmOptions.outHeight;
-	  
-	    // Determine how much to scale down the image
-	    int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+    private static final String TAG = "OWUtils";
+    public static View.OnTouchListener videoOnClickListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                Log.i(TAG, "videoView touched");
+                if (((VideoView) v).isPlaying()) {
+                    ((ViewGroup) v.getParent()).findViewById(R.id.playButton).setVisibility(View.VISIBLE);
+                    ((ViewGroup) v.getParent()).findViewById(R.id.playButton).bringToFront();
+                    ((VideoView) v).pause();
+                } else {
+                    ((VideoView) v).start();
+                    ((ViewGroup) v.getParent()).findViewById(R.id.playButton).setVisibility(View.GONE);
+                }
+            }
+            return true;
+        }
+    };
+
+    public static String generateRecordingIdentifier() {
+        return UUID.randomUUID().toString();
+    }
+
+    public static void loadScaledPicture(String image_path, ImageView target) {
+        // Get the dimensions of the View
+        int targetW = target.getWidth();
+        int targetH = target.getHeight();
+
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(image_path, bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // Determine how much to scale down the image
+        int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
 
         //Log.i("loadScaledPicture", String.format("imageview is %dx%d. image is %dx%d. Scale factor is %d", targetW, targetH, photoW, photoH, scaleFactor));
-	    // Decode the image file into a Bitmap sized to fill the View
-	    bmOptions.inJustDecodeBounds = false;
-	    bmOptions.inSampleSize = scaleFactor;
-	    bmOptions.inPurgeable = true;
-	  
-	    Bitmap bitmap = BitmapFactory.decodeFile(image_path, bmOptions);
-	    target.setImageBitmap(bitmap);
-	}
-	
-	public static String urlForOWServerObject(OWServerObject obj, Context c){
-		String url = Constants.OW_URL;
-		if(obj.getContentType(c) != null){
-            if(obj.getContentType(c) == Constants.CONTENT_TYPE.MISSION)
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(image_path, bmOptions);
+        target.setImageBitmap(bitmap);
+    }
+
+    public static String urlForOWServerObject(OWServerObject obj, Context c) {
+        String url = Constants.OW_URL;
+        if (obj.getContentType(c) != null) {
+            if (obj.getContentType(c) == Constants.CONTENT_TYPE.MISSION)
                 url += "missions"; // api/mission/10/ BUT /mission/10/ . Whoooops
             else
-			    url += Constants.API_ENDPOINT_BY_CONTENT_TYPE.get(obj.getContentType(c));
-        }else
+                url += Constants.API_ENDPOINT_BY_CONTENT_TYPE.get(obj.getContentType(c));
+        } else
             Log.e(TAG, String.format("Unable to determine contentType for owserverobject %d", obj.getId()));
-		url += "/" + String.valueOf(obj.getServerId(c)) + "/";
-		return url;
-	}
+        url += "/" + String.valueOf(obj.getServerId(c)) + "/";
+        return url;
+    }
 
     public static boolean checkEmail(String email) {
         return Constants.EMAIL_ADDRESS_PATTERN.matcher(email).matches();
     }
 
-    public static String getPackageVersion(Context c){
+    public static String getPackageVersion(Context c) {
         String packageVersion = "";
         try {
             PackageInfo pInfo = c.getPackageManager().getPackageInfo(
@@ -107,10 +123,10 @@ public class OWUtils {
             e.printStackTrace();
         }
         return packageVersion;
-            //USER_AGENT += " (Android API " + Build.VERSION.RELEASE + ")";
+        //USER_AGENT += " (Android API " + Build.VERSION.RELEASE + ")";
     }
 
-    public static int getPackageVersionAsInt(Context c){
+    public static int getPackageVersionAsInt(Context c) {
         int packageVersion = 0;
         try {
             PackageInfo pInfo = c.getPackageManager().getPackageInfo(
@@ -123,7 +139,7 @@ public class OWUtils {
         return packageVersion;
     }
 
-    public static void showConnectionErrorDialog(Context c){
+    public static void showConnectionErrorDialog(Context c) {
         AlertDialog.Builder builder = new AlertDialog.Builder(c);
         builder.setTitle("Uh oh")
                 .setMessage("We were unable to reach openwatch.net. Please check your network connection and try again.")
@@ -142,44 +158,20 @@ public class OWUtils {
         return list.size() > 0;
     }
 
-    public interface VideoViewCallback{
-        public void onPlaybackComplete(ViewGroup parent);
-        public void onPrepared(ViewGroup parent);
-        public void onError(ViewGroup parent);
-    }
-
-    public static View.OnTouchListener videoOnClickListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-
-            if(event.getAction() == MotionEvent.ACTION_DOWN){
-                Log.i(TAG, "videoView touched");
-                if( ((VideoView)v).isPlaying() ){
-                    ((ViewGroup) v.getParent()).findViewById(R.id.playButton).setVisibility(View.VISIBLE);
-                    ((ViewGroup) v.getParent()).findViewById(R.id.playButton).bringToFront();
-                    ((VideoView)v).pause();
-                }else{
-                    ((VideoView)v).start();
-                    ((ViewGroup) v.getParent()).findViewById(R.id.playButton).setVisibility(View.GONE);
-                }
-            }
-            return true;
-        }
-    };
-
     /**
      * Setup a VideoView. Context c should not be an Activity Context for showing AlertDialogs
+     *
      * @param c
      * @param videoView
      * @param filepath
      */
     public static void setupVideoView(final Context c, final VideoView videoView, final String filepath, final VideoViewCallback cb, final ProgressBar progressBar) {
         final String TAG = "setupVideoView";
-        if(filepath == null){
+        if (filepath == null) {
             Log.e(TAG, "setupVideoView uri is null");
             return;
         }
-        if(videoView.isPlaying())
+        if (videoView.isPlaying())
             videoView.stopPlayback();
 
         videoView.setVideoURI(Uri.parse(filepath));
@@ -228,10 +220,10 @@ public class OWUtils {
                     }
                     // TODO make this safe
                     //if (is_resumed)
-                        mediaErrorDialog.show();
-                        progressBar.setVisibility(View.GONE);
-                        if(cb != null)
-                            cb.onError((ViewGroup) videoView.getParent());
+                    mediaErrorDialog.show();
+                    progressBar.setVisibility(View.GONE);
+                    if (cb != null)
+                        cb.onError((ViewGroup) videoView.getParent());
                 }
                 Log.i(TAG, String.format("what %d extra %d", what, extra));
                 return true;
@@ -253,7 +245,7 @@ public class OWUtils {
                 videoView.start();
                 //((ViewGroup) videoView.getParent()).findViewById(R.id.videoProgress).setVisibility(View.GONE);
                 progressBar.setVisibility(View.GONE);
-                if(cb != null)
+                if (cb != null)
                     cb.onPrepared((ViewGroup) videoView.getParent());
                 mp.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
                     @Override
@@ -268,7 +260,7 @@ public class OWUtils {
                         videoView.start();
                         progressBar.setVisibility(View.GONE);
                         //((ViewGroup) videoView.getParent()).findViewById(R.id.videoProgress).setVisibility(View.GONE);
-                        if(cb != null)
+                        if (cb != null)
                             cb.onPrepared((ViewGroup) videoView.getParent());
                         //video_playing = true;
                     }
@@ -279,8 +271,8 @@ public class OWUtils {
             @Override
             public void onCompletion(MediaPlayer mp) {
                 //video_playing = false;
-                if(cb != null)
-                    cb.onPlaybackComplete((ViewGroup)videoView.getParent());
+                if (cb != null)
+                    cb.onPlaybackComplete((ViewGroup) videoView.getParent());
 
             }
         });
@@ -288,18 +280,18 @@ public class OWUtils {
         //((ViewGroup) videoView.getParent()).requestFocus();
     }
 
-    public static void setReadingFontOnChildren(ViewGroup container){
+    public static void setReadingFontOnChildren(ViewGroup container) {
         Typeface font = Typeface.createFromAsset(container.getContext().getAssets(), "Palatino.ttc");
         View this_view;
         for (int x = 0; x < container.getChildCount(); x++) {
             this_view = container.getChildAt(x);
-            if(this_view.getTag() != null){
-                if(this_view.getTag().toString().compareTo("custom_font") == 0){
-                    ((TextView)this_view).setTypeface(font, Typeface.NORMAL);
-                }else if(this_view.getTag().toString().compareTo("custom_font_bold") == 0){
-                    ((TextView)this_view).setTypeface(font, Typeface.BOLD);
-                }else if(this_view.getTag().toString().compareTo("custom_font_italic") == 0){
-                    ((TextView)this_view).setTypeface(font, Typeface.ITALIC);
+            if (this_view.getTag() != null) {
+                if (this_view.getTag().toString().compareTo("custom_font") == 0) {
+                    ((TextView) this_view).setTypeface(font, Typeface.NORMAL);
+                } else if (this_view.getTag().toString().compareTo("custom_font_bold") == 0) {
+                    ((TextView) this_view).setTypeface(font, Typeface.BOLD);
+                } else if (this_view.getTag().toString().compareTo("custom_font_italic") == 0) {
+                    ((TextView) this_view).setTypeface(font, Typeface.ITALIC);
                 }
             }
         }
@@ -307,30 +299,29 @@ public class OWUtils {
 
     /**
      * Determines if given points are inside view
-     * @param x - x coordinate of point
-     * @param y - y coordinate of point
+     *
+     * @param x    - x coordinate of point
+     * @param y    - y coordinate of point
      * @param view - view object to compare
      * @return true if the points are within view bounds, false otherwise
      */
-    public static boolean isPointInsideView(float x, float y, View view){
+    public static boolean isPointInsideView(float x, float y, View view) {
         int location[] = new int[2];
         view.getLocationOnScreen(location);
         int viewX = location[0];
         int viewY = location[1];
 
         //point is inside view bounds
-        if(( x > viewX && x < (viewX + view.getWidth())) &&
-                ( y > viewY && y < (viewY + view.getHeight()))){
+        if ((x > viewX && x < (viewX + view.getWidth())) &&
+                (y > viewY && y < (viewY + view.getHeight()))) {
             return true;
         } else {
             return false;
         }
     }
 
-    public static enum SOCIAL_TYPE {FB, TWITTER};
-
-    public static void postSocial(Activity act, final SOCIAL_TYPE type, int model_id){
-        switch(type){
+    public static void postSocial(Activity act, final SOCIAL_TYPE type, int model_id) {
+        switch (type) {
             case FB:
                 FBUtils.authenticateAndPostVideoAction((FBUtils.FaceBookSessionActivity) act, model_id);
                 break;
@@ -341,21 +332,17 @@ public class OWUtils {
         }
     }
 
-    public interface TakePictureCallback{
-        public void gotPotentialPictureLocation(File imageLocation);
-    }
-
-    public static void setUserAvatar(final Activity act, View v, final int SELECT_PHOTO_CODE, final int TAKE_PHOTO_CODE, final TakePictureCallback cb){
+    public static void setUserAvatar(final Activity act, View v, final int SELECT_PHOTO_CODE, final int TAKE_PHOTO_CODE, final TakePictureCallback cb) {
         AlertDialog.Builder builder = new AlertDialog.Builder(act);
 
         builder.setTitle(act.getString(R.string.take_choose_picture_title))
-                .setPositiveButton(act.getString(R.string.take_picture), new DialogInterface.OnClickListener(){
+                .setPositiveButton(act.getString(R.string.take_picture), new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         File storageDir = Environment.getExternalStoragePublicDirectory(
-                                        Environment.DIRECTORY_PICTURES);
-                        File image = FileUtils.prepareOutputLocation(act.getApplicationContext(), storageDir, "ow_avatar_" + String.valueOf(new Date().getTime()),".jpg");
+                                Environment.DIRECTORY_PICTURES);
+                        File image = FileUtils.prepareOutputLocation(act.getApplicationContext(), storageDir, "ow_avatar_" + String.valueOf(new Date().getTime()), ".jpg");
                         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         //takePicture.putExtra("crop", "true");
                         takePicture.putExtra("outputX", 640);
@@ -364,12 +351,12 @@ public class OWUtils {
                         takePicture.putExtra("aspectY", 1);
                         takePicture.putExtra("scale", true);
                         takePicture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(image));
-                        if(cb != null)
+                        if (cb != null)
                             cb.gotPotentialPictureLocation(image);
                         act.startActivityForResult(takePicture, TAKE_PHOTO_CODE);
                     }
 
-                }).setNegativeButton(act.getString(R.string.choose_picture), new DialogInterface.OnClickListener(){
+                }).setNegativeButton(act.getString(R.string.choose_picture), new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -388,20 +375,22 @@ public class OWUtils {
 
     }
 
-    public static void handleSetUserAvatarResult(int requestCode, int resultCode, Intent data, ImageView imageView, Activity act, OWUser u, String photoPath){
-        switch(requestCode){
+    ;
+
+    public static void handleSetUserAvatarResult(int requestCode, int resultCode, Intent data, ImageView imageView, Activity act, OWUser u, String photoPath) {
+        switch (requestCode) {
             case SELECT_PHOTO:
-                if(resultCode == Activity.RESULT_OK){
+                if (resultCode == Activity.RESULT_OK) {
                     Uri selectedImageUri = data.getData();
                     //Log.i("selected_image_uri", selectedImageUri.toString());
                     String path = FileUtils.getRealPathFromURI(act.getApplicationContext(), selectedImageUri);
-                    try{
+                    try {
                         File imageFile = new File(path);
                         OWServiceRequests.sendOWUserAvatar(act.getApplicationContext(), u, imageFile, null);
                         OWUtils.removeUriFromImageCache(selectedImageUri.toString());
                         Bitmap selectedImage = FileUtils.decodeUri(act.getApplicationContext(), selectedImageUri, 100);
                         imageView.setImageBitmap(selectedImage);
-                    }catch(NullPointerException e){
+                    } catch (NullPointerException e) {
                         new AlertDialog.Builder(act)
                                 .setTitle(act.getString(R.string.cant_get_image))
                                 .setMessage(act.getString(R.string.cant_get_image_message))
@@ -412,15 +401,15 @@ public class OWUtils {
                                     }
                                 })
                                 .show();
-                    }catch (FileNotFoundException e) {
+                    } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
                     break;
                 }
             case TAKE_PHOTO:
-                if(resultCode == Activity.RESULT_OK){
+                if (resultCode == Activity.RESULT_OK) {
                     String imageFilePath = photoPath;
-                    if(!imageFilePath.contains("file://"))
+                    if (!imageFilePath.contains("file://"))
                         imageFilePath = "file://" + imageFilePath;
                     OWUtils.removeUriFromImageCache(imageFilePath);
                     ImageLoader.getInstance().displayImage(imageFilePath, imageView);
@@ -430,14 +419,14 @@ public class OWUtils {
         }
     }
 
-    public static void goToLoginActivityWithMessage(Context c, String message){
+    public static void goToLoginActivityWithMessage(Context c, String message) {
         Intent i = new Intent(c, LoginActivity.class);
         i.putExtra("message", message);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         c.startActivity(i);
     }
 
-    public static void removeUriFromImageCache(String imageUri){
+    public static void removeUriFromImageCache(String imageUri) {
         ImageLoader imageLoader = ImageLoader.getInstance();
         File imageFile = imageLoader.getDiscCache().get(imageUri);
         if (imageFile.exists()) {
@@ -446,7 +435,7 @@ public class OWUtils {
         MemoryCacheUtil.removeFromCache(imageUri, imageLoader.getMemoryCache());
     }
 
-    public static void checkUserStatus(Activity act){
+    public static void checkUserStatus(Activity act) {
         Context c = act.getApplicationContext();
 
         boolean debug_fancy = false;
@@ -464,42 +453,41 @@ public class OWUtils {
         */
         DatabaseManager.registerModels(c); // ensure migrations are run.
 
-        if(authenticated /*&& db_initialized*/ && !((OWApplication) c).per_launch_sync){
+        if (authenticated /*&& db_initialized*/ && !((OWApplication) c).per_launch_sync) {
             // TODO: Attempt to login with stored credentials and report back if error
 
             OWMediaSyncer.syncMedia(c);
             ((OWApplication) c).per_launch_sync = true;
             // If we have a User object for the current user, and they've applied as an agent, send their current location
-            if(profile.getInt(Constants.INTERNAL_USER_ID, 0) != 0){
-                OWUser user = OWUser.objects(c, OWUser.class).get(profile.getInt(Constants.INTERNAL_USER_ID,0));
-                if(user.agent_applicant.get() == true){
+            if (profile.getInt(Constants.INTERNAL_USER_ID, 0) != 0) {
+                OWUser user = OWUser.objects(c, OWUser.class).get(profile.getInt(Constants.INTERNAL_USER_ID, 0));
+                if (user.agent_applicant.get() == true) {
                     Log.i("MainActivity", "Sending agent location");
                     OWServiceRequests.syncOWUser(c, user, null);
                 }
             }
         }
-        if(debug_fancy || (!authenticated && !act.getIntent().hasExtra(Constants.AUTHENTICATED) ) ){
-            Intent i = new Intent(c, FancyLoginActivity.class	);
+        if (debug_fancy || (!authenticated && !act.getIntent().hasExtra(Constants.AUTHENTICATED))) {
+            Intent i = new Intent(c, FancyLoginActivity.class);
             //Intent i = new Intent(this, LoginActivity.class	);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
             String email = profile.getString(Constants.EMAIL, null);
-            if(email != null)
+            if (email != null)
                 i.putExtra(Constants.EMAIL, email);
             act.startActivity(i);
             // This will set OWApplication.user_data
-        }
-        else if(authenticated){
+        } else if (authenticated) {
             // If the user state is stored, load user_data into memory
             OWApplication.user_data = c.getSharedPreferences(Constants.PROFILE_PREFS, c.MODE_PRIVATE).getAll();
         }
 
     }
 
-    public static void loadProfilePicture(final Context c, OWUser user, final ImageView profileImage){
+    public static void loadProfilePicture(final Context c, OWUser user, final ImageView profileImage) {
         final int userId = user.getId();
-        if(user == null)
+        if (user == null)
             return;
-        if(user.thumbnail_url.get() != null && user.thumbnail_url.get().compareTo("") != 0){
+        if (user.thumbnail_url.get() != null && user.thumbnail_url.get().compareTo("") != 0) {
             ImageLoader.getInstance().displayImage(user.thumbnail_url.get(), profileImage);
         }
 
@@ -512,12 +500,26 @@ public class OWUtils {
             @Override
             public void onSuccess() {
                 String url = OWUser.objects(c, OWUser.class).get(userId).thumbnail_url.get();
-                if(url != null && url.compareTo("") != 0){
+                if (url != null && url.compareTo("") != 0) {
                     ImageLoader.getInstance().displayImage(url, profileImage);
-                }else
+                } else
                     Log.i(TAG, "User has no thumbnail set");
             }
         });
+    }
+
+    public static enum SOCIAL_TYPE {FB, TWITTER}
+
+    public interface VideoViewCallback {
+        public void onPlaybackComplete(ViewGroup parent);
+
+        public void onPrepared(ViewGroup parent);
+
+        public void onError(ViewGroup parent);
+    }
+
+    public interface TakePictureCallback {
+        public void gotPotentialPictureLocation(File imageLocation);
     }
 
 }
