@@ -19,6 +19,3 @@
 [submodule "libraries/facebook-android-sdk"]
 	path = libraries/facebook-android-sdk
 	url = git@github.com:facebook/facebook-android-sdk.git
-[submodule "libraries/twitter4j"]
-	path = libraries/twitter4j
-	url = git@github.com:OnlyInAmerica/twitter4j.git
