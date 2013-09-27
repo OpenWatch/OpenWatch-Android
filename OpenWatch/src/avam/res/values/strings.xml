@@ -3,9 +3,10 @@
     <string name="app_name">Avam</string>
     <string name="title_activity_main"></string>
 
-    <!-- Send Feedback Intent Extras -->
+    <!-- Send Feedback -->
     <string name="share_email_subject">Avam-Android feedback</string>
     <string name="share_email_text">Hey Avam!\n\n</string>
+    <string name="i_have_app_version">I have Avam version </string>
 
     <!-- FancyLoginActivity -->
     <string name="fancy_login_welcome_text">Welcome to Avam. Enter your email to get started.</string>

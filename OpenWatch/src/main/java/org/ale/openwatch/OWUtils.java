@@ -116,7 +116,7 @@ public class OWUtils {
         try {
             PackageInfo pInfo = c.getPackageManager().getPackageInfo(
                     c.getPackageName(), 0);
-            packageVersion += "I have OpenWatch version " + pInfo.versionName;
+            packageVersion += c.getString(R.string.i_have_app_version) + pInfo.versionName;
             packageVersion += " running on Android API " + String.valueOf(Build.VERSION.SDK_INT) + ".";
         } catch (PackageManager.NameNotFoundException e) {
             Log.e("getPackageVersion", "Unable to read PackageName in RegisterApp");

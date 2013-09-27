@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/openwatch_white" />
+            android:src="@drawable/fancy_login_logo_light" />
 
     <TextView
         android:id="@+id/welcome_text"

@@ -14,7 +14,8 @@
     <permission android:name="org.ale.openwatch.avam.permission.C2D_MESSAGE" android:protectionLevel="signature"/>
     <uses-permission android:name="org.ale.openwatch.avam.permission.C2D_MESSAGE" />
 
-    <application>
+    <application
+            android:logo="@drawable/ic_launcher">
         <receiver
                 android:name=".gcm.OWGcmBroadcastReceiver"
                 android:permission="com.google.android.c2dm.permission.SEND"

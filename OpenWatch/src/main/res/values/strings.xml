@@ -28,10 +28,11 @@
     <string name="syncing_existing_media">Syncing existing media…\nSync will continue in the background</string>
     <string name="mission_button_text">Missions</string>
 
-    <!-- Send Feedback Intent Extras -->
+    <!-- Send Feedback -->
     <string name="share_email_subject">OpenWatch-Android feedback</string>
     <string name="share_email_text">Hey OpenWatch!\n\n</string>
     <string name="share_chooser_title">Send us feedback</string>
+    <string name="i_have_app_version">I have OpenWatch version </string>
     <!-- Title of choose dialog to select application to share with -->
 
     <!-- LoginActivity -->

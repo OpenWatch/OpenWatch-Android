@@ -126,7 +126,8 @@
                         android:layout_below="@id/user_thumbnail"
                         android:layout_marginBottom="5dp"
                         android:layout_marginRight="5dp"
-                        android:src="@drawable/openwatch" />
+                        android:layout_marginTop="5dp"
+                        android:src="@drawable/logo_dark" />
 
                     <EditText
                         android:id="@+id/email"
