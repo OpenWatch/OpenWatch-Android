@@ -1,4 +1,4 @@
-include ':app:OpenWatch'
+include ':OpenWatch'
 include ':libraries:ActionBarSherlock'
 include ':libraries:ActionBar-PullToRefresh:library'
 include ':libraries:ActionBar-PullToRefresh:extras:actionbarsherlock'

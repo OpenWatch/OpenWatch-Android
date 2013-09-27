@@ -1,0 +1,61 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.5.+'
+    }
+}
+apply plugin: 'android'
+
+repositories {
+    mavenCentral()
+}
+
+android {
+    compileSdkVersion 18
+    buildToolsVersion "18.1.0"
+
+    defaultConfig {
+        minSdkVersion 8
+        targetSdkVersion 18
+    }
+
+    buildTypes{
+        debug{
+            packageNameSuffix ".debug"
+        }
+        release{
+
+        }
+    }
+
+    final PROVIDER_OPENWATCH = "org.ale.openwatch.contentprovider.OWContentProvider"
+    final PROVIDER_AVAM = "org.ale.openwatch.avam.contentprovider.OWContentProvider"
+
+    productFlavors {
+        openwatch {
+            packageName 'org.ale.openwatch'
+            buildConfig "public static final String PROVIDER_AUTHORITY = \"" + PROVIDER_OPENWATCH + "\";"
+        }
+
+        avam {
+            packageName 'org.ale.openwatch.avam'
+            buildConfig "public static final String PROVIDER_AUTHORITY = \"" + PROVIDER_AVAM + "\";"
+        }
+    }
+
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:13.0.0'
+    compile project(':libraries:ActionBar-PullToRefresh:extras:actionbarsherlock')
+    compile project(':libraries:ActionBarSherlock')
+    compile project(':libraries:android-async-http')
+    compile project(':libraries:Android-Universal-Image-Loader')
+    compile project(':libraries:Android-ViewPagerIndicator')
+    compile project(':libraries:androrm')
+    compile project(':libraries:facebook-android-sdk')
+    compile project(':libraries:google-play-services_lib')
+    compile fileTree(dir: 'libs', include: '*.jar')
+}

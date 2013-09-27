@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.ale.openwatch.avam"
+    android:versionCode="19"
+    android:versionName="2.4.3" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="18" />
+
+    <uses-permission android:name="org.ale.openwatch.avam.permission.MAPS_RECEIVE" />
+
+    <!-- GCM specific -->
+    <permission android:name="org.ale.openwatch.avam.permission.C2D_MESSAGE" android:protectionLevel="signature"/>
+    <uses-permission android:name="org.ale.openwatch.avam.permission.C2D_MESSAGE" />
+
+    <application>
+        <receiver
+                android:name=".gcm.OWGcmBroadcastReceiver"
+                android:permission="com.google.android.c2dm.permission.SEND"
+                android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="org.ale.openwatch.avam" />
+            </intent-filter>
+        </receiver>
+
+        <provider
+                android:name="org.ale.openwatch.contentprovider.OWContentProvider"
+                android:authorities="org.ale.openwatch.avam.contentprovider.OWContentProvider"
+                android:exported="false" >
+        </provider>
+    </application>
+
+</manifest>

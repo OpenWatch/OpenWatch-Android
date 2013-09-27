@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Avam</string>
+    <string name="title_activity_main"></string>
+
+    <!-- Send Feedback Intent Extras -->
+    <string name="share_email_subject">Avam-Android feedback</string>
+    <string name="share_email_text">Hey Avam!\n\n</string>
+
+    <!-- FancyLoginActivity -->
+    <string name="fancy_login_welcome_text">Welcome to Avam. Enter your email to get started.</string>
+
+    <!-- Account creation prompt -->
+    <string name="create_account_prompt">Before we get started take a moment to create an Avam account. It only
+        takes a second, and allows you to start broadcasting immediately.
+    </string>
+
+    <string name="login_dialog_unknown_email_msg">The email address you provided is not connected to an Avam
+        account. Would you like to register a new account with the following account:
+    </string>
+    <!-- problem reaching host -->
+    <string name="login_dialog_failed_msg">The Avam service could not be reached. Please check your network
+        connection and try again.
+    </string>
+
+    <string name="signup_dialog_email_taken_msg">This email is already registered with Avam or OpenWatch:</string>
+
+    <string name="sync_video_header_text">Syncing video with openwatch.net</string>
+
+    <!-- OWPhotoReviewActivity -->
+    <string name="title_activity_picture_review">PictureReviewActivity</string>
+    <string name="title_activity_picture_review_ab_title">Describe Your Picture</string>
+    <string name="sync_photo_complete_header_text">Your Photo is Live!</string>
+    <!-- Appears above media link after sync complete -->
+    <string name="sync_photo_header_text">Syncing photo with openwatch.net</string>
+
+    <!-- Share Dialogs -->
+    <string name="via_openwatch">via @Avam @OpenWatch</string>
+    <!-- Part of share Intent's EXTRA_TEXT field -->
+
+    <!-- Account settings -->
+    <string name="pref_header_account">OpenWatch.net</string>
+    <string name="pref_title_account">Account</string>
+    <string name="pref_description_account">Your OpenWatch.net credentials</string>
+   
+    <string name="public_on_ow">Post to Avam</string>
+    <string name="ow_on_github">OpenWatch on Github</string>
+    <string name="visit_ow">Visit OpenWatch.net</string>
+    <string name="ow_credentials">OpenWatch.net Credentials</string>
+    <string name="ow.net">OpenWatch.net</string>
+    <string name="handle_truth">You can handle the truth! Get @Avam by @OpenWatch for Android or iOS! \n\nAndroid: %1$s \n\niOS:
+        %2$s
+    </string>
+
+</resources>
