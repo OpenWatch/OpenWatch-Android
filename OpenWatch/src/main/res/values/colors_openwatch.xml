@@ -17,6 +17,7 @@
 -->
 
 <resources>
+    <color name="openwatch_red">#ffeb1d1d</color>
     <color name="pressed_openwatch">#CCfc4141</color>
     <color name="text_light">#66000000</color>
 </resources>

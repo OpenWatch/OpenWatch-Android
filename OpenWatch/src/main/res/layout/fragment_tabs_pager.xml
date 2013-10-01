@@ -59,16 +59,16 @@
                         android:id="@+id/titles"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:background="#ffffedea"
+                        android:background="@color/viewpager_bg"
                         android:padding="10dip"
-                        android:textColor="#ff303030"
+                        android:textColor="@color/viewpager_text"
                         android:fontFamily="sans-serif-condensed"
-                        app:footerColor="#ffeb1d1d"
+                        app:footerColor="@color/viewpager_footer"
                         app:footerIndicatorHeight="3dp"
                         app:footerIndicatorStyle="underline"
                         app:footerLineHeight="1dp"
                         app:selectedBold="true"
-                        app:selectedColor="#1f1f1f" />
+                        app:selectedColor="@color/viewpager_text_selected" />
 
                 <android.support.v4.view.ViewPager
                         android:id="@+id/pager"

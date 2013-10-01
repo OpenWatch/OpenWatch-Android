@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="text_highlight">@color/openwatch_red</color>
+
+    <color name="viewpager_bg">#ffffedea</color>
+    <color name="viewpager_footer">@color/openwatch_red</color>
+    <color name="viewpager_text">#ff303030</color>
+    <color name="viewpager_text_selected">#1f1f1f</color>
+</resources>

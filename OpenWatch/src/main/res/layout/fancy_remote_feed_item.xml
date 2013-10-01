@@ -95,7 +95,7 @@
             android:id="@+id/username"
             style="@style/Theme.openwatch.feedItemOtherText"
             android:fontFamily="sans-serif-black"
-            android:textColor="#ffeb1d1d"
+            android:textColor="@color/text_highlight"
             android:textStyle="bold"
             android:layout_below="@id/thumbnail"
             android:layout_marginLeft="5dp"
@@ -125,7 +125,7 @@
             android:paddingLeft="0dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColorLink="#ffeb1d1d"
+            android:textColorLink="@color/text_highlight"
             android:text=""
             android:layout_below="@+id/username"
             android:layout_marginTop="0dp"/>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="viewpager_bg">#ffffff</color>
+    <color name="viewpager_footer">#555555</color>
+    <color name="viewpager_text">#888888</color>
+    <color name="viewpager_text_selected">#555555</color>
+</resources>
