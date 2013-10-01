@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+    <string name="app_name">Avam</string>
+    <string name="menu_settings">Ayarlar</string>
+    <string name="title_activity_main"></string>
+
+    <!--Send Feedback-->
+    <string name="share_email_subject">Avam-Android geribildirim</string>
+    <string name="share_email_text">Merhaba Avam!\n\n</string>
+    <string name="i_have_app_version">Avam sürüm </string>
+
+    <!--FancyLoginActivity-->
+    <string name="fancy_login_welcome_text">Avam\'a hoş geldiniz. Başlamak için e-posta adresinizi girin.</string>
+    <!--Account creation prompt-->
+    <string name="create_account_prompt">Başlamadan önce bir Avam hesabı oluşturmak için bir dakikanızı ayırın. Bu yalnızca bir saniye sürer ve bu sayede yayını hemen başlatabilirsiniz. </string>
+
+    <string name="login_dialog_unknown_email_msg">Verdiğiniz e-posta adresi bir Avam hesabına bağlı değil. Aşağıdaki hesap ile yeni bir hesap istiyorum:</string>
+    <string name="login_dialog_failed_msg">Avam hizmetine ulaşılamadı. Ağ bağlantınızı kontrol edip tekrar deneyin.</string>
+
+    <string name="signup_dialog_email_taken_msg">Bu e-posta zaten Avam veya OpenWatch kayıtlıdır:</string>
+
+    <string name="via_openwatch">\@Avam @OpenWatch aracılığıyla</string>
+
+    <!--Account settings-->
+    <string name="pref_header_account">OpenWatch.net</string>
+    <string name="pref_title_account">Hesap</string>
+    <string name="pref_description_account">OpenWatch.net kimliğiniz</string>
+</resources>

@@ -28,13 +28,6 @@
 
     <string name="sync_video_header_text">Syncing video with openwatch.net</string>
 
-    <!-- OWPhotoReviewActivity -->
-    <string name="title_activity_picture_review">PictureReviewActivity</string>
-    <string name="title_activity_picture_review_ab_title">Describe Your Picture</string>
-    <string name="sync_photo_complete_header_text">Your Photo is Live!</string>
-    <!-- Appears above media link after sync complete -->
-    <string name="sync_photo_header_text">Syncing photo with openwatch.net</string>
-
     <!-- Share Dialogs -->
     <string name="via_openwatch">via @Avam @OpenWatch</string>
     <!-- Part of share Intent's EXTRA_TEXT field -->
