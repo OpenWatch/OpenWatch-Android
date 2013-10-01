@@ -1095,7 +1095,7 @@ public class OWServiceRequests {
 	public static void RegisterApp(Context app_context,
 			String public_upload_token, JsonHttpResponseHandler response_handler) {
 		PackageInfo pInfo;
-		String app_version = "Android-";
+		String app_version = app_context.getString(R.string.signup_type) + "-";
 		try {
 			pInfo = app_context.getPackageManager().getPackageInfo(
 					app_context.getPackageName(), 0);
