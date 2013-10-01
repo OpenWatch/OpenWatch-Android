@@ -43,9 +43,9 @@ import java.util.HashMap;
 
 /**
  * OWService (Django) Requests
- * 
+ *
  * @author davidbrodsky
- * 
+ *
  */
 public class OWServiceRequests {
 
@@ -229,6 +229,7 @@ public class OWServiceRequests {
                 return;
             }
         }
+        getParams = (getParams == null) ? "" : getParams;
         last_feed_name = ext_feed_name;
         last_request_time = System.currentTimeMillis();
 		final String METHOD = "getFeed";
@@ -269,10 +270,11 @@ public class OWServiceRequests {
 				e.printStackTrace();
 			}
 		};
-		
+
 		AsyncHttpClient http_client = HttpClient.setupAsyncHttpClient(app_context);
 		String endpoint = Constants.feedExternalEndpointFromString(feed_name, page);
-
+        String api_client = app_context.getString(R.string.api_client);
+        endpoint = endpoint + getParams + "&tag=" + api_client;
 		http_client.get(endpoint + getParams, get_handler);
 
 		Log.i(TAG, "getFeed: " + endpoint+getParams);

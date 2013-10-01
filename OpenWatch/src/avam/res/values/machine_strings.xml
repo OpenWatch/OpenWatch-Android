@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="signup_type">Avam</string>
+    <string name="signup_type">Avam-Android</string>
+    <string name="api_client">avam</string>
 </resources>
