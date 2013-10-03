@@ -15,7 +15,7 @@
 
     <Button
             android:id="@+id/button_continue"
-            android:background="@drawable/green_button_bg"
+            android:background="@drawable/button_bg"
             android:layout_width="250dp"
             android:layout_height="50dp"
             android:textColor="#fff"

@@ -266,7 +266,7 @@
 
     <Button
             android:id="@+id/doneButton"
-            android:background="@drawable/green_button_bg"
+            android:background="@drawable/button_bg"
             android:layout_below="@id/toggleContainer"
             android:layout_marginTop="30dp"
             android:layout_width="wrap_content"

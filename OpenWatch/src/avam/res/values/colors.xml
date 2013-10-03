@@ -4,4 +4,12 @@
     <color name="viewpager_footer">#555555</color>
     <color name="viewpager_text">#888888</color>
     <color name="viewpager_text_selected">#555555</color>
+
+    <color name="ab_bg">#ffcccfce</color>
+
+    <color name="button">#2dc3d7</color>
+    <color name="button_pressed">#1f93a2</color>
+    <color name="button_border">#1a7b88</color>
+    <color name="button_disabled">#ff8e9487</color>
+    <color name="button_disabled_border">#ff252525</color>
 </resources>

@@ -170,7 +170,7 @@
                     android:fontFamily="sans-serif-light"
                     android:textColor="#fff"
                     android:textSize="25sp"
-                    android:background="@drawable/green_button_bg"
+                    android:background="@drawable/button_bg"
                     android:padding="16dp"
                     android:text="@string/action_sign_in_register" />
                 <!--

@@ -29,7 +29,7 @@
     <string name="sync_video_header_text">Syncing video with openwatch.net</string>
 
     <!-- Share Dialogs -->
-    <string name="via_openwatch">via @Avam @OpenWatch</string>
+    <string name="via_openwatch">via @VagusTV @OpenWatch</string>
     <!-- Part of share Intent's EXTRA_TEXT field -->
 
     <!-- Account settings -->

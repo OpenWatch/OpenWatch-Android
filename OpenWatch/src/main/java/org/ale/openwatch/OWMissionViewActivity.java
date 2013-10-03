@@ -153,7 +153,7 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
             analyticsEvent = Analytics.JOINED_MISSION;
         }else{
             action = OWMission.ACTION.LEFT;
-            findViewById(R.id.join_button).setBackgroundResource(R.drawable.green_button_bg);
+            findViewById(R.id.join_button).setBackgroundResource(R.drawable.button_bg);
             ((TextView) findViewById(R.id.join_button)).setText(getString(R.string.join_mission));
             if(missionMembers != 0)
                 ((TextView) findViewById(R.id.members)).setText(String.valueOf(missionMembers-1));

@@ -281,7 +281,7 @@ public class OWUtils {
     }
 
     public static void setReadingFontOnChildren(ViewGroup container) {
-        Typeface font = Typeface.createFromAsset(container.getContext().getAssets(), "Palatino.ttc");
+        Typeface font = Typeface.createFromAsset(container.getContext().getAssets(), "ReadingFont.ttc");
         View this_view;
         for (int x = 0; x < container.getChildCount(); x++) {
             this_view = container.getChildAt(x);

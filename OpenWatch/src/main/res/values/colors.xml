@@ -6,4 +6,12 @@
     <color name="viewpager_footer">@color/openwatch_red</color>
     <color name="viewpager_text">#ff303030</color>
     <color name="viewpager_text_selected">#1f1f1f</color>
+
+    <color name="fancy_login_text">#ffffff</color>
+
+    <color name="button">#52a452</color>
+    <color name="button_pressed">#ff337933</color>
+    <color name="button_border">#429442</color>
+    <color name="button_disabled">#ff8e9487</color>
+    <color name="button_disabled_border">#ff252525</color>
 </resources>
