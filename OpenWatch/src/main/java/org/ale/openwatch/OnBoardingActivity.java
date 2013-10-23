@@ -34,6 +34,7 @@ import org.json.JSONObject;
         super.onCreate(savedInstanceState);
         //requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.on_boarding);
+        OWUtils.setupAB(this);
         imageSwitcher = (ImageSwitcher) findViewById(R.id.image_switcher);
         imageSwitcher.setFactory(this);
         imageSwitcher.setInAnimation(this, android.R.anim.slide_in_left);

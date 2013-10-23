@@ -55,6 +55,7 @@ public class OWMissionViewActivity extends SherlockActivity implements OWObjectB
         setContentView(R.layout.activity_mission_view);
         c = getApplicationContext();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        OWUtils.setupAB(this);
         OWUtils.setReadingFontOnChildren((ViewGroup) findViewById(R.id.relativeLayout));
         this.getSupportActionBar().setTitle("");
 

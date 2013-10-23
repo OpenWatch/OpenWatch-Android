@@ -49,6 +49,7 @@ public class OWProfileActivity extends FaceBookSherlockActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        OWUtils.setupAB(this);
         setContentView(R.layout.activity_profile);
         firstName = (TextView) findViewById(R.id.firstName);
         lastName = (TextView) findViewById(R.id.lastName);

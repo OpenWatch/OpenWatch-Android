@@ -122,6 +122,7 @@
                     android:paddingBottom="0dp"
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
+                    android:tag="custom_font"
                     android:gravity="bottom"
                     android:textSize="28sp"/>
 
@@ -242,6 +243,7 @@
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
                     android:autoLink="web"
+                    android:tag="custom_font"
                     android:layout_below="@+id/buttonLayout"
                     style="@style/Theme.openwatch.storyBodyText"
                     android:layout_marginTop="10dp"/>

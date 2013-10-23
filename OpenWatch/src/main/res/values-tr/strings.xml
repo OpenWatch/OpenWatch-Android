@@ -114,7 +114,7 @@
     <!--OWInvestigationActivity-->
     <!--OnBoardingActivity-->
     <string name="continue_button_text">Devam et</string>
-    <string name="get_started_button_text">Başlarken</string>
+    <string name="get_started_button_text">Başla</string>
     <string name="media_description_hint">Ne oldu? #tamam #etiketler</string>
     <!--OWMediaObjectViewActivity-->
     <string name="share_media_dialog_title">Bu medyayı paylaş!</string>

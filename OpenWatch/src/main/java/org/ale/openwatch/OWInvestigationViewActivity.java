@@ -38,6 +38,7 @@ public class OWInvestigationViewActivity extends SherlockActivity implements OWO
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_owinvestigation_view);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        OWUtils.setupAB(this);
         OWUtils.setReadingFontOnChildren((ViewGroup) findViewById(R.id.relativeLayout));
 
 		model_id = getIntent().getExtras().getInt(Constants.INTERNAL_DB_ID);

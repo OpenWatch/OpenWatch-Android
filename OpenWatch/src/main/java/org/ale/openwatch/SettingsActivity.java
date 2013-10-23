@@ -8,7 +8,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.*;
 import android.support.v4.app.NavUtils;
-import android.util.Log;
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.actionbarsherlock.view.MenuItem;
 import org.ale.openwatch.constants.Constants;
@@ -53,6 +52,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        OWUtils.setupAB(this);
     }
 
 	@Override

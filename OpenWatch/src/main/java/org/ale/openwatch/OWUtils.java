@@ -18,13 +18,15 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.VideoView;
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.MemoryCacheUtil;
 import org.ale.openwatch.constants.Constants;
@@ -64,6 +66,30 @@ public class OWUtils {
             return true;
         }
     };
+
+    public static void setupAB(SherlockActivity act){
+        ActionBar ab = act.getSupportActionBar();
+        _setupAB(act.getApplicationContext(), ab);
+    }
+
+    public static void setupAB(SherlockFragmentActivity act){
+        ActionBar ab = act.getSupportActionBar();
+        _setupAB(act.getApplicationContext(), ab);
+    }
+
+    public static void setupAB(SherlockPreferenceActivity act){
+        ActionBar ab = act.getSupportActionBar();
+        _setupAB(act.getApplicationContext(), ab);
+    }
+
+    private static void _setupAB(Context c, ActionBar ab){
+        ab.setDisplayShowTitleEnabled(false);
+        ActionBar.LayoutParams lp = new  ActionBar.LayoutParams( ActionBar.LayoutParams.WRAP_CONTENT,  ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
+        LayoutInflater inflator = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflator.inflate(R.layout.actionbar, null);
+        ab.setCustomView(v, lp);
+        ab.setDisplayShowCustomEnabled(true);
+    }
 
     public static String generateRecordingIdentifier() {
         return UUID.randomUUID().toString();

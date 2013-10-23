@@ -110,7 +110,8 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         mPullToRefreshAttacher =  PullToRefreshAttacher.get(this);
         //mTabHost.setOn
         setContentView(R.layout.fragment_tabs_pager);
-        this.getSupportActionBar().setDisplayShowTitleEnabled(false);
+        OWUtils.setupAB(this);
+
         BugSenseHandler.initAndStartSession(getApplicationContext(), SECRETS.BUGSENSE_API_KEY);
 
         checkUserStatus(this);
