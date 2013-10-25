@@ -95,10 +95,9 @@
     <string name="share_dialog_title">Paylaş</string>
     <string name="share_dialog_no">Hayır, teşekkürler</string>
     <string name="sync_video_complete_header_text">Videonuz yayında!</string>
-    <string name="select_mission">Göreve ekle</string>
-    <string name="public_on_ow">Avam'da yayınla</string>
-    <string name="post_to_fb">Facebook'ta paylaş</string>
-    <string name="post_to_twitter">Twitter'da payla</string>
+    <string name="public_on_ow">Avam\'da yayınla</string>
+    <string name="post_to_fb">Facebook\'ta paylaş</string>
+    <string name="post_to_twitter">Twitter\'da payla</string>
     <string name="done">Tamamdır!</string>
     <!--Appears above media link after sync complete-->
     <string name="sync_video_header_text">Openwatch.net\'le video eşitleniyor</string>
@@ -156,9 +155,7 @@
     <string name="misc">Diğer</string>
     <string name="share_this_app">Bu uygulamayı paylaş</string>
     <!--Account settings-->
-    <string name="pref_title_account">Hesap</string>
     <string name="pref_header_account">OpenWatch.net</string>
-    <string name="pref_title_account">Hesap</string>
     <string name="pref_description_account">OpenWatch.net kimliğiniz</string>
 
 
