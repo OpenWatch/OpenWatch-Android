@@ -12,6 +12,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -84,10 +85,11 @@ public class OWUtils {
 
     private static void _setupAB(Context c, ActionBar ab){
         ab.setDisplayShowTitleEnabled(false);
-        ActionBar.LayoutParams lp = new  ActionBar.LayoutParams( ActionBar.LayoutParams.WRAP_CONTENT,  ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
+        ActionBar.LayoutParams lp = new  ActionBar.LayoutParams( ActionBar.LayoutParams.WRAP_CONTENT,  ActionBar.LayoutParams.WRAP_CONTENT, Gravity.LEFT);
         LayoutInflater inflator = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflator.inflate(R.layout.actionbar, null);
         ab.setCustomView(v, lp);
+        ab.setBackgroundDrawable(new ColorDrawable(c.getResources().getColor(R.color.ab_bg)));
         ab.setDisplayShowCustomEnabled(true);
     }
 
