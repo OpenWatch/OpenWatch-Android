@@ -4,6 +4,8 @@
     <string name="menu_settings">Ayarlar</string>
     <string name="title_activity_main">OpenWatch</string>
     <!--General-->
+    <string name="report">Uyar</string>
+    <string name="connect">Bağlan</string>
     <!--Generic Dialog-->
     <string name="dialog_ok">Tamam</string>
     <string name="dialog_no">Hayır, teşekkürler</string>
@@ -16,6 +18,7 @@
     <string name="local_button_text">Yerel</string>
     <string name="feedback_button_text">Geri bildirim gönder</string>
     <string name="settings_button_text">Ayarlar</string>
+    <string name="profile">Profil</string>
     <!--Send Feedback Intent Extras-->
     <string name="share_email_subject">OpenWatch-Android geribildirim</string>
     <string name="share_email_text">Merhaba OpenWatch!\n\n</string>
@@ -60,11 +63,12 @@
     <string name="signup_dialog_failed_title">Kayıt başarısız</string>
     <string name="signup_dialog_failed_msg">Kayıt esnasında bir sorun ortaya çıktı. Lütfen daha sonra tekrar deneyin.</string>
     <!--Feed Activity-->
-    <string name="tab_local_user_recordings">Sizin Medyanız</string>
+    <string name="tab_local_user_recordings">Size ait</string>
     <string name="tab_local">Yerel</string>
     <string name="tab_following">Takip ettiğiniz</string>
-    <string name="tab_featured">En Çok Okunan Haberler</string>
+    <string name="tab_featured">Seçtiklerimiz</string>
     <string name="tab_Raw">Ham</string>
+    <string name="tab_missions">Görevler</string>
     <string name="loading_recordings">Kayıtlar yükleniyor</string>
     <string name="no_recordings">Hiç kaydınız yok.</string>
     <string name="loading_feed">Haber kaynağı yükleniyor</string>
@@ -81,7 +85,7 @@
     <string name="remove_tag_dialog_title">Etiketi kaldır?</string>
     <string name="remove_tag_dialog_msg">Bu etiketi bu kayıttan kaldırmak ister misiniz?</string>
     <string name="remove_tag_dialog_yes">Etiketi kaldır</string>
-    <string name="dialog_cancel">İptal et</string>
+    <string name="dialog_cancel">Vazgeç</string>
     <!--AutoComplete Tag Field-->
     <string name="action_tag">Etiket</string>
     <!--WhatHappenedActivity-->
@@ -91,16 +95,22 @@
     <string name="share_dialog_title">Paylaş</string>
     <string name="share_dialog_no">Hayır, teşekkürler</string>
     <string name="sync_video_complete_header_text">Videonuz yayında!</string>
+    <string name="select_mission">Göreve ekle</string>
+    <string name="public_on_ow">Avam'da yayınla</string>
+    <string name="post_to_fb">Facebook'ta paylaş</string>
+    <string name="post_to_twitter">Twitter'da payla</string>
+    <string name="done">Tamamdır!</string>
     <!--Appears above media link after sync complete-->
     <string name="sync_video_header_text">Openwatch.net\'le video eşitleniyor</string>
     <!--RecorderActivity-->
+    <string name="touch_to_broadcast">Yayına başlamak için herhangi bir yere dokun</string>
     <string name="stop_recording_dialog_title">Kaydı Durdur?</string>
     <string name="stop_recording_dialog_message">Kaydı durdurmak istediğinizden emin misiniz?</string>
     <string name="stop_recording_dialog_stop">Dur</string>
     <string name="stop_recording_dialog_continue">Devam et</string>
     <string name="recording">Kayıt</string>
     <!--OWInvestigationViewActivity-->
-    <string name="share_investigation">Paylaşım Araştırması</string>
+    <string name="share_investigation">Soruşturmayı paylaş</string>
     <!--StoryViewActivity-->
     <string name="share_story">Haberi paylaş</string>
     <string name="title_activity_welcome">Hoşgeldiniz, Yeni Watcher!</string>
@@ -132,15 +142,43 @@
     <string name="share_dialog_photo_title">Fotoğrafınız yayında! Herkese duyurun ve bir etki yaratın!</string>
     <string name="share_dialog_photo_button">Resmi paylaş</string>
     <string name="share_dialog_video_message">Videonuz yayında! Herkese duyurun ve bir etki yaratın!</string>
-    <string name="share_video">Video paylaş</string>
+    <string name="share_video">Videoyu paylaş</string>
     <string name="via_openwatch">\@OpenWatch aracılığıyla</string>
     <!--Part of share Intent's EXTRA_TEXT field-->
     <!--ListView-->
-    <string name="loading_next_page">Yükleniyor...</string>
+    <string name="mission_header">
+        <b>Görevler</b> senin için önemli hikayelere aktif katılımın için bir yol
+    </string>
+    <string name="tap_to_dismiss">Uyarıyı kaldırmak için dokun</string>
+    <string name="loading_next_page">Yüklüyor</string>
     <!--Settings-->
     <string name="title_activity_settings">Ayarlar</string>
+    <string name="misc">Diğer</string>
+    <string name="share_this_app">Bu uygulamayı paylaş</string>
     <!--Account settings-->
+    <string name="pref_title_account">Hesap</string>
     <string name="pref_header_account">OpenWatch.net</string>
     <string name="pref_title_account">Hesap</string>
     <string name="pref_description_account">OpenWatch.net kimliğiniz</string>
+
+
+    <!-- MissionViewActivity -->
+    <string name="mission_available">Mevcut Göreve</string>
+    <string name="join_mission">Göreve Katıl</string>
+    <string name="leave_mission">Göreve bırakın</string>
+    <string name="view_media">Görüntüler</string>
+    <string name="choose_mission">Bir Göreve seçin</string>
+    <string name="no_mission">hiçbir Göreve</string>
+    <string name="select_mission">Göreve eklemek</string>
+    <string name="expires">Bitiş Tarihi</string>
+    <string name="share_mission">Görevi paylaş</string>
+
+
+    <!-- OWProfileActivity -->
+    <string name="first_name">Adınız</string>
+    <string name="last_name">Soyadınız</string>
+    <string name="about_yourself">Kendinizden bahsedin!</string>
+    <string name="receive_alerts">Yeni görevler geldiğinde beni uyar</string>
+    <string name="connect_a_social_account">Profilini kolayca tamamlamak için sosyal hesaplarınızdan birini bağlayabilirsin</string>
+
 </resources>

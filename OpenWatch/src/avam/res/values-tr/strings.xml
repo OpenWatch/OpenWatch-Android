@@ -5,8 +5,8 @@
     <string name="title_activity_main"></string>
 
     <!--Send Feedback-->
-    <string name="share_email_subject">Avam-Android geribildirim</string>
-    <string name="share_email_text">Merhaba Avam!\n\n</string>
+    <string name="share_email_subject">Avam-Android Yorum</string>
+    <string name="share_email_text">Avam Selam!\n\n</string>
     <string name="i_have_app_version">Avam sürüm </string>
 
     <!--FancyLoginActivity-->
