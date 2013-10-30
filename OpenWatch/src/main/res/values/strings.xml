@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">OpenWatch</string>
-    <string name="menu_settings">Settings</string>
+    <string name="settings">Settings</string>
+    <string name="profile">Profile</string>
+    <string name="send_feedback">Send Feedback</string>
     <string name="title_activity_main">OpenWatch</string>
     <!-- General -->
     <string name="by">By</string>
@@ -15,18 +17,6 @@
     <string name="dialog_no">No Thanks</string>
     <string name="dialog_bummer">Bummer</string>
     <string name="whoops">Whoops!</string>
-
-    <!-- MainActivity -->
-
-    <string name="video_button_text">Broadcast Video</string>
-    <string name="photo_button_text">Take Photo</string>
-    <string name="top_stories_button_text">Top Stories</string>
-    <string name="saved_media_button_text">Your Media</string>
-    <string name="local_button_text">Local Feed</string>
-    <string name="feedback_button_text">Send Feedback</string>
-    <string name="settings_button_text">Settings</string>
-    <string name="syncing_existing_media">Syncing existing media…\nSync will continue in the background</string>
-    <string name="mission_button_text">Missions</string>
 
     <!-- Send Feedback -->
     <string name="share_email_subject">OpenWatch-Android feedback</string>
@@ -243,7 +233,6 @@
     <string name="connect">Connect</string>
     <string name="disconnect">Disconnect</string>
     <string name="save">Save</string>
-    <string name="profile">Profile</string>
     <string name="misc">Misc</string>
     <string name="share_this_app">Share this app!</string>
     <string name="ow_on_github">OpenWatch on Github</string>

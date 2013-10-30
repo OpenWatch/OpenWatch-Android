@@ -1,7 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
     <string name="app_name">OpenWatch</string>
-    <string name="menu_settings">Ayarlar</string>
+    <string name="settings">Ayarlar</string>
+    <string name="send_feedback">Yorum yap</string>
     <string name="title_activity_main">OpenWatch</string>
     <!--General-->
     <string name="report">Uyar</string>
@@ -67,6 +68,7 @@
     <string name="tab_local">Yerel</string>
     <string name="tab_following">Takip ettiğiniz</string>
     <string name="tab_featured">Seçtiklerimiz</string>
+    <string name="tab_featured_media">Öne çıkanlar</string>
     <string name="tab_Raw">Ham</string>
     <string name="tab_missions">Görevler</string>
     <string name="loading_recordings">Kayıtlar yükleniyor</string>

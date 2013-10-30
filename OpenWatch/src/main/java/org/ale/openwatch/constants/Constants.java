@@ -70,7 +70,7 @@ public class Constants {
 	//public static enum MEDIA_TYPE { VIDEO, PHOTO, AUDIO };
 	//public static HashMap<MEDIA_TYPE, String> API_ENDPOINT_BY_MEDIA_TYPE = new HashMap<MEDIA_TYPE, String>() {{put(MEDIA_TYPE.VIDEO, "v"); put(MEDIA_TYPE.PHOTO, "p"); put(MEDIA_TYPE.AUDIO, "a"); }};
 	public static HashMap<CONTENT_TYPE, String> API_ENDPOINT_BY_CONTENT_TYPE = new HashMap<CONTENT_TYPE, String>() {{ put(CONTENT_TYPE.VIDEO, "v"); put(CONTENT_TYPE.PHOTO, "p"); put(CONTENT_TYPE.AUDIO, "a");put(CONTENT_TYPE.MISSION, "mission"); put(CONTENT_TYPE.INVESTIGATION, "i"); put(CONTENT_TYPE.STORY, "s"); }};
-	public static final String OW_CONTENT_TYPE = "owcontent_type";
+    public static final String OW_CONTENT_TYPE = "owcontent_type";
 	
 	// Date Formatter for OW server time
 	public static SimpleDateFormat utc_formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
@@ -168,24 +168,35 @@ public class Constants {
 		TOP, LOCAL, FOLLOWING, USER, RAW
 	}
 	*/
+
+
     public static enum OWFeedType{
         TOP, LOCAL, USER, RAW, MISSION, FEATURED_MEDIA
-    }
 
-    public static HashMap<String, Integer> FEED_TO_TITLE = new HashMap<String, Integer>() {{put(OWFeedType.FEATURED_MEDIA.toString().toLowerCase(), R.string.tab_featured_media); put(OWFeedType.MISSION.toString().toLowerCase(), R.string.tab_missions); put(OWFeedType.TOP.toString().toLowerCase(), R.string.tab_featured); put(OWFeedType.LOCAL.toString().toLowerCase(), R.string.tab_local); put(OWFeedType.RAW.toString().toLowerCase(), R.string.tab_Raw); put(OWFeedType.USER.toString().toLowerCase(), R.string.tab_local_user_recordings); }};
+    }
+    /*
+    public static enum OWFeedType{
+        TOP("top"), LOCAL("local"), USER("user"),  RAW("raw"), MISSION("mission"), FEATURED_MEDIA("featured_media");
+        private final String value;
+        OWFeedType(String value) { this.value = value; }
+        public String value() { return value; }
+    }
+    */
+
+    public static HashMap<String, Integer> FEED_TO_TITLE = new HashMap<String, Integer>() {{put(OWFeedType.FEATURED_MEDIA.toString().toLowerCase(Locale.US), R.string.tab_featured_media); put(OWFeedType.MISSION.toString().toLowerCase(Locale.US), R.string.tab_missions); put(OWFeedType.TOP.toString().toLowerCase(Locale.US), R.string.tab_featured); put(OWFeedType.LOCAL.toString().toLowerCase(Locale.US), R.string.tab_local); put(OWFeedType.RAW.toString().toLowerCase(Locale.US), R.string.tab_Raw); put(OWFeedType.USER.toString().toLowerCase(Locale.US), R.string.tab_local_user_recordings); }};
 	
 	public static ArrayList<String> OW_FEEDS = new ArrayList<String>();
 	static{
 		OWFeedType[] feed_types = OWFeedType.values();
 		for(int x=0; x< feed_types.length; x++){
-			OW_FEEDS.add(feed_types[x].toString().toLowerCase());
+			OW_FEEDS.add(feed_types[x].toString().toLowerCase(Locale.US));
 		}
 	}
 	
 	public static boolean isOWFeedTypeGeoSensitive(String feed_type){
         if(feed_type == null)
             return false;
-		if(feed_type.trim().toLowerCase().compareTo(OWFeedType.LOCAL.toString().toLowerCase()) == 0)
+		if(feed_type.trim().toLowerCase(Locale.US).compareTo(OWFeedType.LOCAL.toString().toLowerCase(Locale.US)) == 0)
 			return true;
 		return false;
 	}
@@ -210,7 +221,7 @@ public class Constants {
 		}
 		return endpoint + File.separator + String.valueOf(page);
 		*/
-		return feedExternalEndpointFromString(type.toString().toLowerCase(), page);
+		return feedExternalEndpointFromString(type.toString().toLowerCase(Locale.US), page);
 	}
 	
 	public static String feedExternalEndpointFromString(String type, int page){
@@ -219,9 +230,9 @@ public class Constants {
             // tag feed
 			endpoint = Constants.OW_API_URL + Constants.OW_TAG + File.separator + "?tag="+ type + "&page=" + String.valueOf(page);
 		}else{
-            if(type.equals("top")){
+            if(type.equals(OWFeedType.TOP.toString().toLowerCase(Locale.US))){
                 endpoint = Constants.OW_API_URL + API_ENDPOINT_BY_CONTENT_TYPE.get(CONTENT_TYPE.INVESTIGATION) + "/?page=" + String.valueOf(page);
-            }else if(type.equals("mission")){
+            }else if(type.equals(OWFeedType.MISSION.toString().toLowerCase(Locale.US))){
                 endpoint = Constants.OW_API_URL + API_ENDPOINT_BY_CONTENT_TYPE.get(CONTENT_TYPE.MISSION) + "/?page=" + String.valueOf(page);
             }else
 			    endpoint = Constants.OW_API_URL + Constants.OW_FEED + File.separator + "?type="+ type + "&page=" + String.valueOf(page);
@@ -288,7 +299,8 @@ public class Constants {
 	public static final String OW_FIRST_POSTED = "first_posted";
 	public static final String OW_END_LOCATION = "end_location";
 	public static final String OW_START_LOCATION = "start_location";
-	public static final String OW_BLURB = "bio";
+    public static final String OW_BIO = "bio";
+    public static final String OW_BLURB = "blurb";
 	public static final String OW_SLUG = "slug";
 	public static final String OW_BODY = "body";
 	public static final String OW_NAME = "name";

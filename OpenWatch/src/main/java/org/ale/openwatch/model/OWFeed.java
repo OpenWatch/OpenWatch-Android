@@ -5,11 +5,10 @@ import com.orm.androrm.Filter;
 import com.orm.androrm.Model;
 import com.orm.androrm.QuerySet;
 import com.orm.androrm.field.CharField;
+import org.ale.openwatch.constants.Constants.OWFeedType;
+import org.ale.openwatch.constants.DBConstants;
 
 import java.util.Locale;
-
-import org.ale.openwatch.constants.DBConstants;
-import org.ale.openwatch.constants.Constants.OWFeedType;
 
 public class OWFeed extends Model{
 	
@@ -43,7 +42,7 @@ public class OWFeed extends Model{
 	public static OWFeedType getFeedTypeFromString(Context app_context, String feed_name){
 		for(OWFeedType type : OWFeedType.values()){
 			//Log.i("FeedTypeFromString", String.format("Checking if %s = %s",type.toString().toLowerCase(), feed_name));
-			if(type.toString().toLowerCase().compareTo(feed_name) == 0)
+			if(type.toString().toLowerCase(Locale.US).compareTo(feed_name) == 0)
 				return type;
 		}
 		return null;

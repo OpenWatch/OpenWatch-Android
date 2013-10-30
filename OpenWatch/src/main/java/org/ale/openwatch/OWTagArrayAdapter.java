@@ -22,10 +22,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import org.ale.openwatch.model.OWTag;
 
 import java.util.*;
-
-import org.ale.openwatch.model.OWTag;
 
 /**
  * A concrete BaseAdapter that is backed by an array of arbitrary
@@ -461,7 +460,7 @@ public class OWTagArrayAdapter extends BaseAdapter implements Filterable {
                 results.values = list;
                 results.count = list.size();
             } else {
-                String prefixString = prefix.toString().toLowerCase();
+                String prefixString = prefix.toString().toLowerCase(Locale.US);
 
                 ArrayList<OWTag> values;
                 synchronized (mLock) {

@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * OWService (Django) Requests
@@ -94,8 +95,8 @@ public class OWServiceRequests {
 		JSONObject params = new JSONObject();
 		try {
 			params.put(Constants.OW_HIT_SERVER_ID, server_id);
-			params.put(Constants.OW_HIT_MEDIA_TYPE, content_type.toString().toLowerCase());
-			params.put(Constants.OW_HIT_TYPE, hit_type.toString().toLowerCase());
+			params.put(Constants.OW_HIT_MEDIA_TYPE, content_type.toString().toLowerCase(Locale.US));
+			params.put(Constants.OW_HIT_TYPE, hit_type.toString().toLowerCase(Locale.US));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -233,7 +234,7 @@ public class OWServiceRequests {
         last_feed_name = ext_feed_name;
         last_request_time = System.currentTimeMillis();
 		final String METHOD = "getFeed";
-		final String feed_name = ext_feed_name.trim().toLowerCase();
+		final String feed_name = ext_feed_name.trim().toLowerCase(Locale.US);
 		
 		JsonHttpResponseHandler get_handler = new JsonHttpResponseHandler(){
 			@Override
@@ -242,7 +243,7 @@ public class OWServiceRequests {
 					int internal_user_id = 0;
                     Log.i(TAG, String.format("got %s feed response: ",feed_name) );
 					//Log.i(TAG, String.format("got %s feed response: %s ",feed_name, response.toString()) );
-					if(feed_name.compareTo(OWFeedType.USER.toString().toLowerCase()) == 0){
+					if(feed_name.compareTo(OWFeedType.USER.toString().toLowerCase(Locale.US)) == 0){
 						SharedPreferences profile = app_context.getSharedPreferences(Constants.PROFILE_PREFS, 0);
 				        internal_user_id = profile.getInt(Constants.INTERNAL_USER_ID, 0);
 					}
@@ -315,7 +316,7 @@ public class OWServiceRequests {
             long start_time = System.currentTimeMillis();
             //Log.i("Benchmark", String.format("begin parsing %s feed", feed_name));
 			DatabaseAdapter adapter = DatabaseAdapter.getInstance(c);
-			adapter.beginTransaction();
+			//adapter.beginTransaction();
 			
 			JSONObject response = params[0];
 			try{
@@ -365,10 +366,10 @@ public class OWServiceRequests {
 
 					}
 				}
-				adapter.commitTransaction();
+				//adapter.commitTransaction();
 				Uri baseUri;
                 /*
-				if(feed_name.compareTo(OWFeedType.USER.toString().toLowerCase()) == 0){
+				if(feed_name.compareTo(OWFeedType.USER.toString().toLowerCase(Locale.US)) == 0){
 					baseUri = OWContentProvider.getUserRecordingsUri(user_id);
 				}else{
 					baseUri = OWContentProvider.getFeedUri(feed_name);
@@ -748,7 +749,7 @@ public class OWServiceRequests {
                 //Log.i(TAG, "flag object success " + response.toString());
                 try {
                     String type = response.getString("type");
-                    if(type.compareTo(CONTENT_TYPE.MISSION.toString().toLowerCase()) == 0)
+                    if(type.compareTo(CONTENT_TYPE.MISSION.toString().toLowerCase(Locale.US)) == 0)
                         OWMission.createOrUpdateOWMissionWithJson(app_context, response);
                     // TODO: The rest
                     if(cb != null)
@@ -786,7 +787,7 @@ public class OWServiceRequests {
         JSONObject json = new JSONObject();
         final int modelId = serverObject.getId();
         try {
-            json.put("action", action.toString().toLowerCase());
+            json.put("action", action.toString().toLowerCase(Locale.US));
         } catch (JSONException e) {
             e.printStackTrace();
         }

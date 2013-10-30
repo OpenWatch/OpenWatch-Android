@@ -14,6 +14,7 @@ import org.ale.openwatch.constants.Constants.OWFeedType;
 import org.ale.openwatch.constants.DBConstants;
 
 import java.util.Date;
+import java.util.Locale;
 
 public class OWContentProvider extends ContentProvider {
 	
@@ -62,7 +63,7 @@ public class OWContentProvider extends ContentProvider {
     	 return MEDIA_OBJECT_URI.buildUpon().appendEncodedPath(Constants.feedInternalEndpointFromType(feed_type)).build();
      }
      public static Uri getFeedUri(String feed_name){
-        return MEDIA_OBJECT_URI.buildUpon().appendEncodedPath(feed_name.trim().toLowerCase()).build();
+        return MEDIA_OBJECT_URI.buildUpon().appendEncodedPath(feed_name.trim().toLowerCase(Locale.US)).build();
      }
      public static Uri getMediaObjectUri(int model_id){
     	 return MEDIA_OBJECT_URI.buildUpon().appendEncodedPath(String.valueOf(model_id)).build();
@@ -184,10 +185,10 @@ public class OWContentProvider extends ContentProvider {
 				}			
 				//Log.i(TAG, String.format("fetching feed id: %d", feed_id));
                 queryString = select + " FROM " + DBConstants.MEDIA_OBJECT_TABLENAME + " JOIN " + DBConstants.FEED_MEDIA_OBJ_TABLENAME + " ON " + DBConstants.FEED_MEDIA_OBJ_TABLENAME+"."+DBConstants.MEDIA_OBJECT_TABLENAME + "=" + DBConstants.MEDIA_OBJECT_TABLENAME+"." + DBConstants.ID;
-				if(uri.getLastPathSegment().compareTo(OWFeedType.MISSION.toString().toLowerCase()) == 0)
+				if(uri.getLastPathSegment().compareTo(OWFeedType.MISSION.toString().toLowerCase(Locale.US)) == 0)
                     queryString += " JOIN owmission ON " + DBConstants.MEDIA_OBJECT_TABLENAME + "." + DBConstants.MEDIA_OBJECT_MISSION + " = " + "owmission._id" ;
                 query =  queryString + " WHERE " + DBConstants.FEED_MEDIA_OBJ_TABLENAME + "." + DBConstants.FEED_TABLENAME + "=" + String.valueOf(feed_id);
-                if(uri.getLastPathSegment().compareTo(OWFeedType.MISSION.toString().toLowerCase()) == 0)
+                if(uri.getLastPathSegment().compareTo(OWFeedType.MISSION.toString().toLowerCase(Locale.US)) == 0)
                     query += " AND owmission.expires > '" + Constants.utc_formatter.format(new Date()) + "'";
 				//Log.i(TAG, "Query: " + query);
                 Log.i(TAG, String.format("getFeedItems query: %s",query));

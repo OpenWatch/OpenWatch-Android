@@ -8,15 +8,12 @@ import com.orm.androrm.Model;
 import com.orm.androrm.QuerySet;
 import com.orm.androrm.field.CharField;
 import com.orm.androrm.field.ForeignKeyField;
-
 import com.orm.androrm.migration.Migrator;
 import org.ale.openwatch.constants.Constants;
-import org.ale.openwatch.constants.DBConstants;
 import org.ale.openwatch.constants.Constants.CONTENT_TYPE;
+import org.ale.openwatch.constants.DBConstants;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.Date;
 
 public class OWInvestigation extends Model implements OWServerObjectInterface{
 	private static final String TAG = "OWInvestigation";
@@ -33,11 +30,15 @@ public class OWInvestigation extends Model implements OWServerObjectInterface{
 	
 	public OWInvestigation(Context c){
 		super();
-		this.save(c);
+		if (!this.save(c))
+            Log.e("Debug", "Failed to save Investigation");
 		OWServerObject media_object = new OWServerObject();
+        Log.i("Debug", "OWServerObject created with investigation " + getId());
 		media_object.investigation.set(getId());
-		media_object.save(c);
+		if (!media_object.save(c))
+            Log.e("Debug", "Failed to save OWServerObject");
 		this.media_object.set(media_object);
+        Log.i("Debug", "OWInvestigation set to MediaObject " + media_object.getId());
 		this.save(c);
 	}
 
@@ -119,7 +120,7 @@ public class OWInvestigation extends Model implements OWServerObjectInterface{
 		OWInvestigation existing = null;
 
 		DatabaseAdapter dba = DatabaseAdapter.getInstance(app_context);
-		String query_string = String.format("SELECT %s FROM %s WHERE %s NOTNULL AND %s=%d", DBConstants.ID, DBConstants.MEDIA_OBJECT_TABLENAME, "investigation", DBConstants.STORY_SERVER_ID, json_obj.get(Constants.OW_SERVER_ID));
+		String query_string = String.format("SELECT %s FROM %s WHERE %s NOTNULL AND %s=%d", DBConstants.ID, DBConstants.MEDIA_OBJECT_TABLENAME, "investigation", DBConstants.SERVER_ID, json_obj.get(Constants.OW_SERVER_ID));
 		Cursor result = dba.open().query(query_string);
 		if(result != null && result.moveToFirst()){
 			int media_obj_id = result.getInt(0);
@@ -127,12 +128,12 @@ public class OWInvestigation extends Model implements OWServerObjectInterface{
 				existing = OWServerObject.objects(app_context, OWServerObject.class).get(media_obj_id).investigation.get(app_context);
 			}
 			if(existing != null){
-				//Log.i(TAG, "found existing Investigation for id: " + String.valueOf( json_obj.getString(Constants.OW_SERVER_ID)));
+				Log.i(TAG, "found existing Investigation for id: " + String.valueOf( json_obj.getString(Constants.OW_SERVER_ID)));
             }
 		}
 		
 		if(existing == null){
-			//Log.i(TAG, "creating new Investigation");
+			Log.i(TAG, "creating new Investigation");
 			existing = new OWInvestigation(app_context);
 		}
 		

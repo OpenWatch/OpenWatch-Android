@@ -51,10 +51,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static org.ale.openwatch.OWUtils.checkUserStatus;
 
@@ -93,8 +90,8 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     public boolean forceUserFeedRefresh = false;
 
     // Temporary drawer items
-    private ArrayList<String> mDrawerItems = new ArrayList<String>() {{ add("Profile"); add("Settings");  add("Send Feedback");}};
-    private HashMap<String, Integer> drawerTitleToIcon = new HashMap<String, Integer>() {{put("Settings", R.drawable.settings); put("Profile", R.drawable.user_placeholder); put("Send Feedback", R.drawable.heart);}};
+    private ArrayList<String> mDrawerItems;
+    private HashMap<String, Integer> mDrawerTitleToIcon;
     DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private ListView mDrawerList;
@@ -108,23 +105,19 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         Log.i(TAG, "onCreate");
 
         mPullToRefreshAttacher =  PullToRefreshAttacher.get(this);
-        //mTabHost.setOn
         setContentView(R.layout.fragment_tabs_pager);
         OWUtils.setupAB(this);
 
         BugSenseHandler.initAndStartSession(getApplicationContext(), SECRETS.BUGSENSE_API_KEY);
 
+        SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, 0);
+        internal_user_id = profile.getInt(Constants.INTERNAL_USER_ID, 0);
+
         checkUserStatus(this);
         GCMUtils.setUpGCM(this);
 
         getDisplayWidth();
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectItem(view, position);
-            }
-        });
+
         mTabHost = (TabHost)findViewById(android.R.id.tabhost);
         mTabHost.setup();
         mViewPager = (ViewPager)findViewById(R.id.pager);
@@ -134,17 +127,11 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         mTitleIndicator.setViewPager(mViewPager);
 
         inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        
-        SharedPreferences profile = getSharedPreferences(Constants.PROFILE_PREFS, 0);
-	    internal_user_id = profile.getInt(Constants.INTERNAL_USER_ID, 0);
-        String userThumbnailUrl = null;
-        if(internal_user_id > 0)
-            userThumbnailUrl = OWUser.objects(getApplicationContext(), OWUser.class).get(internal_user_id).thumbnail_url.get();
-        
+
         setupFeedAndTagMaps();
-        
         populateTabsFromMaps();
-        
+        setupDrawerLayout();
+
         // See if initiating intent specified a tab via url, feed type
         if(checkIntentForUri(getIntent())){
         }else if (savedInstanceState != null) {
@@ -155,38 +142,41 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         }
         
         onCreateWon = true;
-
-        ListView mDrawerList = (ListView) findViewById(R.id.left_drawer);
-
-        // Set the adapter for the list view
-        mDrawerItems.add("divider");
-        mDrawerItems.addAll(feeds);
-        mDrawerItems.add("divider");
-        mDrawerItems.addAll(tags);
-        mDrawerList.setAdapter(new DrawerItemAdapter(this,
-                mDrawerItems, drawerTitleToIcon, feeds, userThumbnailUrl));
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
-
-            /** Called when a drawer has settled in a completely closed state. */
-            public void onDrawerClosed(View view) {
-                getSupportActionBar().setTitle("");
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-
-            /** Called when a drawer has settled in a completely open state. */
-            public void onDrawerOpened(View drawerView) {
-                getSupportActionBar().setTitle("");
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-        };
-
-        // Set the drawer toggle as the DrawerListener
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
+        setTitlePageIndicatorListener();
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        Log.i(TAG, "onResume");
+        if(internal_user_id > 0){
+            RelativeLayout profileDrawerItem = (RelativeLayout) findViewById(R.id.profileRow);
+            if(profileDrawerItem != null){
+                String userThumbnailUrl = OWUser.objects(getApplicationContext(), OWUser.class).get(internal_user_id).thumbnail_url.get();
+                if(userThumbnailUrl != null){
+                    ImageLoader.getInstance().displayImage(userThumbnailUrl, (ImageView) profileDrawerItem.findViewById(R.id.icon));
+                }
+            }
+        }
+
+    }
+
+    @Override
+    public void onPause(){
+        removeVideoView();
+        super.onPause();
+    }
+
+    @Override
+    protected void onNewIntent (Intent intent){
+        Log.i(TAG, "onNewIntent");
+        checkIntentForUri(intent);
+    }
+
+    private void setTitlePageIndicatorListener(){
         mTitleIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i2) {
@@ -222,35 +212,52 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
 
             }
         });
-
     }
 
-    @Override
-    public void onResume(){
-        super.onResume();
-        Log.i(TAG, "onResume");
-        if(internal_user_id > 0){
-            RelativeLayout profileDrawerItem = (RelativeLayout) findViewById(R.id.profileRow);
-            if(profileDrawerItem != null){
-                String userThumbnailUrl = OWUser.objects(getApplicationContext(), OWUser.class).get(internal_user_id).thumbnail_url.get();
-                if(userThumbnailUrl != null){
-                    ImageLoader.getInstance().displayImage(userThumbnailUrl, (ImageView) profileDrawerItem.findViewById(R.id.icon));
-                }
+    private void setupDrawerLayout(){
+        mDrawerItems = new ArrayList<String>() {{ add(getString(R.string.profile)); add(getString(R.string.settings));  add(getString(R.string.send_feedback));}};
+        mDrawerTitleToIcon = new HashMap<String, Integer>() {{put(getString(R.string.settings), R.drawable.settings); put(getString(R.string.profile), R.drawable.user_placeholder); put(getString(R.string.send_feedback), R.drawable.heart);}};
+
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                onDrawerItemSelected(view, position);
             }
-        }
+        });
 
-    }
+        ListView mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
-    @Override
-    public void onPause(){
-        removeVideoView();
-        super.onPause();
-    }
+        String userThumbnailUrl = null;
+        if(internal_user_id > 0)
+            userThumbnailUrl = OWUser.objects(getApplicationContext(), OWUser.class).get(internal_user_id).thumbnail_url.get();
 
-    @Override
-    protected void onNewIntent (Intent intent){
-        Log.i(TAG, "onNewIntent");
-        checkIntentForUri(intent);
+        // Set the adapter for the list view
+        mDrawerItems.add("divider");
+        mDrawerItems.addAll(feeds);
+        mDrawerItems.add("divider");
+        mDrawerItems.addAll(tags);
+        mDrawerList.setAdapter(new DrawerItemAdapter(this,
+                mDrawerItems, mDrawerTitleToIcon, feeds, userThumbnailUrl));
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+                R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                getSupportActionBar().setTitle("");
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                getSupportActionBar().setTitle("");
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+
+        // Set the drawer toggle as the DrawerListener
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
     private boolean checkIntentForUri(Intent intent){
@@ -263,20 +270,20 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
             if(!mTitleToTabId.containsKey(tag)){
                 addTagOrFeed(tag);
             }
-            mTitleIndicator.setCurrentItem(mTitleToTabId.get(tag.toLowerCase()));
+            mTitleIndicator.setCurrentItem(mTitleToTabId.get(tag.toLowerCase(Locale.US)));
             return true;
 
         }else if(intent.getExtras() != null && intent.getExtras().containsKey(Constants.FEED_TYPE) ){
             OWFeedType feedType = ((OWFeedType)intent.getExtras().getSerializable(Constants.FEED_TYPE));
             if(feedType == OWFeedType.USER){
                 // Force the user feed to refresh
-                RemoteRecordingsListFragment userFrag = ((RemoteRecordingsListFragment) FeedFragmentActivity.this.mTabsAdapter.getItem(mTitleToTabId.get(feedType.toString().toLowerCase())));
+                RemoteRecordingsListFragment userFrag = ((RemoteRecordingsListFragment) FeedFragmentActivity.this.mTabsAdapter.getItem(mTitleToTabId.get(feedType.toString().toLowerCase(Locale.US))));
                 FeedFragmentActivity.this.forceUserFeedRefresh = true;
                 //userFrag.didRefreshFeed = false;
                 //userFrag.forceRefresh = true;
                 Log.i(feedType.toString(), "force refresh feed now!");
             }
-            mTitleIndicator.setCurrentItem(mTitleToTabId.get(feedType.toString().toLowerCase() ));
+            mTitleIndicator.setCurrentItem(mTitleToTabId.get(feedType.toString().toLowerCase(Locale.US) ));
             return true;
         }
 
@@ -300,7 +307,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     	    		
     	for(String feed : feeds){
             /*
-    		if(feed.compareTo(OWFeedType.USER.toString().toLowerCase()) == 0){
+    		if(feed.compareTo(OWFeedType.USER.toString().toLowerCase(Locale.US)) == 0){
     			//TODO: Merge MyFeedFragmentActivity and RemoteFeedFragment
     			mTabsAdapter.addTab(mTabHost.newTabSpec(getString(Constants.FEED_TO_TITLE.get(feed))).setIndicator(inflateCustomTab(getString(Constants.FEED_TO_TITLE.get(feed)))),
     	                MyFeedFragmentActivity.LocalRecordingsListFragment.class, null);
@@ -328,7 +335,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     }
 
     private void addTagOrFeed(String name){
-        name = name.toLowerCase();
+        name = name.toLowerCase(Locale.US);
         Bundle feedBundle = new Bundle(1);
         feedBundle.putString(Constants.OW_FEED, name);
         String tabTitle;
@@ -346,12 +353,12 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     	feeds.clear();
     	tags.clear();
 
-        feeds.add(OWFeedType.USER.toString().toLowerCase());
-        feeds.add(OWFeedType.TOP.toString().toLowerCase());
-        feeds.add(OWFeedType.MISSION.toString().toLowerCase());
-        feeds.add(OWFeedType.FEATURED_MEDIA.toString().toLowerCase());
-        feeds.add(OWFeedType.LOCAL.toString().toLowerCase());
-        feeds.add(OWFeedType.RAW.toString().toLowerCase());
+        feeds.add(OWFeedType.USER.toString().toLowerCase(Locale.US));
+        feeds.add(OWFeedType.TOP.toString().toLowerCase(Locale.US));
+        feeds.add(OWFeedType.MISSION.toString().toLowerCase(Locale.US));
+        feeds.add(OWFeedType.FEATURED_MEDIA.toString().toLowerCase(Locale.US));
+        feeds.add(OWFeedType.LOCAL.toString().toLowerCase(Locale.US));
+        feeds.add(OWFeedType.RAW.toString().toLowerCase(Locale.US));
 
 		if(internal_user_id > 0){
             OWUser user = OWUser.objects(getApplicationContext(), OWUser.class).get(internal_user_id);
@@ -368,7 +375,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
     }
     
     private String capitalizeFirstChar(String in){
-    	in = in.toLowerCase();
+    	in = in.toLowerCase(Locale.US);
     	return Character.toString(in.charAt(0)).toUpperCase()+in.substring(1);
     }
 
@@ -559,7 +566,7 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
 
 
 
-    private void selectItem(View v, int position) {
+    private void onDrawerItemSelected(View v, int position) {
         // Highlight the selected item, update the title, and close the drawer
         mDrawerList.setItemChecked(position, true);
         String tag = ((TextView) v.findViewById(R.id.title)).getText().toString().replace("# ","");
@@ -570,16 +577,16 @@ public class FeedFragmentActivity extends SherlockFragmentActivity {
         }else if(mTitleToTabId.containsKey(v.getTag(R.id.list_item_model))){
             mTitleIndicator.setCurrentItem(mTitleToTabId.get((String) v.getTag(R.id.list_item_model)));
         }else{
-            if(tag.compareTo("Settings")==0){
+            if(tag.compareTo(getString(R.string.settings))==0){
                 Intent i = new Intent(this, SettingsActivity.class);
                 startActivity(i);
-            }else if(tag.compareTo("Send Feedback")==0){
+            }else if(tag.compareTo(getString(R.string.send_feedback))==0){
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                         "mailto",Constants.SUPPORT_EMAIL, null));
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT,getString(R.string.share_email_subject));
                 emailIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_email_text) + OWUtils.getPackageVersion(getApplicationContext()));
                 startActivity(Intent.createChooser(emailIntent, getString(R.string.share_chooser_title)));
-            }else if(tag.compareTo("Profile") == 0){
+            }else if(tag.compareTo(getString(R.string.profile)) == 0){
                 Intent profileIntent = new Intent(this, OWProfileActivity.class);
                 startActivity(profileIntent);
             }

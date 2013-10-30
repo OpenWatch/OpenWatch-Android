@@ -73,7 +73,7 @@ public class OWUser extends Model{
             if(this.last_name.get() != null)
                 json_obj.put(Constants.OW_LAST_NAME, this.last_name.get());
             if(this.blurb.get() != null)
-                json_obj.put(Constants.OW_BLURB, this.blurb.get());
+                json_obj.put(Constants.OW_BIO, this.blurb.get());
 			if(this.server_id.get() != null)
 				json_obj.put(Constants.OW_SERVER_ID, this.server_id.get());
 			if(this.thumbnail_url.get() != null)
@@ -103,8 +103,8 @@ public class OWUser extends Model{
                 first_name.set(json.getString(Constants.OW_FIRST_NAME));
             if(json.has(Constants.OW_LAST_NAME))
                 last_name.set(json.getString(Constants.OW_LAST_NAME));
-            if(json.has(Constants.OW_BLURB))
-                blurb.set(json.getString(Constants.OW_BLURB));
+            if(json.has(Constants.OW_BIO))
+                blurb.set(json.getString(Constants.OW_BIO));
             if(json.has(Constants.OW_LAT) && json.has(Constants.OW_LON)){
                 lat.set(json.getDouble(Constants.OW_LAT));
                 lon.set(json.getDouble(Constants.OW_LON));

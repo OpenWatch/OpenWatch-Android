@@ -5,6 +5,7 @@ package org.ale.openwatch.model;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.util.Log;
 import com.orm.androrm.*;
 import com.orm.androrm.field.*;
@@ -118,7 +119,20 @@ public class OWServerObject extends Model implements OWServerObjectInterface{
 	public boolean save(Context context) {
 		context = context.getApplicationContext();
 		//setLastEdited(context, Constants.utc_formatter.format(new Date()));
-		boolean super_save =  super.save(context);
+        boolean super_save = false;
+        try{
+		    super_save =  super.save(context);
+        }catch(SQLiteConstraintException e){
+            e.printStackTrace();
+            Log.i("DBErr", String.format("ServerObject _id/id: %d/%d", this.getId(), this.getServerId(context)));
+            //this.investigation.get(context).getId(),this.investigation.get(context).getServerId(context)
+            if(this.investigation.get(context) != null && this.investigation.get(context).media_object.get(context) != null)
+                Log.i("DBErr", String.format("Investigation _id/id: %d/%d", this.investigation.get(context).getId(),this.investigation.get(context).getServerId(context)));
+            else if(this.investigation.get(context) != null)
+                Log.i("DBErr", "Investigation is not set to ServerObject");
+            else
+                Log.i("DBErr", "Investigation is null");
+        }
 		//Log.i(TAG, String.format("setLastEdited: %s", getLastEdited(context)));
 		// notify the ContentProvider that the dataset has changed
 		context.getContentResolver().notifyChange(OWContentProvider.getMediaObjectUri(getId()), null);

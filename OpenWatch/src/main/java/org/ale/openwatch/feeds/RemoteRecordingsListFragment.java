@@ -52,6 +52,7 @@ import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 
 
 public  class RemoteRecordingsListFragment extends ListFragment
@@ -237,7 +238,7 @@ public  class RemoteRecordingsListFragment extends ListFragment
 
 
         private void addListViewHeader(){
-            if(feed.compareTo(Constants.OWFeedType.MISSION.toString().toLowerCase()) == 0){
+            if(feed.compareTo(Constants.OWFeedType.MISSION.toString().toLowerCase(Locale.US)) == 0){
                 if(getActivity() == null)
                     return;
                 LayoutInflater inflater = (LayoutInflater)
@@ -523,7 +524,7 @@ public  class RemoteRecordingsListFragment extends ListFragment
             String[] selectionArgs = null;
             String order = null;
 			Log.i("URI"+feed.toString(), "createLoader on uri: " + baseUri.toString());
-            if(feed.compareTo(Constants.OWFeedType.MISSION.toString().toLowerCase()) == 0){
+            if(feed.compareTo(Constants.OWFeedType.MISSION.toString().toLowerCase(Locale.US)) == 0){
                 // Java is gross
                 projection = new ArrayList<String>(){{addAll(Arrays.asList(PROJECTION)); addAll(Arrays.asList(MISSION_PROJECTION));}}.toArray(new String[0]);
             }else
