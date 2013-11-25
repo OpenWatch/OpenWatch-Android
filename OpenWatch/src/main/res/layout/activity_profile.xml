@@ -110,12 +110,14 @@
                   android:orientation="horizontal">
 
     <com.facebook.widget.LoginButton
+            xmlns:fb="http://schemas.android.com/apk/res-auto"
             android:id="@+id/fbButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".5"
             android:layout_gravity="center_horizontal"
-            android:layout_alignParentLeft="true"/>
+            android:layout_alignParentLeft="true"
+            fb:login_text="@string/fb_log_in"/>
 
     <Button
             android:id="@+id/twitterButton"

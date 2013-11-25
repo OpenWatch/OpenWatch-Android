@@ -99,7 +99,7 @@
     <string name="sync_video_complete_header_text">Videonuz yayında!</string>
     <string name="public_on_ow">Avam\'da yayınla</string>
     <string name="post_to_fb">Facebook\'ta paylaş</string>
-    <string name="post_to_twitter">Twitter\'da payla</string>
+    <string name="post_to_twitter">Twitter\'da paylaş</string>
     <string name="done">Tamamdır!</string>
     <!--Appears above media link after sync complete-->
     <string name="sync_video_header_text">Openwatch.net\'le video eşitleniyor</string>
@@ -168,7 +168,7 @@
     <string name="view_media">Görüntüler</string>
     <string name="choose_mission">Bir Göreve seçin</string>
     <string name="no_mission">hiçbir Göreve</string>
-    <string name="select_mission">Göreve eklemek</string>
+    <string name="select_mission">Göreve ekle</string>
     <string name="expires">Bitiş Tarihi</string>
     <string name="share_mission">Görevi paylaş</string>
 
@@ -179,5 +179,6 @@
     <string name="about_yourself">Kendinizden bahsedin!</string>
     <string name="receive_alerts">Yeni görevler geldiğinde beni uyar</string>
     <string name="connect_a_social_account">Profilini kolayca tamamlamak için sosyal hesaplarınızdan birini bağlayabilirsin</string>
+    <string name="fb_log_in">Giriş yap</string>
 
 </resources>

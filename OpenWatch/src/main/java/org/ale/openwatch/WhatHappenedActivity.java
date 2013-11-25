@@ -75,7 +75,7 @@ public class WhatHappenedActivity extends SherlockFragmentActivity implements FB
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_what_happened);
-		this.getSupportActionBar().setTitle(getString(R.string.what_happened));
+        OWUtils.setupAB(this);
 
         missionButton = ((Button)findViewById(R.id.missionButton));
         ((CompoundButton) findViewById(R.id.owSwitch)).setChecked(true);

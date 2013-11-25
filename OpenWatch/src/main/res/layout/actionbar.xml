@@ -5,13 +5,15 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left">
 
+    <!--
     <ImageView
             android:layout_width="60dp"
             android:layout_height="45dp"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
             android:layout_gravity="left|center_vertical"
             android:gravity="left|center_vertical"
             android:src="@drawable/logo_ab" />
+            -->
 
 </LinearLayout>

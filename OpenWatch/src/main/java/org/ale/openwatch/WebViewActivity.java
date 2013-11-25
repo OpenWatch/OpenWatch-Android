@@ -7,8 +7,6 @@ import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import com.actionbarsherlock.app.SherlockActivity;
-import org.ale.openwatch.constants.Constants;
-import org.ale.openwatch.twitter.TwitterUtils;
 
 /**
  * Created by davidbrodsky on 7/5/13.
@@ -23,6 +21,7 @@ public class WebViewActivity extends SherlockActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
+        OWUtils.setupAB(this);
         webView = (WebView) findViewById(R.id.webView);
         webView.setWebViewClient(new WebViewClient() {
             public boolean shouldOverrideUrlLoading(WebView view, String url){

@@ -232,6 +232,7 @@
     <string name="last_name">Last Name</string>
     <string name="connect">Connect</string>
     <string name="disconnect">Disconnect</string>
+    <string name="fb_log_in">Log in</string>
     <string name="save">Save</string>
     <string name="misc">Misc</string>
     <string name="share_this_app">Share this app!</string>
