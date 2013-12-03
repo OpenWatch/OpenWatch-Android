@@ -3,7 +3,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                tools:context=".WhatHappenedActivity">
+                tools:context=".WhatHappenedActivity" >
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     xmlns:tools="http://schemas.android.com/tools"
@@ -13,7 +13,6 @@
                     android:layout_marginBottom="5dp"
                     android:visibility="gone"
                     android:background="#c5eaf8">
-
 
         <TextView
                 android:id="@+id/sync_progress_text"
@@ -61,7 +60,7 @@
             android:layout_marginTop="5dp"
             android:layout_width="144dp"
             android:layout_height="96dp"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center" />
 
 
     <FrameLayout
@@ -122,6 +121,7 @@
     -->
 
 
+
     <!-- End Mission Chooser -->
 
     <RelativeLayout
@@ -129,7 +129,7 @@
             android:layout_marginTop="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginLeft="15dp"
-            android:paddingBottom="15dp"
+            android:paddingBottom="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/missionButton"
@@ -144,7 +144,7 @@
                 android:layout_marginTop="15dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:src="@drawable/ic_launcher"/>
+                android:src="@drawable/ic_ab_icon" />
 
         <TextView
                 android:id="@+id/owText"
@@ -157,10 +157,10 @@
                 android:textSize="18sp"
                 android:layout_toRightOf="@id/owImage"/>
 
-        <Switch
+        <ToggleButton
                 android:id="@+id/owSwitch"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:thumbTextPadding="5dp"
                 android:switchTextAppearance="@style/Theme.openwatch.SwitchTextAppearance"
                 android:thumb="@drawable/ow_toggle_bg"
@@ -189,7 +189,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_below="@id/owDivider"
                 android:visibility="visible"
-                android:src="@drawable/fb"/>
+                android:src="@drawable/fb" />
 
         <TextView
                 android:id="@+id/fbText"
@@ -203,10 +203,11 @@
                 android:layout_toRightOf="@id/fbImage"/>
 
 
-        <Switch
+
+        <ToggleButton
                 android:id="@+id/fbSwitch"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:switchTextAppearance="@style/Theme.openwatch.SwitchTextAppearance"
                 android:thumbTextPadding="5dp"
                 android:thumb="@drawable/ow_toggle_bg"
@@ -234,7 +235,7 @@
                 android:layout_below="@id/socialDivider"
                 android:layout_alignParentLeft="true"
                 android:visibility="visible"
-                android:src="@drawable/twitter"/>
+                android:src="@drawable/twitter" />
 
         <TextView
                 android:id="@+id/twitterText"
@@ -248,20 +249,19 @@
                 android:textSize="18sp"/>
 
 
-        <Switch
+        <ToggleButton
                 android:id="@+id/twitterSwitch"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:switchTextAppearance="@style/Theme.openwatch.SwitchTextAppearance"
-                android:thumbTextPadding="5dp"
+                android:thumbTextPadding="0dp"
+                android:layout_marginTop="10dp"
                 android:thumb="@drawable/ow_toggle_bg"
                 android:textOn="@string/yes"
                 android:textOff="@string/no"
-                android:layout_marginRight="12dp"
-                android:layout_alignEnd="@id/twitterText"
-                android:layout_alignBottom="@id/twitterText"
-                android:layout_alignParentRight="true"
-                tools:ignore="NewApi"/>
+                android:layout_below="@id/socialDivider"
+                tools:ignore="NewApi"
+                android:layout_alignLeft="@+id/fbSwitch"/>
     </RelativeLayout>
 
     <Button

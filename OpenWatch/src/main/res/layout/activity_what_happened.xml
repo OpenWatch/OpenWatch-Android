@@ -144,7 +144,7 @@
                 android:layout_marginTop="15dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:src="@drawable/ic_ab_icon" />
+                android:src="@drawable/ic_launcher" />
 
         <TextView
                 android:id="@+id/owText"
