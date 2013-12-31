@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.6.3'
+        classpath 'com.android.tools.build:gradle:0.7.3'
     }
 }
 apply plugin: 'android'
@@ -13,8 +13,16 @@ repositories {
 }
 
 android {
-    compileSdkVersion 18
-    buildToolsVersion "18.1.0"
+    compileSdkVersion 19
+    buildToolsVersion "19"
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
 
     defaultConfig {
         minSdkVersion 8
@@ -30,18 +38,15 @@ android {
         }
     }
 
-    final PROVIDER_OPENWATCH = "org.ale.openwatch.contentprovider.OWContentProvider"
-    final PROVIDER_AVAM = "org.ale.openwatch.avam.contentprovider.OWContentProvider"
-
     productFlavors {
         openwatch {
-            packageName 'org.ale.openwatch'
-            buildConfig "public static final String PROVIDER_AUTHORITY = \"" + PROVIDER_OPENWATCH + "\";"
+            packageName "org.ale.openwatch"
+            buildConfigField "String",  "PROVIDER_AUTHORITY", "\"org.ale.openwatch.contentprovider.OWContentProvider\""
         }
 
         avam {
-            packageName 'org.ale.openwatch.avam'
-            buildConfig "public static final String PROVIDER_AUTHORITY = \"" + PROVIDER_AVAM + "\";"
+            packageName "org.ale.openwatch.avam"
+            buildConfigField "String",  "PROVIDER_AUTHORITY", "\"org.ale.openwatch.avam.contentprovider.OWContentProvider\""
         }
     }
 

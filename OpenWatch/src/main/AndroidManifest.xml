@@ -23,7 +23,7 @@
     <!-- GCM specific -->
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <permission android:name="org.ale.openwatch.permission.C2D_MESSAGE" android:protectionLevel="signature"/>
+    <!-- Product flavor specifies <permission android:name="org.ale.openwatch.permission.C2D_MESSAGE" android:protectionLevel="signature"/>-->
     <uses-permission android:name="org.ale.openwatch.permission.C2D_MESSAGE" />
 
     <uses-feature android:name="android.hardware.camera" android:required="false"/>
